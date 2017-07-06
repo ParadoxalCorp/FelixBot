@@ -17,6 +17,7 @@ There is no description atm sorry (note, commands are not case-sensitive, but th
 * stats
 * sinfo
 * cardsearch (search hearthstone cards and return the stats)
+* malsearch (search for animes, mangas and users on MyAnimeList)
 ### Fun commands
 * hug
 * kiss
