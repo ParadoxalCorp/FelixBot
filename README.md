@@ -1,6 +1,6 @@
 # FelixBot
 Felix is here, was first supposed to be a meme but hey, its a thing now ! 
-
+About Felix's source usage, note that Felix is under APACHE 2.0 license, more informations at the very bottom of this readme.
 ## Features
 * Simple but powerful permission system
 * Custom prefix
@@ -101,5 +101,17 @@ Got it? Great, lets get back to the questions !
 * Does Felix need the Administrator permission?
 > You can give Felix as much permissions as you want, but if you want Felix to work perfectly, the best choice is to give him Administrator permissions
 
+## Felix's open source usage:
+You can freely use a small part of the code for private use, however, if you use the whole code, even with some modifications, you must give credits.
 
+* Can i download the source, run it myself, chane the bot name and the bot pfp then claim it as my bot?
+> No.
 
+* Can i download the bot and selfhost it only on my server?
+> You can, but no official support is provided, for any questions you can still ask on the support server, i may help you
+
+* Can i use the whole Felix's code, but adding some new commands and stuff, and upload it to Carbonitrex or whatever discord bots website list?
+> Yes, but it has to be like: Made by [insert Felix's devs names here] and edited by [insert your name here]
+
+* Can i fork the repository and make pull request for stuff that i would like to add on Felix?
+> Yay ! But be aware, it might not get accepted, so you should suggest it first
