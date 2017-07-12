@@ -88,7 +88,7 @@ exports.run = async(client, message) => {
                 }
             }
         } else if ((role === -1) && (user === -1) && (channel === -1)) {
-            if (perm[message.guild.id].globalLevel === "none") {
+            if (client.database.Data.servers[0][message.guild.id].globalLevel === "none") {
                 return message.channel.send(":x: There is no level set for the whole server");
             } else {
                 return message.channel.send("This server global level is " + client.database.Data.servers[0][message.guild.id].globalLevel);
