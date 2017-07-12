@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const fs = require("fs-extra");
 const unirest = require("unirest");
-const dbPath = "/Paradoxbot/Felixooprewrite/beta/discordjs-bot-handler/database/database.json";
+const dbPath = "";
 const database = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
 const {
     promisify
