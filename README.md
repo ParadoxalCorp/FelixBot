@@ -102,7 +102,9 @@ Got it? Great, lets get back to the questions !
 > You can give Felix as much permissions as you want, but if you want Felix to work perfectly, the best choice is to give him Administrator permissions
 
 ## Felix's open source usage:
-You can freely use a small part of the code for private use, however, if you use the whole code, even with some modifications, you must give credits.
+You can freely use a small part of the code for private/public use, however, if you use the whole code, even with some modifications, you must give credits.
+
+#### Warning: The github actually dont contain a fully working version yet(like you can see, there's no database scheme). So if you download the whole source, it wont work magically. I will write a wiki and complete it soon.
 
 * Can i download the source, run it myself, chane the bot name and the bot pfp then claim it as my bot?
 > No.
