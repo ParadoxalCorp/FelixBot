@@ -15,7 +15,24 @@ client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 client.database = database;
 client.dbPath = dbPath;
+const errorLog = "328847359100321792";
 
+process.on('uncaughtException', (err) => {
+    try {
+        console.error(err);
+        client.channels.get(errorLog).send("Uncaught Exception\n**Detailled log:** " + err.stack);
+    } catch (err) {
+        return;
+    }
+});
+process.on("unhandledRejection", err => {
+    try {
+        console.error(err);
+        client.channels.get(errorLog).send("**Unhandled Rejection\n**Detailled log:** " + err.stack);
+    } catch (err) {
+        return;
+    }
+});
 
 //require node 8 or higher
 (async function () {
