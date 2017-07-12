@@ -10,7 +10,8 @@ exports.run = async(client, message) => {
         const remove = args.indexOf("-r");
         if ((set !== -1) && (remove === -1)) {
             if (guildEntry.updateChannel === "") {
-                guildEntry.updateChannel = message.channel.id;
+                guildEntry.updateChannel = message.channel.id; //This one is to quickly read the datas 
+                client.database.Data.global[0].updateChannels.push(message.channel.id); 
                 fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
                     if (err) console.error(err)
                 });
@@ -30,6 +31,7 @@ exports.run = async(client, message) => {
                 return await message.channel.send(":x: This channel is not in the database, so i cant remove it from the database, i think :thinking:");
             } else {
                 try {
+                    client.database.Data.global[0].updateChannels.splice(client.database.Data.global[0].updateChannels.indexOf(guildEntry.updateChannel), 1);
                     guildEntry.updateChannel = "";
                     fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
                         if (err) console.error(err)
