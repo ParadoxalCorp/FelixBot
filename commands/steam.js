@@ -1,5 +1,5 @@
 const RapidAPI = new require('rapidapi-connect');
-const rapid = new RapidAPI("felixbot_59661db7e4b02799980f840f", "2188b39b-de0a-456b-a1bd-92db06ed966f");
+const rapid = new RapidAPI("client id", "client secret");
 const unirest = require("unirest");
 
 exports.run = async(client, message) => {
