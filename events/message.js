@@ -18,7 +18,7 @@ module.exports = async(client, message) => {
                     greetingsMethod: "",
                     greetingsChan: "",
                     farewellChan: "",
-                    autoAssignablesRoles
+                    autoAssignablesRoles: []
                 }
                 fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
                     if (err) console.error(err)
