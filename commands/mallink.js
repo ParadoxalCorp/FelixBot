@@ -96,5 +96,5 @@ exports.help = {
     description: 'Link your MyAnimeList account to your Discord account',
     usage: 'mallink -set MyAnimeList username',
     category: 'utility',
-    detailledUsage: 'Everytime a user will try to display your MAL profile by mentionning you, Felix will use the link to return your profile. Same for the animelist command. Especially useful when you dont have the same name on MaL than on Discord\n`f!mallink -remove` Will remove the link between your MAL account and your Discord account\n`f!mallink -current` Will display the current MAL account linked to your Discord account\n**Important Note**\nSadly, you\'ll have to relink your account everytime you change your nickname on MyAnimeList'
+    detailledUsage: 'Everytime a user will try to display your MAL profile by mentionning you, Felix will use the link to return your profile. Same for the animelist command. Especially useful when you dont have the same name on MaL than on Discord\n`{prefix}mallink -remove` Will remove the link between your MAL account and your Discord account\n`{prefix}mallink -current` Will display the current MAL account linked to your Discord account\n**Important Note**\nSadly, you\'ll have to relink your account everytime you change your nickname on MyAnimeList'
 };

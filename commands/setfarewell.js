@@ -69,5 +69,5 @@ exports.help = {
     description: 'Set the farewell message that Felix will send in the current channel',
     usage: 'setfarewell A member left D:',
     category: 'generic',
-    detailledUsage: 'You can use `{user}` and `{server}` to add the former member name and your server name in the message, so \n`f!setfarewell {user} left {server}`\n will look like: `Baguette#0000 left Felix\'s lovers`\nYou can display the current farewell message by using `f!setfarewell`\nUnlike the greetings, you cant send a farewell message in dm'
+    detailledUsage: 'You can use `{user}` and `{server}` to add the former member name and your server name in the message, so \n`{prefix}setfarewell {user} left {server}`\n will look like: `Baguette#0000 left Felix\'s lovers`\nYou can display the current farewell message by using `{prefix}setfarewell`\nUnlike the greetings, you cant send a farewell message in dm'
 };

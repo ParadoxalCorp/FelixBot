@@ -1,5 +1,5 @@
 const RapidAPI = new require('rapidapi-connect');
-const rapid = new RapidAPI("client id", "client secret");
+const rapid = new RapidAPI("felixbot_59661db7e4b02799980f840f", "2188b39b-de0a-456b-a1bd-92db06ed966f");
 const unirest = require("unirest");
 
 exports.run = async(client, message) => {
@@ -31,7 +31,7 @@ exports.run = async(client, message) => {
 
                                 }).on('success', async(payload) => {
                                     const cleanHeaders = payload[0].appnews.newsitems[0].contents.replace(/(\[h1\]|\[\/h1\])/gim, "**"); //The following regexs replace will try to replace every tags by their markdown equivalents
-                                    const cleanLists = cleanHeaders.replace(/(\[list\]|\[\/list\])/gim, "\n");
+                                    const cleanLists = cleanHeaders.replace(/(\[list\]|\[\/list\])/gim, "\n"); //Not very clean, will clean that later
                                     const cleanOpenListsItem = cleanLists.replace(/\[\*\]/gim, "-");
                                     const cleanCloseListsItem = cleanOpenListsItem.replace(/\[\/\*\]/gim, "\n");
                                     const cleanShietTags = cleanCloseListsItem.replace(/(\<p\>|\<\/p\>|\<a|\<\/a\>|\[|\]|&#8230|href=|\<em\>|\<\/em\>|\<img|src=|alt=""|\/\>)/gim, "");
@@ -118,5 +118,5 @@ exports.help = {
     description: 'Search something through Steam',
     usage: 'steam -getNews GTA V',
     category: 'utility',
-    detailledUsage: `\`f!steam -getNews Rocket League\` Will return the latest community announcement of Rocket League, the game name must be the exact name\n\`f!steam -getUser chucknorris\` Will return a fancy profile card of chucknorris`
+    detailledUsage: `\`{prefix}steam -getNews Rocket League\` Will return the latest community announcement of Rocket League, the game name must be the exact name\n\`{prefix}steam -getUser chucknorris\` Will return a fancy profile card of chucknorris`
 };

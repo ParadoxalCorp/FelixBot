@@ -224,5 +224,5 @@ exports.help = {
     description: 'Check if the provided user has a specific anime/manga in his anime list',
     usage: 'animelist username -anime Death Note',
     category: 'utility',
-    detailledUsage: '`f!animelist Sangoku -anime Death Note` Will check if Sangoku has the anime Death Note in his anime list\n`f!animelist Naruto -manga Dragon Ball` Will check if Naruto has the manga Dragon Ball in his anime list'
+    detailledUsage: '`{prefix}animelist Sangoku -anime Death Note` Will check if Sangoku has the anime Death Note in his anime list\n`{prefix}animelist Naruto -manga Dragon Ball` Will check if Naruto has the manga Dragon Ball in his anime list'
 };

@@ -16,6 +16,7 @@ exports.run = async(client, message) => {
                 }
                 if (commandHelp.help.detailledUsage) { //Check if the command has aliases
                     detailledUsage = commandHelp.help.detailledUsage;
+                    detailledUsage = detailledUsage.replace(/\{prefix\}/gim, `${client.prefix}`);
                 } else {
                     detailledUsage = "There is no detailled usage for this command";
                 }
@@ -37,8 +38,9 @@ exports.run = async(client, message) => {
                 }
                 if (commandHelp.help.detailledUsage) { //Check if the command has aliases
                     detailledUsage = commandHelp.help.detailledUsage;
+                    detailledUsage = detailledUsage.replace(/\{prefix\}/gim, `${client.prefix}`);                    
                 } else {
-                    detailledUsage = "There is no detailled usage for this command";
+                    detailledUsage = "There is no detailled usage for this command";    
                 }
                 var parameters;
                 if (commandHelp.help.parameters) { //Check if the command has parameters
