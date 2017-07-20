@@ -3,7 +3,7 @@ Felix is here, was first supposed to be a meme but hey, its a thing now !
 About Felix's source usage, note that Felix is under APACHE 2.0 license, more informations at the very bottom of this readme.
 # Tables of contents
 * [Features](https://github.com/ParadoxOrigins/FelixBot/blob/beta/README.md#features)
-* [Commands](wew)
+* [Commands](https://github.com/ParadoxOrigins/FelixBot/blob/beta/README.md#commands)
 * [Invite link and support server](https://github.com/ParadoxOrigins/FelixBot/blob/beta/README.md#invite-link-and-support-server)
 * [Questions/Answers](https://github.com/ParadoxOrigins/FelixBot/blob/beta/README.md#quick-questionsanswers)
 * [Felix's open source usage infos](https://github.com/ParadoxOrigins/FelixBot/blob/beta/README.md#felixs-open-source-usage)
@@ -88,9 +88,7 @@ Got it? Great, lets get back to the questions !
 ## Felix's open source usage:
 You can freely use a small part of the code for private/public use, however, if you use the whole code, even with some modifications, you must give credits.
 
-#### Warning: The github actually dont contain a fully working version yet(like you can see, there's no database scheme). So if you download the whole source, it wont work magically. I will write a wiki and complete it soon.
-
-* Can i download the source, run it myself, chane the bot name and the bot pfp then claim it as my bot?
+* Can i download the source, run it myself, change the bot name and the bot pfp then claim it as my bot?
 > No.
 
 * Can i download the bot and selfhost it only on my server?
@@ -99,5 +97,11 @@ You can freely use a small part of the code for private/public use, however, if 
 * Can i use the whole Felix's code, but adding some new commands and stuff, and upload it to Carbonitrex or whatever discord bots website list?
 > Yes, but it has to be like: Made by [insert Felix's devs names here] and edited by [insert your name here]
 
-* Can i fork the repository and make pull request for stuff that i would like to add on Felix?
+* Can i fork the repository and make pull request for stuff that i would like to see on Felix?
 > Yay ! But be aware, it might not get accepted, so you should suggest it first
+## Installation requirements
+* Node.js 8 or higher
+* a mashape api key
+* a rapidapi api key
+* Wolke's image api key (if Wolke is kind enough to give you one, if not, or if you dont know who i am talking about, dm me)
+* A basic understanding of node js, for more infos about Felix's api and how Felix works, use the support server
