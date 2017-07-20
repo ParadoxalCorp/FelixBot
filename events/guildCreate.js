@@ -56,7 +56,8 @@ module.exports = async (client, guild) => {
                 farewell: "",
                 greetingsMethod: "",
                 greetingsChan: "",
-                farewellChan: ""
+                farewellChan: "",
+                autoAssignablesRoles: []
             }
             fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
                 if (err) console.error(err)
@@ -67,9 +68,9 @@ module.exports = async (client, guild) => {
         return await client.channels.get(client.errorLog).send(`A critical error occured while trying to create an entry for the guild ${guild.name} in the db\n**Triggered Error:** ${err}\n**Detailled Error:** ${err.stack}`)
     }
     // Send the server count to Discord Bot list
-    try {
+    /*try {
         await unirest.post(`https://discordbots.org/api/bots/${client.user.id}/stats`)
-            .header('Authorization', client.database.Data.global[0].discordBotList)
+            .header('Authorization', database.Data.global[0].discordBotList)
             .send({
                 server_count: client.guilds.size
             }) 
@@ -83,5 +84,5 @@ module.exports = async (client, guild) => {
     } catch (err) {
         console.error("A critical error occured while sending data to Discord Bot list \nTriggered error: " + err)
         return client.channels.get(client.errorLog).send("``` A critical error occured while sending data to Discord Bot list \nTriggered error: " + err + "```");
-    }
+    }*/
 };
