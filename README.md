@@ -7,33 +7,10 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 * Some fun commands and utility commands
 * Active development (what? its not a feature? kek)
 * Aliases for commands, ofc
+* Server management features
 * A lot of stuff planned
-### General/Utility commands
-There is no description atm sorry (note, commands are not case-sensitive, but the prefix is ofc ^^)
-* ping
-* mdn
-* npm
-* uinfo
-* stats
-* sinfo
-* cardsearch (search hearthstone cards and return the stats)
-* malsearch (search for animes, mangas and users on MyAnimeList)
-### Fun commands
-* hug
-* kiss
-* pat
-* slap
-* love
-* facepalm
-* cry
-* urdef (basically urban dictionary definitions)
-### Moderation commands
-* setlevel
-* getlevel
-### Settings commands
-* updatechan
-* onjoinrole
-* setprefix
+### Commands
+![Alt text](https://cdn.discordapp.com/attachments/274638306438938635/337541435991523339/unknown.png)
 ### Invite link and support server
 [invite link](https://discordapp.com/oauth2/authorize?&client_id=327144735359762432&scope=bot&permissions=2146950271)
 
