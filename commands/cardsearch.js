@@ -128,7 +128,7 @@ exports.run = async(client, message) => {
                             }
                             return await message.channel.send(cardsList);
                         } else {
-                            return await msg.channel.send(`:x: I could not find any cards corresponding to your search`);
+                            return await message.channel.send(`:x: I could not find any cards corresponding to your search`);
                         }
                     });
                 }
@@ -187,14 +187,14 @@ exports.run = async(client, message) => {
                             }
                             return await message.channel.send(cardStats);
                         } else {
-                            return await msg.channel.send(`:x: I could not find the card \`` + card + `\``);
+                            return await message.channel.send(`:x: I could not find the card \`` + card + `\``);
                         }
                     });
                 }
             }
             catch (e) {
-                await message.channel.send(":x: I ran into a critical error, but dont worry, i sent the details to my developper. If you want to learn more about it, feel free to join the support server");
-                return hearthStone.sendError(e);
+                console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
+                return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
             }
         }
     } catch (err) {

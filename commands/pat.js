@@ -2,23 +2,30 @@ const unirest = require("unirest");
 
 exports.run = async(client, message) => {
     try {
-            fetch: {
-                await unirest.get("https://staging-api.ram.moe/images/random?type=cuddle")
-                .header(`Authorization`, `${client.database.Data.global[0].wolkeImageKey}`)
-                .end(async function (result) {
-                    var mentionned = message.mentions.users.first();
-                    var cuddleUrl = result.body.url;
-                    if (mentionned) {
-                        if (mentionned.id === message.author.id) {
-                            return await message.channel.send(":x: You cant cuddle yourself .-.");
-                        }
-                        await message.channel.send("Hey **" + mentionned.username + "** You just received a cuddle from **" + message.author.username + "** " + cuddleUrl);
-                    } else {
-                        await message.channel.send("Are you trying to cuddle yourself? >_>")
+        fetch: {
+            await unirest.get("https://staging-api.ram.moe/images/random?type=pat")
+            .header(`Authorization`, `${client.database.Data.global[0].wolkeImageKey}`)
+            .end(async function (result) {
+                var mentionned = message.mentions.users.first();
+                var patUrl = result.body.url;
+                if (mentionned) {
+                    if (mentionned.id === message.author.id) {
+                        return await message.channel.send(":x: You cant pat yourself .-.");
                     }
-                });
-            }
-    } catch (err) {
+                    var mentionnedPeoples;
+                    const mentions = message.mentions.users.array();
+                    mentions.forEach(function (mention) {
+                        mentionnedPeoples += mention.username + ", "
+                        mentionnedPeoples = mentionnedPeoples.replace(/undefined/gm, ""); //get rid of the undefined cuz i dont know where it come from
+                    });
+                    await message.channel.send("Hey **" + mentionnedPeoples + "** You just received a pat from **" + message.author.username + "** " + patUrl);
+                } else {
+                    await message.channel.send("Are you trying to pat yourself? >_>")
+                }
+            });
+        }
+    }
+    catch (err) {
         var guild;
         var detailledError; //that stuff is to avoid undefined logs
         if (message.guild) {
@@ -45,8 +52,8 @@ exports.conf = {
 };
 
 exports.help = {
-    name: 'cuddle',
-    description: 'cuddle someone',
-    usage: 'cuddle @someone',
+    name: 'pat',
+    description: 'pat someone',
+    usage: 'pat @someone',
     category: 'image'
 };

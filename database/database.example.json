@@ -1,0 +1,34 @@
+
+{"Data":
+ {"servers":[
+  {"328842643746324481":
+   {"prefix":"p!",
+   "thingsLevel0":[],
+   "thingsLevel1":["329237080544772098"],
+   "thingsLevel2":["329213406248960003","99271746347110400"],
+   "globalLevel":"0",
+   "updateChannel":"",
+   "onJoinRole":"",
+   "greetings":"a pure test",
+   "farewell":"",
+   "greetingsMethod":"dm",
+   "greetingsChan":"",
+   "farewellChan":""}}],
+"users":[
+ {"140149699486154753:{"lovePoints":1,
+ "loveCooldown":"0",
+ "malAccount":"Paradoxcorp",
+ "afk":"",
+ "blackListed":"no",
+ "feedbackCooldown":1500327408399}
+ }}],
+"global":[{
+ "thingsLevel42":["140149699486154753","162325985079984129"],
+ "prefix":"p!",
+ "updateChannels"[],
+ "ownerId":"140149699486154753",
+ "discordBotList":"wew.baguette.com",
+ "wolkeImageKey":"baguette",
+ "mashapeKey":"wew",
+ "version":"beta 1.3.9",
+ "token":"the.mighty.baguette"}]}}

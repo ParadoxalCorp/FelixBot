@@ -1,3 +1,4 @@
+const fs = require("fs-extra");
 exports.run = async(client, message) => {
     try {
         const mentionned = message.mentions.users.first();
@@ -8,15 +9,18 @@ exports.run = async(client, message) => {
                 return await message.channel.send(":x: You cant love yourself of course uwu");
             }
             if (!client.database.Data.users[0][mentionned.id]) { //If the mentionned user is not in the db yet, just in case
-                database.Data.users[0][message.author.id] = {
+                client.database.Data.users[0][message.author.id] = {
                     lovePoints: "0",
                     loveCooldown: "0",
-                    malAccount: ""
+                    malAccount: "",
+                    blackListed: "no",
+                    afk: "",
+                    feedbackCooldown: ""
                 }
             } 
-            if ((lovePoints[message.author.id].ratelimit > Date.now()) && (lovePoints[message.author.id].ratelimit !== 0)) {
+            if ((client.database.Data.users[0][message.author.id].loveCooldown > Date.now()) && (client.database.Data.users[0][message.author.id].loveCooldown !== 0)) {
                 const now = new Date().getTime();
-                const distance = lovePoints[message.author.id].ratelimit - now;
+                const distance = client.database.Data.users[0][message.author.id].loveCooldown - now;
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);

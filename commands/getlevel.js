@@ -124,6 +124,7 @@ exports.help = {
     name: 'getlevel',
     parameters: '`-r`(role), `-c`(channel), `-u`(user)',
     description: 'Get the access level of the targetted element(role, user...). If no arguments are provided, it will get the server access level',
-    usage: 'getlevel 0 -u @someone',
-    category: 'moderation'
+    usage: 'getlevel -u @someone',
+    category: 'moderation',
+    detailledUsage: '`f!getlevel -c general` Will return the level of the channel `#general`\n`f!getlevel -r Moderator` Will return the level of the role `Moderator`'
 };

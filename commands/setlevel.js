@@ -35,7 +35,7 @@ exports.run = async(client, message) => {
             }
         }
         if (client.database.Data.global[0].thingsLevel42.indexOf(id) !== -1) {
-            if (levelToSave !== "0") {
+            if (levelToSave !== "42") {
                 client.database.Data.global[0].thingsLevel42.splice(client.database.Data.global[0].thingsLevel42.indexOf(id), 1);
                 fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
                     if (err) console.error(err)
@@ -178,7 +178,7 @@ exports.run = async(client, message) => {
                     var channelId = message.guild.channels.find("name", channelName).id;
                     if (level === "0") {
                         try {
-                            if (perm[message.guild.id].userLevel0.indexOf(channelId) !== -1) {
+                            if (guildEntry.thingsLevel0.indexOf(channelId) !== -1) {
                                 return message.channel.send(":x: This channel is already level " + level + randomTips);
                             }
                             guildEntry.thingsLevel0.push(channelId);
@@ -192,7 +192,7 @@ exports.run = async(client, message) => {
                         }
                     } else if (level === "1") {
                         try {
-                            if (perm[message.guild.id].userLevel1.indexOf(channelId) !== -1) {
+                            if (guildEntry.thingsLevel1.indexOf(channelId) !== -1) {
                                 return message.channel.send(":x: This channel is already level " + level + randomTips);
                             }
                             guildEntry.thingsLevel1.push(channelId);
@@ -206,7 +206,7 @@ exports.run = async(client, message) => {
                         }
                     } else if (level === "2") {
                         try {
-                            if (perm[message.guild.id].userLevel2.indexOf(channelId) !== -1) {
+                            if (guildEntry.thingsLevel2.indexOf(channelId) !== -1) {
                                 return message.channel.send(":x: This channel is already level " + level + randomTips);
                             }
                             guildEntry.thingsLevel2.push(channelId);
@@ -224,7 +224,7 @@ exports.run = async(client, message) => {
                 var channelId = message.channel.id;
                 if (level === "0") {
                     try {
-                        if (perm[message.guild.id].userLevel0.indexOf(channelId) !== -1) {
+                        if (guildEntry.thingsLevel0.indexOf(channelId) !== -1) {
                             return message.channel.send(":x: This channel is already level " + level + randomTips);
                         }
                         guildEntry.thingsLevel0.push(channelId);
@@ -238,7 +238,7 @@ exports.run = async(client, message) => {
                     }
                 } else if (level === "1") {
                     try {
-                        if (perm[message.guild.id].userLevel1.indexOf(channelId) !== -1) {
+                        if (guildEntry.thingsLevel1.indexOf(channelId) !== -1) {
                             return message.channel.send(":x: This channel is already level " + level + randomTips);
                         }
                         guildEntry.thingsLevel1.push(channelId);
@@ -252,7 +252,7 @@ exports.run = async(client, message) => {
                     }
                 } else if (level === "2") {
                     try {
-                        if (perm[message.guild.id].userLevel2.indexOf(channelId) !== -1) {
+                        if (guildEntry.thingsLevel2.indexOf(channelId) !== -1) {
                             return message.channel.send(":x: This channel is already level " + level + randomTips);
                         }
                         guildEntry.thingsLevel2.push(channelId);
@@ -277,7 +277,7 @@ exports.run = async(client, message) => {
             var roleId = message.guild.roles.find("name", rolename).id;
             if (level === "0") {
                 try {
-                    if (perm[message.guild.id].userLevel0.indexOf(roleId) !== -1) {
+                    if (guildEntry.thingsLevel0.indexOf(roleId) !== -1) {
                         return message.channel.send(":x: This role is already level " + level + randomTips);
                     }
                     guildEntry.thingsLevel0.push(roleId);
@@ -291,7 +291,7 @@ exports.run = async(client, message) => {
                 }
             } else if (level === "1") {
                 try {
-                    if (perm[message.guild.id].userLevel1.indexOf(roleId) !== -1) {
+                    if (guildEntry.thingsLevel1.indexOf(roleId) !== -1) {
                         return message.channel.send(":x: This role is already level " + level + randomTips);
                     }
                     guildEntry.thingsLevel1.push(roleId);
@@ -305,7 +305,7 @@ exports.run = async(client, message) => {
                 }
             } else if (level === "2") {
                 try {
-                    if (perm[message.guild.id].userLevel2.indexOf(roleId) !== -1) {
+                    if (guildEntry.thingsLevel2.indexOf(roleId) !== -1) {
                         return await message.channel.send(":x: This role is already level " + level + randomTips);
                     }
                     guildEntry.thingsLevel2.push(roleId);
@@ -375,5 +375,6 @@ exports.help = {
     parameters: '`-r`(role), `-c`(channel), `-u`(user)',
     description: 'Set the access level of the targetted element(role, user...). If no arguments are provided, the level will be assigned to the server',
     usage: 'setlevel 0 -u @someone',
-    category: 'moderation'
+    category: 'moderation',
+    detailledUsage: '`f!setlevel 2 -r Moderators` Will set the level of the role `Moderators` to 2\n`f!setlevel 0 -c general` Will set the level of the channel `#general` to 0\n\n**Levels**\n`Level 0` => Cant use any commands\n`Level 1` => Can use every commands but the moderation and settings one\n`Level 2` => Can use every commands'
 };

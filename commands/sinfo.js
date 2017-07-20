@@ -2,65 +2,76 @@ const moment = require("moment");
 
 exports.run = async(client, message) => {
     try {
+        if (message.guild.verificationLevel === 0) {
+            var verLevel = "None (0)";
+        } else if (message.guild.verificationLevel === 1) {
+            var verLevel = "Low (1)";
+        } else if (message.guild.verificationLevel === 2) {
+            var verLevel = "Medium (2)";
+        } else if (message.guild.verificationLevel === 3) {
+            var verLevel = "(╯°□°）╯︵ ┻━┻ (3)";
+        } else if (message.guild.verificationLevel === 4) {
+            var verLevel = "┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻ (4)";
+        }
         return await message.channel.send({
             embed: {
                 thumbnail: {
-                    url: client.user.avatarURL
+                    url: message.guild.iconURL
                 },
                 color: 3447003,
                 author: {
                     name: "Requested by: " + message.author.username + "#" + message.author.discriminator,
                     icon_url: message.author.avatarURL
                 },
-                title: "Bot info",
+                title: "Server info",
                 fields: [{
-                        name: "Servers",
-                        value: client.guilds.size,
+                        name: "Name",
+                        value: message.guild.name,
                         inline: true
       },
                     {
-                        name: "RAM usage",
-                        value: `${(process.memoryUsage().heapUsed / 1024 / 1000).toFixed(2)}MB`,
+                        name: "ID",
+                        value: message.guild.id,
                         inline: true
       },
                     {
-                        name: "Channels",
-                        value: client.channels.size,
+                        name: "Members",
+                        value: message.guild.memberCount,
                         inline: true
       },
                     {
-                        name: "Users",
-                        value: client.users.size,
-                        inline: true
-      },
-                    {
-                        name: "Up since",
-                        value: moment().to(client.readyAt),
-                        inline: true
-      },
-                    {
-                        name: "Developper",
-                        value: "ParadoxOrigins#5451",
+                        name: "Owner",
+                        value: message.guild.owner.user.username + "#" + message.guild.owner.user.discriminator,
                         inline: true
       },
                     {
                         name: "Created",
-                        value: moment().to(client.user.createdAt),
+                        value: moment().to(message.guild.createdAt),
                         inline: true
       },
                     {
-                        name: "Joined",
-                        value: moment().to(message.guild.joinedAt),
+                        name: "Default channel",
+                        value: "#" + message.guild.defaultChannel.name,
                         inline: true
       },
                     {
-                        name: "Support server",
-                        value: "[Felix support](https://discord.gg/Ud49hQJ)",
+                        name: "Channels",
+                        value: message.guild.channels.size,
                         inline: true
       },
                     {
-                        name: "Invite link",
-                        value: "[Felix invite link](https://discordapp.com/oauth2/authorize?&client_id=327144735359762432&scope=bot&permissions=2146950271)",
+                        name: "Roles",
+                        value: message.guild.roles.size,
+                        inline: true
+      },
+                    {
+                        name: "Verification level",
+                        value: verLevel,
+                        inline: true
+      },                         
+                    {
+                        name: "Region",
+                        value: message.guild.region,
                         inline: true
       }
     ],
@@ -91,15 +102,15 @@ exports.run = async(client, message) => {
 
 exports.conf = {
     enabled: true,
-    guildOnly: false,
-    aliases: ["bot", "felixinfo"],
+    guildOnly: true,
+    aliases: ["serverinfo"],
     disabled: false,
     permLevel: 1
 };
 
 exports.help = {
-    name: 'stats',
-    description: 'Display some infos about Felix',
-    usage: 'stats',
+    name: 'sinfo',
+    description: 'Display some infos about the server you are in',
+    usage: 'sinfo',
     category: 'generic'
 };
