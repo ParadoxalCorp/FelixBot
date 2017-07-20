@@ -15,19 +15,25 @@ exports.run = async(client, message) => {
                     fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
                         if (err) console.error(err)
                     });
+                } else {
+                    selfAssignRoles += `${message.guild.roles.get(role).name}\n`;
                 }
-                selfAssignRoles += `${message.guild.roles.get(role).name}\n`;
             });
+            if (selfAssignRoles === "") {
+                return await message.channel.send(":x: There is no self-assignable role");
+            }
+            selfAssignRoles += message.guild.roles.get(guildEntry.autoAssignablesRoles[0]).name;            
+            selfAssignRoles = selfAssignRoles.replace(/undefined/gim, "");
             return await message.channel.send("Here's the self-assignables roles list: ```" + selfAssignRoles + "```");
         } else {
             const roleName = message.content.substr(whitespace + 1).trim();
             if (roleName === "") {
                 return await message.channel.send(":x: You didnt specified any role");
             }
-            if (!message.guild.roles.find(roleName)) {
+            if (!message.guild.roles.find("name", roleName)) {
                 return await message.channel.send(":x: The role you specified does not exist in this server");
             }
-            const role = message.guild.roles.find(roleName);
+            const role = message.guild.roles.find("name", roleName);
             if (guildEntry.autoAssignablesRoles.indexOf(role.id) === -1) {
                 return await message.channel.send(":x: The role you specified is not a self-assignable role");
             }
@@ -68,5 +74,5 @@ exports.help = {
     description: 'Give you a self-assignable role',
     usage: 'iam nsfw',
     category: 'generic',
-    detailledUsage: '`f!iam` Will return the self-assignables roles list\n`f!iam Neko` Will give you the role `Neko` if this role is self-assignable'
+    detailledUsage: '`{prefix}iam` Will return the self-assignables roles list\n`{prefix}iam Neko` Will give you the role `Neko` if this role is self-assignable'
 };

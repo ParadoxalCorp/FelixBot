@@ -52,5 +52,5 @@ exports.help = {
     description: 'Update your afk status, Felix will display your afk message everytime you will get mentionned',
     usage: 'afk im busy playing',
     category: 'generic',
-    detailledUsage: 'You can remove your afk status using `f!afk -remove`, if you dont use any parameters, it will update your afk message'
+    detailledUsage: 'You can remove your afk status using `{prefix}afk -remove`, if you dont use any parameters, it will update your afk message'
 };
