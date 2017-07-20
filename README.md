@@ -1,6 +1,5 @@
 <h1 align="center"> FelixBot </h1>
   <p align="center">
-      <a href="https://discord.gg/Ud49hQJ" target="_blank"><img src="https://discordapp.com/api/guilds/328842643746324481/embed.png" alt="Discord"></a>
     <a href="https://david-dm.org/ParadoxOrigins/FelixBot" target="_blank"><img src="https://david-dm.org/ParadoxOrigins/FelixBot/status.svg" alt="Dependencies"></a>
     <a href="https://github.com/ParadoxOrigins/FelixBot/blob/master" target="_blank"><img src="https://img.shields.io/github/stars/ParadoxOrigins/FelixBot.svg?style=social&label=Star" alt="Github Stars"></a>
     <a href="https://github.com/ParadoxOrigins/FelixBot/issues" target="_blank"><img src="https://img.shields.io/github/issues/ParadoxOrigins/FelixBot.svg" alt="Github Issues"></a>
