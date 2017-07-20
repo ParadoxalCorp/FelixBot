@@ -13,7 +13,8 @@
    "farewell":"",
    "greetingsMethod":"dm",
    "greetingsChan":"",
-   "farewellChan":""}}],
+   "farewellChan":"",
+   "autoAssignablesRoles": []}}],
 "users":[
  {"140149699486154753:{"lovePoints":1,
  "loveCooldown":"0",
