@@ -1,6 +1,13 @@
 # FelixBot
 Felix is here, was first supposed to be a meme but hey, its a thing now ! 
 About Felix's source usage, note that Felix is under APACHE 2.0 license, more informations at the very bottom of this readme.
+# Tables of contents
+* [Features](https://github.com/ParadoxOrigins/FelixBot/blob/beta/README.md#features)
+* [Commands](wew)
+* [Invite link and support server](https://github.com/ParadoxOrigins/FelixBot/blob/beta/README.md#invite-link-and-support-server)
+* [Questions/Answers](https://github.com/ParadoxOrigins/FelixBot/blob/beta/README.md#quick-questionsanswers)
+* [Felix's open source usage infos](https://github.com/ParadoxOrigins/FelixBot/blob/beta/README.md#felixs-open-source-usage)
+* [Installation](wew)
 ## Features
 * Simple but powerful permission system
 * Custom prefix
