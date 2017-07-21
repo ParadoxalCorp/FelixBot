@@ -23,9 +23,8 @@ exports.run = async(client, message) => {
             if (selfAssignRoles === "") {
                 return await message.channel.send(":x: There is no self-assignable role");
             }
-           // selfAssignRoles += message.guild.roles.get(guildEntry.autoAssignablesRoles[0]).name;
             selfAssignRoles = selfAssignRoles.replace(/undefined/gim, "");
-            return await message.channel.send("Here's the self-assignables roles list: ```" + selfAssignRoles + "```");
+            return await message.channel.send("Here's the self-assignables roles list: ```\n" + selfAssignRoles + "```");
         } else if ((add !== -1) && (remove === -1)) {
             const roleName = message.content.substr(add + 5).trim();
             if (roleName === "") {

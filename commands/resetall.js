@@ -13,6 +13,7 @@ exports.run = async(client, message) => {
         serverEntry.greetings = "";
         serverEntry.farewell = "";
         serverEntry.greetingsMethod = "";
+        serverEntry.autoAsssignablesRoles = [];
         fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
             if (err) console.error(err)
         })
