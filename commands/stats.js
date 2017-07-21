@@ -2,6 +2,11 @@ const moment = require("moment");
 
 exports.run = async(client, message) => {
     try {
+        var total = 0; 
+        const guilds = client.guilds.array(); 
+        for (let i = 0; i < guilds.length; i++) {
+            total = total + guilds[i].memberCount;
+        } 
         return await message.channel.send({
             embed: {
                 thumbnail: {
@@ -35,7 +40,7 @@ exports.run = async(client, message) => {
       },
                     {
                         name: "Users",
-                        value: client.users.size,
+                        value: total,
                         inline: true
       },
                     {
