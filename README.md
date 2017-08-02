@@ -30,7 +30,7 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 [Support server](https://discord.gg/Ud49hQJ)
 ### Quick Questions/Answers
 * Will Felix have a music feature?
-> There is already a bunch of great bots with great music feature (Rem, Hifumi, Ayana...) so i dont see the point of adding it
+> There is already a bunch of great bots with great music feature (Yasen-Baka, Hifumi, Ayana...) so i dont see the point of adding it
 * How does the permissions system work?
 ----
 Before diving into how it works, here's some rules that you should know:
