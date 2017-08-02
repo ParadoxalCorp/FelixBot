@@ -21,8 +21,8 @@ exports.run = async(client, message) => {
                             embed: {
                                 color: 3447003,
                                 author: {
-                                    name: "Requested by: " + message.author.username + "#" + message.author.discriminator,
-                                    icon_url: message.author.avatarURL
+                                    name: "Requested by: " + userMessage.author.username + "#" + userMessage.author.discriminator,
+                                    icon_url: userMessage.author.avatarURL
                                 },
                                 title: "MDN",
                                 url: "https://developer.mozilla.org/en/",

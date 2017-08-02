@@ -7,39 +7,31 @@ exports.run = async(client, message) => {
     const mentionned = message.mentions.users.first();
     var tips = ["\n\n:information_source: **ProTip**:\nThere are stronger and weaker permissions, the order from strongest to weakest is \nUser > Roles > Channels > Server", "\n\n:information_source: **ProTip**:\n When setting a channel level, dont put anything after the `c` argument to apply the perms to the current channel", "\n\n:information_source: **ProTip**:\n Remember that the level 2 give access to every commands, give it only to the users you trust, and never set a channel or the server level to 2 unless you have a death wish", "\n\n:information_source: **ProTip**:\nIf a user has two roles or more with a different access level, the user access level will be the one of the highest role", "\n\n:information_source: **ProTip**:\nAs long as you have Administrator permissions, you are level 2 by default, there's no way to decrease it", "\n\n:information_source: **ProTip**:\n setLevel overwrites the targetted element(user, channel, role...) level if there is already one, so dont worry about duplicates", "\n\n:information_source: **ProTip**:\nRoles and channels levels are stored using their id, so dont worry, you can edit them as much as you want, it wont affect the level unless you delete it"];
     var randomTips = tips[Math.floor(Math.random() * tips.length)];
-    const guildEntry = client.database.Data.servers[0][message.guild.id];
+    const guildEntry = client.guildDatas.get(message.guild.id);
 
     function clearDuplicates(levelToSave, id) { //check every arrays if there is already a level assigned to the user/channel/role, and if there is, remove it to keep only one
         if (guildEntry.thingsLevel0.indexOf(id) !== -1) {
             if (levelToSave !== "0") {
                 guildEntry.thingsLevel0.splice(guildEntry.thingsLevel0.indexOf(id), 1);
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
+                client.guildDatas.set(message.guild.id, guildEntry);
             }
         }
         if (guildEntry.thingsLevel1.indexOf(id) !== -1) {
             if (levelToSave !== "1") {
                 guildEntry.thingsLevel1.splice(guildEntry.thingsLevel1.indexOf(id), 1);
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
+                client.guildDatas.set(message.guild.id, guildEntry);
             }
         }
         if (guildEntry.thingsLevel2.indexOf(id) !== -1) {
             if (levelToSave !== "2") {
                 guildEntry.thingsLevel2.splice(guildEntry.thingsLevel2.indexOf(id), 1);
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
+                client.guildDatas.set(message.guild.id, guildEntry);
             }
         }
         if (client.database.Data.global[0].thingsLevel42.indexOf(id) !== -1) {
             if (levelToSave !== "42") {
                 client.database.Data.global[0].thingsLevel42.splice(client.database.Data.global[0].thingsLevel42.indexOf(id), 1);
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
+                client.guildDatas.set(message.guild.id, guildEntry);
             }
         }
     }
@@ -82,9 +74,7 @@ exports.run = async(client, message) => {
                     if (level === "0") {
                         try {
                             guildEntry.thingsLevel0.push(mentionnedId);
-                            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                                if (err) console.error(err)
-                            });
+                            client.guildDatas.set(message.guild.id, guildEntry);
                             clearDuplicates("0", mentionnedId);
                             return message.channel.send(":white_check_mark: Okay, **" + mentionned.username + "** is now level 0" + randomTips);
                         } catch (err) {
@@ -93,9 +83,7 @@ exports.run = async(client, message) => {
                     } else if (level === "1") {
                         try {
                             guildEntry.thingsLevel1.push(mentionnedId);
-                            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                                if (err) console.error(err)
-                            });
+                            client.guildDatas.set(message.guild.id, guildEntry);
                             clearDuplicates("1", mentionnedId);
                             return message.channel.send(":white_check_mark: Okay, **" + mentionned.username + "** is now level 1" + randomTips);
                         } catch (err) {
@@ -104,18 +92,14 @@ exports.run = async(client, message) => {
                     } else if (level === "2") {
                         try {
                             guildEntry.thingsLevel2.push(mentionnedId);
-                            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                                if (err) console.error(err)
-                            });
+                            client.guildDatas.set(message.guild.id, guildEntry);
                             return message.channel.send(":white_check_mark: Okay, **" + mentionned.username + "** is now level 2" + randomTips);
                         } catch (err) {
                             clearDuplicates("2", mentionnedId);
                             return console.error(err);
                         }
                     }
-                    fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                        if (err) console.error(err)
-                    });
+                    client.guildDatas.set(message.guild.id, guildEntry);
                 }
             } else if (message.author.id === "140149699486154753") { //Yes, really, i told ya it was not very optimized, i'll clean that shietcode later
                 if ((level !== "0") && (level !== "1") && (level !== "2") && (level !== "42")) {
@@ -124,9 +108,7 @@ exports.run = async(client, message) => {
                     if (level === "0") {
                         try {
                             guildEntry.thingsLevel0.push(mentionnedId);
-                            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                                if (err) console.error(err)
-                            });
+                            client.guildDatas.set(message.guild.id, guildEntry);
                             clearDuplicates("0", mentionnedId);
                             return message.channel.send(":white_check_mark: Okay, **" + mentionned.username + "** is now level 0" + randomTips);
                         } catch (err) {
@@ -135,9 +117,7 @@ exports.run = async(client, message) => {
                     } else if (level === "1") {
                         try {
                             guildEntry.thingsLevel1.push(mentionnedId);
-                            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                                if (err) console.error(err)
-                            });
+                            client.guildDatas.set(message.guild.id, guildEntry);
                             clearDuplicates("1", mentionnedId);
                             return message.channel.send(":white_check_mark: Okay, **" + mentionned.username + "** is now level 1" + randomTips);
                         } catch (err) {
@@ -146,9 +126,7 @@ exports.run = async(client, message) => {
                     } else if (level === "2") {
                         try {
                             guildEntry.thingsLevel2.push(mentionnedId);
-                            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                                if (err) console.error(err)
-                            });
+                            client.guildDatas.set(message.guild.id, guildEntry);
                             clearDuplicates("2", mentionnedId);
                             return message.channel.send(":white_check_mark: Okay, **" + mentionned.username + "** is now level 2" + randomTips);
                         } catch (err) {
@@ -157,9 +135,7 @@ exports.run = async(client, message) => {
                     } else if (level === "42") {
                         try {
                             client.database.Data.global[0].thingsLevel42.push(mentionnedId);
-                            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                                if (err) console.error(err)
-                            });
+                            client.guildDatas.set(message.guild.id, guildEntry);
                             clearDuplicates("42", mentionnedId);
                             return message.channel.send(":white_check_mark: Okay, **" + mentionned.username + "** is now level 42");
                         } catch (err) {
@@ -182,9 +158,7 @@ exports.run = async(client, message) => {
                                 return message.channel.send(":x: This channel is already level " + level + randomTips);
                             }
                             guildEntry.thingsLevel0.push(channelId);
-                            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                                if (err) console.error(err)
-                            });
+                            client.guildDatas.set(message.guild.id, guildEntry);
                             clearDuplicates("0", channelId);
                             return message.channel.send(":white_check_mark: Okay, **" + channelName + "** is now level 0" + randomTips);
                         } catch (err) {
@@ -196,9 +170,7 @@ exports.run = async(client, message) => {
                                 return message.channel.send(":x: This channel is already level " + level + randomTips);
                             }
                             guildEntry.thingsLevel1.push(channelId);
-                            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                                if (err) console.error(err)
-                            });
+                            client.guildDatas.set(message.guild.id, guildEntry);
                             clearDuplicates("1", channelId);
                             return message.channel.send(":white_check_mark: Okay, **" + channelName + "** is now level 1" + randomTips);
                         } catch (err) {
@@ -210,9 +182,7 @@ exports.run = async(client, message) => {
                                 return message.channel.send(":x: This channel is already level " + level + randomTips);
                             }
                             guildEntry.thingsLevel2.push(channelId);
-                            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                                if (err) console.error(err)
-                            });
+                            client.guildDatas.set(message.guild.id, guildEntry);
                             clearDuplicates("2", channelId);
                             return message.channel.send(":white_check_mark: Okay, **" + channelName + "** is now level 2, but be careful, that means everyone can use every commands in this channel" + randomTips);
                         } catch (err) {
@@ -222,15 +192,14 @@ exports.run = async(client, message) => {
                 }
             } else {
                 var channelId = message.channel.id;
+                const channelName = message.channel.name;
                 if (level === "0") {
                     try {
                         if (guildEntry.thingsLevel0.indexOf(channelId) !== -1) {
                             return message.channel.send(":x: This channel is already level " + level + randomTips);
                         }
                         guildEntry.thingsLevel0.push(channelId);
-                        fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                            if (err) console.error(err)
-                        });
+                        client.guildDatas.set(message.guild.id, guildEntry);
                         clearDuplicates("0", channelId);
                         return await message.channel.send(":white_check_mark: Okay, **" + channelName + "** is now level 0" + randomTips);
                     } catch (err) {
@@ -242,9 +211,7 @@ exports.run = async(client, message) => {
                             return message.channel.send(":x: This channel is already level " + level + randomTips);
                         }
                         guildEntry.thingsLevel1.push(channelId);
-                        fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                            if (err) console.error(err)
-                        });
+                        client.guildDatas.set(message.guild.id, guildEntry);
                         clearDuplicates("1", channelId);
                         return await message.channel.send(":white_check_mark: Okay, **" + channelName + "** is now level 1" + randomTips);
                     } catch (err) {
@@ -256,9 +223,7 @@ exports.run = async(client, message) => {
                             return message.channel.send(":x: This channel is already level " + level + randomTips);
                         }
                         guildEntry.thingsLevel2.push(channelId);
-                        fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                            if (err) console.error(err)
-                        });
+                        client.guildDatas.set(message.guild.id, guildEntry);
                         clearDuplicates("2", channelId);
                         return await message.channel.send(":white_check_mark: Okay, **" + channelName + "** is now level 2, but be careful, that means everyone can use every commands in this channel" + randomTips);
                     } catch (err) {
@@ -281,9 +246,7 @@ exports.run = async(client, message) => {
                         return message.channel.send(":x: This role is already level " + level + randomTips);
                     }
                     guildEntry.thingsLevel0.push(roleId);
-                    fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                        if (err) console.error(err)
-                    });
+                    client.guildDatas.set(message.guild.id, guildEntry);
                     clearDuplicates("0", roleId);
                     return await message.channel.send(":white_check_mark: Okay, **" + rolename + "** is now level 0" + randomTips);
                 } catch (err) {
@@ -295,9 +258,7 @@ exports.run = async(client, message) => {
                         return message.channel.send(":x: This role is already level " + level + randomTips);
                     }
                     guildEntry.thingsLevel1.push(roleId);
-                    fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                        if (err) console.error(err)
-                    });
+                    client.guildDatas.set(message.guild.id, guildEntry);
                     clearDuplicates("1", roleId);
                     return await message.channel.send(":white_check_mark: Okay, **" + rolename + "** is now level 1" + randomTips);
                 } catch (err) {
@@ -309,9 +270,7 @@ exports.run = async(client, message) => {
                         return await message.channel.send(":x: This role is already level " + level + randomTips);
                     }
                     guildEntry.thingsLevel2.push(roleId);
-                    fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                        if (err) console.error(err)
-                    });
+                    client.guildDatas.set(message.guild.id, guildEntry);
                     clearDuplicates("2", roleId);
                     return await message.channel.send(":white_check_mark: Okay, **" + rolename + "** is now level 2" + randomTips);
                 } catch (err) {
@@ -336,9 +295,7 @@ exports.run = async(client, message) => {
                     return message.channel.send(":x: The server is already level " + level + randomTips);
                 }
                 guildEntry.globalLevel = level;
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
+                client.guildDatas.set(message.guild.id, guildEntry);
                 return await message.channel.send(":white_check_mark: Okay, the server is now level " + level + randomTips);
             } catch (err) {
                 return console.error(err);

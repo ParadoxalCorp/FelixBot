@@ -2,6 +2,7 @@ const fs = require("fs-extra");
 const unirest = require("unirest");
 
 module.exports = async (client, guild) => {
+    client.eventLogs += `[${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}] Event guildDelete triggered, current memory usage: ${(process.memoryUsage().heapUsed / 1024 / 1000).toFixed(2)}MB\n`;        
     // Send the server count to Discord Bot list
     try {
         unirest.post(`https://discordbots.org/api/bots/${client.user.id}/stats`)

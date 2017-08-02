@@ -4,7 +4,7 @@ exports.run = async(client, message) => {
     try {
         const add = message.content.indexOf("-add");
         const remove = message.content.indexOf("-remove");
-        const guildEntry = client.database.Data.servers[0][message.guild.id];
+        const guildEntry = client.guildDatas.get(message.guild.id);
         if ((add === -1) && (remove === -1)) {
             if (guildEntry.autoAssignablesRoles.length === 0) {
                 return await message.channel.send(":x: There is no self-assignable role");
@@ -13,9 +13,7 @@ exports.run = async(client, message) => {
             guildEntry.autoAssignablesRoles.forEach(function (role) {
                 if (!message.guild.roles.get(role)) { //Automatically remove the role from the db if the said role doesnt exist anymore
                     guildEntry.autoAssignablesRoles.splice(guildEntry.autoAssignablesRoles.indexOf(role.id), 1);
-                    fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                        if (err) console.error(err)
-                    });
+                    client.guildDatas.set(message.author.id, guildEntry);
                 } else {
                     selfAssignRoles += `${message.guild.roles.get(role).name}\n`;
                 }
@@ -38,9 +36,7 @@ exports.run = async(client, message) => {
                 return await message.channel.send(":x: The role you specified is already a self-assignable role");
             }
             guildEntry.autoAssignablesRoles.push(role.id);
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                if (err) console.error(err)
-            });
+            client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, i set the role **" + roleName + "** as a self-assignable role");
         } else if ((remove !== -1) && (add === -1)) {
             const roleName = message.content.substr(remove + 8).trim();
@@ -55,9 +51,7 @@ exports.run = async(client, message) => {
                 return await message.channel.send(":x: The role you specified is not a self-assignable role");
             }
             guildEntry.autoAssignablesRoles.splice(guildEntry.autoAssignablesRoles.indexOf(role.id), 1);
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                if (err) console.error(err)
-            });
+            client.guildDatas.set(message.author.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, the role **" + roleName + "** is not anymore a self-assignable role");
         }
     } catch (err) {

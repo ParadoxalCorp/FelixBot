@@ -1,8 +1,9 @@
 const fs = require("fs-extra");
 const unirest = require("unirest");
 
-module.exports = async (client, guild) => {
-//const guild = guildCreate.channel.guild
+module.exports = async(client, guild) => {
+    //const guild = guildCreate.channel.guild
+    client.eventLogs += `[${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}] Event guildCreate triggered, current memory usage: ${(process.memoryUsage().heapUsed / 1024 / 1000).toFixed(2)}MB\n`;    
     const owner = guild.members.find(m => m.id === guild.ownerID);
     const support = "https://discord.gg/6QkjVBk";
     owner.send({
@@ -43,8 +44,8 @@ module.exports = async (client, guild) => {
         }
     }).catch(console.error);
     try {
-        if (!client.database.Data.servers[0][guild.id]) {
-            client.database.Data.servers[0][guild.id] = {
+        if (!client.guildDatas.get(guild.id)) {
+            const defaultGuildDatas = {
                 prefix: "f!",
                 thingsLevel0: [],
                 thingsLevel1: [],
@@ -57,23 +58,22 @@ module.exports = async (client, guild) => {
                 greetingsMethod: "",
                 greetingsChan: "",
                 farewellChan: "",
-                autoAssignablesRoles: []
+                autoAssignablesRoles: [],
+                censors: []
             }
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                if (err) console.error(err)
-            });
+            client.guildDatas.set(guild.id, defaultGuildDatas);
         }
     } catch (err) {
         console.error(err);
         return await client.channels.get(client.errorLog).send(`A critical error occured while trying to create an entry for the guild ${guild.name} in the db\n**Triggered Error:** ${err}\n**Detailled Error:** ${err.stack}`)
     }
     // Send the server count to Discord Bot list
-    /*try {
+    try {
         await unirest.post(`https://discordbots.org/api/bots/${client.user.id}/stats`)
-            .header('Authorization', database.Data.global[0].discordBotList)
+            .header('Authorization', client.database.Data.global[0].discordBotList)
             .send({
                 server_count: client.guilds.size
-            }) 
+            })
             .end(function (response) {
                 if (response.body.length > 1) {
                     console.error("An error occured while sending data to discord bot list \nTriggered error: " + response.body);
@@ -84,5 +84,6 @@ module.exports = async (client, guild) => {
     } catch (err) {
         console.error("A critical error occured while sending data to Discord Bot list \nTriggered error: " + err)
         return client.channels.get(client.errorLog).send("``` A critical error occured while sending data to Discord Bot list \nTriggered error: " + err + "```");
-    }*/
+    }
+
 };

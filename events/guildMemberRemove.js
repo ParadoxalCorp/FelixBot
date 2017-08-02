@@ -3,7 +3,8 @@ const unirest = require("unirest");
 
 module.exports = async (client, member) => {
     try {
-        const guildEntry = client.database.Data.servers[0][member.guild.id];
+        const guildEntry = client.guildDatas.get(member.guild.id);
+        if (!guildEntry.farewell) return;
         if (guildEntry.farewell === "") return;
         var farewellMsg = guildEntry.farewell;
         farewellMsg = farewellMsg.replace(/\{user\}/gim, `${member.user.username}#${member.user.discriminator}`);

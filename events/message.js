@@ -1,11 +1,12 @@
 const fs = require("fs-extra");
 const unirest = require("unirest");
+const PersistentCollection = require('djs-collection-persistent');
 
 module.exports = async(client, message) => {
     if (message.channel.type !== "dm") {
         try { //In case felix got invited while being down
-            if (!client.database.Data.servers[0][message.guild.id]) {
-                client.database.Data.servers[0][message.guild.id] = {
+            if (!client.guildDatas.get(message.guild.id)) {
+                const defaultGuildDatas = {
                     prefix: "f!",
                     thingsLevel0: [],
                     thingsLevel1: [],
@@ -18,130 +19,62 @@ module.exports = async(client, message) => {
                     greetingsMethod: "",
                     greetingsChan: "",
                     farewellChan: "",
-                    autoAssignablesRoles: []
+                    autoAssignablesRoles: [],
+                    censors: []
                 }
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
+                client.guildDatas.set(message.guild.id, defaultGuildDatas);
             }
         } catch (err) {
             console.error(err);
             client.channels.get(client.errorLog).send(`A critical error occured while trying to create an entry for the guild ${message.guild.name} in the db\n**Triggered Error:** ${err}\n**Detailled Error:** ${err.stack}`)
         }
     }
-    try { //If the user is not in the db yet, add it in order to avoid any bugs later
-        if (!client.database.Data.users[0][message.author.id]) {
-            client.database.Data.users[0][message.author.id] = {
-                lovePoints: 0,
-                loveCooldown: 0,
-                malAccount: "",
-                blackListed: "no",
-                afk: "",
-                feedbackCooldown: ""
-            }
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                if (err) console.error(err)
-            });
-        }
-    } catch (err) {
-        console.error(err);
-        client.channels.get(client.errorLog).send(`A critical error occured while trying to create an entry for the user ${message.author.name} in the db\n**Triggered Error:** ${err}\n**Detailled Error:** ${err.stack}`);
+    const defaultUserDatas = {
+        lovePoints: 0,
+        loveCooldown: 0,
+        secondLoveCooldown: 0,
+        malAccount: "",
+        blackListed: "no",
+        afk: "",
+        feedbackCooldown: 0
     }
-    try { //Late features check
-        if (!client.database.Data.users[0][message.author.id].afk) {
-            client.database.Data.users[0][message.author.id].afk = "";
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                if (err) console.error(err)
-            });
-        }
-        if (!client.database.Data.users[0][message.author.id].blackListed) {
-            client.database.Data.users[0][message.author.id].blackListed = "no";
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                if (err) console.error(err)
-            });
-        }
-        if (!client.database.Data.users[0][message.author.id].feedbackCooldown) {
-            client.database.Data.users[0][message.author.id].feedbackCooldown = "";
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                if (err) console.error(err)
-            });
-        }
-        if (message.channel.type !== "dm") {
-            if (!client.database.Data.servers[0][message.guild.id].greetings) {
-                client.database.Data.servers[0][message.guild.id].greetings = "";
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
-            }
-            if (!client.database.Data.servers[0][message.guild.id].farewell) {
-                client.database.Data.servers[0][message.guild.id].farewell = "";
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
-            }
-            if (!client.database.Data.servers[0][message.guild.id].greetingsMethod) {
-                client.database.Data.servers[0][message.guild.id].greetingsMethod = "";
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
-            }
-            if (!client.database.Data.servers[0][message.guild.id].greetingsChan) {
-                client.database.Data.servers[0][message.guild.id].greetingsChan = "";
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
-            }
-            if (!client.database.Data.servers[0][message.guild.id].farewellChan) {
-                client.database.Data.servers[0][message.guild.id].farewellChan = "";
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
-            }
-            if (!client.database.Data.servers[0][message.guild.id].autoAssignablesRoles) {
-                client.database.Data.servers[0][message.guild.id].autoAssignablesRoles = [];
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                });
-            }            
-        }
-    } catch (err) {
-        console.error(err);
-        client.channels.get(client.errorLog).send(`A critical error occured while trying to create an entry for the user ${message.author.name} in the db\n**Triggered Error:** ${err}\n**Detailled Error:** ${err.stack}`);
+    if (!client.userDatas.get(message.author.id)) {
+        client.userDatas.set(message.author.id, defaultUserDatas);
     }
     const mentionned = message.mentions.users.first(); //Afk feature
     if (mentionned) {
-        if (client.database.Data.users[0][mentionned.id]) {
-            if (client.database.Data.users[0][mentionned.id].afk) {
-                if (client.database.Data.users[0][mentionned.id].afk !== "") { //If the mentionned user hasnt set any afk status, do nothing
+        if (client.userDatas.get(mentionned.id)) {
+            if (client.userDatas.get(mentionned.id).afk) {
+                if (client.userDatas.get(mentionned.id).afk !== "") { //If the mentionned user hasnt set any afk status, do nothing
                     await message.channel.send({
                         embed: ({
                             color: 3447003,
                             author: {
-                                name: mentionned.username + "#" + mentionned.discriminator,
+                                name: mentionned.username + "#" + mentionned.discriminator + " is AFK",
                                 icon_url: mentionned.avatarURL
                             },
-                            title: mentionned.username + " is AFK:",
-                            description: client.database.Data.users[0][mentionned.id].afk
+                            description: client.userDatas.get(mentionned.id).afk
                         })
                     }).catch(console.error);
                 }
             }
         } else { //To avoid errors in commands which works with mention, create a entry in case
-            client.database.Data.users[0][mentionned.id] = {
-                lovePoints: 0,
-                loveCooldown: 0,
-                malAccount: "",
-                blackListed: "no",
-                afk: "",
-                feedbackCooldown: ""
-            }
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                if (err) console.error(err)
-            });
+            client.userDatas.set(mentionned.id, defaultUserDatas);
         }
     }
     if (message.author.bot) return;
-    if (client.database.Data.users[0][message.author.id].blackListed === "yes") return; //Ignore blacklisted users
+    if ((client.userDatas.get(message.author.id).blackListed === "yes") && (message.author.id !== "140149699486154753")) return; //Ignore blacklisted users
+    //Tags
+    if (message.channel.type !== "dm") {
+        if (message.content.startsWith(client.guildDatas.get(message.guild.id).prefix + "t ")) {
+            const tagCommand = message.content.substr(client.guildDatas.get(message.guild.id).prefix.length + 2).trim();
+            if (!client.tagDatas.get(tagCommand)) {
+                return await message.channel.send(":x: That tag does not exist");
+            }
+            return await message.channel.send(client.tagDatas.get(tagCommand).content);
+        }
+    }
+    //Commands
     if (message.channel.type === "dm") {
         if (!message.content.startsWith(client.database.Data.global[0].prefix)) return;
         client.prefix = client.database.Data.global[0].prefix;
@@ -168,11 +101,27 @@ module.exports = async(client, message) => {
             return client.channels.get(client.errorLog).send(`A critical error occured while trying to run the command ${command}\n**Triggered Error:** ${err}\n**Detailled Error:** ${err.stack}`)
         }
     }
-    if (message.content.startsWith(client.mention + " prefix")) {
-        return message.channel.send("The current prefix on this server is **" + client.database.Data.servers[0][message.guild.id].prefix + "**");
+    const guildEntry = client.guildDatas.get(message.guild.id);
+    if (message.content.startsWith(client.mention)) {
+        const prefixRequest = message.content.substr(client.mention.length).trim();
+        if (prefixRequest === "prefix") {
+            return message.channel.send("The current prefix on this server is **" + guildEntry.prefix + "**");
+        }
     }
-    if (!message.content.startsWith(client.database.Data.servers[0][message.guild.id].prefix)) return;
-    client.prefix = client.database.Data.servers[0][message.guild.id].prefix;
+    if (!message.content.startsWith(guildEntry.prefix)) return;
+    client.getLevel = function (id) { //Check what level has the targetted element
+        if (guildEntry.thingsLevel0.indexOf(id) !== -1) {
+            return guildEntry.thingsLevel0;
+        }
+        if (guildEntry.thingsLevel1.indexOf(id) !== -1) {
+            return guildEntry.thingsLevel1;
+        }
+        if (guildEntry.thingsLevel2.indexOf(id) !== -1) {
+            return guildEntry.thingsLevel2;
+        }
+        return false; //If the targetted element has not any level
+    }
+    client.prefix = guildEntry.prefix;
     // Someone once told me that it was the best way to define args
     const args = message.content.split(/\s+/g);
     const supposedCommand = args.shift().slice(client.prefix.length).toLowerCase();
@@ -190,11 +139,11 @@ module.exports = async(client, message) => {
     }
     var usrLevel;
     var isAdmin = message.guild.member(message.author).hasPermission("ADMINISTRATOR");
-    var hasLevel0 = client.database.Data.servers[0][message.guild.id].thingsLevel0;
-    var hasLevel1 = client.database.Data.servers[0][message.guild.id].thingsLevel1;
-    var hasLevel2 = client.database.Data.servers[0][message.guild.id].thingsLevel2;
+    var hasLevel0 = guildEntry.thingsLevel0;
+    var hasLevel1 = guildEntry.thingsLevel1;
+    var hasLevel2 = guildEntry.thingsLevel2;
     var hasLevel42 = client.config.thingsLevel42;
-    var globalLvl = client.database.Data.servers[0][message.guild.id].globalLevel; //the server level
+    var globalLvl = guildEntry.globalLevel; //the server level
     var userId = message.author.id;
     //----global check----                     //The following checks are just to determine the user access level by using the execution order
     if (globalLvl !== "none") {
@@ -281,7 +230,10 @@ module.exports = async(client, message) => {
     }
     if (usrLevel >= commandFile.conf.permLevel) { //If the user level is higher or equal to the requested command level, then run the command
         try {
+            client.cmdsUsed++;
+            client.cmdsLogs += `[${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}] Command ${command} triggered, current memory usage: ${(process.memoryUsage().heapUsed / 1024 / 1000).toFixed(2)}MB\n`
             commandFile.run(client, message, args);
+            client.cmdsLogs += `[${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}] new memory usage: ${(process.memoryUsage().heapUsed / 1024 / 1000).toFixed(2)}MB\n`
         } catch (err) {
             console.error(err);
             return client.channels.get(client.errorLog).send(`A critical error occured while trying to run the command ${command}\n**Triggered Error:** ${err}\n**Detailled Error:** ${err.stack}`)

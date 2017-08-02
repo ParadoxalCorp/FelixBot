@@ -3,22 +3,18 @@ const fs = require("fs-extra");
 exports.run = async(client, message) => {
     try {
         const remove = message.content.indexOf("-remove");
-        const userEntry = client.database.Data.users[0][message.author.id];
+        const userEntry = client.userDatas.get(message.author.id);
         const whitespace = message.content.indexOf(" ");
         if (remove !== -1) {
             userEntry.afk = "";
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                if (err) console.error(err)
-            });
+            client.userDatas.set(message.author.id, userEntry);
             return await message.channel.send(":white_check_mark: Alright, i removed your afk status");
         }
         if (whitespace === -1) {
             return await message.channel.send(":x: You cannot set your afk status to nothing");
         }
         userEntry.afk = message.content.substr(whitespace + 1);
-        fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-            if (err) console.error(err)
-        });
+        client.userDatas.set(message.author.id, userEntry);
         return await message.channel.send(":white_check_mark: Alright, i updated your afk status");
     } catch (err) {
         var guild;

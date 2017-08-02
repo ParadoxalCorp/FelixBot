@@ -3,7 +3,7 @@ const unirest = require("unirest");
 
 module.exports = async (client, member) => {
     try {
-        const guildEntry = client.database.Data.servers[0][member.guild.id];
+        const guildEntry = client.guildDatas.get(member.guild.id);
         const role = member.guild.roles.get(guildEntry.onJoinRole);
         if ((guildEntry.onJoinRole !== "") && (member.user.bot !== true)) {
             member.addRole(role);
@@ -14,6 +14,7 @@ module.exports = async (client, member) => {
         if (guildEntry.greetings === "") return;
         var greetingsMsg = guildEntry.greetings;
         greetingsMsg = greetingsMsg.replace(/\{user\}/gim, `<@${member.id}>`);
+        greetingsMsg = greetingsMsg.replace(/\{username\}/gim, `${member.user.username}`);        
         greetingsMsg = greetingsMsg.replace(/\{server\}/gim, `${member.guild.name}`);
         if (guildEntry.greetingsMethod === "dm") {
             return await member.send(greetingsMsg);

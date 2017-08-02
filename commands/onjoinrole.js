@@ -4,7 +4,7 @@ exports.run = async(client, message) => {
         const add = message.content.indexOf("-add");
         const remove = message.content.indexOf("-remove");
         const current = message.content.indexOf("-current");
-        const guildEntry = client.database.Data.servers[0][message.guild.id];
+        const guildEntry = client.guildDatas.get(message.guild.id);
         if ((add !== -1) && (remove === -1) && (current === -1)) {
             var role = message.content.substr(add + 5);
             if (!message.guild.roles.find("name", role)) {
@@ -14,9 +14,7 @@ exports.run = async(client, message) => {
                 if (guildEntry.onJoinRole === "") {
                     try {
                         guildEntry.onJoinRole = role.id;
-                        fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                            if (err) console.error(err)
-                        });
+                        client.guildDatas.set(message.guild.id, guildEntry);
                         return message.channel.send(":white_check_mark: Alright ! I will give the role **" + role.name + "** to every new members");
                     } catch (err) {
                         message.channel.send(":x: I ran into a critical error, but dont worry, i sent the details to my developper. Feel free to join the support server to learn more");
@@ -33,9 +31,7 @@ exports.run = async(client, message) => {
             } else {
                 try {
                     guildEntry.onJoinRole = "";
-                    fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                        if (err) console.error(err)
-                    });
+                    client.guildDatas.set(message.guild.id, guildEntry);
                     return await message.channel.send(":white_check_mark: Alright ! I wont give a role to new members anymore");
                 } catch (err) {
                     await message.channel.send(":x: I ran into a critical error, but dont worry, i sent the details to my developper. Feel free to join the support server to learn more");

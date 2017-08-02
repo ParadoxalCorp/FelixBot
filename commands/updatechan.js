@@ -5,13 +5,14 @@ exports.run = async(client, message) => {
         if (args.startsWith(client.prefix)) { //cuz if there is no whitespace, its -1 + 1 so 0
             return await message.channel.send(":x: You didnt specified any arguments");
         }
-        const guildEntry = client.database.Data.servers[0][message.guild.id];
+        const guildEntry = client.guildDatas.get(message.guild.id);
         const set = args.indexOf("-set");
         const remove = args.indexOf("-r");
         if ((set !== -1) && (remove === -1)) {
             if (guildEntry.updateChannel === "") {
                 guildEntry.updateChannel = message.channel.id; //This one is to quickly read the datas 
-                client.database.Data.global[0].updateChannels.push(message.channel.id); 
+                client.database.Data.global[0].updateChannels.push(message.channel.id);
+                client.guildDatas.set(message.guild.id, guildEntry);
                 fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
                     if (err) console.error(err)
                 });
@@ -33,6 +34,7 @@ exports.run = async(client, message) => {
                 try {
                     client.database.Data.global[0].updateChannels.splice(client.database.Data.global[0].updateChannels.indexOf(guildEntry.updateChannel), 1);
                     guildEntry.updateChannel = "";
+                    client.guildDatas.set(message.guild.id, guildEntry);
                     fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
                         if (err) console.error(err)
                     });

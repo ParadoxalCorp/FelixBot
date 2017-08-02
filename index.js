@@ -1,15 +1,36 @@
 const Discord = require("discord.js");
-const client = new Discord.Client();
+const client = new Discord.Client({
+    disabledEvents: ["TYPING_START"]
+});
 const fs = require("fs-extra");
 const unirest = require("unirest");
 const dbPath = "database/database.json";
+const memwatch = require("memwatch-next");
+const heapdump = require("heapdump");
 const database = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
+const PersistentCollection = require('djs-collection-persistent');
+//const memwatch = require("memwatch-next");
+//const heapdump = require("heapdump");
 const {
     promisify
 } = require('util');
-const readdir = promisify(require("fs").readdir);
+const readdir = promisify(require("fs-extra").readdir);
 
-client.mention = "<@291561064544600074>";
+//Database initialization
+const userDatas = new PersistentCollection({
+    name: 'userDatas'
+});
+console.log("[INFO] Users database loaded");
+const guildDatas = new PersistentCollection({
+    name: 'guildDatas'
+});
+console.log("[INFO] Guilds database loaded");
+const tagDatas = new PersistentCollection({
+    name: 'tagDatas'
+});
+console.log("[INFO] Tags database loaded");
+
+client.mention = "<@327144735359762432>";
 client.config = database.Data.global[0];
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
@@ -19,6 +40,45 @@ client.errorLog = "328847359100321792";
 client.featureChan = "328843222837362689";
 client.bugChan = "328843250687279105";
 client.overallHelp; //Will get initialized later
+client.cmdsUsed = 0; //Will contain the count of commands used since restart
+client.cmdsLogs; //Will get initialized in the message event
+client.userDatas = userDatas;
+client.guildDatas = guildDatas;
+client.tagDatas = tagDatas;
+client.awaitReply = async(message, title, question, limit = 30000) => { //Default message collector function
+    const filter = m => m.author.id === message.author.id;
+    await message.channel.send({
+        embed: {
+            title: title,
+            description: question
+        }
+    }).catch(console.error);
+    try {
+        const collected = await message.channel.awaitMessages(filter, {
+            max: 1,
+            time: limit,
+            errors: ["time"]
+        });
+        if (collected.first().content === "") {
+            const collected = await message.channel.awaitMessages(filter, {
+                max: 1,
+                time: limit,
+                errors: ["time"]
+            });
+            return collected.first().content;
+        }
+        return collected.first().content;
+    } catch (e) {
+        return false;
+    }
+};
+client.getAuthorTags = function (message) {
+    const tagList = client.tagDatas.filter(t => JSON.parse(t).author === message.author.id).map(t => JSON.parse(t).name).join("\n");
+    if (tagList.length > 1920) {
+        return "Here's the tags you created ```\n" + tagList.substr(0, 1920) + "...```";
+    }
+    return "Here's the tags you created ```\n" + tagList + "```";
+}
 
 process.on('uncaughtException', (err) => {
     try {
@@ -82,7 +142,6 @@ client.on('guildMemberRemove', async member => {
             const categoryCommands = client.commands.filter(c => c.help.category == categories[i]);
             client.overallHelp += `**${categories[i]}** =>`
             client.overallHelp += categoryCommands.map(c => `\`${c.help.name}\` `);
-            console.log(client.overallHelp);
             client.overallHelp += "\n\n";
         }
         client.overallHelp = client.overallHelp.replace(/undefined/gim, ""); //To remove the "undefined"

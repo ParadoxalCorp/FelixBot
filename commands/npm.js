@@ -14,11 +14,35 @@ exports.run = async(client, message) => {
                 if (modules[0] === undefined) {
                     return await message.edit(":x: Your search did not return any result");
                 }
+                var embedFields = []; //Dynamically build the embed fields
                 var description;
+                if (modules[0].name) {
+                    embedFields.push({
+                        name: "Name",
+                        value: modules[0].name,
+                        inline: true
+                    });                    
+                }
+                if (modules[0].version) {
+                    embedFields.push({
+                        name: "Version",
+                        value: modules[0].version,
+                        inline: true
+                    });
+                }
+                if (modules[0].author) {
+                    embedFields.push({
+                        name: "Author",
+                        value: modules[0].author,
+                        inline: true
+                    });
+                }                
                 if (modules[0].description) {
-                    description = modules[0].description;
-                } else {
-                    description = "None";
+                    embedFields.push({
+                        name: "Description",
+                        value: modules[0].description,
+                        inline: true
+                    });
                 }
                 return await message.edit({
                     embed: {
@@ -28,37 +52,12 @@ exports.run = async(client, message) => {
                             icon_url: userMessage.author.avatarURL
                         },
                         title: "NPM",
-                        url: "https://www.npmjs.com",
+                        url: replaceWhitespace,
                         thumbnail: {
                             "url": "https://raw.githubusercontent.com/isaacs/npm/master/html/npm-256-square.png"
                         },
-                        fields: [
-                            {
-                                name: "Package name",
-                                value: `${modules[0].name}`,
-                                inline: true
-      },
-                            {
-                                name: "Version",
-                                value: `${modules[0].version}`,
-                                inline: true
-      },
-                            {
-                                name: "Author",
-                                value: `${modules[0].author}`,
-                                inline: true
-      },
-                            {
-                                name: "Description",
-                                value: `${description}`,
-                                inline: true
-      },
-                            {
-                                name: "Link",
-                                value: `[${args}](${replaceWhitespace})`,
-                                inline: true
-      }
-    ],
+                        fields: embedFields,
+    
                         timestamp: new Date(),
                         footer: {
                             icon_url: client.user.avatarURL,

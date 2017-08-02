@@ -2,11 +2,11 @@ const moment = require("moment");
 
 exports.run = async(client, message) => {
     try {
-        var total = 0; 
-        const guilds = client.guilds.array(); 
+        /*var total = 0; disabled due to memory leaks
+        const guilds = client.guilds.array();
         for (let i = 0; i < guilds.length; i++) {
             total = total + guilds[i].memberCount;
-        } 
+        }*/
         return await message.channel.send({
             embed: {
                 thumbnail: {
@@ -27,12 +27,21 @@ exports.run = async(client, message) => {
                         name: "RAM usage",
                         value: `${(process.memoryUsage().heapUsed / 1024 / 1000).toFixed(2)}MB`,
                         inline: true
+      }, {
+                        name: "OS",
+                        value: `${process.platform}-${process.arch}`,
+                        inline: true
+      },
+                    {
+                        name: "Node",
+                        value: `${process.release.name} ${process.version}`,
+                        inline: true
       },
                     {
                         name: "Version",
                         value: client.database.Data.global[0].version,
                         inline: true
-      },                         
+      },
                     {
                         name: "Channels",
                         value: client.channels.size,
@@ -40,7 +49,7 @@ exports.run = async(client, message) => {
       },
                     {
                         name: "Users",
-                        value: total,
+                        value: client.users.size,
                         inline: true
       },
                     {
@@ -95,7 +104,7 @@ exports.run = async(client, message) => {
             detailledError = "None";
         }
         console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
+        return await client.channels.get(client.errorLog).send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
     }
 };
 

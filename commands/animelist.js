@@ -10,27 +10,17 @@ exports.run = async(client, message) => {
         const animeSearch = message.content.indexOf("-anime");
         const whitespace = message.content.indexOf(" "); //Used to determine the position of the username
         const mentionned = message.mentions.users.first();
-        const userEntry = client.database.Data.users[0];
         if ((animeSearch === -1) && (mangaSearch === -1)) {
             return await message.channel.send(":x: You didnt used any parameters");
         }
         if ((animeSearch !== -1) && (mangaSearch === -1)) { //To avoid triggering two search
             var username;
             if (mentionned) {
-                if (!userEntry[mentionned.id]) { //Security check, even if its in a try catch, it would cause problems to read data from a non-existing json object
-                    userEntry[message.author.id] = {
-                        lovePoints: 0,
-                        loveCooldown: 0,
-                        malAccount: ""
-                    }
-                    fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                        if (err) console.error(err)
-                    });
-                }
-                if (userEntry[mentionned.id].malAccount === "") {
+                const userEntry = client.userDatas.get(mentionned.id);
+                if (userEntry.malAccount === "") {
                     return await message.channel.send(":x: The mentionned user hasn't any MyAnimeList account linked to their Discord account");
                 } else {
-                    username = userEntry[mentionned.id].malAccount;
+                    username = userEntry.malAccount;
                 }
             } else {
                 username = message.content.substr(whitespace + 1, animeSearch - whitespace - 1).trim();
@@ -103,20 +93,11 @@ exports.run = async(client, message) => {
         } else if ((mangaSearch !== -1) && (animeSearch === -1)) {
             var username;
             if (mentionned) {
-                if (!userEntry[mentionned.id]) { //Security check, even if its in a try catch, it would cause problems to read data from a non-existing json object
-                    userEntry[message.author.id] = {
-                        lovePoints: 0,
-                        loveCooldown: 0,
-                        malAccount: ""
-                    }
-                    fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                        if (err) console.error(err)
-                    });
-                }
-                if (userEntry[mentionned.id].malAccount === "") {
+                const userEntry = client.userDatas.get(mentionned.id);
+                if (userEntry.malAccount === "") {
                     return await message.channel.send(":x: The mentionned user hasn't any MyAnimeList account linked to their Discord account");
                 } else {
-                    username = userEntry[mentionned.id].malAccount;
+                    username = userEntry.malAccount;
                 }
             } else {
                 username = message.content.substr(whitespace + 1, mangaSearch - whitespace - 1).trim();

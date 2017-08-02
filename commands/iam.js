@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 
 exports.run = async(client, message) => {
     try {
-        const guildEntry = client.database.Data.servers[0][message.guild.id];
+        const guildEntry = client.guildDatas.get(message.guild.id);
         const whitespace = message.content.indexOf(" ");
         if (whitespace === -1) {
             if (guildEntry.autoAssignablesRoles.length === 0) {
@@ -12,9 +12,7 @@ exports.run = async(client, message) => {
             guildEntry.autoAssignablesRoles.forEach(function (role) {
                 if (!message.guild.roles.get(role)) {
                     guildEntry.autoAssignablesRoles.splice(guildEntry.autoAssignablesRoles.indexOf(role), 1);
-                    fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                        if (err) console.error(err)
-                    });
+                    client.guildDatas.set(message.guild.id, guildEntry);
                 } else {
                     selfAssignRoles += `${message.guild.roles.get(role).name}\n`;
                 }

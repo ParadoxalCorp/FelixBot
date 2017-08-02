@@ -4,15 +4,13 @@ exports.run = async(client, message) => {
     try {
         const remove = message.content.indexOf("-remove");
         const whiteSpace = message.content.indexOf(" ");
-        const guildEntry = client.database.Data.servers[0][message.guild.id];
+        const guildEntry = client.guildDatas.get(message.guild.id);
         if (remove !== -1) {
             if (guildEntry.farewell === "") {
                 return await message.channel.send(":x: There is not any farewell message");
             }
             guildEntry.farewell = "";
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                if (err) console.error (err)
-            });
+            client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, i removed the farewell message");
         } else if ((remove === -1) && (whiteSpace === -1)) { //Note: there is some useless conditions cuz there is returns everywhere but welp
             if (guildEntry.farewell === "") {
@@ -32,9 +30,7 @@ exports.run = async(client, message) => {
             }
             guildEntry.farewell = farewellMsg;
             guildEntry.farewellChan = message.channel.id;
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                if (err) console.error (err)
-            });
+            client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, i updated the farewell message");
         } 
     } catch (err) {
@@ -68,6 +64,6 @@ exports.help = {
     parameters: '`-remove`',
     description: 'Set the farewell message that Felix will send in the current channel',
     usage: 'setfarewell A member left D:',
-    category: 'generic',
+    category: 'settings',
     detailledUsage: 'You can use `{user}` and `{server}` to add the former member name and your server name in the message, so \n`{prefix}setfarewell {user} left {server}`\n will look like: `Baguette#0000 left Felix\'s lovers`\nYou can display the current farewell message by using `{prefix}setfarewell`\nUnlike the greetings, you cant send a farewell message in dm'
 };

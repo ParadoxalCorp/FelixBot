@@ -2,21 +2,20 @@ const fs = require("fs-extra");
 
 exports.run = async(client, message) => {
     try {
-        const serverEntry = client.database.Data.servers[0][message.guild.id];
-        serverEntry.prefix = client.database.Data.global[0].prefix;
-        serverEntry.thingsLevel0 = [];
-        serverEntry.thingsLevel1 = [];
-        serverEntry.thingsLevel2 = [];
-        serverEntry.globalLevel = "none";
-        serverEntry.updateChannel = "";
-        serverEntry.onJoinRole = "";
-        serverEntry.greetings = "";
-        serverEntry.farewell = "";
-        serverEntry.greetingsMethod = "";
-        serverEntry.autoAsssignablesRoles = [];
-        fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-            if (err) console.error(err)
-        })
+        const guildEntry = client.guildDatas.get(message.guild.id);
+        guildEntry.prefix = client.database.Data.global[0].prefix;
+        guildEntry.thingsLevel0 = [];
+        guildEntry.thingsLevel1 = [];
+        guildEntry.thingsLevel2 = [];
+        guildEntry.globalLevel = "none";
+        guildEntry.updateChannel = "";
+        guildEntry.onJoinRole = "";
+        guildEntry.greetings = "";
+        guildEntry.farewell = "";
+        guildEntry.greetingsMethod = "";
+        guildEntry.autoAsssignablesRoles = [];
+        guildEntry.censors = [];
+        client.guildDatas.set(message.guild.id, guildEntry);
         return await message.channel.send(":white_check_mark: Okay, i just nuked the database ! https://giphy.com/gifs/explosion-nuclear-12KiGLydHEdak8");
     } catch (err) {
         var guild;

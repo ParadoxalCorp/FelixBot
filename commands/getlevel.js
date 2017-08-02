@@ -4,11 +4,11 @@ exports.run = async(client, message) => {
     var channel = message.content.indexOf("-c");
     var role = message.content.indexOf("-r");
     const all = message.content.indexOf("-all");
-    const guildEntry = client.database.Data.servers[0][message.guild.id];
+    const guildEntry = client.guildDatas.get(message.guild.id);
     var mentionned = message.mentions.users.first();
-    var hasLevel0 = client.database.Data.servers[0][message.guild.id].thingsLevel0;
-    var hasLevel1 = client.database.Data.servers[0][message.guild.id].thingsLevel1;
-    var hasLevel2 = client.database.Data.servers[0][message.guild.id].thingsLevel2;
+    var hasLevel0 = guildEntry.thingsLevel0;
+    var hasLevel1 = guildEntry.thingsLevel1;
+    var hasLevel2 = guildEntry.thingsLevel2;
     try {
         if (mentionned) {
             var mentionnedId = mentionned.id;
@@ -168,17 +168,16 @@ exports.run = async(client, message) => {
             if (guildEntry.globalLevel !== "none") {
                 list += `Server level: ${guildEntry.globalLevel}\n`;
             }
-            console.log(usersLevel0);
             guildLevel = guildEntry.globalLevel;
             if (list.length > 1920) {
                 return await message.channel.send(":x: The list is exceeding the Discord 2000 characters limit, you should optimize the permissions on your server, join the support server to learn how to optimize the permissions");
             }
             return await message.channel.send(`Here's the list of everything that has a level on your server \`\`\`\n${list}\`\`\``);
         } else if ((role === -1) && (user === -1) && (channel === -1) && (all === -1)) {
-            if (client.database.Data.servers[0][message.guild.id].globalLevel === "none") {
+            if (guildEntry.globalLevel === "none") {
                 return await message.channel.send(":x: There is no level set for the whole server");
             } else {
-                return await message.channel.send("This server global level is " + client.database.Data.servers[0][message.guild.id].globalLevel);
+                return await message.channel.send("This server global level is " + guildEntry.globalLevel);
             }
         }
     } catch (err) {

@@ -9,7 +9,7 @@ exports.run = async(client, message) => {
         const set = userMessage.content.indexOf("-set");
         const remove = userMessage.content.indexOf("-remove");
         const current = userMessage.content.indexOf("-current");
-        const userEntry = client.database.Data.users[0][userMessage.author.id];
+        const userEntry = client.userDatas.get(message.author.id);
         if ((set !== -1) && (remove === -1) && (current === -1)) {
             message.channel.send("Checking if the account exists...").then(async(message) => {
                 if (userMessage.content.substr(set + 5) === "") {
@@ -23,9 +23,7 @@ exports.run = async(client, message) => {
                         }
                         var malAccount = res.myinfo;
                         userEntry.malAccount = malAccount.user_name;
-                        fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                            if (err) console.error(err)
-                        });
+                        client.userDatas.set(message.author.id, userEntry);
                         return await message.edit(":white_check_mark: Okay, i linked the account **" + malAccount.user_name + "** (ID: " + malAccount.user_id + ") to your account");
                     }).catch(async function (err) { //Which makes a double catch, ye, i love catching errors
                         await message.edit(":x: User not found");
@@ -37,9 +35,7 @@ exports.run = async(client, message) => {
             }
             try {
                 userEntry.malAccount = "";
-                fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                    if (err) console.error(err)
-                })
+                client.userDatas.set(message.author.id, userEntry);
                 return await message.channel.send(":white_check_mark: Okay! I unlinked the accounts");
             } catch (err) {
                 await message.channel.send(":x: An error occured");

@@ -2,48 +2,110 @@ const moment = require('moment');
 
 exports.run = async(client, message) => {
     try {
-        const memberavatar = message.author.avatarURL;
-        const membername = message.author.username;
-        const mentionned = message.mentions.users.first();
-        var getValueOf;
+        const memberavatar = message.author.avatarURL,
+            membername = message.author.username,
+            mentionned = message.mentions.users.first();
+        var embedFields = [],
+            getValueOf,
+            checkbot,
+            status;
         if (mentionned) {
             getValueOf = mentionned;
         } else {
             getValueOf = message.author;
         }
-        var userData = client.database.Data.users[0][getValueOf.id];
-        if (!userData) {
-            userData = {
-                lovePoints: 0,
-                loveCooldown: 0,
-                malAccount: ""
-            }
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                if (err) console.error(err)
+        embedFields.push({
+            name: "Username",
+            value: getValueOf.username + "#" + getValueOf.discriminator,
+            inline: true
+        });
+        embedFields.push({
+            name: "User ID",
+            value: getValueOf.id,
+            inline: true
+        });
+        if (message.guild.member(getValueOf).nickname) {
+            embedFields.push({
+                name: "Nickname",
+                value: message.guild.member(getValueOf).nickname,
+                inline: true
+            });
+        }
+        if (message.guild.member(getValueOf).hoistRole) {
+            embedFields.push({
+                name: "Hoist role",
+                value: message.guild.member(getValueOf).hoistRole.name,
+                inline: true
+            });
+        }
+        if (message.guild.member(getValueOf).highestRole) {
+            embedFields.push({
+                name: "Highest Role",
+                value: message.guild.member(getValueOf).highestRole.name,
+                inline: true
+            });
+        }
+        if (message.guild.member(getValueOf).displayHexColor) {
+            embedFields.push({
+                name: "HEX color",
+                value: message.guild.member(getValueOf).displayHexColor,
+                inline: true
             });
         }
         if (getValueOf.bot == true) {
-            var checkbot = ":white_check_mark:";
+             checkbot = ":white_check_mark:";
         } else {
-            var checkbot = ":x:";
+             checkbot = ":x:";
         }
+        embedFields.push({
+            name: "Bot",
+            value: checkbot,
+            inline: true
+        });
         if (getValueOf.presence.status == 'online') {
-            var status = "Online";
+             status = "Online";
         } else {
-            var status = "Offline";
+             status = "Offline";
         }
         if (getValueOf.presence.status === 'dnd') {
-            var status = "Do Not Disturb";
+             status = "Do Not Disturb";
         } else if (getValueOf.presence.status === 'idle') {
-            var status = "Idle";
+             status = "Idle";
         }
+        embedFields.push({
+            name: "Status",
+            value: status,
+            inline: true
+        });
         if (getValueOf.presence.game) {
-            var playingStatus = getValueOf.presence.game.name;
-        } else {
-            var playingStatus = "Nothing";
+            embedFields.push({
+                name: "Playing",
+                value: getValueOf.presence.game.name,
+                inline: true
+            });
         }
-        /*   var user = message.mentions[0];
-           var member = message.channel.guild.members.find(u => u.id === user.id);*/
+        embedFields.push({
+            name: "Created",
+            value: moment().to(getValueOf.createdAt),
+            inline: true
+        });
+        embedFields.push({
+            name: "Joined",
+            value: moment().to(message.guild.member(getValueOf).joinedAt),
+            inline: true
+        });
+        embedFields.push({
+            name: "Roles",
+            value: message.guild.member(getValueOf).roles.size - 1, //Dont count the everyone role
+            inline: true
+        });
+        if (client.userDatas.get(getValueOf.id).lovePoints) {
+            embedFields.push({
+                name: "Love Points",
+                value: client.userDatas.get(getValueOf.id).lovePoints,
+                inline: true
+            });
+        }
         return await message.channel.send({
             embed: {
                 thumbnail: {
@@ -55,52 +117,7 @@ exports.run = async(client, message) => {
                     icon_url: message.author.avatarURL
                 },
                 title: "User info",
-                fields: [{
-                        name: "Username",
-                        value: getValueOf.username + "#" + getValueOf.discriminator,
-                        inline: true
-      },
-                    {
-                        name: "User ID",
-                        value: getValueOf.id,
-                        inline: true
-      },
-                    {
-                        name: "Status",
-                        value: status,
-                        inline: true
-      },
-                    {
-                        name: "Bot?",
-                        value: checkbot,
-                        inline: true
-      },
-                    {
-                        name: "Created",
-                        value: moment().to(getValueOf.createdAt),
-                        inline: true
-      },
-                    {
-                        name: "Playing",
-                        value: playingStatus,
-                        inline: true
-      },
-                    {
-                        name: "Joined",
-                        value: moment().to(message.guild.members.get(getValueOf.id).joinedAt),
-                        inline: true
-      },
-                    {
-                        name: "Roles",
-                        value: message.guild.members.get(getValueOf.id).roles.size - 1, //-1 so we dont count the everyone role
-                        inline: true
-      },
-                    {
-                        name: "Love points",
-                        value: userData.lovePoints,
-                        inline: true
-      }
-    ],
+                fields: embedFields,
                 timestamp: new Date(),
                 footer: {
                     icon_url: client.user.avatarURL,

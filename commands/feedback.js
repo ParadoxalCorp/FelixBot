@@ -4,8 +4,8 @@ exports.run = async(client, message) => {
     try {
         const bug = message.content.indexOf("-bug");
         const request = message.content.indexOf("-request");
-        const userEntry = client.database.Data.users[0][message.author.id];
-        if ((client.database.Data.users[0][message.author.id].feedbackCooldown > Date.now()) && (client.database.Data.users[0][message.author.id].feedbackCooldown !== "")) {
+        const userEntry = client.userDatas.get(message.author.id);
+        if ((userEntry.feedbackCooldown > Date.now()) && (userEntry.feedbackCooldown !== 0)) {
             const now = new Date().getTime();
             const distance = client.database.Data.users[0][message.author.id].feedbackCooldown - now;
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -22,9 +22,7 @@ exports.run = async(client, message) => {
             feedbackContent += content;
             await client.channels.get(client.bugChan).send(feedbackContent);
             userEntry.feedbackCooldown = Date.now() + 86400000; //current timestamp + 24h 
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                if (err) console.error(err)
-            });
+            client.userDatas.set(message.author.id, userEntry);
             return await message.channel.send(":white_check_mark: Alright, i sent your bug report");
         } else if ((request !== -1) && (bug === -1)) {
             const content = message.content.substr(request + 9);
@@ -34,9 +32,7 @@ exports.run = async(client, message) => {
             feedbackContent += content;
             await client.channels.get(client.featureChan).send(feedbackContent);
             userEntry.feedbackCooldown = Date.now() + 86400000; //current timestamp + 24h 
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                if (err) console.error(err)
-            });
+            client.userDatas.set(message.author.id, userEntry);
             return await message.channel.send(":white_check_mark: Alright, i sent your feature request");
         } else if ((request === -1) && (bug === -1)) {
             return await message.channel.send(":x: You did not used any parameters, use `" + client.prefix + "help " + client.commands.get(this.help.name).help.name + "` to learn more about this command usage");

@@ -4,6 +4,7 @@ exports.run = async(client, message) => {
     try {
         var checkArgs = message.content.indexOf(" ");
         var args;
+        const guildEntry = client.guildDatas.get(message.guild.id);
         if (checkArgs !== -1) {
             args = message.content.substr(checkArgs + 1).trim();
         } else {
@@ -12,10 +13,8 @@ exports.run = async(client, message) => {
         if (!args) {
             return await message.channel.send(":x: You need to specify the new prefix");
         } else {
-            client.database.Data.servers[0][message.guild.id].prefix = args;
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
-                if (err) console.error(err)
-            });
+            guildEntry.prefix = args;
+            client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send("The new prefix has sucesfully been set to **" + args + "**");
         }
     } catch (err) {

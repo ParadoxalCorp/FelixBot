@@ -5,15 +5,13 @@ exports.run = async(client, message) => {
         const remove = message.content.indexOf("-remove");
         const dm = message.content.indexOf("-dm");
         const channel = message.content.indexOf("-channel");
-        const guildEntry = client.database.Data.servers[0][message.guild.id];
+        const guildEntry = client.guildDatas.get(message.guild.id);
         if ((remove !== -1) && (dm === -1) && (channel === -1)) {
             if (guildEntry.greetings === "") {
                 return await message.channel.send(":x: There is not any greetings message");
             }
             guildEntry.greetings = "";
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                if (err) console.error (err)
-            });
+            client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, i removed the greetings message");
         } else if ((dm !== -1) && (remove === -1) && (channel === -1)) {
             const greetings = message.content.substr(dm + 4);
@@ -22,9 +20,7 @@ exports.run = async(client, message) => {
             }
             guildEntry.greetings = greetings;
             guildEntry.greetingsMethod = "dm";
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                if (err) console.error (err)
-            });
+            client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, i updated the greetings");
         } else if ((channel !== -1) && (dm === -1) && (remove === -1)) {
             const greetings = message.content.substr(channel + 8);
@@ -34,9 +30,7 @@ exports.run = async(client, message) => {
             guildEntry.greetings = greetings;
             guildEntry.greetingsMethod = "channel";
             guildEntry.greetingsChan = message.channel.id;
-            fs.writeFile(client.dbPath, JSON.stringify(client.database), err => {
-                if (err) console.error (err)
-            });
+            client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, i updated the greetings");
         } else if ((channel === -1) && (remove === -1) && (dm === -1)) {
             if (guildEntry.greetings === "") {
@@ -81,6 +75,6 @@ exports.help = {
     parameters: '`-remove`, `-dm`, `-channel`',
     description: 'Set the greetings message that Felix will send either in a channel or to the new member',
     usage: 'setgreetings -dm Welcome to our server !',
-    category: 'generic',
+    category: 'settings',
     detailledUsage: '`{prefix}setgreetings -dm Welcome` Will send the message "Welcome" to every new members in their private messages\n`{prefix}setgreetings -channel Welcome` Will send the message "Welcome" to every new members in the channel you used the command\n`{prefix}setgreetings -remove` Will remove the greetings message.\nYou can use `{user}` and `{server}` to add the new member name and your server name in the message, so \n`{prefix}setgreetings -channel Welcome {user} to {server}`\n will look like: `Welcome @Baguette to Felix\'s lovers`\nYou can display the current greetings message by using `{prefix}setgreetings`'
 };
