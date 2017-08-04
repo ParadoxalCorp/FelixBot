@@ -1,6 +1,6 @@
 const unirest = require("unirest");
 const popura = require('popura');
-const malClient = popura('Paradoxcorp', 'Fetyug88');
+const malClient = popura('wew', 'wew');
 const fs = require("fs-extra");
 
 exports.run = async(client, message) => {
