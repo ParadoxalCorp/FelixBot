@@ -1,6 +1,6 @@
 const unirest = require('unirest');
 const popura = require('popura');
-const malClient = popura('Paradoxcorp', 'Fetyug88');
+const malClient = popura('wew', 'wew');
 const malScraper = require('mal-scraper');
 
 exports.run = async(client, message) => {
