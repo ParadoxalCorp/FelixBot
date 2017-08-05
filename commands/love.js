@@ -14,7 +14,6 @@ exports.run = async(client, message) => {
                 await unirest.get(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`)
                 .header('Authorization', client.database.Data.global[0].discordBotList)
                 .end(async function (result) {
-                    console.log(result.body)
                     const upvoters = result.body;
                     if (upvoters.indexOf(message.author.id) === -1) {
                         if ((userEntry.loveCooldown > Date.now()) && (userEntry.loveCooldown !== 0)) {

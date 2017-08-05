@@ -8,7 +8,13 @@ exports.run = async(client, message) => {
         if (client.tagDatas.get(tag)) {
             return await message.channel.send(":x: That tag already exist");
         }
-        client.awaitReply(message, ":gear: Tag parameter", "What content should this tag contain? Time limit: 60 seconds", 60000).then(async (reply) => {
+        if (tag.length > 54) {
+            return await message.channel.send(":x: A tag name is limited to 54 characters");
+        }
+        client.awaitReply(message, ":gear: Tag parameter", "What content should this tag contain? Time limit: 60 seconds", 60000).then(async(reply) => {
+            if (reply.search(/(@everyone|@here|\<@)/gim) !== -1) {
+                return await message.channel.send(":x: You can't add a mention to a tag, sorry");
+            }
             const tagDefaultStructure = {
                 author: message.author.id,
                 content: reply,

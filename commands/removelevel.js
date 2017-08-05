@@ -3,12 +3,12 @@ const fs = require("fs-extra");
 exports.run = async(client, message) => {
     try {
         const guildEntry = client.guildDatas.get(message.guild.id),
-            user = message.content.indexOf("-u"),
-            channelSearch = message.content.indexOf("-c"),
-            roleSearch = message.content.indexOf("-r"),
+            user = client.searchForParameter(message, "user", {aliases: ["-user", "-u"], name: "user"}),
+            channelSearch = client.searchForParameter(message, "channel", {aliases: ["-channel", "-chan", "-c"], name: "channel"}),
+            roleSearch = client.searchForParameter(message, "role", {aliases: ["-role", "-r"], name: "role"}),
             tips = ["\n\n:information_source: **ProTip**:\nThere are stronger and weaker permissions, the order from strongest to weakest is \nUser > Roles > Channels > Server", "\n\n:information_source: **ProTip**:\n When setting a channel level, dont put anything after the `c` argument to apply the perms to the current channel", "\n\n:information_source: **ProTip**:\n Remember that the level 2 give access to every commands, give it only to the users you trust, and never set a channel or the server level to 2 unless you have a death wish", "\n\n:information_source: **ProTip**:\nIf a user has two roles or more with a different access level, the user access level will be the one of the highest role", "\n\n:information_source: **ProTip**:\nAs long as you have Administrator permissions, you are level 2 by default, there's no way to decrease it", "\n\n:information_source: **ProTip**:\n setLevel overwrites the targetted element(user, channel, role...) level if there is already one, so dont worry about duplicates", "\n\n:information_source: **ProTip**:\nRoles and channels levels are stored using their id, so dont worry, you can edit them as much as you want, it wont affect the level unless you delete it"],
             randomTips = tips[Math.floor(Math.random() * tips.length)];
-        if ((user !== -1) && (channelSearch === -1) && (roleSearch === -1)) {
+        if ((user) && (!channelSearch) && (!roleSearch)) {
             const mentionned = message.mentions.users.first();
             if (!mentionned) {
                 return await message.channel.send(":x: You didnt mentionned any user");
@@ -20,8 +20,8 @@ exports.run = async(client, message) => {
             level.splice(level.indexOf(mentionned.id), 1);
             client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(`:white_check_mark: Alright, i removed the level of **${mentionned.username}**${randomTips}`);
-        } else if ((channelSearch !== -1) && (roleSearch === -1) && (user === -1)) {
-            const channelName = message.content.substr(channelSearch + 3).trim();
+        } else if ((channelSearch) && (!roleSearch) && (!user)) {
+            const channelName = message.content.substr(channelSearch.position + channelSearch.length + 1).trim();
             var channel;
             if (channelName === "") {
                 channel = message.guild.channels.get(message.channel.id);
@@ -38,8 +38,8 @@ exports.run = async(client, message) => {
             level.splice(level.indexOf(channel.id), 1);
             client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(`:white_check_mark: Alright, i removed the level of the channel **${channel.name}**${randomTips}`);
-        } else if ((roleSearch !== -1) && (channelSearch === -1) && (user === -1)) {
-            const roleName = message.content.substr(roleSearch + 3).trim();
+        } else if ((roleSearch) && (!channelSearch) && (!user)) {
+            const roleName = message.content.substr(roleSearch.position + roleSearch.length + 1).trim();
             if (roleName === "") {
                 return await message.channel.send(":x: You didnt specified any role");
             }
@@ -54,7 +54,7 @@ exports.run = async(client, message) => {
             level.splice(level.indexOf(role.id), 1);
             client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(`:white_check_mark: Alright, i removed the level of the role **${roleName}**${randomTips}`);
-        } else if ((roleSearch === -1) && (channelSearch === -1) && (user === -1)) {
+        } else if ((!roleSearch) && (!channelSearch) && (!user)) {
             if (guildEntry.globalLevel === "none") {
                 return await message.channel.send(":x: The server has not any level");
             }

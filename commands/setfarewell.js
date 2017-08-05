@@ -2,10 +2,10 @@ const fs = require("fs-extra");
 
 exports.run = async(client, message) => {
     try {
-        const remove = message.content.indexOf("-remove");
+        const remove = client.searchForParameter(message, "remove");
         const whiteSpace = message.content.indexOf(" ");
         const guildEntry = client.guildDatas.get(message.guild.id);
-        if (remove !== -1) {
+        if (remove) {
             if (guildEntry.farewell === "") {
                 return await message.channel.send(":x: There is not any farewell message");
             }
@@ -23,7 +23,7 @@ exports.run = async(client, message) => {
                 farewellMsg = guildEntry.farewell;
             }
             return await message.channel.send("The current farewell message is: ```" + farewellMsg + "```");            
-        } else if ((whiteSpace !== -1) && (remove === -1)) {
+        } else if ((whiteSpace !== -1) && (remove)) {
             const farewellMsg = message.content.substr(whiteSpace + 1);
             if (farewellMsg === "") {
                 return await message.channel.send(":x: You cannot set the farewell message to nothing");

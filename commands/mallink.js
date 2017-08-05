@@ -1,21 +1,20 @@
 const unirest = require("unirest");
 const popura = require('popura');
-const malClient = popura('Paradoxcorp', 'Fetyug88');
+const malClient = popura('wew', 'wew');
 const fs = require("fs-extra");
 
 exports.run = async(client, message) => {
     try {
         const userMessage = message; //Store the user message so there will be no conflict with Felix's one
-        const set = userMessage.content.indexOf("-set");
-        const remove = userMessage.content.indexOf("-remove");
-        const current = userMessage.content.indexOf("-current");
+        const set = client.searchForParameter(message, "add");
+        const remove = client.searchForParameter(message, "remove");
         const userEntry = client.userDatas.get(message.author.id);
-        if ((set !== -1) && (remove === -1) && (current === -1)) {
+        if ((set) && (!remove)) {
             message.channel.send("Checking if the account exists...").then(async(message) => {
                 if (userMessage.content.substr(set + 5) === "") {
                     return await message.channel.send(":x: You didnt entered any username");
                 }
-                const malUser = userMessage.content.substr(set + 5).trim();
+                const malUser = userMessage.content.substr(set.position + set.length + 1).trim();
                 await malClient.getAnimeList(malUser)
                     .then(async function (res) {
                         if (!res.myinfo) {
@@ -23,13 +22,13 @@ exports.run = async(client, message) => {
                         }
                         var malAccount = res.myinfo;
                         userEntry.malAccount = malAccount.user_name;
-                        client.userDatas.set(message.author.id, userEntry);
+                        client.userDatas.set(userMessage.author.id, userEntry);
                         return await message.edit(":white_check_mark: Okay, i linked the account **" + malAccount.user_name + "** (ID: " + malAccount.user_id + ") to your account");
                     }).catch(async function (err) { //Which makes a double catch, ye, i love catching errors
                         await message.edit(":x: User not found");
                     })
             })
-        } else if ((remove !== -1) && (set === -1) && (current === -1)) {
+        } else if ((remove) && (!set)) {
             if (userEntry.malAccount === "") {
                 return await message.channel.send(":x: There is not any MyAnimeList account linked to your Discord account");
             }
@@ -54,7 +53,7 @@ exports.run = async(client, message) => {
                 console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
                 return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server                
             }
-        } else if ((current !== -1) && (set === -1) && (remove === -1)) {
+        } else if ((set === -1) && (remove === -1)) {
             if (userEntry.malAccount === "") {
                 return await message.channel.send(":x: There is not any MyAnimeList account linked to your Discord account");                
             }
@@ -88,7 +87,7 @@ exports.conf = {
 
 exports.help = {
     name: 'mallink',
-    parameters: '`-set`, `-remove`, `-current`',
+    parameters: '`-set`, `-remove`',
     description: 'Link your MyAnimeList account to your Discord account',
     usage: 'mallink -set MyAnimeList username',
     category: 'utility',

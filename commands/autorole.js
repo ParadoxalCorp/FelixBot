@@ -2,10 +2,10 @@ const fs = require('fs-extra');
 
 exports.run = async(client, message) => {
     try {
-        const add = message.content.indexOf("-add");
-        const remove = message.content.indexOf("-remove");
+        const add = client.searchForParameter(message, "add");
+        const remove = client.searchForParameter(message, "remove");
         const guildEntry = client.guildDatas.get(message.guild.id);
-        if ((add === -1) && (remove === -1)) {
+        if ((!add) && (!remove)) {
             if (guildEntry.autoAssignablesRoles.length === 0) {
                 return await message.channel.send(":x: There is no self-assignable role");
             }
@@ -23,8 +23,8 @@ exports.run = async(client, message) => {
             }
             selfAssignRoles = selfAssignRoles.replace(/undefined/gim, "");
             return await message.channel.send("Here's the self-assignables roles list: ```\n" + selfAssignRoles + "```");
-        } else if ((add !== -1) && (remove === -1)) {
-            const roleName = message.content.substr(add + 5).trim();
+        } else if ((add) && (!remove)) {
+            const roleName = message.content.substr(add.position + add.length + 1).trim();
             if (roleName === "") {
                 return await message.channel.send(":x: You did not specified the role to add");
             }
@@ -38,8 +38,8 @@ exports.run = async(client, message) => {
             guildEntry.autoAssignablesRoles.push(role.id);
             client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, i set the role **" + roleName + "** as a self-assignable role");
-        } else if ((remove !== -1) && (add === -1)) {
-            const roleName = message.content.substr(remove + 8).trim();
+        } else if ((remove) && (!add)) {
+            const roleName = message.content.substr(remove.position + remove.length + 1).trim();
             if (roleName === "") {
                 return await message.channel.send(":x: You did not specified the role to remove");
             }
@@ -51,7 +51,7 @@ exports.run = async(client, message) => {
                 return await message.channel.send(":x: The role you specified is not a self-assignable role");
             }
             guildEntry.autoAssignablesRoles.splice(guildEntry.autoAssignablesRoles.indexOf(role.id), 1);
-            client.guildDatas.set(message.author.id, guildEntry);
+            client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, the role **" + roleName + "** is not anymore a self-assignable role");
         }
     } catch (err) {

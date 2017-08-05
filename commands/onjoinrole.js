@@ -1,12 +1,12 @@
 const fs = require("fs-extra");
 exports.run = async(client, message) => {
     try {
-        const add = message.content.indexOf("-add");
-        const remove = message.content.indexOf("-remove");
-        const current = message.content.indexOf("-current");
+        const add = client.searchForParameter(message, "add");
+        const remove = client.searchForParameter(message, "remove");
+        const current = client.searchForParameter(message, "current", {aliases: ["-current", "-c"], name: "current"});
         const guildEntry = client.guildDatas.get(message.guild.id);
-        if ((add !== -1) && (remove === -1) && (current === -1)) {
-            var role = message.content.substr(add + 5);
+        if ((add) && (!remove) && (!current)) {
+            var role = message.content.substr(add.position + add.length + 1).trim();
             if (!message.guild.roles.find("name", role)) {
                 return await message.channel.send(":x: Specified role not found: Dont forget to respect case-sensitivty");
             } else {
@@ -24,8 +24,8 @@ exports.run = async(client, message) => {
                     return await message.channel.send(":x: There is already a role given to new members, remove it in order to add a new one");
                 }
             }
-        } else if ((remove !== -1) && (add === -1) && (current === -1)) {
-            var role = message.content.substr(remove + 8);
+        } else if ((remove) && (!add) && (!current)) {
+            var role = message.content.substr(remove.position + remove.length + 1).trim();
             if (guildEntry.onJoinRole === "") {
                 return await message.channel.send(":x: There is no role to remove, you should add one before removing one");
             } else {
@@ -51,7 +51,7 @@ exports.run = async(client, message) => {
                     return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server                
                 }
             }
-        } else if ((current !== -1) && (add === -1) && (remove === -1)) {
+        } else if ((current) && (!add) && (remove)) {
             if (guildEntry.onJoinRole === "") {
                 return await message.channel.send(":x: There is no role to check, you should add one before checking which one it is");
             } else {

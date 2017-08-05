@@ -2,10 +2,13 @@ const fs = require("fs-extra");
 
 exports.run = async(client, message) => {
     try {
-        const remove = message.content.indexOf("-remove");
+        const remove = client.searchForParameter(message, "remove");
         const userEntry = client.userDatas.get(message.author.id);
         const whitespace = message.content.indexOf(" ");
-        if (remove !== -1) {
+        if (remove) {
+            if (userEntry.afk === "") {
+                return await message.channel.send(":x: You dont have any afk status to remove");
+            }
             userEntry.afk = "";
             client.userDatas.set(message.author.id, userEntry);
             return await message.channel.send(":white_check_mark: Alright, i removed your afk status");

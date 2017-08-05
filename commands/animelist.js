@@ -6,14 +6,14 @@ const fs = require("fs-extra");
 exports.run = async(client, message) => {
     try {
         const userMessage = message;
-        const mangaSearch = message.content.indexOf("-manga");
-        const animeSearch = message.content.indexOf("-anime");
+        const mangaSearch = client.searchForParameter(message, "manga", {aliases: ["-manga", "-m"], name: "manga"});
+        const animeSearch = client.searchForParameter(message, "anime", {aliases: ["-anime", "-a"], name: "anime"});
         const whitespace = message.content.indexOf(" "); //Used to determine the position of the username
         const mentionned = message.mentions.users.first();
-        if ((animeSearch === -1) && (mangaSearch === -1)) {
+        if ((!animeSearch) && (!mangaSearch)) {
             return await message.channel.send(":x: You didnt used any parameters");
         }
-        if ((animeSearch !== -1) && (mangaSearch === -1)) { //To avoid triggering two search
+        if ((animeSearch) && (!mangaSearch)) { //To avoid triggering two search
             var username;
             if (mentionned) {
                 const userEntry = client.userDatas.get(mentionned.id);
@@ -23,9 +23,9 @@ exports.run = async(client, message) => {
                     username = userEntry.malAccount;
                 }
             } else {
-                username = message.content.substr(whitespace + 1, animeSearch - whitespace - 1).trim();
+                username = message.content.substr(whitespace + 1, animeSearch.position - whitespace - 1).trim();
             }
-            const animeName = message.content.substr(animeSearch + 7).trim();
+            const animeName = message.content.substr(animeSearch.position + animeSearch.length + 1).trim();
             if (username === "") {
                 return await message.channel.send(":x: You didnt specified any user");
             }
@@ -90,7 +90,7 @@ exports.run = async(client, message) => {
                         return await message.edit(":x: User not found");
                     })
             });
-        } else if ((mangaSearch !== -1) && (animeSearch === -1)) {
+        } else if ((mangaSearch) && (!animeSearch)) {
             var username;
             if (mentionned) {
                 const userEntry = client.userDatas.get(mentionned.id);
@@ -100,9 +100,9 @@ exports.run = async(client, message) => {
                     username = userEntry.malAccount;
                 }
             } else {
-                username = message.content.substr(whitespace + 1, mangaSearch - whitespace - 1).trim();
+                username = message.content.substr(whitespace + 1, mangaSearch.position - whitespace - 1).trim();
             }
-            const mangaName = message.content.substr(mangaSearch + 7).trim();
+            const mangaName = message.content.substr(mangaSearch.position + mangaSearch.length + 1).trim();
             if (username === "") {
                 return await message.channel.send(":x: You didnt specified any user");
             }

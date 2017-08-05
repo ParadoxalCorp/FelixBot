@@ -5,8 +5,6 @@ const client = new Discord.Client({
 const fs = require("fs-extra");
 const unirest = require("unirest");
 const dbPath = "database/database.json";
-const memwatch = require("memwatch-next");
-const heapdump = require("heapdump");
 const database = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
 const PersistentCollection = require('djs-collection-persistent');
 //const memwatch = require("memwatch-next");
@@ -30,6 +28,13 @@ const tagDatas = new PersistentCollection({
 });
 console.log("[INFO] Tags database loaded");
 
+try {
+    require("./modules/functions.js")(client);
+    console.log("[INFO] => Loaded functions");
+} catch (err) {
+    console.error("[ERROR] => Failed to load functions: " + err.stack);
+}
+
 client.mention = "<@327144735359762432>";
 client.config = database.Data.global[0];
 client.commands = new Discord.Collection();
@@ -45,40 +50,6 @@ client.cmdsLogs; //Will get initialized in the message event
 client.userDatas = userDatas;
 client.guildDatas = guildDatas;
 client.tagDatas = tagDatas;
-client.awaitReply = async(message, title, question, limit = 30000) => { //Default message collector function
-    const filter = m => m.author.id === message.author.id;
-    await message.channel.send({
-        embed: {
-            title: title,
-            description: question
-        }
-    }).catch(console.error);
-    try {
-        const collected = await message.channel.awaitMessages(filter, {
-            max: 1,
-            time: limit,
-            errors: ["time"]
-        });
-        if (collected.first().content === "") {
-            const collected = await message.channel.awaitMessages(filter, {
-                max: 1,
-                time: limit,
-                errors: ["time"]
-            });
-            return collected.first().content;
-        }
-        return collected.first().content;
-    } catch (e) {
-        return false;
-    }
-};
-client.getAuthorTags = function (message) {
-    const tagList = client.tagDatas.filter(t => JSON.parse(t).author === message.author.id).map(t => JSON.parse(t).name).join("\n");
-    if (tagList.length > 1920) {
-        return "Here's the tags you created ```\n" + tagList.substr(0, 1920) + "...```";
-    }
-    return "Here's the tags you created ```\n" + tagList + "```";
-}
 
 process.on('uncaughtException', (err) => {
     try {
@@ -102,19 +73,16 @@ process.on("unhandledRejection", err => {
         return;
     }
 });
-/*
-client.on('guildCreate', async guild => {
-    
+process.on("error", err => {
+    try {
+        console.error(err);
+        client.channels.get(client.errorLog).send("**Error: " + err + err.stack);
+    } catch (err) {
+        console.error(err);
+        return;
+    }    
 });
-client.on('guildDelete', async guild => {
 
-});
-client.on('guildMemberAdd', async member => {
-
-});
-client.on('guildMemberRemove', async member => {
-
-});*/
 
 //require node 8 or higher
 (async function () {

@@ -1,8 +1,8 @@
 exports.run = async(client, message) => {
     try {
         const whitespace = message.content.indexOf(" ");
-        if (whitespace === -1) {
-            return await message.channel.send(client.getAuthorTags(message));
+        if ((whitespace === -1) || (message.content.indexOf("-page") !== -1)) {
+            return await message.channel.send(client.pageResults(message, "Here's the tags you created.", client.getAuthorTags(message)));
         }
         const tag = message.content.substr(whitespace + 1).trim();
         if (!client.tagDatas.get(tag)) {
@@ -13,6 +13,9 @@ exports.run = async(client, message) => {
             return await message.channel.send(":x: Only the author of this tag can edit it");
         }
         client.awaitReply(message, ":gear: Tag edition", "What is the new content of this tag? Time limit: 60 seconds").then(async(reply) => {
+            if (reply.search(/(@everyone|@here|\<@)/gim) !== -1) {
+                return await message.channel.send(":x: You can't add a mention to a tag, sorry");
+            }
             tagEntry.content = reply;
             client.tagDatas.set(tag, tagEntry);
             return await message.channel.send(":white_check_mark: Alright, i edited the tag **" + tag + "**");

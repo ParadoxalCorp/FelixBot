@@ -2,19 +2,19 @@ const fs = require("fs-extra");
 
 exports.run = async(client, message) => {
     try {
-        const remove = message.content.indexOf("-remove");
-        const dm = message.content.indexOf("-dm");
-        const channel = message.content.indexOf("-channel");
+        const remove = client.searchForParameter(message, "remove");
+        const dm = client.searchForParameter(message, "dm", {aliases: ["-message", "-dm"], name: "dm"});
+        const channel = client.searchForParameter(message, "channel", {aliases: ["-channel", "-chan", "-c"], name: "channel"});
         const guildEntry = client.guildDatas.get(message.guild.id);
-        if ((remove !== -1) && (dm === -1) && (channel === -1)) {
+        if ((remove) && (!dm) && (!channel)) {
             if (guildEntry.greetings === "") {
                 return await message.channel.send(":x: There is not any greetings message");
             }
             guildEntry.greetings = "";
             client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, i removed the greetings message");
-        } else if ((dm !== -1) && (remove === -1) && (channel === -1)) {
-            const greetings = message.content.substr(dm + 4);
+        } else if ((dm) && (!remove) && (!channel)) {
+            const greetings = message.content.substr(dm.position + dm.length + 1);
             if (greetings === "") {
                 return await message.channel.send(":x: You cannot set the greetings to nothing");
             }
@@ -22,8 +22,8 @@ exports.run = async(client, message) => {
             guildEntry.greetingsMethod = "dm";
             client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, i updated the greetings");
-        } else if ((channel !== -1) && (dm === -1) && (remove === -1)) {
-            const greetings = message.content.substr(channel + 8);
+        } else if ((channel) && (!dm) && (!remove)) {
+            const greetings = message.content.substr(channel.position + channel.length + 1);
             if (greetings === "") {
                 return await message.channel.send(":x: You cannot set the greetings to nothing");
             }
@@ -32,7 +32,7 @@ exports.run = async(client, message) => {
             guildEntry.greetingsChan = message.channel.id;
             client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, i updated the greetings");
-        } else if ((channel === -1) && (remove === -1) && (dm === -1)) {
+        } else if ((!channel) && (!remove) && (!dm)) {
             if (guildEntry.greetings === "") {
                 return await message.channel.send(":x: There is not any greetings message");
             }

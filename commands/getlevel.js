@@ -1,9 +1,9 @@
 const fs = require("fs-extra");
 exports.run = async(client, message) => {
-    var user = message.content.indexOf("-u");
-    var channel = message.content.indexOf("-c");
-    var role = message.content.indexOf("-r");
-    const all = message.content.indexOf("-all");
+    var user = client.searchForParameter(message, "user", {aliases: ["-user", "-u"], name: "user"});
+    var channel = client.searchForParameter(message, "channel", {aliases: ["-channel", "-chan", "-c"], name: "channel"});
+    var role = client.searchForParameter(message, "role", {aliases: ["-role", "-r"], name: "role"});
+    const all = client.searchForParameter(message, "all", {aliases: ["-all", "-a"], name: "all"});
     const guildEntry = client.guildDatas.get(message.guild.id);
     var mentionned = message.mentions.users.first();
     var hasLevel0 = guildEntry.thingsLevel0;
@@ -14,7 +14,7 @@ exports.run = async(client, message) => {
             var mentionnedId = mentionned.id;
             var member = message.guild.members.get(mentionnedId);
         }
-        if ((user !== -1) && (channel === -1) && (role === -1)) {
+        if ((user) && (!channel) && (!role)) {
             if (!mentionned) {
                 return await message.channel.send(":x: You did not specify a user");
             } else {
@@ -31,8 +31,8 @@ exports.run = async(client, message) => {
                     return message.channel.send(":x: There's no level for this user, so their default level is 1");
                 }
             }
-        } else if ((user === -1) && (channel !== -1) && (role === -1)) {
-            var channelname = message.content.substr(channel + 3).toLowerCase();
+        } else if ((channel) && (!user) && (!role)) {
+            var channelname = message.content.substr(channel.position + channel.length + 1).toLowerCase().trim();
             if (channelname !== "") {
                 if (!message.guild.channels.find("name", channelname)) {
                     return await message.channel.send(":x: The channel you specified does not exist");
@@ -66,8 +66,8 @@ exports.run = async(client, message) => {
                     return message.channel.send(":x: There's no level set for this channel");
                 }
             }
-        } else if ((role !== -1) && (channel === -1) && (user === -1)) {
-            var rolename = message.content.substr(role + 3);
+        } else if ((role) && (!channel) && (!user)) {
+            var rolename = message.content.substr(role.position + role.length + 1).trim();
             if (rolename === "") {
                 return message.channel.send(":x: You did not specify a role name");
             } else {
@@ -89,7 +89,7 @@ exports.run = async(client, message) => {
                     }
                 }
             }
-        } else if ((all !== -1) && (role === -1) && (user === -1) && (channel === -1)) {
+        } else if ((all) && (!role) && (!user) && (!channel)) {
             var rolesLevel0 = [],
                 rolesLevel1 = [],
                 rolesLevel2 = [],
