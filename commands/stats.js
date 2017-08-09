@@ -79,7 +79,7 @@ exports.run = async(client, message) => {
       },
                     {
                         name: "Invite link",
-                        value: "[Felix invite link](https://discordapp.com/oauth2/authorize?&client_id=327144735359762432&scope=bot&permissions=2146950271)",
+                        value: `[Felix invite link](https://discordapp.com/oauth2/authorize?&client_id=${client.user.id}&scope=bot&permissions=2146950271)`,
                         inline: true
       }
     ],

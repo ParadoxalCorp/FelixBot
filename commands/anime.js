@@ -1,9 +1,10 @@
 const unirest = require('unirest');
 const popura = require('popura');
-const malClient = popura('wew', 'wew');
 const malScraper = require('mal-scraper');
 
 exports.run = async(client, message) => {
+    const config = client.database.Data.global[0];
+    const malClient = popura(config.malCredentials.name, config.malCredentials.password);    
     try {
         const whitespace = message.content.indexOf(" ");
         if (whitespace === -1) {
@@ -36,17 +37,23 @@ exports.run = async(client, message) => {
                             selectedAnime = res[0];
                         if (res.length > 1) {
                             var resultList;
-                            var i;
+                            var i = 1;
                             var replyNumber;
-                            for (i = 0; i < res.length; i++) {
-                                resultList += `[${i}] ${res[i].title}\n`;
-                            }
+                            resultList += res.map(a => `[${i++}] ${a.title}`).join('\n');
                             resultList = resultList.replace(/undefined/gim, "");
-                            Promise.resolve(client.awaitReply(message, ":mag: Your search has returned more than one result, select one by typing a number", "```\n" + resultList + "```")).then(async(reply) => {
-                                if ((Number(reply) === undefined) || (Number(reply) >= res.length) || (Number(reply) < 0) || (!reply)) {
+                            Promise.resolve(client.awaitReply(userMessage, ":mag: Your search has returned more than one result, select one by typing a number", "```\n" + resultList + "```")).then(async(reply) => {
+                                if ((typeof Number(reply.reply.content) !== "number") || (Number(reply.reply.content - 1) >= res.length) || (Number(reply.reply.content - 1) < 0) || (!reply)) {
+                                    if (message.guild) {
+                                        if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) {
+                                            await reply.reply.delete();
+                                        }
+                                    }
+                                    await reply.question.delete();
                                     return await message.channel.send(":x: You did not enter a whole number or the number you specified is not valid");
                                 }
-                                selectedAnime = res[reply];
+                                selectedAnime = res[reply.reply.content - 1];
+                                await reply.reply.delete();
+                                await reply.question.delete();
                                 if (selectedAnime === undefined) {
                                     return await message.channel.send(":x: You did not enter a number");
                                 }
@@ -156,7 +163,7 @@ exports.run = async(client, message) => {
                                 if (synopsis.length > 1024) {
                                     synopsis = synopsis.substr(0, 1021) + "..";
                                 }
-                                return await message.channel.send({
+                                return await message.edit({
                                     embed: {
                                         title: title,
                                         url: detailsLink,

@@ -1,9 +1,10 @@
 const unirest = require('unirest');
 const popura = require('popura');
-const malClient = popura('Paradoxcorp', 'Fetyug88');
 const malScraper = require('mal-scraper');
 
 exports.run = async(client, message) => {
+    const config = client.database.Data.global[0];
+    const malClient = popura(config.malCredentials.name, config.malCredentials.password);    
     try {
         const userEntry = client.userDatas.get(message.author.id),
             mentionned = message.mentions.users.first(),

@@ -13,10 +13,10 @@ exports.run = async(client, message) => {
             return await message.channel.send(":x: Only the author of this tag can edit it");
         }
         client.awaitReply(message, ":gear: Tag edition", "What is the new content of this tag? Time limit: 60 seconds").then(async(reply) => {
-            if (reply.search(/(@everyone|@here|\<@)/gim) !== -1) {
+            if (reply.reply.content.search(/(@everyone|@here|\<@)/gim) !== -1) {
                 return await message.channel.send(":x: You can't add a mention to a tag, sorry");
             }
-            tagEntry.content = reply;
+            tagEntry.content = reply.reply.content;
             client.tagDatas.set(tag, tagEntry);
             return await message.channel.send(":white_check_mark: Alright, i edited the tag **" + tag + "**");
         })

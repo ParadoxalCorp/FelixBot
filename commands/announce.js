@@ -1,26 +1,31 @@
 exports.run = async(client, message) => {
     try {
         client.awaitReply(message, ":gear: Announcement parameter:", "What's the title of this announcement? Answer with `none` to dont set any. This command will self-destruct in 60 seconds if there is no answer", 60000).then(async(title) => {
-            if (title !== "none") {
-                if (title === false) {
-                    return await message.channel.send(":x: timeout: command aborted")
+            if (title === false) {
+                return await message.channel.send(":x: timeout: command aborted")
+            }
+            if (title.reply.content !== "none") {
+                var embedTitle;
+                if (title.reply.content.length > 256) {
+                    embedTitle = title.reply.content.substr(0, 253) + "...";
+                } else {
+                    embedTitle = title.reply.content;
                 }
-                if (title.length > 256) {
-                    title = title.substr(0, 253) + "...";
-                }
+                await title.question.delete();
                 client.awaitReply(message, ":gear: Announcement parameter:",
                     "What's the color of this announcement? You can choose between the 3 predefined ones: `red`, `orange`, `lightblue`. Answer with `none` to dont use any", 60000).then(async(userColor) => {
                     if (userColor === false) {
                         return await message.channel.send(":x: timeout: command aborted")
                     }
+                    await userColor.question.delete();
                     var color;
-                    if (userColor === "red") {
+                    if (userColor.reply.content === "red") {
                         color = 0xff0000;
-                    } else if (userColor === "orange") {
+                    } else if (userColor.reply.content === "orange") {
                         color = 0xff6600;
-                    } else if (userColor === "lightblue") {
+                    } else if (userColor.reply.content === "lightblue") {
                         color = 0x33ccff;
-                    } else if (userColor === "none") {
+                    } else if (userColor.reply.content === "none") {
                         color = 0x000;
                     } else {
                         color = 0x000;
@@ -29,12 +34,13 @@ exports.run = async(client, message) => {
                         if (content === false) {
                             return await message.channel.send(":x: timeout: command aborted")
                         }
+                        await content.question.delete();
                         await message.channel.send("Alright, your announcement will looks like that");
                         await message.channel.send({
                             embed: {
-                                title: title,
+                                title: embedTitle,
                                 color: color,
-                                description: content,
+                                description: content.reply.content,
                                 footer: {
                                     icon_url: message.author.avatarURL,
                                     text: "Announcement by " + message.author.username + "#" + message.author.discriminator
@@ -42,22 +48,23 @@ exports.run = async(client, message) => {
                             }
                         });
                         client.awaitReply(message, ":gear: Announcement parameter:", "Is that alright with you? Answer with `abort` to abort the announcement. Otherwise, answer with the channel name in which i should send the announcement", 60000).then(async(requestedChannel) => {
-                            if (requestedChannel === "abort") {
-                                return await message.channel.send(":x: Command aborted");
-                            }
                             if (requestedChannel === false) {
                                 return await message.channel.send(":x: Timeout: command aborted");
                             }
-                            const channel = message.guild.channels.find("name", requestedChannel.toLowerCase());
+                            await requestedChannel.question.delete();                            
+                            if (requestedChannel.reply.content === "abort") {
+                                return await message.channel.send(":x: Command aborted");
+                            }
+                            const channel = message.guild.channels.find("name", requestedChannel.reply.content.toLowerCase());
                             if (!channel) {
                                 return await message.channel.send(":x: The channel you specified does not exist, command aborted")
                             }
                             try {
                                 channel.send({
                                     embed: {
-                                        title: title,
+                                        title: embedTitle,
                                         color: color,
-                                        description: content,
+                                        description: content.reply.content,
                                         footer: {
                                             icon_url: message.author.avatarURL,
                                             text: "Announcement by " + message.author.username + "#" + message.author.discriminator
@@ -73,19 +80,20 @@ exports.run = async(client, message) => {
                     })
                 })
             } else {
-                 client.awaitReply(message, ":gear: Announcement parameter:",
+                client.awaitReply(message, ":gear: Announcement parameter:",
                     "What's the color of this announcement? You can choose between the 3 predefined ones: `red`, `orange`, `lightblue`. Answer with `none` to dont use any", 60000).then(async(userColor) => {
                     if (userColor === false) {
                         return await message.channel.send(":x: timeout: command aborted")
                     }
+                    await userColor.question.delete();
                     var color;
-                    if (userColor === "red") {
+                    if (userColor.reply.content === "red") {
                         color = 0xff0000;
-                    } else if (userColor === "orange") {
+                    } else if (userColor.reply.content === "orange") {
                         color = 0xff6600;
-                    } else if (userColor === "lightblue") {
+                    } else if (userColor.reply.content === "lightblue") {
                         color = 0x33ccff;
-                    } else if (userColor === "none") {
+                    } else if (userColor.reply.content === "none") {
                         color = 0x000;
                     } else {
                         color = 0x000;
@@ -94,11 +102,12 @@ exports.run = async(client, message) => {
                         if (content === false) {
                             return await message.channel.send(":x: timeout: command aborted")
                         }
+                        await content.question.delete();
                         await message.channel.send("Alright, your announcement will looks like that");
                         await message.channel.send({
                             embed: {
                                 color: color,
-                                description: content,
+                                description: content.reply.content,
                                 footer: {
                                     icon_url: message.author.avatarURL,
                                     text: "Announcement by " + message.author.username + "#" + message.author.discriminator
@@ -106,13 +115,14 @@ exports.run = async(client, message) => {
                             }
                         });
                         client.awaitReply(message, ":gear: Announcement parameter:", "Is that alright with you? Answer with `abort` to abort the announcement. Otherwise, answer with the channel name in which i should send the announcement", 60000).then(async(requestedChannel) => {
-                            if (requestedChannel === "abort") {
-                                return await message.channel.send(":x: Command aborted");
-                            }
                             if (requestedChannel === false) {
                                 return await message.channel.send(":x: Timeout: command aborted");
                             }
-                            const channel = message.guild.channels.find("name", requestedChannel.toLowerCase());
+                            await requestedChannel.question.delete();
+                            if (requestedChannel.reply.content === "abort") {
+                                return await message.channel.send(":x: Command aborted");
+                            }
+                            const channel = message.guild.channels.find("name", requestedChannel.reply.content.toLowerCase());
                             if (!channel) {
                                 return await message.channel.send(":x: The channel you specified does not exist, command aborted")
                             }
@@ -120,7 +130,7 @@ exports.run = async(client, message) => {
                                 channel.send({
                                     embed: {
                                         color: color,
-                                        description: content,
+                                        description: content.reply.content,
                                         footer: {
                                             icon_url: message.author.avatarURL,
                                             text: "Announcement by " + message.author.username + "#" + message.author.discriminator
@@ -134,7 +144,7 @@ exports.run = async(client, message) => {
                             }
                         })
                     })
-                })               
+                })
             }
         })
     } catch (err) {

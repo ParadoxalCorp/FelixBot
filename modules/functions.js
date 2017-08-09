@@ -5,7 +5,7 @@ module.exports = (client) => {
     }
     client.awaitReply = async(message, title, question, limit = 30000) => { //Default message collector function
         const filter = m => m.author.id === message.author.id;
-        await message.channel.send({
+        const clientMessage = await message.channel.send({
             embed: {
                 title: title,
                 description: question
@@ -23,9 +23,15 @@ module.exports = (client) => {
                     time: limit,
                     errors: ["time"]
                 });
-                return collected.first().content;
+                return {
+                    reply: collected.first(),
+                    question: clientMessage
+                };
             }
-            return collected.first().content;
+            return {
+                reply: collected.first(),
+                question: clientMessage
+            };
         } catch (e) {
             return false;
         }
@@ -35,7 +41,6 @@ module.exports = (client) => {
         const tagList = Array.from(client.tagDatas.filter(t => JSON.parse(t).author === message.author.id).map(t => JSON.parse(t).name));
         return tagList;
     }
-
     client.pageResults = function (message, text = "", results, size = 20) { //Default pagination function
         var result = [];
         const page = message.content.indexOf("-page");
@@ -60,7 +65,7 @@ module.exports = (client) => {
         }
         return text + "Showing page 1/" + result.length + ". Use `" + client.guildDatas.get(message.guild.id).prefix + "command -page page number` to navigate through pages```\n" + result[0] + "```";
     }
-    client.searchForParameter = function (message, parameter = false, newParameter = false) {
+    client.searchForParameter = function (message, parameter = false, newParameters = false) {
         var parameters = new Map();
         const addParameter = {
                 aliases: ["-add", "-a", "-set", "-s"],
@@ -82,25 +87,43 @@ module.exports = (client) => {
             parameters.set("remove", removeParameter),
             parameters.set("edit", editParameter),
             parameters.set("page", pageParameter);
-        if (newParameter) {
-            if (typeof newParameter !== "object") throw "FunctionCallError: The new parameter must be an Object";
-            if ((!newParameter.aliases) || (!newParameter.name)) throw "FunctionCallError: The new parameter object must contain a \"aliases\" Array property and a \"name\" String property";
-            if ((!Array.isArray(newParameter.aliases) || (newParameter.aliases.length < 1))) throw "FunctionCallError: The new parameter aliases property must be an array and must not be empty";
-            if (typeof newParameter.name !== "string") throw "FunctionCallError: The new parameter name property must be a string";
-            if (parameters.get(newParameter.name)) throw "FunctionCallError: The new parameter supplied is already defined";
-            parameters.set(newParameter.name, newParameter);
+        if (newParameters) {
+            if (Array.isArray(newParameters)) {
+                newParameters.forEach(function (newParameter) {
+                    if (typeof newParameter !== "object") throw "FunctionCallError: The new parameter must be an Object";
+                    if ((!newParameter.aliases) || (!newParameter.name)) throw "FunctionCallError: The new parameter object must contain a \"aliases\" Array property and a \"name\" String property";
+                    if ((!Array.isArray(newParameter.aliases) || (newParameter.aliases.length < 1))) throw "FunctionCallError: The new parameter aliases property must be an array and must not be empty";
+                    if (typeof newParameter.name !== "string") throw "FunctionCallError: The new parameter name property must be a string";
+                    if (parameters.get(newParameter.name)) throw "FunctionCallError: The new parameter supplied is already defined";
+                    parameters.set(newParameter.name, newParameter);
+                });
+            } else {
+                if (typeof newParameters !== "object") throw "FunctionCallError: The new parameter must be an Object";
+                if ((!newParameters.aliases) || (!newParameters.name)) throw "FunctionCallError: The new parameter object must contain a \"aliases\" Array property and a \"name\" String property";
+                if ((!Array.isArray(newParameters.aliases) || (newParameters.aliases.length < 1))) throw "FunctionCallError: The new parameter aliases property must be an array and must not be empty";
+                if (typeof newParameters.name !== "string") throw "FunctionCallError: The new parameter name property must be a string";
+                if (parameters.get(newParameters.name)) throw "FunctionCallError: The new parameter supplied is already defined";
+                parameters.set(newParameters.name, newParameters);
             }
+        }
         if (!parameter) { //Basically, if no parameters are supplied, return an array of objetcs of all matched parameters
             var matchedParameters = []
             parameters.forEach(function (param) {
                 parameters.get(param.name).aliases.forEach(function (alias) {
-                if (message.content.indexOf(alias) !== -1) {
-                    matchedParameters.push({
-                        position: message.content.indexOf(alias),
-                        length: alias.length,
-                        name: parameters.get(param.name)
-                    });
-                }                    
+                    if (message.content.indexOf(alias) !== -1) {
+                        if (matchedParameters.filter(m => m.name === param.name).length === 0) { //Dont push the same argument cause aliases ^
+                            var substractArg = message.content.substr(message.content.indexOf(alias) + alias.length + 1).trim();
+                            if (substractArg.indexOf("-") !== -1) {
+                                substractArg = substractArg.substr(0, substractArg.indexOf("-")).trim();
+                            }
+                            matchedParameters.push({
+                                position: message.content.indexOf(alias),
+                                length: alias.length,
+                                name: parameters.get(param.name).name,
+                                argument: substractArg
+                            });
+                        }
+                    }
                 });
             });
             if (matchedParameters.length < 1) {

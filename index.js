@@ -27,15 +27,21 @@ const tagDatas = new PersistentCollection({
     name: 'tagDatas'
 });
 console.log("[INFO] Tags database loaded");
-
+//Load functions
 try {
     require("./modules/functions.js")(client);
     console.log("[INFO] => Loaded functions");
 } catch (err) {
     console.error("[ERROR] => Failed to load functions: " + err.stack);
 }
-
-client.mention = "<@327144735359762432>";
+//Load malsearch module
+try {
+    require("./modules/malsearch.js")(client);
+    console.log("[INFO] => Malsearch module loaded");
+} catch (err) {
+    console.error("[ERROR] => Failed to load the malsearch module: " + err.stack);
+}
+client.mention = `<@327144735359762432>`;
 client.config = database.Data.global[0];
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();

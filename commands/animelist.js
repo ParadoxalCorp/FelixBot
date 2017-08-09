@@ -1,13 +1,20 @@
 const unirest = require("unirest");
 const popura = require('popura');
-const malClient = popura('wew', 'wew');
 const fs = require("fs-extra");
 
 exports.run = async(client, message) => {
+    const config = client.database.Data.global[0];
+    const malClient = popura(config.malCredentials.name, config.malCredentials.password);
     try {
         const userMessage = message;
-        const mangaSearch = client.searchForParameter(message, "manga", {aliases: ["-manga", "-m"], name: "manga"});
-        const animeSearch = client.searchForParameter(message, "anime", {aliases: ["-anime", "-a"], name: "anime"});
+        const mangaSearch = client.searchForParameter(message, "manga", {
+            aliases: ["-manga", "-m"],
+            name: "manga"
+        });
+        const animeSearch = client.searchForParameter(message, "anime", {
+            aliases: ["-anime", "-a"],
+            name: "anime"
+        });
         const whitespace = message.content.indexOf(" "); //Used to determine the position of the username
         const mentionned = message.mentions.users.first();
         if ((!animeSearch) && (!mangaSearch)) {
@@ -25,7 +32,7 @@ exports.run = async(client, message) => {
             } else {
                 username = message.content.substr(whitespace + 1, animeSearch.position - whitespace - 1).trim();
             }
-            const animeName = message.content.substr(animeSearch.position + animeSearch.length + 1).trim();
+            var animeName = message.content.substr(animeSearch.position + animeSearch.length + 1).trim();
             if (username === "") {
                 return await message.channel.send(":x: You didnt specified any user");
             }
@@ -38,55 +45,88 @@ exports.run = async(client, message) => {
                         if (res.myinfo.user_name) {
                             const userInfo = res.myinfo;
                             const animeList = res.list;
-                            await message.edit(`Searching for the anime **${animeName}** through **${userInfo.user_name}'s anime list`);
+                            var anime;
+                            await message.edit(`Searching for the anime **${animeName}** through **${userInfo.user_name}**'s anime list`);
                             var i;
-                            for (i = 0; i < animeList.length; i++) {
-                                if (animeList[i].series_title === animeName) {
-                                    var startDate;
-                                    var endDate;
-                                    if (animeList[i].my_start_date === "0000-00-00") {
-                                        startDate = "Unknown";
-                                    } else {
-                                        startDate = animeList[i].my_start_date;
+                            await malClient.searchAnimes(animeName).then(async function (results) {
+                                if (!results[0]) {
+                                    return anime = false;
+                                }
+                                var i = 1;
+                                var resultsMap = "```\n";
+                                resultsMap += results.map(a => `[${i++}] - ${a.title}`).join("\n");
+                                resultsMap += "```";
+                                await client.awaitReply(userMessage, ":mag: Your search has returned more than one result, select one by typing a number", resultsMap).then(async(reply) => {
+                                    if ((typeof reply.reply.content !== "number") || (reply.reply.content - 1 < 0) || (reply.reply.content > results.length)) {
+                                        if (message.guild) {
+                                            if (message.guild.member(message.author).hasPermission("MANAGE_MESSAGES")) {
+                                                await reply.reply.delete();
+                                            }
+                                        }
+                                        await reply.question.delete();
+                                        return anime = undefined;
                                     }
-                                    if (animeList[i].my_finish_date === "0000-00-00") {
-                                        endDate = "Unknown";
-                                    } else {
-                                        endDate = animeList[i].my_finish_date;
+                                    anime = results[reply.reply.content - 1].title;
+                                    if (message.guild) {
+                                        if (message.guild.member(message.author).hasPermission("MANAGE_MESSAGES")) {
+                                            await reply.reply.delete();
+                                        }
                                     }
-                                    return await message.edit({
-                                        embed: ({
-                                            title: userInfo.user_name,
-                                            url: `https://myanimelist.net/profile/${userInfo.user_name}`,
-                                            image: {
-                                                url: animeList[i].series_image
-                                            },
-                                            fields: [{
-                                                    name: ":1234: **Watched Episodes**",
-                                                    value: animeList[i].my_watched_episodes.toString(),
-                                                    inline: true
+                                    await reply.question.delete();
+                                })
+                            })
+                            if (anime === undefined) {
+                                return await message.edit(":x: You did not specified a number or the number you specified is not valid");
+                            }
+                            if (!anime) {
+                                return await message.edit(":x: I couldn't find the anime you specified");
+                            }
+                            const filterForAnime = animeList.filter(a => a.series_title === anime);
+                            if (filterForAnime.length < 1) {
+                                return await message.edit(`The user ${username} has not ${anime} in their anime list`);
+                            }
+                            var startDate;
+                            var endDate;
+                            if (filterForAnime[0].my_start_date === "0000-00-00") {
+                                startDate = "Unknown";
+                            } else {
+                                startDate = filterForAnime[0].my_start_date;
+                            }
+                            if (filterForAnime[0].my_finish_date === "0000-00-00") {
+                                endDate = "Unknown";
+                            } else {
+                                endDate = filterForAnime[0].my_finish_date;
+                            }
+                            return await message.edit({
+                                embed: ({
+                                    title: userInfo.user_name,
+                                    url: `https://myanimelist.net/profile/${userInfo.user_name}`,
+                                    image: {
+                                        url: filterForAnime[0].series_image
+                                    },
+                                    fields: [{
+                                            name: ":1234: **Watched Episodes**",
+                                            value: filterForAnime[0].my_watched_episodes.toString(),
+                                            inline: true
                                         }, {
-                                                    name: ":calendar: **Start Date**",
-                                                    value: startDate,
-                                                    inline: true
+                                            name: ":calendar: **Start Date**",
+                                            value: startDate,
+                                            inline: true
                                         }, {
-                                                    name: ":calendar: **Finish Date**",
-                                                    value: endDate,
-                                                    inline: true
+                                            name: ":calendar: **Finish Date**",
+                                            value: endDate,
+                                            inline: true
                                         }, {
-                                                    name: ":star: **Score**",
-                                                    value: animeList[i].my_score.toString(),
-                                                    inline: true
+                                            name: ":star: **Score**",
+                                            value: filterForAnime[0].my_score.toString(),
+                                            inline: true
                                         }
                                             ]
-                                        })
-                                    }).catch(console.error);
-                                }
-                            }
-                            return await message.edit(":x: **" + userInfo.user_name + "** has not **" + animeName + "** in their anime list")
+                                })
+                            }).catch(console.error);
                         }
-
                     }).catch(async function (err) {
+                        console.log(err);
                         return await message.edit(":x: User not found");
                     })
             });
@@ -115,56 +155,93 @@ exports.run = async(client, message) => {
                         if (res.myinfo.user_name) {
                             const userInfo = res.myinfo;
                             const mangaList = res.list;
-                            await message.edit(`Searching for the manga **${mangaName}** through **${userInfo.user_name}'s anime list`);
+                            await message.edit(`Searching for the manga **${mangaName}** through **${userInfo.user_name}**'s anime list`);
                             var i;
-                            for (i = 0; i < mangaList.length; i++) {
-                                if (mangaList[i].series_title === mangaName) {
-                                    var startDate;
-                                    var endDate;
-                                    if (mangaList[i].my_start_date === "0000-00-00") {
-                                        startDate = "Unknown";
-                                    } else {
-                                        startDate = mangaList[i].my_start_date;
+                            var manga;
+                            await malClient.searchAnimes(mangaName).then(async function (results) {
+                                if (!results[0]) {
+                                    return manga = false;
+                                }
+                                var i = 1;
+                                var resultsMap = "```\n";
+                                resultsMap += results.map(a => `[${i++}] - ${a.title}`).join("\n");
+                                if (resultsMap.length > 2045) {
+                                    resultsMap = resultsMap.substr(0, 2042) + "..."
+                                }
+                                resultsMap += "```";
+                                console.log(resultsMap.length);
+                                await client.awaitReply(userMessage, ":mag: Your search has returned more than one result, select one by typing a number", resultsMap).then(async(reply) => {
+                                    if ((typeof reply.reply.content !== "number") || (reply.reply.content - 1 < 0) || (reply.reply.content > results.length)) {
+                                        if (message.guild) {
+                                            if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) {
+                                                await reply.reply.delete();
+                                            }
+                                        }
+                                        await reply.question.delete();
+                                        return manga = undefined;
                                     }
-                                    if (mangaList[i].my_finish_date === "0000-00-00") {
-                                        endDate = "Unknown";
-                                    } else {
-                                        endDate = mangaList[i].my_finish_date;
+                                    manga = results[reply.reply.content - 1].title;
+                                    if (message.guild) {
+                                        if (message.guild.member(message.author).hasPermission("MANAGE_MESSAGES")) {
+                                            await reply.reply.delete();
+                                        }
                                     }
-                                    return await message.edit({
-                                        embed: ({
-                                            title: userInfo.user_name,
-                                            url: `https://myanimelist.net/profile/${userInfo.user_name}`,
-                                            image: {
-                                                url: mangaList[i].series_image
-                                            },
-                                            fields: [{
-                                                    name: ":book: **Read Chapters**",
-                                                    value: mangaList[i].my_read_chapters.toString(),
-                                                    inline: true
+                                    await reply.question.delete();
+                                })
+                            })
+                            if (manga === undefined) {
+                                return await message.edit(":x: You did not specified a number or the number you specified is not valid");
+                            }
+                            if (!manga) {
+                                return await message.edit(":x: I couldn't find the manga you specified");
+                            }
+                            const filterForManga = mangaList.filter(a => a.series_title === manga);
+                            if (filterForManga.length < 1) {
+                                return await message.edit(`The user ${username} has not ${manga} in their manga list`);
+                            }
+                            var startDate;
+                            var endDate;
+                            if (filterForManga[0].my_start_date === "0000-00-00") {
+                                startDate = "Unknown";
+                            } else {
+                                startDate = filterForManga[0].my_start_date;
+                            }
+                            if (filterForManga[0].my_finish_date === "0000-00-00") {
+                                endDate = "Unknown";
+                            } else {
+                                endDate = filterForManga[0].my_finish_date;
+                            }
+                            return await message.edit({
+                                embed: ({
+                                    title: userInfo.user_name,
+                                    url: `https://myanimelist.net/profile/${userInfo.user_name}`,
+                                    image: {
+                                        url: filterForManga[0].series_image
+                                    },
+                                    fields: [{
+                                            name: ":book: **Read Chapters**",
+                                            value: filterForManga[0].my_read_chapters.toString(),
+                                            inline: true
                                         }, {
-                                                    name: ":books: **Read Volumes**",
-                                                    value: mangaList[i].my_read_volumes.toString(),
-                                                    inline: true
+                                            name: ":books: **Read Volumes**",
+                                            value: filterForManga[0].my_read_volumes.toString(),
+                                            inline: true
                                         }, {
-                                                    name: ":calendar: **Start Date**",
-                                                    value: startDate,
-                                                    inline: true
+                                            name: ":calendar: **Start Date**",
+                                            value: startDate,
+                                            inline: true
                                         }, {
-                                                    name: ":calendar: **Finish Date**",
-                                                    value: endDate,
-                                                    inline: true
+                                            name: ":calendar: **Finish Date**",
+                                            value: endDate,
+                                            inline: true
                                         }, {
-                                                    name: ":star: **Score**",
-                                                    value: mangaList[i].my_score.toString(),
-                                                    inline: true
+                                            name: ":star: **Score**",
+                                            value: filterForManga[0].my_score.toString(),
+                                            inline: true
                                         }
                                             ]
-                                        })
-                                    }).catch(console.error);
-                                }
-                            }
-                            return await message.edit(":x: **" + userInfo.user_name + "** has not **" + mangaName + "** in their anime list")
+                                })
+                            }).catch(console.error);
                         }
 
                     }).catch(async function (err) {

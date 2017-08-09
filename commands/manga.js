@@ -1,9 +1,11 @@
 const unirest = require('unirest');
 const popura = require('popura');
-const malClient = popura('wew', 'wew');
 const malScraper = require('mal-scraper');
 
 exports.run = async(client, message) => {
+    const config = client.database.Data.global[0];
+    const malClient = popura(config.malCredentials.name, config.malCredentials.password);
+
     try {
         const whitespace = message.content.indexOf(" ");
         if (whitespace === -1) {
@@ -142,28 +144,38 @@ exports.run = async(client, message) => {
                 return console.error(err);
             }
         }
-        await message.channel.send("Searching for " + mangaName + "...").then(async(message) => {        
-        await malClient.searchMangas(mangaName)
-            .then(async function (res) {
-                if (!res[0]) {
-                    return await message.edit(":x: Your search did not returned any result");
-                }
-                if (res.length > 1) {
-                    var resultList;
-                    for (let i = 0; i < res.length; i++) {
-                        resultList += `[${i}] ${res[i].title}\n`;
+        await message.channel.send("Searching for " + mangaName + "...").then(async(message) => {
+            await malClient.searchMangas(mangaName)
+                .then(async function (res) {
+                    if (!res[0]) {
+                        return await message.edit(":x: Your search did not returned any result");
                     }
-                    resultList = resultList.replace(/undefined/gim, ''); // replace that shitty undefined by nothing
-                    client.awaitReply(message, ":mag: Your search has returned more than one result, select one by typing a number", "```\n" + resultList + "```").then(async(reply) => {
-                        if ((Number(reply) === undefined) || (Number(reply) >= res.length) || (Number(reply) < 0) || (!reply)) {
-                            return await message.channel.send(":x: You did not enter a whole number or the number you specified is not valid");
+                    if (res.length > 1) {
+                        let i = 1;
+                        var resultList = res.map(m => `[${i++}] ${m.title}`).join("\n");
+                        //resultList = resultList.replace(/undefined/gim, ''); 
+                        if (resultList.length > 2045) {
+                            resultList = resultList.substr(0, 2042) + "...";
                         }
-                        getManga(res[Number(reply)]);
-                    });
-                } else {
-                    getManga(res[0]);
-                }
-            }).catch(err => console.error(err));
+                        client.awaitReply(userMessage, ":mag: Your search has returned more than one result, select one by typing a number", "```\n" + resultList + "```").then(async(reply) => {
+                            if (!reply) {
+                                return await message.channel.send(":x: Timeout: Command aborted");
+                            }
+                            if (message.guild) {
+                                if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) {
+                                    await reply.reply.delete();
+                                }
+                            }
+                            await reply.question.delete();
+                            if ((typeof Number(reply.reply.content) !== "number") || (reply.reply.content - 1 >= res.length) || (reply.reply.content - 1 < 0)) {
+                                return await message.channel.send(":x: You did not enter a whole number or the number you specified is not valid");
+                            }
+                            getManga(res[Number(reply.reply.content) - 1]);
+                        });
+                    } else {
+                        getManga(res[0]);
+                    }
+                }).catch(err => console.error(err));
         });
     } catch (err) {
         var guild;
