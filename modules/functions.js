@@ -37,16 +37,16 @@ module.exports = (client) => {
         }
     };
 
-    client.getAuthorTags = function (message) { //default function to get the message author tags
+    client.getAuthorTags = function (message) { //default function to get the provided user tags
         const tagList = Array.from(client.tagDatas.filter(t => JSON.parse(t).author === message.author.id).map(t => JSON.parse(t).name));
         return tagList;
     }
-    client.pageResults = function (message, text = "", results, size = 20) { //Default pagination function
+    client.pageResults = function (message, text = "", results, size = 10) { //Default pagination function
         var result = [];
         const page = message.content.indexOf("-page");
         var j = 0;
         for (var i = 0; i < Math.ceil(results.length / size); i++) {
-            result[i] = results.slice(j, j + size);
+            result[i] = results.slice(j, j + size).join("\n");
             j = j + size;
         }
         if (result.length < 1) {

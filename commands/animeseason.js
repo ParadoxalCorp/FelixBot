@@ -105,6 +105,10 @@ exports.run = async(client, message) => {
                                     await reply.reply.delete();
                                 }
                             }
+                            var episodes = "Unknown";
+                            if (anime.nbEp) {
+                                episodes = anime.nbEp;
+                            }
                             return await reply.question.edit({
                                 embed: {
                                     title: anime.title,
@@ -113,7 +117,7 @@ exports.run = async(client, message) => {
                                     },
                                     fields: [{
                                         name: ":1234: Episodes",
-                                        value: anime.nbEp,
+                                        value: episodes,
                                         inline: true
                             }, {
                                         name: ":open_file_folder: Genres",

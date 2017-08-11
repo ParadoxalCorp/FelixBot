@@ -3,8 +3,8 @@ const unirest = require("unirest");
 exports.run = async(client, message) => {
     try {
             fetch: {
-                await unirest.get("https://staging-api.ram.moe/images/random?type=cuddle")
-                .header(`Authorization`, `${client.database.Data.global[0].wolkeImageKey}`)
+                await unirest.get("https://staging.weeb.sh/images/random?type=cuddle")
+                .header(`Authorization`, `Bearer ${client.database.Data.global[0].wolkeImageKey}`)
                 .end(async function (result) {
                     var mentionned = message.mentions.users.first();
                     var cuddleUrl = result.body.url;

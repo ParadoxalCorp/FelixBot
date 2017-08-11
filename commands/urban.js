@@ -11,6 +11,9 @@ exports.run = async(client, message) => {
                 .header(`X-Mashape-Key`, `${client.database.Data.global[0].mashapeKey}`)
                 .header(`Accept`, `text/plain`)
                 .end(async function (result) {
+                    if (!result.body.list) {
+                        return await message.channel.send(":x: I could not find anything");
+                    }
                     if (result.body.list[0] != null) {
                         var urResult = result.body.list[0];
                         return await message.channel.send({

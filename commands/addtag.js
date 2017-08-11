@@ -1,8 +1,9 @@
 exports.run = async(client, message) => {
     try {
         const whitespace = message.content.indexOf(" ");
-        if (whitespace === -1) {
-            return await message.channel.send(client.getAuthorTags(message));
+        const page = client.searchForParameter(message, "page");
+        if ((whitespace === -1) || (page)) {
+            return await message.channel.send(client.pageResults(message, "Here's the tags you created.", client.getAuthorTags(message)));
         }
         const tag = message.content.substr(whitespace + 1).trim();
         if (client.tagDatas.get(tag)) {

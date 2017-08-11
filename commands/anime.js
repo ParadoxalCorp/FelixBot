@@ -8,7 +8,7 @@ exports.run = async(client, message) => {
     try {
         const whitespace = message.content.indexOf(" ");
         if (whitespace === -1) {
-            return await message.channel.send(":x: You did not enter an anime to search, correct syntax => `" + client.prefix + client.commands.get(this.help.name).help.name + " -a Anime Name`");
+            return await message.channel.send(":x: You did not enter an anime to search for");
         }
         var animeName = message.content.substr(whitespace + 1).trim();
         const userMessage = message; //Keep a way to get info from the triggering message
@@ -42,6 +42,9 @@ exports.run = async(client, message) => {
                             resultList += res.map(a => `[${i++}] ${a.title}`).join('\n');
                             resultList = resultList.replace(/undefined/gim, "");
                             Promise.resolve(client.awaitReply(userMessage, ":mag: Your search has returned more than one result, select one by typing a number", "```\n" + resultList + "```")).then(async(reply) => {
+                                if (!reply) {
+                                    return await message.channel.send(":x: Command aborted");
+                                }
                                 if ((typeof Number(reply.reply.content) !== "number") || (Number(reply.reply.content - 1) >= res.length) || (Number(reply.reply.content - 1) < 0) || (!reply)) {
                                     if (message.guild) {
                                         if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) {
@@ -393,7 +396,7 @@ exports.run = async(client, message) => {
 
 exports.conf = {
     enabled: true,
-    guildOnly: false,
+    guildOnly: true,
     aliases: [],
     disabled: false,
     permLevel: 1

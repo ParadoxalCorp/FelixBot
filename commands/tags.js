@@ -2,25 +2,12 @@ exports.run = async(client, message) => {
     try {
         const whitespace = message.content.indexOf(" ");
         const page = client.searchForParameter(message, "page");
-        if ((whitespace === -1) || (page)) {
-            return await message.channel.send(client.pageResults(message, "Here's the tags you created.", client.getAuthorTags(message)));
-        }
-        const tag = message.content.substr(whitespace + 1).trim();
-        if (!client.tagDatas.get(tag)) {
-            return await message.channel.send(":x: That tag does not exist");
-        }
-        const tagEntry = client.tagDatas.get(tag);
-        if (tagEntry.author !== message.author.id) {
-            return await message.channel.send(":x: Only the author of this tag can edit it");
-        }
-        client.awaitReply(message, ":gear: Tag edition", "What is the new content of this tag? Time limit: 60 seconds").then(async(reply) => {
-            if (reply.reply.content.search(/(@everyone|@here|\<@)/gim) !== -1) {
-                return await message.channel.send(":x: You can't add a mention to a tag, sorry");
-            }
-            tagEntry.content = reply.reply.content;
-            client.tagDatas.set(tag, tagEntry);
-            return await message.channel.send(":white_check_mark: Alright, i edited the tag **" + tag + "**");
-        })
+        const mine = client.searchForParameter(message, "mine", {aliases: ["-mine", "-m"], name: "mine"});
+        if ((whitespace === -1) || (page && !mine)) {
+            return await message.channel.send(client.pageResults(message, "Here's the created tags. ", Array.from(client.tagDatas.map(t => JSON.parse(t).name))));
+        } else if (mine) {
+            return await message.channel.send(client.pageResults(message, "Here's the tags you created. ", client.getAuthorTags(message)));
+        }        
     } catch (err) {
         var guild;
         var detailledError; //that stuff is to avoid undefined logs
@@ -42,15 +29,16 @@ exports.run = async(client, message) => {
 exports.conf = {
     enabled: true,
     guildOnly: false,
-    aliases: ["et"],
+    aliases: [],
     disabled: false,
     permLevel: 1
 };
 
 exports.help = {
-    name: 'edittag',
-    description: 'Edit a tag from the database, you can of course only edit yours',
-    usage: 'edittag tagname',
+    name: 'tags',
+    parameters: "`-mine`",
+    description: 'Show all the tags created',
+    usage: 'tags',
     category: 'generic',
-    detailledUsage: 'Tags are basically customized output, to run a tag, use `{prefix}t tagname`\n`{prefix}edittag` Will return the list of tags you created'
+    detailledUsage: 'Tags are basically customized output, to run a tag, use `{prefix}t tagname`\n`{prefix}tags -mine` Will return the list of tags you created'
 };

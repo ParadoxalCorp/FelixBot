@@ -12,9 +12,6 @@ exports.run = async(client, message) => {
             return await message.channel.send(":x: You did not specified any manga to search for");
         }
         var mangaName = message.content.substr(whitespace + 1).trim();
-        if (mangaName === "") {
-            return await message.channel.send(":x: You did not enter any manga to search, correct syntax => `" + client.prefix + client.commands.get(this.help.name).help.name + " Manga Name`");
-        }
         const userMessage = message;
 
         async function getManga(selectedAnime) {
@@ -197,7 +194,7 @@ exports.run = async(client, message) => {
 
 exports.conf = {
     enabled: true,
-    guildOnly: false,
+    guildOnly: true,
     aliases: [],
     disabled: false,
     permLevel: 1

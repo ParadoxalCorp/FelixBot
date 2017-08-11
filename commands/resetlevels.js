@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 
 exports.run = async(client, message) => {
     try {
-        const guildEntry = client.guildDatas.get(message.author.id);
+        const guildEntry = client.guildDatas.get(message.guild.id);
         guildEntry.thingsLevel0 = [],
             guildEntry.thingsLevel1 = [],
             guildEntry.thingsLevel2 = [],

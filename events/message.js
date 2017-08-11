@@ -82,11 +82,12 @@ module.exports = async(client, message) => {
         const args = message.content.split(/\s+/g);
         const supposedCommand = args.shift().slice(client.prefix.length).toLowerCase();
         var command;
-        if (client.commands.get(supposedCommand)) { //first check if its the a main command name, if not, then check if its an alias
+        if (client.commands.get(supposedCommand)) { //first check if its the main command name, if not, then check if its an alias
             command = client.commands.get(supposedCommand).help.name;
         } else if (client.commands.get(client.aliases.get(supposedCommand))) {
             command = client.commands.get(client.aliases.get(supposedCommand)).help.name;
         }
+        if (!command) return;
         const commandFile = require(`../commands/${command}.js`);
         if (commandFile.conf.guildOnly) {
             return await message.channel.send(":x: This command can only be used in a guild");
@@ -102,10 +103,16 @@ module.exports = async(client, message) => {
         }
     }
     const guildEntry = client.guildDatas.get(message.guild.id);
-    if (message.content.startsWith(client.mention)) {
-        const prefixRequest = message.content.substr(client.mention.length).trim();
-        if (prefixRequest === "prefix") {
+    if (message.content.startsWith(`<@${client.user.id}>`)) {
+        const request = message.content.substr(client.mention.length).trim();
+        if (request === "prefix") {
             return message.channel.send("The current prefix on this server is **" + guildEntry.prefix + "**");
+        } else if (request === "help") {
+            if (message.guild) {
+                return await message.channel.send("Here's the commands list, you can see the detailled help of a command using `" + guildEntry.prefix + "help commandname`\n\n" + client.overallHelp);
+            } else {
+                return await message.channel.send("Here's the commands list, you can see the detailled help of a command using `" + client.database.Data.global[0].prefix + "help commandname`\n\n" + client.overallHelp);
+            }
         }
     }
     if (!message.content.startsWith(guildEntry.prefix)) return;

@@ -3,8 +3,8 @@ const unirest = require("unirest");
 exports.run = async(client, message) => {
     try {
             fetch: {
-                await unirest.get("https://staging-api.ram.moe/images/random?type=cry")
-                .header(`Authorization`, `${client.database.Data.global[0].wolkeImageKey}`)
+                await unirest.get("https://staging.weeb.sh/images/random?type=cry")
+                .header(`Authorization`, `Bearer ${client.database.Data.global[0].wolkeImageKey}`)
                 .end(async function (result) {
                     var cryUrl = result.body.url;
                     await message.channel.send(cryUrl);
