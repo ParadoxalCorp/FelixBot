@@ -15,7 +15,7 @@ exports.run = async(client, message) => {
                         var mentionnedPeoples;
                         const mentions = message.mentions.users.array();
                         mentions.forEach(function (mention) {
-                                         mentionnedPeoples += mention.username + ", "
+                                         mentionnedPeoples += mention.username + ", ";
                                          mentionnedPeoples = mentionnedPeoples.replace(/undefined/gm, ""); //get rid of the undefined cuz i dont know where it come from
                                          });
                         await message.channel.send("Hey **" + mentionnedPeoples + "** You just received a cuddle from **" + message.author.username + "** " + cuddleUrl);

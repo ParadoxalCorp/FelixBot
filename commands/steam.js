@@ -1,15 +1,15 @@
 const unirest = require('unirest');
+const RapidAPI = require('rapidapi-connect');
+
 
 exports.run = async(client, message) => {
+    const rapid = new RapidAPI("felixbot_59661db7e4b02799980f840f", `${client.database.Data.global[0].rapidApiKey}`);
+
     const whitespace = message.content.indexOf(" ");
     if (whitespace === -1) {
         return await message.channel.send(":x: You did not enter a game to search");
     }
     const game = message.content.substr(whitespace + 1).trim();
-    /*var searcOnMdn = "https://developer.mozilla.org/en-US/search.json?locale=en-US&q=" + args;
-    var linkToResults = "https://developer.mozilla.org/en-US/search?locale=en-US&q=" + args; //May be wew but kek
-    var replaceWhitespace = searcOnMdn.replace(/\s/gi, "+");
-    var legitReplaceWhitespace = linkToResults.replace(/\s/gi, "+");*/
     try {
         var question = false;
         fetch: {
@@ -46,15 +46,30 @@ exports.run = async(client, message) => {
                 var price;
                 if (result.body.total === 0) {
                     return await message.channel.send(":x: Your search has not returned any result");
-                } else if (result.body.total > 1) {} else if (result.body.total === 1) {
+                } else if (result.body.total === 1) {
                     item = result.body.items[0];
                 }
-                if (item === "") {
+                if (item === "") { //If the total is neither 0 nor 1
                     item = await awaitItem();
                 }
+                var embedFields = [];
                 if (!item) {
                     return await message.channel.send(":x: Timeout: Command aborted");
                 }
+                var metascore = "None";
+                if (item.metascore !== "") {
+                    metascore = item.metascore;
+                }
+                embedFields.push({
+                    name: ":star: Metascore",
+                    value: metascore,
+                    inline: true
+                });
+                embedFields.push({
+                    name: ":id: ID",
+                    value: item.id,
+                    inline: true
+                });
                 if (!item.price) {
                     price = "Free";
                 } else {
@@ -63,9 +78,14 @@ exports.run = async(client, message) => {
                     } else if (item.price.final.toString().length === 5) {
                         price = item.price.final.toString().substr(0, 3) + "," + item.price.final.toString().substr(3) + "$";
                     } else if (item.price.final.toString().length === 3) {
-                        price = item.price.final.toString().substr(0, 1) + "," + item.price.final.toString().substr(1) + "$";                        
+                        price = item.price.final.toString().substr(0, 1) + "," + item.price.final.toString().substr(1) + "$";
                     }
                 }
+                embedFields.push({
+                    name: ":dollar: Price",
+                    value: price,
+                    inline: true
+                });
                 var platform = {
                     windows: ":white_check_mark:",
                     linux: ":white_check_mark:",
@@ -80,10 +100,46 @@ exports.run = async(client, message) => {
                 if (!item.platforms.mac) {
                     platform.mac = ":x:";
                 }
-                var metascore = "None";
-                if (item.metascore !== "") {
-                    metascore = item.metascore;
+                embedFields.push({
+                    name: ":desktop: Platforms",
+                    value: "Windows: " + platform.windows + "\n\n" + "Linux: " + platform.linux + "\n\n" + "Mac: " + platform.mac,
+                    inline: true
+                });
+
+                //Get a few moar infos with rapidapi now that we have the id
+                var getStatus;
+                async function getStats() {
+                    return new Promise(async(resolve, reject) => {
+                        await rapid.call('SteamWeb', 'getSchemaForGame', {
+                            'apiKey': `${client.database.Data.global[0].steamApiKey}`,
+                            'appId': `${item.id}`
+
+                        }).on('success', (payload) => {
+                            const stats = payload[0].game.availableGameStats;
+
+                            if (stats.achievements) {
+                                embedFields.push({
+                                    name: ":trophy: Achievements",
+                                    value: stats.achievements.length,
+                                    inline: true
+                                });
+                            }
+                            if (stats.stats) {
+                                embedFields.push({
+                                    name: ":page_facing_up: Stats",
+                                    value: stats.stats.length,
+                                    inline: true
+                                });
+                            }
+                            resolve(true);
+
+                        }).on('error', (payload) => {
+                            console.error(payload);
+                            resolve(true);
+                        });
+                    });
                 }
+                getStatus = await getStats(); //Await the resolve before going any further
                 return await message.channel.send({
                     embed: {
                         color: 3447003,
@@ -95,25 +151,7 @@ exports.run = async(client, message) => {
                         image: {
                             "url": item.tiny_image
                         },
-                        fields: [
-                            {
-                                name: ":star: Metascore",
-                                value: metascore,
-                                inline: true
-      }, {
-                                name: ":id: ID",
-                                value: item.id,
-                                inline: true
-      }, {
-                                name: ":dollar: Price",
-                                value: price,
-                                inline: true
-      }, {
-                                name: ":desktop: Platforms",
-                                value: "Windows: " + platform.windows + "\n\n" + "Linux: " + platform.linux + "\n\n" + "Mac: " + platform.mac,
-                                inline: true
-      }
-    ],
+                        fields: embedFields,
                         timestamp: new Date(),
                         footer: {
                             icon_url: client.user.avatarURL,

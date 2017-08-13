@@ -2,6 +2,7 @@ const moment = require("moment");
 
 exports.run = async(client, message) => {
     try {
+        var embedFields = [];
         if (message.guild.verificationLevel === 0) {
             var verLevel = "None (0)";
         } else if (message.guild.verificationLevel === 1) {
@@ -13,6 +14,58 @@ exports.run = async(client, message) => {
         } else if (message.guild.verificationLevel === 4) {
             var verLevel = "┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻ (4)";
         }
+        embedFields.push({
+            name: "Name",
+            value: message.guild.name,
+            inline: true
+        });
+        embedFields.push({
+            name: "ID",
+            value: message.guild.id,
+            inline: true
+        });
+        embedFields.push({
+            name: "Members",
+            value: message.guild.memberCount,
+            inline: true
+        });
+        embedFields.push({
+            name: "Owner",
+            value: message.guild.owner.user.username + "#" + message.guild.owner.user.discriminator,
+            inline: true
+        })
+        if (message.guild.defaultChannel) {
+            embedFields.push({
+                name: "Default channel",
+                value: "#" + message.guild.defaultChannel.name,
+                inline: true
+            });
+        }
+        embedFields.push({
+            name: "Created",
+            value: moment().to(message.guild.createdAt),
+            inline: true
+        });
+        embedFields.push({
+            name: "Channels",
+            value: message.guild.channels.size,
+            inline: true
+        });
+        embedFields.push({
+            name: "Roles",
+            value: message.guild.roles.size,
+            inline: true
+        });
+        embedFields.push({
+            name: "Verification level",
+            value: verLevel,
+            inline: true
+        });
+        embedFields.push({
+            name: "Region",
+            value: message.guild.region,
+            inline: true
+        });
         return await message.channel.send({
             embed: {
                 thumbnail: {
@@ -24,57 +77,7 @@ exports.run = async(client, message) => {
                     icon_url: message.author.avatarURL
                 },
                 title: "Server info",
-                fields: [{
-                        name: "Name",
-                        value: message.guild.name,
-                        inline: true
-      },
-                    {
-                        name: "ID",
-                        value: message.guild.id,
-                        inline: true
-      },
-                    {
-                        name: "Members",
-                        value: message.guild.memberCount,
-                        inline: true
-      },
-                    {
-                        name: "Owner",
-                        value: message.guild.owner.user.username + "#" + message.guild.owner.user.discriminator,
-                        inline: true
-      },
-                    {
-                        name: "Created",
-                        value: moment().to(message.guild.createdAt),
-                        inline: true
-      },
-                    {
-                        name: "Default channel",
-                        value: "#" + message.guild.defaultChannel.name,
-                        inline: true
-      },
-                    {
-                        name: "Channels",
-                        value: message.guild.channels.size,
-                        inline: true
-      },
-                    {
-                        name: "Roles",
-                        value: message.guild.roles.size,
-                        inline: true
-      },
-                    {
-                        name: "Verification level",
-                        value: verLevel,
-                        inline: true
-      },                         
-                    {
-                        name: "Region",
-                        value: message.guild.region,
-                        inline: true
-      }
-    ],
+                fields: embedFields,
                 timestamp: new Date(),
                 footer: {
                     icon_url: client.user.avatarURL,
