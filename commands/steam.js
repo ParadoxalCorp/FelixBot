@@ -116,23 +116,23 @@ exports.run = async(client, message) => {
 
                         }).on('success', (payload) => {
                             const stats = payload[0].game.availableGameStats;
-
-                            if (stats.achievements) {
-                                embedFields.push({
-                                    name: ":trophy: Achievements",
-                                    value: stats.achievements.length,
-                                    inline: true
-                                });
-                            }
-                            if (stats.stats) {
-                                embedFields.push({
-                                    name: ":page_facing_up: Stats",
-                                    value: stats.stats.length,
-                                    inline: true
-                                });
+                            if (stats) {
+                                if (stats.achievements) {
+                                    embedFields.push({
+                                        name: ":trophy: Achievements",
+                                        value: stats.achievements.length,
+                                        inline: true
+                                    });
+                                }
+                                if (stats.stats) {
+                                    embedFields.push({
+                                        name: ":page_facing_up: Stats",
+                                        value: stats.stats.length,
+                                        inline: true
+                                    });
+                                }
                             }
                             resolve(true);
-
                         }).on('error', (payload) => {
                             console.error(payload);
                             resolve(true);
