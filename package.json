@@ -1,29 +1,44 @@
 {
-  "name": "paradox",
+  "name": "FelixBot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Felix, a Discord bot",
   "main": "index.js",
+  "presets": [
+    "env"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "url": "https://github.com/ParadoxOrigins/FelixBot"
+  },
+  "author": "",
+  "license": "APACHE 2.0",
+  "bugs": {
+    "url": "https://github.com/ParadoxOrigins/FelixBot/issues"
+  },
+  "homepage": "https://github.com/ParadoxOrigins/FelixBot#readme",
   "dependencies": {
     "discord.js": "^11.1.0",
-    "express": "^4.15.3",
-    "find-in-batches": "^3.0.0",
+    "djs-collection-persistent": "^0.1.3",
     "fs-extra": "^3.0.1",
     "mal-scraper": "^1.4.1",
     "moment": "^2.17.1",
+    "node-gyp": "^3.6.2",
+    "node-wit": "^4.3.0",
     "npm-module-search": "^2.0.0",
-    "opusscript": "0.0.2",
     "popura": "^1.2.5",
+    "rapidapi-connect": "0.0.4",
+    "rebuild": "^0.1.2",
+    "rollbar": "^2.1.1",
+    "scrape-it": "^3.3.2",
     "unirest": "^0.5.1",
-    "rapidapi-connect": "0.0.4",      
+    "util": "^0.10.3",
     "uws": "^8.14.0",
-    "winston": "^2.3.1",
-    "util": "^0.10.3"
+    "winston": "^2.3.1"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
-  },
-  "author": "",
-  "license": "MIT"
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.5.2"
+  }
 }
