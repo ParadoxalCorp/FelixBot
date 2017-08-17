@@ -23,7 +23,7 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 * Server management features
 * A lot of stuff planned
 ### Commands
-![Alt text](https://cdn.discordapp.com/attachments/235118465071972352/342326201236586509/unknown.png)
+![Alt text](https://cdn.discordapp.com/attachments/288695210723246080/347717277380116481/unknown.png)
 ### Invite link and support server
 [invite link](https://discordapp.com/oauth2/authorize?&client_id=327144735359762432&scope=bot&permissions=2146950271)
 
