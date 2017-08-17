@@ -55,9 +55,12 @@ exports.run = async(client, message) => {
                                 var i = 1;
                                 var resultsMap = "```\n";
                                 resultsMap += results.map(a => `[${i++}] - ${a.title}`).join("\n");
+                                if (resultsMap.length > 2045) {
+                                    resultsMap = resultsMap.substr(0, 2042) + "..."
+                                }                                
                                 resultsMap += "```";
                                 await client.awaitReply(userMessage, ":mag: Your search has returned more than one result, select one by typing a number", resultsMap).then(async(reply) => {
-                                    if ((typeof reply.reply.content !== "number") || (reply.reply.content - 1 < 0) || (reply.reply.content > results.length)) {
+                                    if ((typeof results[reply.reply.content - 1] === "undefined") || (reply.reply.content - 1 < 0) || (reply.reply.content > results.length)) {
                                         if (message.guild) {
                                             if (message.guild.member(message.author).hasPermission("MANAGE_MESSAGES")) {
                                                 await reply.reply.delete();
@@ -169,9 +172,8 @@ exports.run = async(client, message) => {
                                     resultsMap = resultsMap.substr(0, 2042) + "..."
                                 }
                                 resultsMap += "```";
-                                console.log(resultsMap.length);
                                 await client.awaitReply(userMessage, ":mag: Your search has returned more than one result, select one by typing a number", resultsMap).then(async(reply) => {
-                                    if ((typeof reply.reply.content !== "number") || (reply.reply.content - 1 < 0) || (reply.reply.content > results.length)) {
+                                    if ((typeof results[reply.reply.content - 1] === "undefined") || (reply.reply.content -1 < 0) || (reply.reply.content > results.length)) {
                                         if (message.guild) {
                                             if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) {
                                                 await reply.reply.delete();

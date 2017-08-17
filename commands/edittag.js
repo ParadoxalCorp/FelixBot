@@ -17,9 +17,27 @@ exports.run = async(client, message) => {
             if (reply.reply.content.search(/(@everyone|@here|\<@)/gim) !== -1) {
                 return await message.channel.send(":x: You can't add a mention to a tag, sorry");
             }
-            tagEntry.content = reply.reply.content;
-            client.tagDatas.set(tag, tagEntry);
-            return await message.channel.send(":white_check_mark: Alright, i edited the tag **" + tag + "**");
+            const privacy = ["Global", "Server-wide", "Personal"];
+            var i = 1;
+            client.awaitReply(message, ":gear: Tag parameter", "What's this tag privacy? ```\n" + privacy.map(p => `[${i++}] ${p}`).join("\n") + "```").then(async(privacyReply) => {
+                if (!reply) {
+                    return await message.channel.send(":x: Command aborted");
+                }
+                if (typeof privacy[privacyReply.reply.content - 1] === "undefined") {
+                    return await message.channel.send(":x: You did not specified a number");
+                } else if (privacyReply.reply.content > privacy.length || privacyReply.reply.content < 1) {
+                    return await message.channel.send(":x: The number you entered is not valid");
+                }
+                var guild = false;
+                if (privacy[privacyReply.reply.content - 1] === "Server-wide") {
+                    guild = message.guild.id;
+                }                
+                tagEntry.content = reply.reply.content;
+                tagEntry.privacy = privacy[privacyReply.reply.content - 1];
+                tagEntry.guild = guild;
+                client.tagDatas.set(tag, tagEntry);
+                return await message.channel.send(":white_check_mark: Alright, i edited the tag **" + tag + "**");
+            })
         })
     } catch (err) {
         var guild;
@@ -41,7 +59,7 @@ exports.run = async(client, message) => {
 
 exports.conf = {
     enabled: true,
-    guildOnly: false,
+    guildOnly: true,
     aliases: ["et"],
     disabled: false,
     permLevel: 1
@@ -52,5 +70,5 @@ exports.help = {
     description: 'Edit a tag from the database, you can of course only edit yours',
     usage: 'edittag tagname',
     category: 'generic',
-    detailledUsage: 'Tags are basically customized output, to run a tag, use `{prefix}t tagname`\n`{prefix}edittag` Will return the list of tags you created'
+    detailledUsage: 'Tags are basically customized output, to run a tag, use `{prefix}t tagname`\n`{prefix}edittag` Will return the list of tags you created\n-**Privacy:** You can select between the three following privacy settings: \n=>`Global` Your tag will be accessible by everyone, from every server\n=>`Server-wide` Your tag will be accessible only in the server you added it(you can change the server by editing it though) and will appear on the created tags list only on this server(Unless you trigger the list)\n=>`Personal` Nobody besides you can access to this tag, and it will not appear in the created tags list unless you trigger the list'
 };

@@ -4,7 +4,7 @@ const malScraper = require('mal-scraper');
 
 exports.run = async(client, message) => {
     const config = client.database.Data.global[0];
-    const malClient = popura(config.malCredentials.name, config.malCredentials.password);    
+    const malClient = popura(config.malCredentials.name, config.malCredentials.password);
     try {
         const whitespace = message.content.indexOf(" ");
         if (whitespace === -1) {
@@ -41,6 +41,10 @@ exports.run = async(client, message) => {
                             var replyNumber;
                             resultList += res.map(a => `[${i++}] ${a.title}`).join('\n');
                             resultList = resultList.replace(/undefined/gim, "");
+                            if (resultList.length > 2041) {
+                                resultList = resultList.substr(0, 2038) + "..."
+                            }
+                            console.log(resultList.length);
                             Promise.resolve(client.awaitReply(userMessage, ":mag: Your search has returned more than one result, select one by typing a number", "```\n" + resultList + "```")).then(async(reply) => {
                                 if (!reply) {
                                     return await message.channel.send(":x: Command aborted");

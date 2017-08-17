@@ -20,7 +20,7 @@ exports.run = async(client, message) => {
                                          });
                         await message.channel.send("Hey **" + mentionnedPeoples + "** You just received a cuddle from **" + message.author.username + "** " + cuddleUrl);
                     } else {
-                        await message.channel.send("Are you trying to cuddle yourself? >_>")
+                        await message.channel.send("Are you trying to cuddle yourself? >_> "  + cuddleUrl);
                     }
                 });
             }

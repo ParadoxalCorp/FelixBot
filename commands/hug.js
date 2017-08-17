@@ -20,7 +20,7 @@ exports.run = async(client, message) => {
                     });
                     await message.channel.send("Hey **" + mentionnedPeoples + "** You just received a hug from **" + message.author.username + "** " + hugUrl);
                 } else {
-                    await message.channel.send("Are you trying to hug yourself? >_>")
+                    await message.channel.send("Are you trying to hug yourself? >_> " + hugUrl);
                 }
             });
         }

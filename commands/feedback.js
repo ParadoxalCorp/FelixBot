@@ -68,6 +68,6 @@ exports.help = {
     parameters: '`-bug`, `-request`',
     description: 'Send a bug report or a feature-request to my developper, the usage is limited to 1 time every 24h',
     usage: 'feedback -bug this is a bug report, fix pls',
-    category: 'generic',
+    category: 'miscellaneous',
     detailledUsage: '**Warning:** In order to avoid spam, you can use this command once a day, so you cant send a bug report and a feature request the same day. But you can send both in one bug report or one request, there is no problem with that'
 };

@@ -26,7 +26,11 @@ console.log("[INFO] Guilds database loaded");
 const tagDatas = new PersistentCollection({
     name: 'tagDatas'
 });
-console.log("[INFO] Tags database loaded");
+console.log("[INFO] => Tags database loaded");
+const clientDatas = new PersistentCollection({
+    name: 'clientDatas'
+});
+console.log("[INFO] => Client database loaded");
 //Load functions
 try {
     require("./modules/functions.js")(client);
@@ -56,6 +60,7 @@ client.cmdsLogs; //Will get initialized in the message event
 client.userDatas = userDatas;
 client.guildDatas = guildDatas;
 client.tagDatas = tagDatas;
+client.clientDatas = clientDatas;
 
 process.on('uncaughtException', (err) => {
     try {
@@ -110,7 +115,7 @@ process.on("error", err => {
     });
     try { //Build the help on launch instead of everytime the help is triggered to decrease the ressources usage
         console.log("Building the help...");
-        const categories = ["generic", "image", "utility", "fun", "moderation", "settings"];
+        const categories = ["generic", "image", "utility", "fun", "moderation", "settings", "miscellaneous"];
         var i;
         for (i = 0; i < categories.length; i++) {
             const categoryCommands = client.commands.filter(c => c.help.category == categories[i]);

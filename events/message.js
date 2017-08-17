@@ -38,9 +38,6 @@ module.exports = async(client, message) => {
         afk: "",
         feedbackCooldown: 0
     }
-    if (!client.userDatas.get(message.author.id)) {
-        client.userDatas.set(message.author.id, defaultUserDatas);
-    }
     const mentionned = message.mentions.users.first(); //Afk feature
     if (mentionned) {
         if (client.userDatas.get(mentionned.id)) {
@@ -63,14 +60,17 @@ module.exports = async(client, message) => {
         }
     }
     if (message.author.bot) return;
-    if ((client.userDatas.get(message.author.id).blackListed === "yes") && (message.author.id !== "140149699486154753")) return; //Ignore blacklisted users
     //Tags
     if (message.channel.type !== "dm") {
         if (message.content.startsWith(client.guildDatas.get(message.guild.id).prefix + "t ")) {
             const tagCommand = message.content.substr(client.guildDatas.get(message.guild.id).prefix.length + 2).trim();
-            if (!client.tagDatas.get(tagCommand)) {
+            if (!client.tagDatas.filter(t => (JSON.parse(t).privacy === "Global") || (JSON.parse(t).privacy === "Server-wide" && JSON.parse(t).guild === message.guild.id) || (JSON.parse(t).author === message.author.id)).get(tagCommand)) {
                 return await message.channel.send(":x: That tag does not exist");
             }
+            if (!client.userDatas.get(message.author.id)) { //Once the tag is confirmed
+                client.userDatas.set(message.author.id, defaultUserDatas);
+            }
+            if ((client.userDatas.get(message.author.id).blackListed === "yes") && (message.author.id !== "140149699486154753")) return; //Ignore blacklisted users
             return await message.channel.send(client.tagDatas.get(tagCommand).content);
         }
     }
@@ -88,6 +88,10 @@ module.exports = async(client, message) => {
             command = client.commands.get(client.aliases.get(supposedCommand)).help.name;
         }
         if (!command) return;
+        if (!client.userDatas.get(message.author.id)) { //Once the command is confirmed
+            client.userDatas.set(message.author.id, defaultUserDatas);
+        }
+        if ((client.userDatas.get(message.author.id).blackListed === "yes") && (message.author.id !== "140149699486154753")) return; //Ignore blacklisted users
         const commandFile = require(`../commands/${command}.js`);
         if (commandFile.conf.guildOnly) {
             return await message.channel.send(":x: This command can only be used in a guild");
@@ -133,13 +137,16 @@ module.exports = async(client, message) => {
     const args = message.content.split(/\s+/g);
     const supposedCommand = args.shift().slice(client.prefix.length).toLowerCase();
     if ((!client.commands.get(supposedCommand)) && (!client.aliases.get(supposedCommand))) return; //Just return if the command is not found
+    if (!client.userDatas.get(message.author.id)) { //Once the command is confirmed
+        client.userDatas.set(message.author.id, defaultUserDatas);
+    }
+    if ((client.userDatas.get(message.author.id).blackListed === "yes") && (message.author.id !== "140149699486154753")) return; //Ignore blacklisted users
     var command;
     if (client.commands.get(supposedCommand)) { //first check if its the a main command name, if not, then check if its an alias
         command = client.commands.get(supposedCommand).help.name;
     } else if (client.commands.get(client.aliases.get(supposedCommand))) {
         command = client.commands.get(client.aliases.get(supposedCommand)).help.name;
     }
-    //const command = client.commands.get(supposedCommand).help.name || client.commands.get(client.aliases.get(supposedCommand)).help.name; //check the default command name or one of the aliases 
     const commandFile = require(`../commands/${command}.js`);
     if (commandFile.conf.disabled !== false) {
         return message.channel.send(":x: Sorry but this command is disabled for now\n**Reason:** " + commandFile.conf.disabled);

@@ -20,7 +20,7 @@ exports.run = async(client, message) => {
                     });
                     await message.channel.send("Hey **" + mentionnedPeoples + "** You just received a pat from **" + message.author.username + "** " + patUrl);
                 } else {
-                    await message.channel.send("Are you trying to pat yourself? >_>")
+                    await message.channel.send("Are you trying to pat yourself? >_> " + patUrl);
                 }
             });
         }

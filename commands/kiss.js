@@ -14,7 +14,7 @@ exports.run = async(client, message) => {
                         }
                         await message.channel.send("Hey **" + mentionned.username + "** You just received a kiss from **" + message.author.username + "** " + kissUrl);
                     } else {
-                        await message.channel.send("Are you trying to kiss yourself? >_>")
+                        await message.channel.send("Are you trying to kiss yourself? >_> " + kissUrl);
                     }
                 });
             }
