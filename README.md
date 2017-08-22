@@ -11,6 +11,7 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 * [Features](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#features)
 * [Commands](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#commands)
 * [Invite link and support server](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#invite-link-and-support-server)
+* [Planned stuff](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#planned-stuff)
 * [Questions/Answers](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#quick-questionsanswers)
 * [Felix's open source usage infos](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#felixs-open-source-usage)
 * [Installation](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#installation-requirements)
@@ -28,6 +29,11 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 [invite link](https://discordapp.com/oauth2/authorize?&client_id=327144735359762432&scope=bot&permissions=2146950271)
 
 [Support server](https://discord.gg/Ud49hQJ)
+### Planned stuff
+* Level system(exp gain per activity) => Beta-testing
+* Trivia => WIP
+* reminders => Planned
+* Some stuff that im still not sure about so i wont put it here *shrug*
 ### Quick Questions/Answers
 * Will Felix have a music feature?
 > There is already a bunch of great bots with great music feature (Yasen-Baka, Hifumi, Ayana...) so i dont see the point of adding it
