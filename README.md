@@ -33,7 +33,7 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 ### Planned stuff
 * Level system(exp gain per activity) => Beta-testing
 * Trivia => Beta-testing
-* reminders => Planned
+* reminders => Beta-testing
 * Points system, earnable in games, with a leaderboard => Planned
 * Some stuff that im still not sure about so i wont put it here *shrug*
 ### Level system
