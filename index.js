@@ -9,6 +9,13 @@ const database = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
 const PersistentCollection = require('djs-collection-persistent');
 //const memwatch = require("memwatch-next");
 //const heapdump = require("heapdump");
+
+const {Wit, log} = require('node-wit');
+
+const wit = new Wit({
+  accessToken: "wew",
+});
+
 const {
     promisify
 } = require('util');
@@ -61,6 +68,8 @@ client.userDatas = userDatas;
 client.guildDatas = guildDatas;
 client.tagDatas = tagDatas;
 client.clientDatas = clientDatas;
+client.wit = wit;
+client.talkedRecently = new Set(); //cooldown stuff
 
 process.on('uncaughtException', (err) => {
     try {
@@ -94,7 +103,7 @@ process.on("error", err => {
     }    
 });
 
-
+client.loadReminders();
 //require node 8 or higher
 (async function () {
 

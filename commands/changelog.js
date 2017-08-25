@@ -22,13 +22,17 @@ exports.run = async(client, message) => {
             await interactiveMessage.react("❌");
             var currentPage = 0; //Keep track of where we are in the array
             const collector = interactiveMessage.createReactionCollector((reaction, user) => user.id === message.author.id)
+            var timeout = setTimeout(function () {
+                return interactiveMessage.delete();
+            }, 120000);
             collector.on('collect', async(r) => {
+                clearTimeout(timeout);
                 if (r.emoji.name === "⏪") {
                     if (currentPage !== 0) { //Dont edit if its not needed
                         currentPage = 0;
                         await interactiveMessage.edit(`__**${changelogs.changelogs[0].type}: ${changelogs.changelogs[0].name}**__ (${changelogs.changelogs[0].date})\n\n${changelogs.changelogs[0].content}\n\n:book: [Page ${currentPage + 1}/${changelogs.changelogs.length}] :gear: Latest release: ${changelogs.version}`);
                     }
-                    await r.remove(message.author.id);                    
+                    await r.remove(message.author.id);
                 } else if (r.emoji.name === "◀") {
                     if (currentPage === 0) {
                         currentPage = changelogs.changelogs.length - 1;
@@ -47,15 +51,18 @@ exports.run = async(client, message) => {
                         await interactiveMessage.edit(`__**${changelogs.changelogs[currentPage].type}: ${changelogs.changelogs[currentPage].name}**__ (${changelogs.changelogs[currentPage].date})\n\n${changelogs.changelogs[currentPage].content}\n\n:book: [Page ${currentPage + 1}/${changelogs.changelogs.length}] :gear: Latest release: ${changelogs.version}`)
                     }
                     await r.remove(message.author.id);
-                } else if (r.emoji.name === "⏩"){
+                } else if (r.emoji.name === "⏩") {
                     if (currentPage !== changelogs.changelogs.length - 1) { //Dont edit if its not needed
                         currentPage = changelogs.changelogs.length - 1;
                         await interactiveMessage.edit(`__**${changelogs.changelogs[changelogs.changelogs.length - 1].type}: ${changelogs.changelogs[changelogs.changelogs.length - 1].name}**__ (${changelogs.changelogs[changelogs.changelogs.length - 1].date})\n\n${changelogs.changelogs[changelogs.changelogs.length - 1].content}\n\n:book: [Page ${currentPage + 1}/${changelogs.changelogs.length}] :gear: Latest release: ${changelogs.version}`);
-                    } 
-                    await r.remove(message.author.id);                    
+                    }
+                    await r.remove(message.author.id);
                 } else if (r.emoji.name === "❌") {
                     return await interactiveMessage.delete();
                 }
+                timeout = setTimeout(function () {
+                    return interactiveMessage.delete();
+                }, 120000);
             });
         } catch (err) {
             await message.channel.send(":x: An error occured :v");

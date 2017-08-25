@@ -4,11 +4,54 @@ exports.run = async(client, message) => {
     try {
         const userEntry = client.userDatas.get(message.author.id);
         const mentionned = message.mentions.users.first();
+        const convertToTime = function (timestamp) {
+            return {
+                hours: Math.floor((timestamp % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                minutes: Math.floor((timestamp % (1000 * 60 * 60)) / (1000 * 60)),
+                seconds: Math.floor((timestamp % (1000 * 60)) / 1000)
+            }
+        }
+//--------------------------------Shows remaining time/remaining love points------------------------------------------------------------        
         if (!mentionned) {
-            return await message.channel.send(":x: Please mention the user you want to love");
-        } else if (mentionned) {
+            fetch: {
+                await unirest.get(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`)
+                .header('Authorization', client.database.Data.global[0].discordBotList)
+                .end(async function (result) {
+                    const upvoters = result.body;
+                    if (upvoters.indexOf(message.author.id) === -1) {
+                        if ((userEntry.loveCooldown > Date.now()) && (userEntry.loveCooldown !== 0)) {
+                            const timeRemaining = convertToTime(userEntry.loveCooldown - Date.now());
+                            return await message.channel.send(":x: You can only use this command once, time remaining: " + timeRemaining.hours + "h " + timeRemaining.minutes + "m " + timeRemaining.seconds + "s");
+                        } else {
+                            return await message.channel.send("You have one love point available");
+                        }
+                    } else {
+                        if ((userEntry.loveCooldown > Date.now()) && (userEntry.loveCooldown !== 0) && (userEntry.secondLoveCooldown > Date.now()) && (userEntry.secondLoveCooldown !== 0)) {
+                            var nearest;
+                            if (userEntry.loveCooldown > userEntry.secondLoveCooldown) {
+                                nearest = userEntry.secondLoveCooldown;
+                            } else {
+                                nearest = userEntry.loveCooldown;
+                            }
+                            const distance = convertToTime(nearest - Date.now());
+                            return await message.channel.send(":x: You can only use this command once, time remaining: " + distance.hours + "h " + distance.minutes + "m " + distance.seconds + "s");
+                        } else {
+                            var remainingPoints;
+                            if ((userEntry.loveCooldown > Date.now() && userEntry.secondLoveCooldown < Date.now()) || (userEntry.secondLoveCooldown > Date.now() && userEntry.loveCooldown < Date.now())) {
+                                remainingPoints = 1;
+                            } else if (userEntry.loveCooldown < Date.now() && userEntry.secondLoveCooldown < Date.now()){
+                                remainingPoints = 2;
+                            }
+                            return await message.channel.send("You have **" + remainingPoints + "** love points available");
+                        }
+                    }
+                })
+            }
+        }
+//---------------------------------------Love someone----------------------------------------------------        
+        else if (mentionned) {
             if (message.author.id === mentionned.id) {
-                return await message.channel.send(":x: You cant love yourself of course uwu");
+                return await message.channel.send(":x: You cant love yourself lmao");
             }
             fetch: {
                 await unirest.get(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`)
@@ -17,12 +60,8 @@ exports.run = async(client, message) => {
                     const upvoters = result.body;
                     if (upvoters.indexOf(message.author.id) === -1) {
                         if ((userEntry.loveCooldown > Date.now()) && (userEntry.loveCooldown !== 0)) {
-                            const now = new Date().getTime();
-                            const distance = userEntry.loveCooldown - now;
-                            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                            return await message.channel.send(":x: You can only use this command once, time remaining: " + hours + "h " + minutes + "m " + seconds + "s");
+                            const distance = convertToTime(userEntry.loveCooldown - Date.now());
+                            return await message.channel.send(":x: You can only use this command once, time remaining: " + distance.hours + "h " + distance.minutes + "m " + distance.seconds + "s");
                         }
                         const mentionnedData = client.userDatas.get(mentionned.id);
                         mentionnedData.lovePoints++;
@@ -39,12 +78,8 @@ exports.run = async(client, message) => {
                             } else {
                                 nearest = userEntry.loveCooldown;
                             }
-                            const now = new Date().getTime();
-                            const distance = nearest - now;
-                            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                            return await message.channel.send(":x: You can only use this command once, time remaining: " + hours + "h " + minutes + "m " + seconds + "s");
+                            const distance = convertToTime(nearest - Date.now());
+                            return await message.channel.send(":x: You can only use this command once, time remaining: " + distance.hours + "h " + distance.minutes + "m " + distance.seconds + "s");
                         }
                         const mentionnedData = client.userDatas.get(mentionned.id);
                         mentionnedData.lovePoints++;

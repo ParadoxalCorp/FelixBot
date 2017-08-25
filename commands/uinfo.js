@@ -14,40 +14,61 @@ exports.run = async(client, message) => {
         } else {
             getValueOf = message.author;
         }
+        const userEntry = client.userDatas.get(getValueOf.id),
+              guildEntry = client.guildDatas.get(message.guild.id);
         embedFields.push({
-            name: "Username",
+            name: ":bust_in_silhouette: Username",
             value: getValueOf.username + "#" + getValueOf.discriminator,
             inline: true
         });
         embedFields.push({
-            name: "User ID",
+            name: ":1234: User ID",
             value: getValueOf.id,
             inline: true
         });
         if (message.guild.member(getValueOf).nickname) {
             embedFields.push({
-                name: "Nickname",
+                name: ":busts_in_silhouette: Nickname",
                 value: message.guild.member(getValueOf).nickname,
+                inline: true
+            });
+        }
+        if (userEntry.expCount) {
+            const levelDetails = client.getLevelDetails(userEntry.level, userEntry.expCount);
+            embedFields.push({
+                name: ":star: Global experience",
+                value: "Level " + userEntry.level + "\nExp: " + Math.round(userEntry.expCount) + `\nLevel progress: ${(levelDetails.levelProgress)}`,
+                inline: true
+            });
+        }
+        if (guildEntry.levelSystem && guildEntry.levelSystem.enabled && guildEntry.levelSystem.users.filter(u => u.id === getValueOf.id).length !== 0) {
+            const userPos = guildEntry.levelSystem.users.findIndex(function (element) {
+                return element.id === getValueOf.id;
+            });
+            const levelDetails = client.getLevelDetails(guildEntry.levelSystem.users[userPos].level, guildEntry.levelSystem.users[userPos].expCount);            
+            embedFields.push({
+                name: ":star: Local experience",
+                value: "Level " + guildEntry.levelSystem.users[userPos].level + "\nExp: " + Math.round(guildEntry.levelSystem.users[userPos].expCount) + `\nLevel progress: ${(levelDetails.levelProgress)}`,
                 inline: true
             });
         }
         if (message.guild.member(getValueOf).hoistRole) {
             embedFields.push({
-                name: "Hoist role",
+                name: ":trident: Hoist role",
                 value: message.guild.member(getValueOf).hoistRole.name,
                 inline: true
             });
         }
         if (message.guild.member(getValueOf).highestRole) {
             embedFields.push({
-                name: "Highest Role",
+                name: ":arrow_up_small: Highest Role",
                 value: message.guild.member(getValueOf).highestRole.name,
                 inline: true
             });
         }
         if (message.guild.member(getValueOf).displayHexColor) {
             embedFields.push({
-                name: "HEX color",
+                name: ":large_blue_diamond: HEX color",
                 value: message.guild.member(getValueOf).displayHexColor,
                 inline: true
             });
@@ -58,7 +79,7 @@ exports.run = async(client, message) => {
              checkbot = ":x:";
         }
         embedFields.push({
-            name: "Bot",
+            name: ":desktop: Bot",
             value: checkbot,
             inline: true
         });
@@ -73,42 +94,42 @@ exports.run = async(client, message) => {
              status = "Idle";
         }
         embedFields.push({
-            name: "Status",
+            name: ":red_circle: Status",
             value: status,
             inline: true
         });
         if (getValueOf.presence.game) {
             embedFields.push({
-                name: "Playing",
+                name: ":video_game: Playing",
                 value: getValueOf.presence.game.name,
                 inline: true
             });
         }
         embedFields.push({
-            name: "Created",
+            name: ":date: Created",
             value: moment().to(getValueOf.createdAt),
             inline: true
         });
         embedFields.push({
-            name: "Joined",
+            name: ":date: Joined",
             value: moment().to(message.guild.member(getValueOf).joinedAt),
             inline: true
         });
         embedFields.push({
-            name: "Roles",
+            name: ":notepad_spiral: Roles",
             value: message.guild.member(getValueOf).roles.size - 1, //Dont count the everyone role
             inline: true
         });
         if (client.userDatas.get(getValueOf.id).lovePoints) {
             embedFields.push({
-                name: "Love Points",
+                name: ":heart: Love Points",
                 value: client.userDatas.get(getValueOf.id).lovePoints,
                 inline: true
             });
         }
         return await message.channel.send({
             embed: {
-                thumbnail: {
+                image: {
                     url: getValueOf.avatarURL
                 },
                 color: 3447003,
@@ -146,7 +167,7 @@ exports.run = async(client, message) => {
 exports.conf = {
     enabled: true,
     guildOnly: true,
-    aliases: ["userinfo"],
+    aliases: ["userinfo", "profile"],
     disabled: false,
     permLevel: 1
 };
