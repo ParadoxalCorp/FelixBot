@@ -153,5 +153,5 @@ exports.help = {
     description: 'Get the experience leaderboard of this server or all the servers',
     usage: 'leaderboard',
     category: 'miscellaneous',
-    detailledUsage: '`{prefix}leaderboard servers` Will return the total servers xp leaderboard\n`{leaderboard}leaderboard users` Will return the users total xp leaderboard'
+    detailledUsage: '`{prefix}leaderboard servers` Will return the total servers xp leaderboard\n`{prefix}leaderboard users` Will return the users total xp leaderboard'
 };

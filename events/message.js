@@ -109,7 +109,10 @@ module.exports = async(client, message) => {
     const guildEntry = client.guildDatas.get(message.guild.id);
     if (client.userDatas.get(message.author.id) && guildEntry.levelSystem && guildEntry.levelSystem.enabled) { //Activity level system
         if (!client.talkedRecently.has(message.author.id)) {
-            const expGain = Math.round(1 * message.content.length / 4);
+            var expGain = Math.round(1 * message.content.length / 4);
+            if (expGain > 100) { //no 500 points messages kthx
+                expGain = 100;
+            }
             const userEntry = client.userDatas.get(message.author.id);
             const getCurrentLevel = function (level, exp) {
                 const exponent = 2;
@@ -181,7 +184,7 @@ module.exports = async(client, message) => {
                     return element.id === message.author.id;
                 });
                 const userEntry = client.userDatas.get(message.author.id);
-                if (userEntry.publicLevel === undefined) {
+                if (userEntry.publicLevel === undefined) { //If no privacy has been set yet, make it public by default
                     userEntry.publicLevel = true;
                     client.userDatas.set(message.author.id, userEntry);
                 }
