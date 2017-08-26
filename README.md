@@ -31,10 +31,9 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 
 [Support server](https://discord.gg/Ud49hQJ)
 ### Planned stuff
-* Level system(exp gain per activity) => Beta-testing
-* Trivia => Beta-testing
-* reminders => Beta-testing
-* Points system, earnable in games, with a leaderboard => Planned
+* Better interface => WIP
+* Slots => WIP
+* Points system, earnable in games, with a leaderboard => WIP
 * Some stuff that im still not sure about so i wont put it here *shrug*
 ### Level system
 * How does the permissions system work?
