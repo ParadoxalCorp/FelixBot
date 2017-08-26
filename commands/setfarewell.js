@@ -12,7 +12,7 @@ exports.run = async(client, message) => {
             guildEntry.farewell = "";
             client.guildDatas.set(message.guild.id, guildEntry);
             return await message.channel.send(":white_check_mark: Alright, i removed the farewell message");
-        } else if ((remove === -1) && (whiteSpace === -1)) { //Note: there is some useless conditions cuz there is returns everywhere but welp
+        } else if ((!remove) && (whiteSpace === -1)) { //Note: there is some useless conditions cuz there is returns everywhere but welp
             if (guildEntry.farewell === "") {
                 return await message.channel.send(":x: There is not any farewell message");
             }
@@ -23,7 +23,7 @@ exports.run = async(client, message) => {
                 farewellMsg = guildEntry.farewell;
             }
             return await message.channel.send("The current farewell message is: ```" + farewellMsg + "```");            
-        } else if ((whiteSpace !== -1) && (remove)) {
+        } else if ((whiteSpace !== -1) && (!remove)) {
             const farewellMsg = message.content.substr(whiteSpace + 1);
             if (farewellMsg === "") {
                 return await message.channel.send(":x: You cannot set the farewell message to nothing");

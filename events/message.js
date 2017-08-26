@@ -226,7 +226,11 @@ module.exports = async(client, message) => {
                     }
                 }
                 guildEntry.levelSystem.users[userPos].expCount = guildEntry.levelSystem.users[userPos].expCount + expGain;
-                guildEntry.levelSystem.totalExp = guildEntry.levelSystem.totalExp + expGain;
+                var totalExp = 0;
+                guildEntry.levelSystem.users.forEach(function (user) {
+                    totalExp = totalExp + user.expCount;
+                });
+                guildEntry.levelSystem.totalExp = totalExp;
                 client.guildDatas.set(message.guild.id, guildEntry);
             }
         }
