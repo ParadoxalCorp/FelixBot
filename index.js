@@ -2,19 +2,21 @@ const Discord = require("discord.js");
 const client = new Discord.Client({
     disabledEvents: ["TYPING_START"]
 });
+
 const fs = require("fs-extra");
 const unirest = require("unirest");
-const dbPath = "database/database.json";
-const database = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
-const PersistentCollection = require('djs-collection-persistent');
-//const memwatch = require("memwatch-next");
-//const heapdump = require("heapdump");
-
-const {Wit, log} = require('node-wit');
+const { Wit, log } = require('node-wit');
 
 const wit = new Wit({
-  accessToken: "wew",
+    accessToken: "VBDY3FZZCLSQMISZNLUGQYG4EQCTKTQI",
 });
+var Raven = require('raven');
+Raven.config('https://d020274d33f942b7a581a5ccdc001d95:ed66eada85454353bdd4af15841e5d51@sentry.io/210885').install();
+
+const dbPath = "database/database.json";
+const PersistentCollection = require('djs-collection-persistent');
+
+const database = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
 
 const {
     promisify
@@ -22,29 +24,36 @@ const {
 const readdir = promisify(require("fs-extra").readdir);
 
 //Database initialization
-const userDatas = new PersistentCollection({
-    name: 'userDatas'
+const userData = new PersistentCollection({
+    name: 'userData'
 });
-console.log("[INFO] Users database loaded");
-const guildDatas = new PersistentCollection({
-    name: 'guildDatas'
+console.log("[INFO] => Users database loaded");
+const guildData = new PersistentCollection({
+    name: 'guildData'
 });
-console.log("[INFO] Guilds database loaded");
-const tagDatas = new PersistentCollection({
-    name: 'tagDatas'
+console.log("[INFO] => Guilds database loaded");
+const tagData = new PersistentCollection({
+    name: 'tagData'
 });
 console.log("[INFO] => Tags database loaded");
-const clientDatas = new PersistentCollection({
-    name: 'clientDatas'
+const clientData = new PersistentCollection({
+    name: 'clientData'
 });
 console.log("[INFO] => Client database loaded");
+
 //Load functions
-try {
-    require("./modules/functions.js")(client);
-    console.log("[INFO] => Loaded functions");
-} catch (err) {
-    console.error("[ERROR] => Failed to load functions: " + err.stack);
-}
+(async function() {
+    const clientFunctions = await readdir('./modules/clientFunctions');
+    console.log(`----------------------------------------------------------------------------------------------\nLoading a total of ${clientFunctions.length} functions.`);
+    clientFunctions.forEach(f => {
+        try {
+            const props = require(`./modules/clientFunctions/${f}`)(client);
+            console.log(`Loading function: ${f}. 👌`);
+        } catch (e) {
+            console.log(`Unable to load function ${f}: ${e.stack}`);
+        }
+    });
+}());
 //Load malsearch module
 try {
     require("./modules/malsearch.js")(client);
@@ -52,7 +61,7 @@ try {
 } catch (err) {
     console.error("[ERROR] => Failed to load the malsearch module: " + err.stack);
 }
-client.mention = `<@327144735359762432>`;
+client.mention = "<@343527831034265612>";
 client.config = database.Data.global[0];
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
@@ -64,20 +73,18 @@ client.bugChan = "328843250687279105";
 client.overallHelp; //Will get initialized later
 client.cmdsUsed = 0; //Will contain the count of commands used since restart
 client.cmdsLogs; //Will get initialized in the message event
-client.userDatas = userDatas;
-client.guildDatas = guildDatas;
-client.tagDatas = tagDatas;
-client.clientDatas = clientDatas;
-client.wit = wit;
+client.userData = userData;
+client.guildData = guildData;
+client.tagData = tagData;
+client.clientData = clientData;
 client.talkedRecently = new Set(); //cooldown stuff
+client.wit = wit;
+client.maintenance = false; //Will be used to ignore users when performing maintenance stuff
+client.Raven = Raven;
 
 process.on('uncaughtException', (err) => {
     try {
         console.error(err);
-        if (err === "DiscordAPIError: Missing Permissions") {
-            return;
-        }
-        client.channels.get(client.errorLog).send("Uncaught Exception: " + err + "\n**Detailled log:** " + err.stack);
     } catch (err) {
         return;
     }
@@ -88,7 +95,7 @@ process.on("unhandledRejection", err => {
         if (err.message === "Missing Permissions") {
             return;
         }
-        client.channels.get(client.errorLog).send("**Unhandled Rejection: " + err + "\n**Detailled log:** " + err.stack);
+        Raven.captureException(err);
     } catch (err) {
         return;
     }
@@ -100,16 +107,18 @@ process.on("error", err => {
     } catch (err) {
         console.error(err);
         return;
-    }    
+    }
 });
+setTimeout(async function() {
+    client.loadReminders(); //Launch reminders loading
+}, 7500); //Wait for the db to be properly loaded
 
-client.loadReminders();
 //require node 8 or higher
-(async function () {
+(async function() {
 
     // Here we load commands into memory, as a collection, so they're accessible everywhere
     const files = await readdir('./commands/');
-    console.log(`Loading a total of ${files.length} commands.`);
+    console.log(`------------------------------------------------------------------------\nLoading a total of ${files.length} commands.`);
     files.forEach(f => {
         try {
             const props = require(`./commands/${f}`);
@@ -124,11 +133,11 @@ client.loadReminders();
     });
     try { //Build the help on launch instead of everytime the help is triggered to decrease the ressources usage
         console.log("Building the help...");
-        const categories = ["generic", "image", "utility", "fun", "moderation", "settings", "miscellaneous"];
+        const categories = ["generic", "miscellaneous", "image", "utility", "fun", "moderation", "settings"];
         var i;
         for (i = 0; i < categories.length; i++) {
             const categoryCommands = client.commands.filter(c => c.help.category == categories[i]);
-            client.overallHelp += `**${categories[i]}** =>`
+            client.overallHelp += `**${categories[i]}** =>`;
             client.overallHelp += categoryCommands.map(c => `\`${c.help.name}\` `);
             client.overallHelp += "\n\n";
         }
