@@ -1,7 +1,7 @@
 const unirest = require("unirest");
 
 module.exports = async(client, message) => {
-    if (client.maintenance && message.author.id !== "140149699486154753") return; //Ignore users during maintenance
+    if (client.maintenance && message.author.id !== client.database.Data.global[0].ownerId) return; //Ignore users during maintenance
     if (message.author.bot) return;
     if (client.userData.get(message.author.id)) {
         if ((client.userData.get(message.author.id).blackListed) && (message.author.id !== "140149699486154753")) return; //Ignore blacklisted users
