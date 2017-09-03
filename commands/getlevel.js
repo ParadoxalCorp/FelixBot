@@ -150,7 +150,7 @@ exports.run = async(client, message) => {
                     }
                 }
                 const channelLevel = client.getPermissionsLevel(message.guild.id, guildChan.id);
-                if (!channelLevel) {
+                if (!channelLevel && channelLevel !== 0) { //Cuz 0 resolve to a boolean for some shit reasons
                     return resolve(await message.channel.send(":x: The channel **#" + guildChan.name + "** has not any level"));
                 }
                 return resolve(await message.channel.send("The channel **#" + guildChan.name + "** is level " + channelLevel));
@@ -164,7 +164,7 @@ exports.run = async(client, message) => {
                     } else {
                         var guildRole = message.guild.roles.find("name", rolename);
                         const roleLevel = client.getPermissionsLevel(message.guild.id, guildRole.id);
-                        if (!roleLevel) {
+                        if (!roleLevel && roleLevel !== 0) {
                             return resolve(await message.channel.send(":x: The role **" + guildRole.name + "** has not any level"));
                         }
                         return resolve(await message.channel.send("The role **" + guildRole.name + "** is level " + roleLevel));
@@ -230,7 +230,6 @@ exports.run = async(client, message) => {
                     text: "Here's the list of the permissions set in your server ",
                     results: list
                 });
-                console.log(resultsPage);
                 return resolve(await message.channel.send("Here's the list of everything that has a level on your server. Showing page `" + resultsPage.page + "`. Use `" + client.prefix + "gl -all -page 2` for example to navigate through pages.```\n" + resultsPage.results.join("\n") + "```"));
             } else if ((!role) && (!user) && (!channel) && (!all)) {
                 if (guildEntry.permissionsLevels.globalLevel === "none") {

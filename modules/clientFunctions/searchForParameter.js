@@ -95,17 +95,21 @@ module.exports = async(client) => {
                 var match = false;
                 searchParam.aliases.forEach(function(alias) {
                     if (match) return match; //Return the first match to avoid conflict with aliases
-                    var providedParameter = providedParameters.message;
+                    var providedMessage = providedParameters.message;
                     if (providedParameters.message.content) { //In case the given message is not a message
-                        providedParameter = providedParameters.message.content;
+                        providedMessage = providedParameters.message.content;
                     }
-                    if (providedParameter.indexOf(alias) !== -1) {
-                        return match = {
-                            position: providedParameter.indexOf(alias),
-                            length: alias.length,
-                            name: providedParameters.parameter
-                        };
-                    }
+                    var args = providedMessage.split(/\s+/gim);
+                    args.shift();
+                    args.forEach(function(arg) {
+                        if (arg === alias) {
+                            return match = {
+                                position: providedMessage.indexOf(arg),
+                                length: arg.length,
+                                name: providedParameters.parameter
+                            };
+                        }
+                    });
                 });
                 return resolve(match);
             }

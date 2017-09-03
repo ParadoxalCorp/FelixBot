@@ -28,7 +28,7 @@ exports.run = async(client, message) => {
                     return resolve(await message.channel.send(":x: You did not mentionned any user "));
                 }
                 const userLevel = client.getPermissionsLevel(message.guild.id, mentionned.id);
-                if (!userLevel) {
+                if (!userLevel && userLevel !== 0) {
                     return resolve(await message.channel.send(":x: The mentionned user has not any level"));
                 }
                 guildEntry.permissionsLevels.things[userLevel].splice(guildEntry.permissionsLevels.things[userLevel].indexOf(mentionned.id), 1);
@@ -40,7 +40,7 @@ exports.run = async(client, message) => {
                     return resolve(await message.channel.send(":x: I couldn't find the role you specified, remember to respect case-sensitivity"));
                 }
                 const roleLevel = client.getPermissionsLevel(message.guild.id, guildRole.id);
-                if (!roleLevel) {
+                if (!roleLevel && roleLevel !== 0) {
                     return resolve(await message.channel.send(":x: The role **" + guildRole.name + "** has not any permission level"));
                 }
                 guildEntry.permissionsLevels.things[roleLevel].splice(guildEntry.permissionsLevels.things[roleLevel].indexOf(guildRole.id), 1);
@@ -48,12 +48,11 @@ exports.run = async(client, message) => {
                 return resolve(await message.channel.send(":white_check_mark: Alright, i removed the permission level of the role **" + guildRole.name + "**"));
             } else if (channel) {
                 const guildChannel = message.guild.channels.find("name", message.content.substr(channel.position + channel.length + 1).toLowerCase().trim());
-                console.log(message.content.substr(channel.position + channel.length + 1).toLowerCase().trim(), channel);
                 if (!guildChannel) {
                     return resolve(await message.channel.send(":x: I couldn't find the channel you specified"));
                 }
                 const channelLevel = client.getPermissionsLevel(message.guild.id, guildChannel.id);
-                if (!channelLevel) {
+                if (!channelLevel && channelLevel !== 0) {
                     return resolve(await message.channel.send(":x: The channel **#" + guildChannel.name + "** has not any permission level"));
                 }
                 guildEntry.permissionsLevels.things[channelLevel].splice(guildEntry.permissionsLevels.things[channelLevel].indexOf(guildChannel.id), 1);
