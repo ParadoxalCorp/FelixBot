@@ -23,7 +23,7 @@ exports.run = async(client, message) => {
                                     url: urResult.permalink
                                 },
                                 title: `Definition of ${term}`,
-                                description: urResult.definition + "\n\n**Example**\n" + urResult.example,
+                                description: urResult.definition.substr(0, 1024) + "\n\n**Example**\n" + urResult.example.substr(0, 1024),
                                 footer: {
                                     text: `Wrote by: ${urResult.author}| 👍 ${urResult.thumbs_up}| 👎 ${urResult.thumbs_down}`
                                 },

@@ -76,6 +76,9 @@ exports.run = async(client, message) => {
                 } else if (levelUp.reply.content === "3") {
                     levelUp = false;
                 }
+					if (!guildEntry.levelSystem) {
+						return await message.channel.send(":x: You must enable the level system at least one time before doing that");
+					}				
                 guildEntry.levelSystem.levelUpNotif = levelUp;
                 client.guildDatas.set(message.guild.id, guildEntry);
                 await levelUp.question.delete();
@@ -291,6 +294,9 @@ exports.run = async(client, message) => {
                     if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) {
                         await privacy.reply.delete();
                     }
+					if (!guildEntry.levelSystem) {
+						return await message.channel.send(":x: You must enable the level system at least one time before doing that");
+					}
                     guildEntry.levelSystem.public = true;
                     client.guildDatas.set(message.guild.id, guildEntry);
                     return await message.channel.send(":white_check_mark: Alright, i updated this server experience privacy");
