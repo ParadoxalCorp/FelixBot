@@ -4,29 +4,10 @@ module.exports = async(client, message) => {
     if (client.maintenance && message.author.id !== client.database.Data.global[0].ownerId) return; //Ignore users during maintenance
     if (message.author.bot) return;
     if (client.userData.get(message.author.id)) {
-        if ((client.userData.get(message.author.id).blackListed) && (message.author.id !== "140149699486154753")) return; //Ignore blacklisted users
+        if ((client.userData.get(message.author.id).generalSettings.blackListed) && (message.author.id !== "140149699486154753")) return; //Ignore blacklisted users
     }
-    client.defaultUserData = {
-        id: message.author.id,
-        cooldowns: {
-            loveCooldown: 0,
-            secondLoveCooldown: 0,
-            feedbackCooldown: 0,
-        },
-        experience: {
-            expCount: 34,
-            level: 1,
-            publicLevel: true
-        },
-        generalSettings: {
-            lovePoints: 0,
-            malAccount: "",
-            blackListed: false,
-            afk: "",
-            reminders: [],
-            points: 0
-        }
-    }
+    client.defaultGuildData.id = message.guild.id;
+    client.defaultUserData.id = message.author.id;
     const mentionned = message.mentions.users.first(); //--Afk feature--
     if (mentionned) {
         if (client.userData.get(mentionned.id)) {
@@ -53,41 +34,6 @@ module.exports = async(client, message) => {
     if (message.channel.type !== "dm") {
         try { //In case felix got invited while being down
             if (!client.guildData.get(message.guild.id)) {
-                client.defaultGuildData = {
-                    id: message.guild.id,
-                    generalSettings: {
-                        autoAssignablesRoles: [],
-                        prefix: client.database.Data.global[0].prefix,
-                        levelSystem: {
-                            enabled: false,
-                            public: false,
-                            levelUpNotif: false,
-                            roles: [],
-                            users: [{
-                                id: message.author.id,
-                                expCount: 0,
-                                level: 0
-                            }],
-                            totalExp: 0
-                        }
-                    },
-                    permissionsLevels: {
-                        things: [
-                            [],
-                            [],
-                            []
-                        ],
-                        globalLevel: "none"
-                    },
-                    onEvent: {
-                        onJoinRole: "",
-                        greetings: "",
-                        farewell: "",
-                        greetingsMethod: "",
-                        greetingsChan: "",
-                        farewellChan: ""
-                    }
-                }
                 client.guildData.set(message.guild.id, client.defaultGuildData);
             }
         } catch (err) {

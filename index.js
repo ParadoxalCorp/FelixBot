@@ -82,6 +82,63 @@ client.wit = wit;
 client.maintenance = false; //Will be used to ignore users when performing maintenance stuff
 client.Raven = Raven;
 
+client.defaultUserData = {
+    id: false,
+    cooldowns: {
+        loveCooldown: 0,
+        secondLoveCooldown: 0,
+        feedbackCooldown: 0,
+    },
+    experience: {
+        expCount: 0,
+        level: 0,
+        publicLevel: true
+    },
+    generalSettings: {
+        lovePoints: 0,
+        malAccount: "",
+        blackListed: false,
+        afk: "",
+        reminders: [],
+        points: 0,
+        perks: {
+            love: []
+        }
+    }
+}
+
+client.defaultGuildData = {
+    id: false,
+    generalSettings: {
+        autoAssignablesRoles: [],
+        prefix: client.database.Data.global[0].prefix,
+        levelSystem: {
+            enabled: true,
+            public: true,
+            levelUpNotif: false,
+            roles: [],
+            users: [],
+            totalExp: 0
+        },
+    },
+    permissionsLevels: {
+        things: [
+            [],
+            [],
+            []
+        ],
+        globalLevel: "none"
+    },
+    onEvent: {
+        onJoinRole: [],
+        greetings: "",
+        farewell: "",
+        greetingsMethod: "",
+        greetingsChan: "",
+        farewellChan: ""
+    }
+}
+
 process.on('uncaughtException', (err) => {
     try {
         console.error(err);
@@ -112,6 +169,10 @@ process.on("error", err => {
 setTimeout(async function() {
     client.loadReminders(); //Launch reminders loading
 }, 7500); //Wait for the db to be properly loaded
+
+setTimeout(async function() {
+    client.updateDatabase(client); //Update database
+}, 7500);
 
 //require node 8 or higher
 (async function() {

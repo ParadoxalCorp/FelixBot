@@ -18,14 +18,11 @@ module.exports = async(client, message) => {
                 }
             }
             if (!userEntry.expCount) { //That stuff is for global xp
-                userEntry.expCount = expGain;
-                userEntry.level = getCurrentLevel(0, expGain);
+                userEntry.experience.expCount = expGain;
+                userEntry.experience.level = getCurrentLevel(0, expGain);
             } else {
-                userEntry.expCount = userEntry.expCount + expGain;
-                userEntry.level = getCurrentLevel(userEntry.level, userEntry.expCount + expGain);
-            }
-            if (!userEntry.id) {
-                userEntry.id = message.author.id;
+                userEntry.experience.expCount = userEntry.experience.expCount + expGain;
+                userEntry.experience.level = getCurrentLevel(userEntry.experience.level, userEntry.experience.expCount + expGain);
             }
             client.userData.set(message.author.id, userEntry);
             if (guildEntry.generalSettings.levelSystem.users.filter(u => u.id === message.author.id).length === 0) {
@@ -77,8 +74,8 @@ module.exports = async(client, message) => {
                     return element.id === message.author.id;
                 });
                 const userEntry = client.userData.get(message.author.id);
-                if (userEntry.publicLevel === undefined) { //If no privacy has been set yet, make it public by default
-                    userEntry.publicLevel = true;
+                if (userEntry.experience.publicLevel === undefined) { //If no privacy has been set yet, make it public by default
+                    userEntry.experience.publicLevel = true;
                     client.userData.set(message.author.id, userEntry);
                 }
                 const curLevel = getCurrentLevel(guildEntry.generalSettings.levelSystem.users[userPos].level, guildEntry.generalSettings.levelSystem.users[userPos].expCount + expGain);
