@@ -1,0 +1,18 @@
+{
+    "Data": {
+        "global": {
+            "thingsLevel42": [],
+            "prefix": "uwu.",
+            "ownerId": "YOUR_ID",
+            "discordBotList": "well you shouldnt need that, there might be a few errors on run without it but it should still work",
+            "wolkeImageKey": "HYPER_FANCY_KEY_FOR_WOLKES_HYPER_FANCY_IMAGE_API",
+            "mashapeKey": "will probably not be needed anymore",
+            "malCredentials": { "name": "YOUR_ACCOUNT_NAME", "password": "YOUR_ACCOUNT_PASSWORD" },
+            "rapidApiKey": "RAPID_API_API_KEY",
+            "steamApiKey": "STEAM_OFFICIAL_API_KEY",
+            "whatAnimeKey": "not needed atm",
+            "version": "2.0(HYPEEE)",
+            "token": "TOKEN"
+        }
+    }
+}

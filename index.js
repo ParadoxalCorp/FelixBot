@@ -62,7 +62,7 @@ try {
     console.error("[ERROR] => Failed to load the malsearch module: " + err.stack);
 }
 client.mention = "<@343527831034265612>";
-client.config = database.Data.global[0];
+client.config = database.Data.global;
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 client.database = database;
@@ -111,7 +111,7 @@ client.defaultGuildData = {
     id: false,
     generalSettings: {
         autoAssignablesRoles: [],
-        prefix: client.database.Data.global[0].prefix,
+        prefix: client.database.Data.global.prefix,
         levelSystem: {
             enabled: true,
             public: true,

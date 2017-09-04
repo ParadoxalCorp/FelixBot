@@ -8,7 +8,7 @@ module.exports = async(client) => {
             try {
                 fetch: {
                     await unirest.get(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`)
-                    .header('Authorization', client.database.Data.global[0].discordBotList)
+                    .header('Authorization', client.database.Data.global.discordBotList)
                     .end(async function(result) {
                         if (!Array.isArray(result.body)) {
                             console.error(result.body);

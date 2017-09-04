@@ -70,7 +70,7 @@ exports.run = async(client, message) => {
                 if (!mentionned) {
                     return resolve(await message.channel.send(":x: You did not specified a user" + randomTips));
                 }
-                if (message.author.id !== "140149699486154753") {
+                if (message.author.id !== client.database.Data.global.ownerId) {
                     if (level === "42") {
                         return resolve(await message.channel.send(":x: That level doesn't exist !"));
                     }
