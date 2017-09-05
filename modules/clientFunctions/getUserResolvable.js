@@ -24,12 +24,12 @@ module.exports = async(client, message) => {
                             usersResolved.set(filterByWholeName.first().id, filterByWholeName.first().user);
                         } else {
                             //-----------------Resolve by case-insensitive name or nickname-----------------------------------
-                            let filterUsers = message.guild.members.filter(u => u.user.username.toLowerCase() === potentialUserResolvables[i].toLowerCase() || (u.user.nickname && u.user.nickname.toLowerCase() === potentialUserResolvables[i].toLowerCase()));
+                            let filterUsers = message.guild.members.filter(u => u.user.username.toLowerCase() === potentialUserResolvables[i].toLowerCase() || (u.nickname && u.nickname.toLowerCase() === potentialUserResolvables[i].toLowerCase()));
                             if (filterUsers.size > 0) {
                                 usersResolved.set(filterUsers.first().id, filterUsers.first().user);
                             } else {
                                 //----------------Resolve by partial case-insensitive name or nickname-------------------------
-                                let filterByPartial = message.guild.members.filter(u => u.user.username.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) || (u.user.nickname && u.user.nickname.toLowerCase().includes(potentialUserResolvables[i].toLowerCase())));
+                                let filterByPartial = message.guild.members.filter(u => u.user.username.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) || (u.nickname && u.nickname.toLowerCase().includes(potentialUserResolvables[i].toLowerCase())));
                                 if (filterByPartial.size > 0) {
                                     let userObject = filterByPartial.first().user;
                                     if (!matchedByPartial || !matchedByPartial.username.toLowerCase().includes(userObject.username)) {
