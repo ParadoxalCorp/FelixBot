@@ -12,6 +12,8 @@ module.exports = async(client) => {
                 },
                 overallSucess: false
             }
+            let userUpdateTime = Date.now();
+            let guildUpdateTime = Date.now();
             try {
                 client.userData.forEach(function(user) {
                     user = JSON.parse(user);
@@ -33,7 +35,7 @@ module.exports = async(client) => {
                     });
                     client.userData.set(user.id, defaultUserData);
                 });
-                console.info("Updated " + client.userData.size + " entries in the user database");
+                console.info("Updated " + client.userData.size + " entries in the user database, took " + (Date.now() - userUpdateTime) + "ms");
                 updateStatus.usersUpdate.sucess = true;
             } catch (err) {
                 console.error(err);
@@ -61,7 +63,7 @@ module.exports = async(client) => {
                     });
                     client.guildData.set(guild.id, defaultGuildData);
                 });
-                console.info("Updated " + client.guildData.size + " entries in the guild database");
+                console.info("Updated " + client.guildData.size + " entries in the guild database, took " + (Date.now() - guildUpdateTime) + "ms");
                 updateStatus.guildsUpdate.sucess = true;
             } catch (err) {
                 console.error(err);

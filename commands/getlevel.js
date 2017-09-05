@@ -30,7 +30,7 @@ exports.run = async(client, message) => {
             var changeFactors = [];
             var isAdmin = message.guild.member(user).hasPermission("ADMINISTRATOR");
             var hasLevel42 = client.config.thingsLevel42;
-            var globalLvl = guildEntry.globalLevel; //the server level
+            var globalLvl = guildEntry.permissionsLevels.globalLevel; //the server level
             var userId = user.id;
             //----global check----                     //The following checks are just to determine the user access level by using the execution order
             if (globalLvl !== "none") {

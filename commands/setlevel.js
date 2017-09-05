@@ -41,9 +41,9 @@ exports.run = async(client, message) => {
                     client.guildData.set(message.guild.id, guildEntry);
                 }
             }
-            if (client.database.Data.global[0].thingsLevel42.includes(id)) {
+            if (client.database.Data.global.thingsLevel42.includes(id)) {
                 if (levelToSave !== "42") {
-                    client.database.Data.global[0].thingsLevel42.splice(client.database.Data.global[0].thingsLevel42.indexOf(id), 1);
+                    client.database.Data.global.thingsLevel42.splice(client.database.Data.global.thingsLevel42.indexOf(id), 1);
                     fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
                         if (err) console.error(err)
                     });
@@ -59,7 +59,7 @@ exports.run = async(client, message) => {
             var args = message.content.split(/\s+/gim);
             args.shift();
             args.forEach(function(arg) {
-                if (!isNaN(arg)) {
+                if (!isNaN(arg) && (arg.length < 3)) {
                     return level = arg;
                 }
             });
@@ -67,8 +67,11 @@ exports.run = async(client, message) => {
                 return resolve(await message.channel.send(":x: You did not specified a level or the level you specified is not an existing one, levels: 0, 1, 2" + randomTips));
             }
             if ((user) && (!role) && (!channel)) {
-                if (!mentionned) {
-                    return resolve(await message.channel.send(":x: You did not specified a user" + randomTips));
+                let users = await client.getUserResolvable(message, {
+                    guildOnly: true
+                });
+                if (users.size === 0) {
+                    return resolve(await message.channel.send(":x: Either you did not specified any user or the user does not exist" + randomTips));
                 }
                 if (message.author.id !== client.database.Data.global.ownerId) {
                     if (level === "42") {
@@ -76,19 +79,28 @@ exports.run = async(client, message) => {
                     }
                 }
                 if (level !== "42") {
-                    guildEntry.permissionsLevels.things[Number(level)].push(mentionnedId);
+                    users.forEach(function(usr) {
+                        if (!guildEntry.permissionsLevels.things[level].includes(usr.id)) {
+                            guildEntry.permissionsLevels.things[level].push(usr.id);
+                            clearDuplicates(level, usr.id);
+                        }
+                    });
                     client.guildData.set(message.guild.id, guildEntry);
-                    clearDuplicates(level, mentionnedId);
-                    return resolve(await message.channel.send(":white_check_mark: Okay, **" + mentionned.username + "** is now level **" + level + "**" + randomTips));
+                    return resolve(await message.channel.send(":white_check_mark: Okay, **" + users.map(u => u.tag).join(", ") + "** is/are now level **" + level + "**" + randomTips));
                 } else {
-                    client.database.Data.global[0].thingsLevel42.push(mentionnedId);
-                    clearDuplicates("42", mentionnedId);
+                    users.forEach(function(usr) {
+                        if (!client.database.Data.global.thingsLevel42.includes(usr.id)) { //If has not already this level
+                            client.database.Data.global.thingsLevel42.push(usr.id);
+                            clearDuplicates("42", usr.id);
+                        }
+                    });
                     fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
                         if (err) {
                             console.error(err);
+                            client.Raven.captureException(err);
                         }
                     });
-                    return resolve(await message.channel.send(":white_check_mark: Okay, **" + mentionned.username + "** is now level **" + level + "**" + randomTips));
+                    return resolve(await message.channel.send(":white_check_mark: Okay, **" + users.map(u => u.tag).join(", ") + "** is/are now level **" + level + "**" + randomTips));
                 }
             } else if ((channel) && (!role) && (!user)) {
                 if (level === "42") {
