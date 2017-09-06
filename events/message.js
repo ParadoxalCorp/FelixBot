@@ -388,6 +388,6 @@ module.exports = async(client, message) => {
             return client.channels.get(client.errorLog).send(`A critical error occured while trying to run the command ${command}\n**Triggered Error:** ${err}\n**Detailled Error:** ${err.stack}`)
         }
     } else {
-        return await message.channel.send(":x: You don't have the permission to use this command !");
+        return await message.channel.send(":x: You don't have the permission to use this command!");
     }
 };
