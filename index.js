@@ -81,14 +81,11 @@ client.talkedRecently = new Set(); //cooldown stuff
 client.wit = wit;
 client.maintenance = false; //Will be used to ignore users when performing maintenance stuff
 client.Raven = Raven;
+client.commandsUsage = new Discord.Collection(); //Commands statistics stuff
 
 client.defaultUserData = {
     id: false,
-    cooldowns: {
-        loveCooldown: 0,
-        secondLoveCooldown: 0,
-        feedbackCooldown: 0,
-    },
+    cooldowns: {},
     experience: {
         expCount: 0,
         level: 0,
@@ -102,7 +99,10 @@ client.defaultUserData = {
         reminders: [],
         points: 0,
         perks: {
-            love: []
+            love: [{
+                type: 'default',
+                cooldown: 0
+            }]
         }
     }
 }
@@ -204,7 +204,6 @@ setTimeout(async function() {
         }
         client.overallHelp = client.overallHelp.replace(/undefined/gim, ""); //To remove the "undefined"
         console.log("Success !");
-        //console.log(client.overallHelp);
     } catch (err) {
         console.error(`[ERROR] => Failed to build the help: ${err.stack}`);
     }
@@ -216,6 +215,12 @@ setTimeout(async function() {
         // This line is awesome by the way. Just sayin'.
         client.on(eventName, event.bind(null, client));
         delete require.cache[require.resolve(`./events/${file}`)];
+    });
+    client.commands.map(async function(cmd) { //Fill the stats with all the commands
+        client.commandsUsage.set(cmd.help.name, {
+            category: cmd.help.category,
+            uses: 0
+        });
     });
     client.login(client.config.token);
 }());

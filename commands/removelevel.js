@@ -23,17 +23,28 @@ exports.run = async(client, message) => {
                     return resolve(await message.channel.send(":white_check_mark: Alright, i removed the permission level of the server"));
                 }
             } else if (user) {
-                const mentionned = message.mentions.users.first();
-                if (!mentionned) {
-                    return resolve(await message.channel.send(":x: You did not mentionned any user "));
+                const users = await client.getUserResolvable(message, {
+                    guildOnly: true
+                });
+                if (users.size === 0) {
+                    return resolve(await message.channel.send(":x: You did not specified any user(s) or i couldn't find the user(s) you specified "));
                 }
-                const userLevel = client.getPermissionsLevel(message.guild.id, mentionned.id);
-                if (!userLevel && userLevel !== 0) {
-                    return resolve(await message.channel.send(":x: The mentionned user has not any level"));
+                if (users.size > 10) {
+                    return resolve(await message.channel.send(":x: I cant remove the permissions level of more than 10 peoples"));
                 }
-                guildEntry.permissionsLevels.things[userLevel].splice(guildEntry.permissionsLevels.things[userLevel].indexOf(mentionned.id), 1);
+                users.forEach(function(usr) {
+                    const userLevel = client.getPermissionsLevel(message.guild.id, usr.id);
+                    if (userLevel !== false) {
+                        guildEntry.permissionsLevels.things[userLevel].splice(guildEntry.permissionsLevels.things[userLevel].indexOf(usr.id), 1);
+                    } else {
+                        users.delete(usr.id);
+                    }
+                });
+                if (users.size === 0) { //If none of them actually had a level
+                    return resolve(await message.channel.send(":x: The specified user(s) don't have any permissions level"));
+                }
                 client.guildData.set(message.guild.id, guildEntry);
-                return resolve(await message.channel.send(":white_check_mark: Alright, i removed the permission level of **" + mentionned.tag + "**"));
+                return resolve(await message.channel.send(":white_check_mark: Alright, i removed the permission level of **" + users.map(u => u.tag).join(", ") + "**"));
             } else if (role) {
                 const guildRole = message.guild.roles.find("name", message.content.substr(role.position + role.length + 1).trim());
                 if (!guildRole) {
@@ -79,5 +90,5 @@ exports.help = {
     description: 'Remove the level of a user/channel/role or from the server itself',
     usage: 'removelevel',
     category: 'generic',
-    detailledUsage: '\n`{prefix}removelevel -channel general` Will remove the permission level of the channel **#general**\n`{prefix}removelevel -user @Bob` Will remove the permission level of the user Bob\n`{prefix}removelevel -role Moderators` Will remove the level of the role **Moderators**\nUsing the command without any arguments will remove the level of the server'
+    detailledUsage: '\n`{prefix}removelevel -channel general` Will remove the permission level of the channel **#general**\n`{prefix}removelevel -user user resolvable` Will remove the permission level of the user Bob\n`{prefix}removelevel -role Moderators` Will remove the level of the role **Moderators**\nUsing the command without any arguments will remove the level of the server'
 };

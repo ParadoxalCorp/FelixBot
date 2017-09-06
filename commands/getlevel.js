@@ -119,26 +119,21 @@ exports.run = async(client, message) => {
             }
         }
         try {
-            if (mentionned) {
-                var mentionnedId = mentionned.id;
-                var member = message.guild.members.get(mentionnedId);
-            }
             if ((user) && (!channel) && (!role)) {
-                if (!mentionned) {
-                    return resolve(await message.channel.send(":x: You did not specify a user"));
-                } else {
-                    const effectiveLevel = getEffectiveLevel(mentionned);
-                    i = 0;
-                    guildEntry.permissionsLevels.things.forEach(async function(level) {
-                        if (level.includes(mentionnedId)) {
-                            return resolve(await message.channel.send("**" + mentionned.username + "#" + mentionned.discriminator + "** is level " + i + "\n\n```\nThe specified user effective level is " + effectiveLevel.effectiveLevel + "\n" + effectiveLevel.factorsChange.map(f => `=>${f}`).join("\n") + "```"));
-                        }
-                        i++;
-                    });
-                    if (i === 3) {
-                        return resolve(await message.channel.send(":x: There's no level for this user, so their default level is 1\n\n```\nThe specified user effective level is " + effectiveLevel.effectiveLevel + "\n" + effectiveLevel.factorsChange.map(f => `=>${f}`).join("\n") + "```"));
-                    }
+                const users = await client.getUserResolvable(message, {
+                    guildOnly: true
+                });
+                if (users.size === 0) {
+                    return resolve(await message.channel.send(":x: You did not specified any users or i couldn't find them"));
+                } else if (users.size > 10) {
+                    return resolve(await message.channel.send(":x: I cant get the permissions levels of more than 10 users"));
                 }
+                return resolve(await message.channel.send({
+                    embed: {
+                        title: ":mag: Users permissions levels",
+                        description: `Here's the permissions levels for **${users.map(u => u.tag).join(", ")}**\n\nfalse = default(1)\nThe effective level is the permission level of the user regarding their roles, the channel and the global permission level of the server\n\n\`\`\`\n${users.map(u => u.tag + ': ' + client.getPermissionsLevel(message.guild.id, u.id) + ', effective level: ' + getEffectiveLevel(u).effectiveLevel).join("\n")}\`\`\``
+                    }
+                }));
             } else if ((channel) && (!user) && (!role)) {
                 var channelname = message.content.substr(channel.position + channel.length + 1).toLowerCase().trim();
                 var guildChan = message.channel;
@@ -225,12 +220,14 @@ exports.run = async(client, message) => {
                     list.push(`Server level: ${guildEntry.permissionsLevels.globalLevel}`);
                 }
                 guildLevel = guildEntry.permissionsLevels.globalLevel;
-                const resultsPage = await client.pageResults({
-                    message: message,
-                    text: "Here's the list of the permissions set in your server ",
+                const resultsPage = await client.pageResults(message, {
                     results: list
                 });
-                return resolve(await message.channel.send("Here's the list of everything that has a level on your server. Showing page `" + resultsPage.page + "`. Use `" + client.prefix + "gl -all -page 2` for example to navigate through pages.```\n" + resultsPage.results.join("\n") + "```"));
+                return resolve(await client.createInteractiveMessage(message, {
+                    title: ':mag: Users permissions levels',
+                    description: `Here's the permissions levels of everything that has a level on this server\nfalse = default(1)`,
+                    content: resultsPage.results
+                }));
             } else if ((!role) && (!user) && (!channel) && (!all)) {
                 if (guildEntry.permissionsLevels.globalLevel === "none") {
                     return resolve(await message.channel.send(":x: There is no level set for the whole server"));
@@ -255,7 +252,7 @@ exports.help = {
     name: 'getlevel',
     parameters: '`-role`, `-channel`, `-user`, `-all`',
     description: 'Get the access level of the targetted element(role, user...). If no arguments are provided, it will get the server access level',
-    usage: 'getlevel -u @someone',
+    usage: 'getlevel -u user resolvable',
     category: 'moderation',
     detailledUsage: '`{prefix}getlevel -c general` Will return the level of the channel `#general`\n`{prefix}getlevel -r Moderator` Will return the level of the role `Moderator`\n`{prefix}getlevel -all` Will return the list of everything that has a level on this server'
 };
