@@ -1,6 +1,6 @@
 {
   "name": "FelixBot",
-  "version": "1.0.0",
+  "version": "1.18.9",
   "description": "Felix, a Discord bot",
   "main": "index.js",
   "presets": [
@@ -10,14 +10,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-    "url": "https://github.com/ParadoxOrigins/FelixBot"
+    "url": "https://github.com/ParadoxalCorp/FelixBot"
   },
-  "author": "",
+  "author": "ParadoxOrigins",
   "license": "APACHE 2.0",
   "bugs": {
-    "url": "https://github.com/ParadoxOrigins/FelixBot/issues"
+    "url": "https://github.com/ParadoxalCorp/FelixBot/issues"
   },
-  "homepage": "https://github.com/ParadoxOrigins/FelixBot#readme",
+  "homepage": "https://github.com/ParadoxalCorp/FelixBot#readme",
   "dependencies": {
     "discord.js": "^11.1.0",
     "djs-collection-persistent": "^0.1.3",
@@ -25,21 +25,15 @@
     "mal-scraper": "^1.4.1",
     "moment": "^2.17.1",
     "node-gyp": "^3.6.2",
-    "node-wit": "^4.3.0",
     "npm-module-search": "^2.0.0",
     "popura": "^1.2.5",
     "rapidapi-connect": "0.0.4",
     "rebuild": "^0.1.2",
-    "rollbar": "^2.1.1",
     "scrape-it": "^3.3.2",
     "unirest": "^0.5.1",
     "util": "^0.10.3",
     "uws": "^8.14.0",
     "winston": "^2.3.1",
     "node-wit": "^4.3.0"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-preset-env": "^1.5.2"
   }
 }
