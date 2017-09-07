@@ -12,7 +12,7 @@
   "repository": {
     "url": "https://github.com/ParadoxOrigins/FelixBot"
   },
-  "author": "",
+  "author": "ParadoxOrigins",
   "license": "APACHE 2.0",
   "bugs": {
     "url": "https://github.com/ParadoxOrigins/FelixBot/issues"
@@ -38,9 +38,5 @@
     "util": "^0.10.3",
     "uws": "^8.14.1",
     "winston": "^2.3.1"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-preset-env": "^1.5.2"
   }
 }
