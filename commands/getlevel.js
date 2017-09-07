@@ -236,8 +236,7 @@ exports.run = async(client, message) => {
                 }
             }
         } catch (err) {
-            console.error(err);
-            reject(client.Raven.captureException(err));
+            reject(client.emit('commandFail', message, err));
         }
     })
 }

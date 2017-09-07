@@ -7,8 +7,7 @@ exports.run = async(client, message) => {
                 resolve(await message.edit("Pong ! | `" + Math.round(endTime - startTime) + "`ms"));
             });
         } catch (err) {
-            console.error(err);
-            reject(client.Raven.captureException(err));
+            reject(client.emit('commandFail', message, err));
         }
     });
 };

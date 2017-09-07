@@ -1,6 +1,12 @@
 const Discord = require("discord.js");
 module.exports = async(client, message) => {
-    client.getUserResolvable = function(message, options) {
+    /**
+     * @param {Object} message The message object that triggered the command
+     * @param {Object} options The options object
+     * @param {boolean} options.guildOnly Whether or not the search should be restricted to this guild
+     * @returns {Collection<userId, User>}
+     */
+    function getUserResolvable(message, options) {
         return new Promise(async(resolve, reject) => {
             if (!message.content) {
                 return reject("The message content must be provided !");
@@ -101,4 +107,5 @@ module.exports = async(client, message) => {
             resolve(usersResolved);
         });
     }
+    client.getUserResolvable = getUserResolvable;
 }

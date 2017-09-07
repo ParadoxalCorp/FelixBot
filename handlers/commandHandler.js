@@ -14,7 +14,7 @@ module.exports = async(client, message) => {
         }
         if (!command) return;
         if (!client.userData.get(message.author.id)) { //Once the command is confirmed
-            client.userData.set(message.author.id, client.defaultUserDatas);
+            client.userData.set(message.author.id, client.defaultUserData(message.author.id));
         }
         if ((client.userData.get(message.author.id).blackListed === "yes") && (message.author.id !== "140149699486154753")) return; //Ignore blacklisted users
         const commandFile = require(`../commands/${command}.js`);
@@ -39,7 +39,7 @@ module.exports = async(client, message) => {
         const supposedCommand = args.shift().slice(client.prefix.length).toLowerCase();
         if ((!client.commands.get(supposedCommand)) && (!client.aliases.get(supposedCommand))) return; //Just return if the command is not found
         if (!client.userData.get(message.author.id)) { //Once the command is confirmed
-            client.userData.set(message.author.id, client.defaultUserData);
+            client.userData.set(message.author.id, client.defaultUserData(message.author.id));
         }
         var command;
         if (client.commands.get(supposedCommand)) { //first check if its the a main command name, if not, then check if its an alias
@@ -57,7 +57,7 @@ module.exports = async(client, message) => {
                 client.cmdsUsed++;
                 client.cmdsLogs += `[${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}] Command ${command} triggered, current memory usage: ${(process.memoryUsage().heapUsed / 1024 / 1000).toFixed(2)}MB\n`
                 await commandFile.run(client, message, args);
-                client.commandsUsage.get(command).uses++;
+                client.commands.get(command).uses++;
                 client.cmdsLogs += `[${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}] new memory usage: ${(process.memoryUsage().heapUsed / 1024 / 1000).toFixed(2)}MB\n`
             } catch (err) {
                 console.error(err);

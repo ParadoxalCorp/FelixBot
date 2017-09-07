@@ -81,27 +81,35 @@ client.talkedRecently = new Set(); //cooldown stuff
 client.wit = wit;
 client.maintenance = false; //Will be used to ignore users when performing maintenance stuff
 client.Raven = Raven;
+client.upvoters;
 
-client.defaultUserData = {
-    id: false,
-    cooldowns: {},
-    experience: {
-        expCount: 0,
-        level: 0,
-        publicLevel: true
-    },
-    generalSettings: {
-        lovePoints: 0,
-        malAccount: "",
-        blackListed: false,
-        afk: "",
-        reminders: [],
-        points: 0,
-        perks: {
-            love: [{
-                type: 'default',
-                cooldown: 0
-            }]
+client.defaultUserData = function(id) {
+    return {
+        id: id,
+        cooldowns: {},
+        experience: {
+            expCount: 0,
+            level: 0
+        },
+        generalSettings: {
+            lovePoints: 0,
+            malAccount: "",
+            blackListed: false,
+            afk: "",
+            reminders: [],
+            points: 0,
+            perks: {
+                love: [{
+                    type: 'default',
+                    cooldown: 0
+                }]
+            }
+        },
+        dataPrivacy: {
+            publicLevel: true,
+            publicProfile: true,
+            publicLove: true,
+            publicPoints: true
         }
     }
 }
@@ -192,21 +200,12 @@ setTimeout(async function() {
             console.log(`Unable to load command ${f}: ${e.stack}`);
         }
     });
-    try { //Build the help on launch instead of everytime the help is triggered to decrease the ressources usage
-        console.log("Building the help...");
-        const categories = ["generic", "miscellaneous", "image", "utility", "fun", "moderation", "settings"];
-        var i;
-        for (i = 0; i < categories.length; i++) {
-            const categoryCommands = client.commands.filter(c => c.help.category == categories[i]);
-            client.overallHelp += `**${categories[i]}** =>`;
-            client.overallHelp += categoryCommands.map(c => `\`${c.help.name}\` `);
-            client.overallHelp += "\n\n";
-        }
-        client.overallHelp = client.overallHelp.replace(/undefined/gim, ""); //To remove the "undefined"
-        console.log("Success !");
-    } catch (err) {
-        console.error(`[ERROR] => Failed to build the help: ${err.stack}`);
+    const categories = ["generic", "miscellaneous", "image", "utility", "fun", "moderation", "settings"];
+    for (let i = 0; i < categories.length; i++) {
+        const categoryCommands = client.commands.filter(c => c.help.category == categories[i]);
+        client.overallHelp += `**${categories[i]}** =>` + categoryCommands.map(c => `\`${c.help.name}\` `) + "\n\n";
     }
+    client.overallHelp = client.overallHelp.replace(/undefined/gim, ""); //To remove the "undefined"
     const evtFiles = await readdir('./events/');
     console.log(`Loading a total of ${evtFiles.length} events.`);
     evtFiles.forEach(file => {

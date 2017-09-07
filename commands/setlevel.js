@@ -160,8 +160,7 @@ exports.run = async(client, message) => {
                 return resolve(await message.channel.send(":white_check_mark: Okay, the server is now level " + level + randomTips));
             }
         } catch (err) {
-            console.error(err);
-            reject(client.Raven.captureException(err));
+            reject(client.emit('commandFail', message, err));
         }
     });
 };

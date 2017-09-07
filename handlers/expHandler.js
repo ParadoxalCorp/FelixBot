@@ -17,13 +17,8 @@ module.exports = async(client, message) => {
                     return level;
                 }
             }
-            if (!userEntry.expCount) { //That stuff is for global xp
-                userEntry.experience.expCount = expGain;
-                userEntry.experience.level = getCurrentLevel(0, expGain);
-            } else {
-                userEntry.experience.expCount = userEntry.experience.expCount + expGain;
-                userEntry.experience.level = getCurrentLevel(userEntry.experience.level, userEntry.experience.expCount + expGain);
-            }
+            userEntry.experience.expCount = userEntry.experience.expCount + expGain;
+            userEntry.experience.level = getCurrentLevel(userEntry.experience.level, userEntry.experience.expCount + expGain);
             client.userData.set(message.author.id, userEntry);
             if (guildEntry.generalSettings.levelSystem.users.filter(u => u.id === message.author.id).length === 0) {
                 const curLevel = getCurrentLevel(0, expGain);

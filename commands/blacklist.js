@@ -12,7 +12,7 @@ exports.run = async(client, message) => {
             users.forEach(function(user) {
                 let userEntry = client.userData.get(user.id);
                 if (!userEntry) {
-                    userEntry = client.defaultUserData;
+                    userEntry = client.defaultUserData(user.id);
                 }
                 if (userEntry.generalSettings.blackListed) {
                     userEntry.generalSettings.blackListed = false;

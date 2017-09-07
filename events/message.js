@@ -7,7 +7,6 @@ module.exports = async(client, message) => {
         if ((client.userData.get(message.author.id).generalSettings.blackListed) && (message.author.id !== "140149699486154753")) return; //Ignore blacklisted users
     }
     client.defaultGuildData.id = message.guild.id;
-    client.defaultUserData.id = message.author.id;
     const mentionned = message.mentions.users.first(); //--Afk feature--
     if (mentionned) {
         if (client.userData.get(mentionned.id)) {
@@ -26,9 +25,7 @@ module.exports = async(client, message) => {
                 }
             }
         } else {
-            client.defaultUserData.id = mentionned.id; //To avoid errors in commands which works with mention, create a entry in case
-            client.userData.set(mentionned.id, client.defaultUserData);
-            client.defaultUserData.id = message.author.id;
+            client.userData.set(mentionned.id, client.defaultUserData(mentionned.id));
         }
     }
     if (message.channel.type !== "dm") {

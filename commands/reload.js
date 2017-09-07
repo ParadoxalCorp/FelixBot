@@ -3,8 +3,20 @@ exports.run = async(client, message) => {
         let args = message.content.split(/\s+/gim);
         args.shift();
         if (!args.length) return resolve(await message.channel.send(":x: No parameters provided"));
-        let command = client.commands.get(args[0]) || client.aliases.get(args[0]);
-        if (!command) return resolve(await message.channel.send(":x: Invalid command"));
+        let command = client.commands.get(args[0]) || client.commands.get(client.aliases.get(args[0]));
+        if (!command) {
+            try {
+                let cmd = require(`./${args[0]}`);
+                client.commands.set(args[0], cmd);
+                cmd.conf.aliases.forEach(alias => {
+                    client.aliases.set(alias, cmd.help.name);
+                });
+                return resolve(await message.channel.send(`:white_check_mark: Sucessfully added the \`${args[0]}\` command`));
+            } catch (err) {
+                console.error(err);
+                return resolve(await message.channel.send(":x: Invalid command"));
+            }
+        }
         command = command.help.name;
         try {
             await delete require.cache[require.resolve(`./${command}.js`)];

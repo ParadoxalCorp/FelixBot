@@ -71,8 +71,7 @@ exports.run = async(client, message) => {
                 return resolve(await message.channel.send(":white_check_mark: Alright, i removed the permission level of the channel **#" + guildChannel.name + "**"));
             }
         } catch (err) {
-            console.error(err);
-            reject(client.Raven.captureException(err));
+            reject(client.emit('commandFail', message, err));
         }
     });
 };

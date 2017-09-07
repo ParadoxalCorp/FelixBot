@@ -1,7 +1,5 @@
 module.exports = async(client, message) => {
-    /**
-     * 
-     * 
+    /** 
      * @param {Object} message The message object that triggered the command
      * @param {Object} params An object of parameters
      * @param {string} params.description - The description of the embed
@@ -12,7 +10,7 @@ module.exports = async(client, message) => {
      */
     async function createInteractiveMessage(message, params) {
         return new Promise(async(resolve, reject) => {
-            if (!message || !params || !params.description || !params.content) return reject("Invalid call: Please refer to the docs to see the required parameters of createInteractiveMessage()");
+            if (!message || !params || !params.description || !params.content) return reject("Invalid createInteractiveMessage() call");
             let limit = params.limit || 60000;
             const interactiveMessage = await message.channel.send({
                 embed: {

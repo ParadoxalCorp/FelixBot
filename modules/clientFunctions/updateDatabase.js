@@ -17,7 +17,7 @@ module.exports = async(client) => {
             try {
                 client.userData.forEach(function(user) {
                     user = JSON.parse(user);
-                    var defaultUserData = client.defaultUserData;
+                    var defaultUserData = client.defaultUserData(user.id);
                     var userKeys = Object.keys(user),
                         defaultKeys = Object.keys(defaultUserData);
                     userKeys.forEach(function(key) {
