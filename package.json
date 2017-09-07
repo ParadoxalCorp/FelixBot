@@ -3,9 +3,6 @@
     "version": "2.0.0 pre-prototyp",
     "description": "Felix, a Discord bot",
     "main": "index.js",
-    "presets": [
-        "env"
-    ],
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
