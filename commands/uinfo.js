@@ -25,9 +25,9 @@ exports.run = async(client, message) => {
                     inline: true
                 });
             }
-            if (guildEntry.generalSettings.levelSystem.enabled && guildEntry.generalSettings.levelSystem.users.filter(u => u.id === getValueOf.id).length !== 0) {
+            if (guildEntry.generalSettings.levelSystem.enabled && guildEntry.generalSettings.levelSystem.users.filter(u => u.id === target.id).length !== 0) {
                 const userPos = guildEntry.generalSettings.levelSystem.users.findIndex(function(element) {
-                    return element.id === getValueOf.id;
+                    return element.id === target.id;
                 });
                 const levelDetails = client.getLevelDetails(guildEntry.generalSettings.levelSystem.users[userPos].level, guildEntry.generalSettings.levelSystem.users[userPos].expCount);
                 embedFields.push({

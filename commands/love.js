@@ -61,7 +61,7 @@ exports.run = async(client, message) => {
                 }
                 client.userData.set(users.first().id, receiverEntry);
                 client.userData.set(message.author.id, userEntry);
-                return resolve(await message.channel.send(`You just gave **${lpCount}** to **${users.first().tag}** :heart:`));
+                return resolve(await message.channel.send(`You just gave **${lpCount}** love point(s) to **${users.first().tag}** :heart:`));
             } else if (users.size > 1) { //------------------------Love multiple users------------------------------------
                 users.forEach(function(usr) {
                     if (usr.id === message.author.id) return users.delete(usr.id); //Remove from the collection the author if in and skip to the next

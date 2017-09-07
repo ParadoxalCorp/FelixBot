@@ -20,7 +20,7 @@ exports.run = async(client, message) => {
                 var detailledUsage = "There is no detailled usage for this command";
                 var parameters = "None"
                 if (1 <= commandHelp.conf.aliases.length) aliases = commandHelp.conf.aliases.toString();
-                if (commandHelp.help.detailledUsage) commandHelp.help.detailledUsage.replace(/\{prefix\}/gim, `${client.prefix}`);
+                if (commandHelp.help.detailledUsage) detailledUsage = commandHelp.help.detailledUsage.replace(/\{prefix\}/gim, `${client.prefix}`);
                 if (commandHelp.help.parameters) parameters = commandHelp.help.parameters.toString();
                 return resolve(await message.channel.send(`${commandHelp.help.description}\n**Parameters:** ${parameters}\n**Usage Example:**\n\`${client.prefix + commandHelp.help.usage}\`\n**Category:** \`${commandHelp.help.category}\`\n**Aliases:** \`${aliases}\`\n**Detailled Usage:**\n${detailledUsage}`));
             }
