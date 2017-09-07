@@ -81,7 +81,6 @@ client.talkedRecently = new Set(); //cooldown stuff
 client.wit = wit;
 client.maintenance = false; //Will be used to ignore users when performing maintenance stuff
 client.Raven = Raven;
-client.commandsUsage = new Discord.Collection(); //Commands statistics stuff
 
 client.defaultUserData = {
     id: false,
@@ -184,6 +183,7 @@ setTimeout(async function() {
         try {
             const props = require(`./commands/${f}`);
             console.log(`Loading Command: ${props.help.name}. 👌`);
+            props.uses = 0; //For stats purposes
             client.commands.set(props.help.name, props);
             props.conf.aliases.forEach(alias => {
                 client.aliases.set(alias, props.help.name);
@@ -215,12 +215,6 @@ setTimeout(async function() {
         // This line is awesome by the way. Just sayin'.
         client.on(eventName, event.bind(null, client));
         delete require.cache[require.resolve(`./events/${file}`)];
-    });
-    client.commands.map(async function(cmd) { //Fill the stats with all the commands
-        client.commandsUsage.set(cmd.help.name, {
-            category: cmd.help.category,
-            uses: 0
-        });
     });
     client.login(client.config.token);
 }());

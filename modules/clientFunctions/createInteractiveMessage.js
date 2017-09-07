@@ -1,5 +1,16 @@
 module.exports = async(client, message) => {
-    client.createInteractiveMessage = async function(message, params) {
+    /**
+     * 
+     * 
+     * @param {Object} message The message object that triggered the command
+     * @param {Object} params An object of parameters
+     * @param {string} params.description - The description of the embed
+     * @param {Array} params.content - An array of the contents
+     * @param {Boolean} [params.deletion=false] - Optional: Whether or not the elements can be "deleted" by the user
+     * @param {Number} [params.limit=60000] - Optional: Time in milliseconds before the collector should end
+     * @returns {Promise<Object>} An object with the endReason and collected properties
+     */
+    async function createInteractiveMessage(message, params) {
         return new Promise(async(resolve, reject) => {
             if (!message || !params || !params.description || !params.content) return reject("Invalid call: Please refer to the docs to see the required parameters of createInteractiveMessage()");
             let limit = params.limit || 60000;
@@ -81,4 +92,5 @@ module.exports = async(client, message) => {
             });
         });
     }
+    client.createInteractiveMessage = createInteractiveMessage; //Export it as a property of the client object so we can use it everywhere
 }
