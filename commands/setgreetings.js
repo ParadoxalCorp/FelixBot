@@ -73,6 +73,7 @@ exports.run = async(client, message) => {
                             method = `#${message.channel.name}`;
                         } else {
                             method = guildEntry.onEvent.guildMemberAdd.greetings.channel;
+                            guildEntry.onEvent.guildMemberAdd.greetings.dm = false;
                         }
                     } else if (method !== "Disabled" && method !== "Direct message") {
                         guildEntry.onEvent.guildMemberAdd.greetings.enabled = false;
