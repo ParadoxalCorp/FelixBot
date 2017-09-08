@@ -1,8 +1,8 @@
 module.exports = async(client, message) => {
     const guildEntry = client.guildData.get(message.guild.id);
     if (message.channel.type === "dm") {
-        if (!message.content.startsWith(client.database.Data.global[0].prefix)) return;
-        client.prefix = client.database.Data.global[0].prefix;
+        if (!message.content.startsWith(client.database[0].prefix)) return;
+        client.prefix = client.database[0].prefix;
         // Someone once told me that it was the best way to define args
         const args = message.content.split(/\s+/g);
         const supposedCommand = args.shift().slice(client.prefix.length).toLowerCase();

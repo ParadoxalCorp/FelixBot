@@ -1,12 +1,11 @@
 const unirest = require("unirest");
 
 module.exports = async(client, message) => {
-    if (client.maintenance && message.author.id !== client.database.Data.global.ownerId) return; //Ignore users during maintenance
+    if (client.maintenance && message.author.id !== client.database.ownerId) return; //Ignore users during maintenance
     if (message.author.bot) return;
     if (client.userData.get(message.author.id)) {
         if ((client.userData.get(message.author.id).generalSettings.blackListed) && (message.author.id !== "140149699486154753")) return; //Ignore blacklisted users
     }
-    client.defaultGuildData.id = message.guild.id;
     const mentionned = message.mentions.users.first(); //--Afk feature--
     if (mentionned) {
         if (client.userData.get(mentionned.id)) {
@@ -31,7 +30,7 @@ module.exports = async(client, message) => {
     if (message.channel.type !== "dm") {
         try { //In case felix got invited while being down
             if (!client.guildData.get(message.guild.id)) {
-                client.guildData.set(message.guild.id, client.defaultGuildData);
+                client.guildData.set(message.guild.id, client.defaultGuildData(message.guild.id));
             }
         } catch (err) {
             console.error(err);
@@ -57,7 +56,7 @@ module.exports = async(client, message) => {
                 if (message.guild) {
                     return await message.channel.send("Here's the commands list, you can see the detailled help of a command using `" + guildEntry.generalSettings.prefix + "help commandname`\n\n" + client.overallHelp);
                 } else {
-                    return await message.channel.send("Here's the commands list, you can see the detailled help of a command using `" + client.database.Data.global[0].prefix + "help commandname`\n\n" + client.overallHelp);
+                    return await message.channel.send("Here's the commands list, you can see the detailled help of a command using `" + client.database.prefix + "help commandname`\n\n" + client.overallHelp);
                 }
             }
         }

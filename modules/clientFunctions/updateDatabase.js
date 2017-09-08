@@ -45,7 +45,7 @@ module.exports = async(client) => {
             try {
                 client.guildData.forEach(function(guild) {
                     guild = JSON.parse(guild);
-                    var defaultGuildData = client.defaultGuildData;
+                    var defaultGuildData = client.defaultGuildData(guild.id);
                     var guildKeys = Object.keys(guild),
                         defaultKeys = Object.keys(defaultGuildData);
                     guildKeys.forEach(function(key) {

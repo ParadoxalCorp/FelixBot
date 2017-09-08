@@ -3,19 +3,28 @@ module.exports = async(client) => {
     const getRandomNumber = function(max, min) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    if (client.database.Data.global.discordBotList !== "") { //If no key, most likely if selfhost
+    if (client.database.discordBotList !== "") { //If no key, most likely if selfhost
         var upvoters = async function() {
             return new Promise(async(resolve, reject) => {
                 try {
                     fetch: {
                         await unirest.get(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`)
-                        .header('Authorization', client.database.Data.global.discordBotList)
+                        .header('Authorization', client.database.discordBotList)
                         .end(async function(result) {
                             if (!Array.isArray(result.body)) {
                                 console.error(result.body);
                                 resolve(false);
                             }
                             resolve(upvoters = result.body);
+                        });
+                    }
+                    fetch: {
+                        await unirest.get(`https://discordbots.org/api/bots/327144735359762432`)
+                        .header('Authorization', client.database.discordBotList)
+                        .end(async function(result) {
+                            if (result.body.id) {
+                                client.dblData = result.body;
+                            }
                         });
                     }
                 }
@@ -32,7 +41,7 @@ module.exports = async(client) => {
             try {
                 fetch: {
                     await unirest.get(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`)
-                    .header('Authorization', client.database.Data.global.discordBotList)
+                    .header('Authorization', client.database.discordBotList)
                     .end(async function(result) {
                         if (!Array.isArray(result.body)) {
                             console.error(result.body);
@@ -40,9 +49,19 @@ module.exports = async(client) => {
                         client.upvoters = upvoters;
                     });
                 }
+                fetch: {
+                    await unirest.get(`https://discordbots.org/api/bots/327144735359762432`)
+                    .header('Authorization', client.database.discordBotList)
+                    .end(async function(result) {
+                        if (result.body.id) {
+                            client.dblData = result.body;
+                        }
+                    });
+                }
             }
             catch (err) {
                 console.error(err);
+                client.Raven.captureException(err);
             }
         }, 1800000);
         //------------------------------------------------------------------------------------------
@@ -61,14 +80,14 @@ module.exports = async(client) => {
             upvoterText = `with ${confirmedUpvoters[getRandomNumber(confirmedUpvoters.length - 1, 0)]} |`
         }
         setTimeout(function() {
-            client.user.setPresence({ game: { name: `${upvoterText} ${client.database.Data.global.prefix}help for commands | On ${client.guilds.size} servers`, type: 0 } });
+            client.user.setPresence({ game: { name: `${upvoterText} ${client.database.prefix}help for commands | On ${client.guilds.size} servers`, type: 0 } });
         }, 1000); //Wait db load
         setInterval(function() {
             if (upvoters) { //Regenerate random number
                 var random = getRandomNumber(confirmedUpvoters.length - 1, 0);
                 upvoterText = `with ${confirmedUpvoters[getRandomNumber(confirmedUpvoters.length - 1, 0)]} |`
             }
-            client.user.setPresence({ game: { name: `${upvoterText} ${client.database.Data.global.prefix}help for commands | On ${client.guilds.size} servers`, type: 0 } });
+            client.user.setPresence({ game: { name: `${upvoterText} ${client.database.prefix}help for commands | On ${client.guilds.size} servers`, type: 0 } });
         }, 60000);
     } else {
         client.user.setPresence({ game: { name: `${client.config.prefix}help for commands` } });

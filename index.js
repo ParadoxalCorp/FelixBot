@@ -10,13 +10,14 @@ const { Wit, log } = require('node-wit');
 const wit = new Wit({
     accessToken: "VBDY3FZZCLSQMISZNLUGQYG4EQCTKTQI",
 });
-var Raven = require('raven');
-Raven.config('https://d020274d33f942b7a581a5ccdc001d95:ed66eada85454353bdd4af15841e5d51@sentry.io/210885').install();
 
-const dbPath = "database/database.json";
+const dbPath = "config/config.json";
 const PersistentCollection = require('djs-collection-persistent');
 
 const database = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
+
+var Raven = require('raven');
+Raven.config(database.raven).install();
 
 const {
     promisify
@@ -62,7 +63,7 @@ try {
     console.error("[ERROR] => Failed to load the malsearch module: " + err.stack);
 }
 client.mention = "<@343527831034265612>";
-client.config = database.Data.global;
+client.config = database;
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 client.database = database;
@@ -81,7 +82,8 @@ client.talkedRecently = new Set(); //cooldown stuff
 client.wit = wit;
 client.maintenance = false; //Will be used to ignore users when performing maintenance stuff
 client.Raven = Raven;
-client.upvoters;
+client.upvoters = false;
+client.dblData = false;
 
 client.defaultUserData = function(id) {
     return {
@@ -114,35 +116,51 @@ client.defaultUserData = function(id) {
     }
 }
 
-client.defaultGuildData = {
-    id: false,
-    generalSettings: {
-        autoAssignablesRoles: [],
-        prefix: client.database.Data.global.prefix,
-        levelSystem: {
-            enabled: true,
-            public: true,
-            levelUpNotif: false,
-            roles: [],
-            users: [],
-            totalExp: 0
+client.defaultGuildData = function(id) {
+    return {
+        id: id,
+        generalSettings: {
+            autoAssignablesRoles: [],
+            prefix: client.database.prefix,
+            levelSystem: {
+                enabled: true,
+                public: true,
+                levelUpNotif: false,
+                roles: [],
+                users: [],
+                totalExp: 0
+            },
         },
-    },
-    permissionsLevels: {
-        things: [
-            [],
-            [],
-            []
-        ],
-        globalLevel: "none"
-    },
-    onEvent: {
-        onJoinRole: [],
-        greetings: "",
-        farewell: "",
-        greetingsMethod: "",
-        greetingsChan: "",
-        farewellChan: ""
+        permissionsLevels: {
+            things: [
+                [],
+                [],
+                []
+            ],
+            globalLevel: "none"
+        },
+        onEvent: {
+            guildMemberAdd: {
+                onJoinRole: [],
+                greetings: {
+                    enabled: false,
+                    message: false,
+                    embed: false,
+                    method: false,
+                    channel: false,
+                    error: false //Will be used for missing permissions case
+                }
+            },
+            guildMemberRemove: {
+                farewell: {
+                    enabled: false,
+                    message: false,
+                    embed: false,
+                    channel: false,
+                    error: false //Will be used for missing permissions case
+                }
+            }
+        }
     }
 }
 
