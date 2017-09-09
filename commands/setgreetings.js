@@ -63,11 +63,11 @@ exports.run = async(client, message) => {
                 clearTimeout(timeout); //Reset timeout
                 if (r.emoji.name === mainReactions[0]) { //---------------------------Change method------------------------------------
                     if (method === "Disabled") {
-                        guildEntry.onEvent.guildMemberAdd.greetings.enabled = true;
+                        guildEntry.onEvent.guildMemberAdd.greetings.enabled = true; //If disabled switch to dm
                         guildEntry.onEvent.guildMemberAdd.greetings.dm = true;
                         method = "Direct message";
                     } else if (method === "Direct message") {
-                        if (!guildEntry.onEvent.guildMemberAdd.greetings.channel) {
+                        if (!guildEntry.onEvent.guildMemberAdd.greetings.channel) { //If dm switch to channel
                             guildEntry.onEvent.guildMemberAdd.greetings.channel = message.channel.id;
                             guildEntry.onEvent.guildMemberAdd.greetings.dm = false;
                             method = `#${message.channel.name}`;
@@ -75,7 +75,7 @@ exports.run = async(client, message) => {
                             method = guildEntry.onEvent.guildMemberAdd.greetings.channel;
                             guildEntry.onEvent.guildMemberAdd.greetings.dm = false;
                         }
-                    } else if (method !== "Disabled" && method !== "Direct message") {
+                    } else if (method !== "Disabled" && method !== "Direct message") { //Finally if channel switch to disabled
                         guildEntry.onEvent.guildMemberAdd.greetings.enabled = false;
                         method = "Disabled";
                     }
@@ -92,6 +92,7 @@ exports.run = async(client, message) => {
                         guildEntry.onEvent.guildMemberAdd.greetings.message = collected.first().content;
                         greetings = collected.first().content;
                         updateMainMessage();
+                        if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) await collected.first().delete();
                     } catch (e) {
                         mainCollector.stop('timeout');
                     }
@@ -114,6 +115,7 @@ exports.run = async(client, message) => {
                             guildEntry.onEvent.guildMemberAdd.greetings.channel = message.guild.channels.find('name', collected.first().content.toLowerCase()).id;
                         }
                         updateMainMessage();
+                        if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) await collected.first().delete();
                     } catch (e) {
                         mainCollector.stop('timeout');
                     }

@@ -18,10 +18,21 @@ module.exports = async(client, member) => {
         //---------------------------------------------------------Greets------------------------------------------------------------
         if (guildEntry.onEvent.guildMemberAdd.greetings.channel && !guildEntry.onEvent.guildMemberAdd.greetings.dm) method = member.guild.channels.get(guildEntry.onEvent.guildMemberAdd.greetings.channel);
         try {
-            method.send(message);
+            await method.send(message);
         } catch (err) {
-            if (err.message === "Missing Permissions") return guildEntry.onEvent.guildMemberAdd.greetings.error = "Missing Permissions";
-            else if (typeof method === "undefined") return guildEntry.onEvent.guildMemberAdd.greetings.error = "Unknown Channel";
+            if (err.code === 50013) {
+                guildEntry.onEvent.guildMemberAdd.greetings.error = "Missing Permissions"; //error code for Missing Permissions
+                return client.guildData.set(member.guild.id, guildEntry);
+            } else if (typeof method === "undefined") {
+                guildEntry.onEvent.guildMemberAdd.greetings.error = "Unknown Channel";
+                return client.guildData.set(member.guild.id, guildEntry); //If getting the channel return undefined
+            } else if (err.code === 50001) {
+                guildEntry.onEvent.guildMemberAdd.greetings.error = "Missing Permissions" //error code for Missing Access
+                return client.guildData.set(member.guild.id, guildEntry);
+            }
+            //-----------------------------------If the error is not related to permissions nor unexisting channel-------------------------
+            guildEntry.onEvent.guildMemberAdd.greetings.error = "Unknown Error";
+            client.guildData.set(member.guild.id, guildEntry);
             console.error(err);
             return client.Raven.captureException(err);
         }
