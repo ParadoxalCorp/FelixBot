@@ -13,18 +13,9 @@ module.exports = async(client) => {
                         .end(async function(result) {
                             if (!Array.isArray(result.body)) {
                                 console.error(result.body);
-                                resolve(false);
+                                resolve(upvoters = false);
                             }
                             resolve(upvoters = result.body);
-                        });
-                    }
-                    fetch: {
-                        await unirest.get(`https://discordbots.org/api/bots/327144735359762432`)
-                        .header('Authorization', client.database.discordBotList)
-                        .end(async function(result) {
-                            if (result.body.id) {
-                                client.dblData = result.body;
-                            }
                         });
                     }
                 }
@@ -35,7 +26,7 @@ module.exports = async(client) => {
             })
         };
         await upvoters();
-        if (upvoters) client.upvoters = upvoters;
+        if (upvoters) client.upvotes.users = upvoters;
         //----------------------------Update upvoters every 30 minutes-----------------------------------------
         setInterval(async function() {
             try {
@@ -46,16 +37,8 @@ module.exports = async(client) => {
                         if (!Array.isArray(result.body)) {
                             console.error(result.body);
                         }
-                        client.upvoters = upvoters;
-                    });
-                }
-                fetch: {
-                    await unirest.get(`https://discordbots.org/api/bots/327144735359762432`)
-                    .header('Authorization', client.database.discordBotList)
-                    .end(async function(result) {
-                        if (result.body.id) {
-                            client.dblData = result.body;
-                        }
+                        client.upvotes.users = upvoters;
+                        client.upvotes.latestUpdate = Date.now();
                     });
                 }
             }

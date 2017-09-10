@@ -82,8 +82,23 @@ client.talkedRecently = new Set(); //cooldown stuff
 client.wit = wit;
 client.maintenance = false; //Will be used to ignore users when performing maintenance stuff
 client.Raven = Raven;
-client.upvoters = false;
-client.dblData = false;
+client.upvotes = {
+    users: false,
+    latestUpdate: Date.now(),
+    count: function() {
+        return this.users.length
+    }
+}
+client.statsUpdate = {
+    success: {
+        name: 'No Data',
+        message: 'Server count hasn\'t been sent yet',
+        description: function() {
+            return `${this.name}: ${this.message}`;
+        }
+    },
+    latestUpdate: false
+}
 
 client.defaultUserData = function(id) {
     return {

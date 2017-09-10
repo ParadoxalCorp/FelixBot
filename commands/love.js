@@ -29,7 +29,7 @@ exports.run = async(client, message) => {
                 return sortByCooldown[0].cooldown;
             }
             //------------------------------------------------------Check for upvote------------------------------------------
-            if (client.upvoters.includes(message.author.id) && userEntry.generalSettings.perks.love.filter(l => l.name === "upvote").length === 0) {
+            if (client.upvotes.users.includes(message.author.id) && userEntry.generalSettings.perks.love.filter(l => l.name === "upvote").length === 0) {
                 userEntry.generalSettings.perks.love.push({
                     name: "upvote",
                     cooldown: 0
@@ -40,14 +40,14 @@ exports.run = async(client, message) => {
                 let remainingLps = getRemainingLps();
                 if (!remainingLps) {
                     let remainingTime = convertToTime(getNearestCooldown() - Date.now());
-                    console.log(remainingTime, getNearestCooldown());
                     return resolve(await message.channel.send(`:x: You already used all your love points, time remaining: ${remainingTime.hours}h ${remainingTime.minutes}m ${remainingTime.seconds}s`));
                 } else return resolve(await message.channel.send(`You have **${remainingLps}** love point(s) available`));
             } else if (users.size > 1 && users.size > getRemainingLps()) {
                 return resolve(await message.channel.send(`:x: You do not have enough love points to do that D:, you currently have ${getRemainingLps()} love point(s)`));
             } else if (users.size === 1) { //----------------------------------Love a user------------------------------------------------
                 if (users.first().id === message.author.id) return resolve(await message.channel.send(":x: Are you trying to love yourself? At least love me instead if you dont know who to love  (╯°□°）╯︵ ┻━┻"));
-                let lpCount = message.content.split(/\s+/gim).filter(a => !isNaN(a)) || 1;
+                let lpCount = message.content.split(/\s+/gim).filter(a => !isNaN(a)).toString();
+                if (lpCount.length === 0) lpCount = 1;
                 let remainingLps = getRemainingLps();
                 if (!remainingLps) {
                     let remainingTime = convertToTime(getNearestCooldown() - Date.now());
@@ -56,8 +56,8 @@ exports.run = async(client, message) => {
                 if (lpCount > remainingLps) lpCount = remainingLps; //If the count of lps is superior to the remaining, give everything remaining
                 let receiverEntry = client.userData.get(users.first().id) || client.defaultUserData(users.first().id); //If the user is not in the db
                 receiverEntry.generalSettings.lovePoints = receiverEntry.generalSettings.lovePoints + lpCount;
-                for (let i = 0; i < userEntry.generalSettings.perks.love.length; i++) {
-                    if (userEntry.generalSettings.perks.love[i].cooldown < Date.now()) userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
+                for (let i = 0; i < userEntry.generalSettings.perks.love.length; i++) { //Add the cooldowns
+                    if (userEntry.generalSettings.perks.love[i].cooldown < Date.now() && i >= lpCount) userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
                 }
                 client.userData.set(users.first().id, receiverEntry);
                 client.userData.set(message.author.id, userEntry);

@@ -69,17 +69,8 @@ exports.run = async(client, message) => {
                 value: `[Felix invite link](https://discordapp.com/oauth2/authorize?&client_id=${client.user.id}&scope=bot&permissions=2146950271)`,
                 inline: true
             });
-            if (client.upvoters) {
                 embedFields.push({
                     name: ':+1: Upvotes',
-                    value: client.upvoters.length,
-                    inline: true
-                });
-            }
-            if (client.dblData && client.dblData.certifiedBot) {
-                embedFields.push({
-                    name: "<:certifiedbot:355641867527782401> Certified",
-                    value: ':white_check_mark:',
                     inline: true
                 });
             }
