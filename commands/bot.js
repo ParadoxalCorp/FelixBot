@@ -69,8 +69,10 @@ exports.run = async(client, message) => {
                 value: `[Felix invite link](https://discordapp.com/oauth2/authorize?&client_id=${client.user.id}&scope=bot&permissions=2146950271)`,
                 inline: true
             });
+            if (client.upvotes.users) {
                 embedFields.push({
                     name: ':+1: Upvotes',
+                    value: client.upvotes.users.length,
                     inline: true
                 });
             }
