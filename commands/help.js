@@ -1,10 +1,11 @@
-exports.run = async(client, message) => {
+exports.run = async(client, message, userLevel) => {
     return new Promise(async(resolve, reject) => {
         try {
             let args = message.content.split(/\s+/gim);
             args.shift();
             const categories = ["generic", "miscellaneous", "image", "utility", "fun", "moderation", "settings"];
-            client.overallHelp = ""; //Nullify the one made in index.js
+            if (userLevel >= 42) categories.push('admin'); //If felix admin then show admin commands
+            client.overallHelp = ""; //Nullify the one made in the index.js core
             for (let i = 0; i < categories.length; i++) {
                 const categoryCommands = client.commands.filter(c => c.help.category == categories[i]);
                 client.overallHelp += `**${categories[i]}** =>` + categoryCommands.map(c => `\`${c.help.name}\` `) + "\n\n";

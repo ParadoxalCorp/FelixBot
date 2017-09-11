@@ -8,15 +8,15 @@ module.exports = async(client) => {
         return new Promise(async(resolve, reject) => {
             client.statsUpdate.latestUpdate = Date.now();
             if (client.config.discordBotList === "") {
-                client.statsUpdate.name = "Internal Error",
-                    client.statsUpdate.message = "No API key found";
+                client.statsUpdate.sucess.name = "Internal Error",
+                    client.statsUpdate.sucess.message = "No API key found";
                 return reject({
                     sucess: 'No API key found'
                 });
             }
             if (client.user.id !== "327144735359762432") {
-                client.statsUpdate.name = "Internal Error",
-                    client.statsUpdate.message = "Invalid bot";
+                client.statsUpdate.sucess.name = "Internal Error",
+                    client.statsUpdate.sucess.message = "Invalid bot";
                 return reject({
                     sucess: 'Invalid bot'
                 });
@@ -30,14 +30,14 @@ module.exports = async(client) => {
                     .end(function(response) {
                         if (response.body.length > 1) {
                             console.error(result.body);
-                            client.statsUpdate.name = "External Error",
-                                client.statsUpdate.message = "Discord Bot List returned an empty body";
+                            client.statsUpdate.sucess.name = "External Error",
+                                client.statsUpdate.sucess.message = "Discord Bot List returned an empty body";
                             return reject({
                                 sucess: 'Internal Discord Bot List Error'
                             });
                         }
-                        client.statsUpdate.name = "Update Successful",
-                            client.statsUpdate.message = "Server count has been posted successfully";
+                        client.statsUpdate.sucess.name = "Update Successful",
+                            client.statsUpdate.sucess.message = "Server count has been posted successfully";
                         return resolve({
                             sucess: true
                         })

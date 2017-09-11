@@ -170,5 +170,5 @@ exports.help = {
     description: 'Set the greetings of the server',
     usage: 'setgreetings',
     category: 'settings',
-    detailledUsage: '\n**FLAGS**\n`%USER%` The user that joined the server, will looks like `@Bobby`\n`%USERNAME%` The username of the user, will looks like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will looks like `Bobby#0000`\n`%GUILD%` The server name, will looks like `Bobby\'s server`\n\n`{prefix}setgreetings raw` Will return the raw message(without flags replaced) that has been set'
+    detailledUsage: '\n**FLAGS**\n`%USER%` The user that joined the server, will look like `@Bobby`\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`\n\n`{prefix}setgreetings raw` Will return the raw message(without flags replaced) that has been set'
 };

@@ -56,7 +56,7 @@ module.exports = async(client, message) => {
             try {
                 client.cmdsUsed++;
                 client.cmdsLogs += `[${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}] Command ${command} triggered, current memory usage: ${(process.memoryUsage().heapUsed / 1024 / 1000).toFixed(2)}MB\n`
-                await commandFile.run(client, message, args);
+                await commandFile.run(client, message, userLevel);
                 client.commands.get(command).uses++;
                 client.cmdsLogs += `[${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}] new memory usage: ${(process.memoryUsage().heapUsed / 1024 / 1000).toFixed(2)}MB\n`
             } catch (err) {
