@@ -55,9 +55,9 @@ exports.run = async(client, message) => {
                 }
                 if (lpCount > remainingLps) lpCount = remainingLps; //If the count of lps is superior to the remaining, give everything remaining
                 let receiverEntry = client.userData.get(users.first().id) || client.defaultUserData(users.first().id); //If the user is not in the db
-                receiverEntry.generalSettings.lovePoints = receiverEntry.generalSettings.lovePoints + lpCount;
+                receiverEntry.generalSettings.lovePoints = (Number(receiverEntry.generalSettings.lovePoints) + Number(lpCount));
                 for (let i = 0; i < userEntry.generalSettings.perks.love.length; i++) { //Add the cooldowns
-                    if (userEntry.generalSettings.perks.love[i].cooldown < Date.now() && i >= lpCount) userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
+                    if (userEntry.generalSettings.perks.love[i].cooldown < Date.now() && i <= Number(lpCount)) userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
                 }
                 client.userData.set(users.first().id, receiverEntry);
                 client.userData.set(message.author.id, userEntry);
