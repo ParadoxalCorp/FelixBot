@@ -99,6 +99,16 @@ client.statsUpdate = {
     },
     latestUpdate: false
 }
+client.imageTypes = {
+    success: {
+        name: 'No Data',
+        message: `The weeb's image types didnt got fetched yet`,
+        description: function() {
+            return `${this.name}: ${this.message}`;
+        }
+    },
+    latestUpdate: Date.now()
+}
 
 client.defaultUserData = function(id) {
     return {

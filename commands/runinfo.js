@@ -3,6 +3,7 @@ exports.run = async(client, message) => {
         try {
             function convertToRemainingTime(timestamp) {
                 return {
+                    hours: Math.floor((timestamp % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
                     minutes: Math.floor((timestamp % (1000 * 60 * 60)) / (1000 * 60)),
                     seconds: Math.floor((timestamp % (1000 * 60)) / 1000)
                 }
@@ -28,6 +29,14 @@ exports.run = async(client, message) => {
             embedFields.push({
                 name: 'Uptime',
                 value: `${((client.uptime / (1000*60*60)) % 24).toFixed(1)}h ${Math.round((client.uptime / (1000*60)) % 60)}m ${Math.round((client.uptime / 1000) % 60)}s`,
+                inline: true
+            });
+            latestUpdateDate = ':x:';
+            if (client.imageTypes.latestUpdate) latestUpdateDate = new Date(client.imageTypes.latestUpdate);
+            let nextUpdate = convertToRemainingTime((client.imageTypes.latestUpdate + 43200000) - Date.now()); //+12h (interval between updates)
+            embedFields.push({
+                name: 'Image types update',
+                value: `**Success**: ${client.imageTypes.success.description()}\n**Latest update**: ${new Date(client.imageTypes.latestUpdate)}\n**Next update in**: ${nextUpdate.hours}h ${nextUpdate.minutes}m ${nextUpdate.seconds}s`,
                 inline: true
             });
             return resolve(await message.channel.send({

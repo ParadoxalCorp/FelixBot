@@ -71,7 +71,7 @@ module.exports = async(client, message) => {
                 } else if (r.emoji.name === pageReactions[4]) { //Abort the command
                     clearTimeout(timeout); //Dont let the timeout continue any further, after all the command ended
                     collector.stop("aborted"); //End the collector
-                } else if (params.deletion && pageReactions[5]) { //If deletion, delete
+                } else if (params.deletion && r.emoji.name === pageReactions[5]) { //If deletion, delete
                     params.content.split(page, 1);
                     if (page !== 0) page--;
                     editMessage(page);

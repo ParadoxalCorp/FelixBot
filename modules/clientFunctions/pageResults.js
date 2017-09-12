@@ -9,13 +9,9 @@ module.exports = async(client) => {
             if (!message || !params || !params.results) return reject("FunctionCallError: The message and results parameters must be provided");
             parameters.message = message,
                 parameters.results = params.results;
-            if (params.text) {
-                parameters.text = params.text;
-            }
             if (params.size) {
                 parameters.size = params.size;
             }
-
             var result = [];
             var j = 0;
             for (var i = 0; i < Math.ceil(parameters.results.length / parameters.size); i++) {

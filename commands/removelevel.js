@@ -88,6 +88,6 @@ exports.help = {
     parameters: '`-user`, `-channel`, `-role`',
     description: 'Remove the level of a user/channel/role or from the server itself',
     usage: 'removelevel',
-    category: 'generic',
+    category: 'moderation',
     detailledUsage: '\n`{prefix}removelevel -channel general` Will remove the permission level of the channel **#general**\n`{prefix}removelevel -user user resolvable` Will remove the permission level of the user Bob\n`{prefix}removelevel -role Moderators` Will remove the level of the role **Moderators**\nUsing the command without any arguments will remove the level of the server'
 };

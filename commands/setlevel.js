@@ -41,9 +41,9 @@ exports.run = async(client, message) => {
                     client.guildData.set(message.guild.id, guildEntry);
                 }
             }
-            if (client.database.Data.global.thingsLevel42.includes(id)) {
+            if (client.database.thingsLevel42.includes(id)) {
                 if (levelToSave !== "42") {
-                    client.database.Data.global.thingsLevel42.splice(client.database.Data.global.thingsLevel42.indexOf(id), 1);
+                    client.database.thingsLevel42.splice(client.database.thingsLevel42.indexOf(id), 1);
                     fs.writeFile(client.dbPath, JSON.stringify(client.database), (err) => {
                         if (err) console.error(err)
                     });
@@ -73,7 +73,7 @@ exports.run = async(client, message) => {
                 if (users.size === 0) {
                     return resolve(await message.channel.send(":x: Either you did not specified any user or the user does not exist" + randomTips));
                 }
-                if (message.author.id !== client.database.Data.global.ownerId) {
+                if (message.author.id !== client.database.ownerId) {
                     if (level === "42") {
                         return resolve(await message.channel.send(":x: That level doesn't exist !"));
                     }
@@ -94,8 +94,8 @@ exports.run = async(client, message) => {
                     return resolve(await message.channel.send(":white_check_mark: Okay, **" + users.map(u => u.tag).join(", ") + "** is/are now level **" + level + "**" + randomTips));
                 } else {
                     users.forEach(function(usr) {
-                        if (!client.database.Data.global.thingsLevel42.includes(usr.id)) { //If has not already this level
-                            client.database.Data.global.thingsLevel42.push(usr.id);
+                        if (!client.database.thingsLevel42.includes(usr.id)) { //If has not already this level
+                            client.database.thingsLevel42.push(usr.id);
                             clearDuplicates("42", usr.id);
                         }
                     });

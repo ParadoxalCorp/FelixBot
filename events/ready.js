@@ -3,7 +3,36 @@ module.exports = async(client) => {
     const getRandomNumber = function(max, min) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    if (client.database.discordBotList !== "") { //If no key, most likely if selfhost
+    if (client.database.wolkeImageKey !== "") {
+        async function updateImageTypes() {
+            try {
+                fetch: {
+                    await unirest.get(`https://api.weeb.sh/images/types`)
+                    .header('Authorization', `Bearer ${client.database.wolkeImageKey}`)
+                    .end(async function(result) {
+                        if (!result.body || result.body.status !== 200) {
+                            client.imageTypes.success.name = "External Error";
+                            client.imageTypes.success.message = "An error occured within weeb.sh end or the request was wrong";
+                            console.error(result.body);
+                        } else {
+                            client.imageTypes.success.name = "Update successful";
+                            client.imageTypes.success.message = "Latest update request was successful";
+                        }
+                        client.imageTypes.latestUpdate = Date.now();
+                        client.imageTypes.types = result.body.types;
+                    })
+                }
+            }
+            catch (err) {
+                console.error(err);
+                client.Raven.captureException(err);
+            }
+        }
+        updateImageTypes();
+        //-------------------------Update image types every 12h------------------------------------------
+        setInterval(function() { updateImageTypes() }, 43200000);
+    }
+    if (client.database.discordBotList !== "") { //If key, most likely if not selfhosted
         var upvoters = async function() {
             return new Promise(async(resolve, reject) => {
                 try {

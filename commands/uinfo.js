@@ -1,3 +1,5 @@
+const moment = require('moment'); //Needed for dates stuff
+
 exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -10,6 +12,14 @@ exports.run = async(client, message) => {
             const guildEntry = client.guildData.get(message.guild.id);
             if (!target.id !== message.author.id && !userEntry.dataPrivacy.publicProfile) return resolve(await message.channel.send(":x: Sorry but the profile of this user is private :v"));
             let embedFields = [];
+            //Awesome code from Rem to make gifs great again
+            let avatar = target.avatar ? (target.avatar.startsWith('a_') ? `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.gif` : `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.webp`) : target.defaultAvatarURL;
+            avatar = avatar.replace(/[^a-zA-Z0-9_\-./:]/, '');
+            avatar += '?size=1024';
+            if (target.avatar.startsWith('a_')) {
+                avatar += '&f=.gif';
+            }
+            //----------------------------------------------------------------------------------
             if (message.guild.member(target).nickname) {
                 embedFields.push({
                     name: ":busts_in_silhouette: Nickname",
@@ -50,6 +60,21 @@ exports.run = async(client, message) => {
                     inline: true
                 });
             }
+            embedFields.push({
+                name: ":date: Created",
+                value: moment().to(target.createdAt),
+                inline: true
+            });
+            embedFields.push({
+                name: ":date: Joined",
+                value: moment().to(message.guild.member(target).joinedAt),
+                inline: true
+            });
+            embedFields.push({
+                name: ":notepad_spiral: Roles",
+                value: message.guild.member(target).roles.size - 1, //Dont count the everyone role
+                inline: true
+            });
             if (message.guild.member(target).displayHexColor) {
                 embedFields.push({
                     name: ":large_blue_diamond: HEX color",
@@ -77,7 +102,7 @@ exports.run = async(client, message) => {
                     fields: embedFields,
                     timestamp: new Date(),
                     image: {
-                        url: target.avatarURL
+                        url: avatar
                     }
                 }
             }));
