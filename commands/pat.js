@@ -16,7 +16,7 @@ exports.run = async(client, message) => {
                     if (users.size > 0) {
                         resolve(await message.channel.send({
                             embed: {
-                                description: `Hey ${users.map(u => u.toString()).join(", ")}, you just received a pat from ${message.author.toString()}`,
+                                description: `Hey ${users.map(u => '**' + u.tag + '**').join(", ")}, you just received a pat from **${message.author.tag}**`,
                                 image: {
                                     url: patUrl
                                 },

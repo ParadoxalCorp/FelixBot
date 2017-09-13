@@ -122,7 +122,7 @@ client.defaultUserData = function(id) {
             lovePoints: 0,
             malAccount: "",
             blackListed: false,
-            afk: "",
+            afk: false,
             reminders: [],
             points: 0,
             perks: {

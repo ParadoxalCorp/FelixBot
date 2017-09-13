@@ -9,19 +9,17 @@ module.exports = async(client, message) => {
     const mentionned = message.mentions.users.first(); //--Afk feature--
     if (mentionned) {
         if (client.userData.get(mentionned.id)) {
-            if (client.userData.get(mentionned.id).afk) {
-                if (client.userData.get(mentionned.id).afk !== "") { //If the mentionned user hasnt set any afk status, do nothing
-                    await message.channel.send({
-                        embed: ({
-                            color: 3447003,
-                            author: {
-                                name: mentionned.username + "#" + mentionned.discriminator + " is AFK",
-                                icon_url: mentionned.avatarURL
-                            },
-                            description: client.userDatas.get(mentionned.id).afk
-                        })
-                    }).catch(console.error);
-                }
+            if (client.userData.get(mentionned.id).generalSettings.afk !== false) { //If the mentionned user hasnt set any afk status, do nothing
+                await message.channel.send({
+                    embed: ({
+                        color: 3447003,
+                        author: {
+                            name: mentionned.username + "#" + mentionned.discriminator + " is AFK",
+                            icon_url: mentionned.avatarURL
+                        },
+                        description: client.userData.get(mentionned.id).generalSettings.afk
+                    })
+                }).catch(console.error);
             }
         } else {
             client.userData.set(mentionned.id, client.defaultUserData(mentionned.id));
