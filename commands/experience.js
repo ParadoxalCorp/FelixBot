@@ -180,7 +180,7 @@ exports.run = async(client, message) => {
                                         inline: true
                                     }, {
                                         name: `At level`,
-                                        value: `${atLevel}`
+                                        value: `${Math.round(atLevel)}`
                                     }]);
                                     page = rolesFields.length - 1;
                                     await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
@@ -209,12 +209,12 @@ exports.run = async(client, message) => {
                     await interactiveMessage.delete();
                 });
             } else {
-                let possibleActions = ['[1] - Enabled: Disabled', '[2] - Privacy: Private', '[3] - Level up notifications: Disabled'];
+                let possibleActions = ['[1] - Enabled: Disabled', '[2] - Privacy: Private', '[3] - Level up notifications: Disabled', '[4] - Reset experience of specified users', '[5] - Reset experience of everyone'];
                 if (guildEntry.generalSettings.levelSystem.enabled) possibleActions[0] = '[1] - Enabled: Enabled';
                 if (guildEntry.generalSettings.levelSystem.public) possibleActions[1] = '[2] - Privacy: Public';
                 if (guildEntry.generalSettings.levelSystem.levelUpNotif === 'dm') possibleActions[2] = '[3] - Level up notifications: Direct message';
                 else if (guildEntry.generalSettings.levelSystem.levelUpNotif === 'channel') possibleActions[2] = '[3] - Level up notifications: Channel';
-                let numberReactions = ["1⃣", "2⃣", "3⃣", "4⃣"];
+                let numberReactions = ["1⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣"];
                 let mainObject = function(actions) {
                     return {
                         embed: {
@@ -256,7 +256,7 @@ exports.run = async(client, message) => {
                             possibleActions[1] = '[2] - Privacy: Public';
                         }
                         await interactiveMessage.edit(mainObject(possibleActions));
-                    } else if (r.emoji.name === numberReactions[2] && (message.guild.ownerID === message.author.id)) { //3 - Change level up notifications methods
+                    } else if (r.emoji.name === numberReactions[2]) { //3 - Change level up notifications methods
                         if (!guildEntry.generalSettings.levelSystem.levelUpNotif) { //If disabled switch to dm
                             guildEntry.generalSettings.levelSystem.levelUpNotif = 'dm';
                             possibleActions[2] = '[3] - Level up notifications: Direct message';
@@ -267,6 +267,51 @@ exports.run = async(client, message) => {
                             guildEntry.generalSettings.levelSystem.levelUpNotif = false;
                             possibleActions[2] = '[3] - Level up notifications: Disabled';
                         }
+                        await interactiveMessage.edit(mainObject(possibleActions));
+                    } else if (r.emoji.name === numberReactions[3]) {
+                        let notifMessage = await message.channel.send({
+                            embed: {
+                                description: 'You can start writing the users, note that you need to confirm the changes or the reset wont work'
+                            }
+                        });
+                        let usersToReset;
+                        try {
+                            const collected = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                                max: 1,
+                                time: 120000,
+                                errors: ["time"]
+                            });
+                            usersToReset = await client.getUserResolvable(collected.first(), {
+                                guildOnly: true
+                            });
+                            if (message.guild.member(client.user).hasPermission('MANAGE_MESSAGES')) collected.first().delete();
+                        } catch (e) {
+                            mainCollector.stop('timeout');
+                        }
+                        if (usersToReset.size > 0) {
+                            for (let i = 0; i < guildEntry.generalSettings.levelSystem.users.length; i++) {
+                                if (usersToReset.has(guildEntry.generalSettings.levelSystem.users[i].id)) {
+                                    guildEntry.generalSettings.levelSystem.users[i].expCount = 0;
+                                    guildEntry.generalSettings.levelSystem.users[i].level = 0;
+                                }
+                            }
+                            await notifMessage.edit({
+                                embed: {
+                                    description: `:white_check_mark: The experience of ${usersToReset.map(u => '**' + u.tag + '**').join(', ')} has been reset`
+                                }
+                            });
+                            notifMessage.delete(5000);
+                        } else {
+                            await notifMessage.edit({
+                                embed: {
+                                    description: `:x: No users found`
+                                }
+                            });
+                            notifMessage.delete(5000);
+                        }
+                    } else if (r.emoji.name === numberReactions[4]) {
+                        guildEntry.generalSettings.levelSystem.users = [];
+                        possibleActions[4] = '[5] - Warning: Confirming will wipe out the experience of all members';
                         await interactiveMessage.edit(mainObject(possibleActions));
                     } else if (r.emoji.name === '✅') {
                         mainCollector.stop('confirmed');

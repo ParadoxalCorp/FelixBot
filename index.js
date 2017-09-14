@@ -146,6 +146,7 @@ client.defaultGuildData = function(id) {
         id: id,
         generalSettings: {
             autoAssignablesRoles: [],
+            modLog: [],
             prefix: client.database.prefix,
             levelSystem: {
                 enabled: true,

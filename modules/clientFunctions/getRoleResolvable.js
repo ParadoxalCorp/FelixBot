@@ -33,12 +33,17 @@ module.exports = async(client) => {
                             if (filterRoles.size > 1) {
                                 let filteredArray = Array.from(filterRoles.values());
                                 let c = 1;
-                                const selectedRole = await client.awaitReply({
+                                let selectedRole = await client.awaitReply({
                                     message: message,
                                     limit: 30000,
                                     title: ":mag: Roles search",
                                     question: "Multiple roles found, select one by typing a number ```\n" + filteredArray.map(r => `[${c++}] ${r.name}`).join("\n") + "```"
                                 });
+                                if (selectedRole && !isNaN(selectedRole.reply.content) && selectedRole.reply.content <= filteredArray.length && selectedRole.reply.content >= 1) {
+                                    resolvedRoles.set(filteredArray[selectedRole.reply.content - 1].id, filteredArray[selectedRole.reply.content - 1]);
+                                }
+                                await selectedRole.question.delete();
+                                if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) await selectedRole.reply.delete();
                             } else {
                                 resolvedRoles.set(filterRoles.first().id, filterRoles.first());
                             }
@@ -65,9 +70,8 @@ module.exports = async(client) => {
                                         } else {
                                             roleObject = filteredArray[selectedRole.reply.content - 1];
                                             await selectedRole.question.delete();
-                                            if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) {
-                                                await selectedRole.reply.delete();
-                                            }
+                                            if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) await selectedRole.reply.delete();
+
                                         }
                                     }
                                 }
