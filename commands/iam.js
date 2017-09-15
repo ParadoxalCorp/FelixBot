@@ -23,6 +23,7 @@ exports.run = async(client, message) => {
                 if (!message.guild.member(client.user).hasPermission("MANAGE_ROLES")) return resolve(await message.channel.send(":x: I don't have the permission to do that"));
                 let guildRole = message.guild.roles.find('name', args.join(" "));
                 if (!guildRole || !guildEntry.generalSettings.autoAssignablesRoles.includes(guildRole.id)) return resolve(await message.channel.send(":x: The specified role does not exist or it is not a self-assignable role"));
+                if (message.guild.member(message.author).roles.has(guildRole.id)) return resolve(await message.channel.send(':x: You already have this role'));
                 await message.guild.member(message.author).addRole(guildRole.id);
                 resolve(await message.channel.send(":white_check_mark: Alright, i gave you the role `" + guildRole.name + "`"));
             }

@@ -170,12 +170,12 @@ exports.run = async(client, message) => {
         } catch (err) {
             reject(client.emit('commandFail', message, err));
         }
-    })
+    });
 }
 
 exports.conf = {
     disabled: false,
-    permLevel: 42,
+    permLevel: 2,
     aliases: [],
     guildOnly: true
 }

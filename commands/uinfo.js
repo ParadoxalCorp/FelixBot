@@ -10,7 +10,7 @@ exports.run = async(client, message) => {
             if (users.size > 0) target = users.first();
             const userEntry = client.userData.get(target.id) || client.defaultUserData(target.id);
             const guildEntry = client.guildData.get(message.guild.id);
-            if (!target.id !== message.author.id && !userEntry.dataPrivacy.publicProfile) return resolve(await message.channel.send(":x: Sorry but the profile of this user is private :v"));
+            if (target.id !== message.author.id && !userEntry.dataPrivacy.publicProfile) return resolve(await message.channel.send(":x: Sorry but the profile of this user is private :v"));
             let embedFields = [];
             //Awesome code from Rem to make gifs great again
             let avatar = target.avatar ? (target.avatar.startsWith('a_') ? `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.gif` : `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.webp`) : target.defaultAvatarURL;
@@ -27,7 +27,7 @@ exports.run = async(client, message) => {
                     inline: true
                 });
             }
-            if (userEntry.experience.expCount && userEntry.dataPrivacy.publicLevel) {
+            if (userEntry.dataPrivacy.publicLevel || userEntry.id === message.author.id) {
                 const levelDetails = client.getLevelDetails(userEntry.experience.level, userEntry.experience.expCount);
                 embedFields.push({
                     name: ":star: Global experience",
@@ -82,14 +82,14 @@ exports.run = async(client, message) => {
                     inline: true
                 });
             }
-            if (userEntry.dataPrivacy.publicPoints) {
+            if (userEntry.dataPrivacy.publicPoints || userEntry.id === message.author.id) {
                 embedFields.push({
                     name: ":ribbon: Points",
                     value: userEntry.generalSettings.points,
                     inline: true
                 });
             }
-            if (userEntry.dataPrivacy.publicLove) {
+            if (userEntry.dataPrivacy.publicLove || userEntry.id === message.author.id) {
                 embedFields.push({
                     name: ":heart: Love points",
                     value: userEntry.generalSettings.lovePoints,

@@ -353,7 +353,7 @@ exports.run = async(client, message) => {
 }
 
 exports.conf = {
-    guildOnly: false,
+    guildOnly: true,
     disabled: false,
     permLevel: 2,
     aliases: ['exp']

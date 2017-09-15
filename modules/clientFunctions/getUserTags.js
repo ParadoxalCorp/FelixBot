@@ -1,3 +1,5 @@
+const Discord = require('discord.js');
+
 module.exports = async(client) => {
     client.getUserTags = async function(users) {
         return new Promise(async(resolve, reject) => {
@@ -6,17 +8,17 @@ module.exports = async(client) => {
                 const tagList = Array.from(client.tagData.filter(t => JSON.parse(t).author === users).map(t => JSON.parse(t).name));
                 return tagList;
             } else {
-                var usersTags = [];
+                var usersTags = new Discord.Collection();
                 users.forEach(function(id) {
                     const tagList = Array.from(client.tagData.filter(t => JSON.parse(t).author === id).map(t => JSON.parse(t).name));
                     if (tagList.length !== 0) {
-                        usersTags.push({
+                        usersTags.set(id, {
                             user: id,
                             tags: tagList
                         });
                     }
                 });
-                return resolve(usersTags);
+                resolve(usersTags);
             }
         });
     }

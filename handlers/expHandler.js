@@ -38,7 +38,7 @@ module.exports = async(client, message) => {
                 let wonRoles = "";
                 if (guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel)) {
                     if (message.guild.member(client.user).hasPermission("MANAGE_ROLES")) {
-                        const roles = guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel).filter(r => message.guild.roles.has(r.id)); // filter deleted roles from the list
+                        const roles = guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel).filter(r => message.guild.roles.has(r.id) && !message.guild.member(message.author).roles.has(r.id)); // filter deleted roles and roles the user have from the list
                         if (roles.length !== 0) {
                             let roleIds = [];
                             roles.forEach(function(role) {
