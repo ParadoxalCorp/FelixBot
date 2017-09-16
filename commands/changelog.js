@@ -82,5 +82,5 @@ exports.help = {
     name: 'changelog',
     description: 'Display Felix\'s changelogs',
     usage: 'changelog',
-    category: 'miscellaneous'
+    category: 'misc'
 };

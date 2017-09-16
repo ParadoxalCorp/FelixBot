@@ -80,6 +80,6 @@ exports.help = {
     name: 'tagslist',
     description: 'The list of all public tags created',
     usage: 'tagslist',
-    category: 'miscellaneous',
+    category: 'misc',
     detailledUsage: 'Tags are basically customized output, to run a tag, use `{prefix}t [tagname]`\n`{prefix}tagslist [tagname]` Will return some info about the specified tag'
 }

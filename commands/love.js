@@ -53,15 +53,19 @@ exports.run = async(client, message) => {
                     let remainingTime = convertToTime(getNearestCooldown() - Date.now());
                     return resolve(await message.channel.send(`:x: You already used all your love points, time remaining: ${remainingTime.hours}h ${remainingTime.minutes}m ${remainingTime.seconds}s`));
                 }
-                if (lpCount > remainingLps) lpCount = remainingLps; //If the count of lps is superior to the remaining, give everything remaining
+                if (Math.round(lpCount) > remainingLps) lpCount = remainingLps; //If the count of lps is superior to the remaining, give everything remaining
                 let receiverEntry = client.userData.get(users.first().id) || client.defaultUserData(users.first().id); //If the user is not in the db
-                receiverEntry.generalSettings.lovePoints = (Number(receiverEntry.generalSettings.lovePoints) + Number(lpCount));
+                receiverEntry.generalSettings.lovePoints = (Number(receiverEntry.generalSettings.lovePoints) + Math.round((lpCount)));
+                let cooldownsSet = 0;
                 for (let i = 0; i < userEntry.generalSettings.perks.love.length; i++) { //Add the cooldowns
-                    if (userEntry.generalSettings.perks.love[i].cooldown < Date.now() && i <= Number(lpCount)) userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
+                    if (userEntry.generalSettings.perks.love[i].cooldown < Date.now() && cooldownsSet < Math.round(lpCount)) {
+                        userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
+                        cooldownsSet++;
+                    }
                 }
                 client.userData.set(users.first().id, receiverEntry);
                 client.userData.set(message.author.id, userEntry);
-                return resolve(await message.channel.send(`You just gave **${lpCount}** love point(s) to **${users.first().tag}** :heart:`));
+                return resolve(await message.channel.send(`You just gave **${Math.round(lpCount)}** love point(s) to **${users.first().tag}** :heart:`));
             } else if (users.size > 1) { //------------------------Love multiple users------------------------------------
                 users.forEach(function(usr) {
                     if (usr.id === message.author.id) return users.delete(usr.id); //Remove from the collection the author if in and skip to the next
@@ -69,8 +73,12 @@ exports.run = async(client, message) => {
                     receiverEntry.generalSettings.lovePoints++;
                     client.userData.set(usr.id, receiverEntry);
                 });
+                let cooldownsSet = 0;
                 for (let i = 0; i < userEntry.generalSettings.perks.love.length; i++) {
-                    if (userEntry.generalSettings.perks.love[i].cooldown < Date.now()) userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
+                    if (userEntry.generalSettings.perks.love[i].cooldown < Date.now() && cooldownsSet < users.size) {
+                        userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
+                        cooldownsSet++;
+                    }
                 }
                 client.userData.set(message.author.id, userEntry);
                 return resolve(await message.channel.send(`You just gave **1** LP to **${users.map(u => u.tag).join(", ")}** :heart:`));

@@ -43,6 +43,6 @@ exports.help = {
     name: 'iam',
     description: 'Get the list of the self-assignables roles on this server or add one to yourself',
     usage: 'iam',
-    category: 'miscellaneous',
+    category: 'misc',
     detailledUsage: '`{prefix}iam` Will return the list of the self-assignables roles set on this server\n`{prefix}iam Neko` Will give you the self-assignable role `Neko`'
 }

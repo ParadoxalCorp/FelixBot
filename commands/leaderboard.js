@@ -213,5 +213,5 @@ exports.help = {
     name: 'leaderboard',
     description: 'Get the experience leaderboard of this server or all the servers',
     usage: 'leaderboard',
-    category: 'miscellaneous',
+    category: 'misc',
 };

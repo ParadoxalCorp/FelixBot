@@ -48,19 +48,19 @@ module.exports = async(client) => {
             if (providedParameters.newParameters) {
                 if (Array.isArray(providedParameters.newParameters)) {
                     providedParameters.newParameters.forEach(function(newParameter) {
-                        if (typeof newParameter !== "object") throw "FunctionCallError: The new parameter must be an Object";
-                        if ((!newParameter.aliases) || (!newParameter.name)) throw "FunctionCallError: The new parameter object must contain a \"aliases\" Array property and a \"name\" String property";
-                        if ((!Array.isArray(newParameter.aliases) || (newParameter.aliases.length < 1))) throw "FunctionCallError: The new parameter aliases property must be an array and must not be empty";
-                        if (typeof newParameter.name !== "string") throw "FunctionCallError: The new parameter name property must be a string";
-                        if (parameters.get(newParameter.name)) throw "FunctionCallError: The new parameter supplied is already defined";
+                        if (typeof newParameter !== "object") return reject("FunctionCallError: The new parameter must be an Object");
+                        if ((!newParameter.aliases) || (!newParameter.name)) return reject("FunctionCallError: The new parameter object must contain a \"aliases\" Array property and a \"name\" String property");
+                        if ((!Array.isArray(newParameter.aliases) || (newParameter.aliases.length < 1))) return reject("FunctionCallError: The new parameter aliases property must be an array and must not be empty");
+                        if (typeof newParameter.name !== "string") return reject("FunctionCallError: The new parameter name property must be a string");
+                        if (parameters.get(newParameter.name)) return reject("FunctionCallError: The new parameter supplied is already defined");
                         parameters.set(newParameter.name, newParameter);
                     });
                 } else {
-                    if (typeof providedParameters.newParameters !== "object") throw "FunctionCallError: The new parameter must be an Object";
-                    if ((!providedParameters.newParameters.aliases) || (!providedParameters.newParameters.name)) throw "FunctionCallError: The new parameter object must contain a \"aliases\" Array property and a \"name\" String property";
-                    if ((!Array.isArray(providedParameters.newParameters.aliases) || (providedParameters.newParameters.aliases.length < 1))) throw "FunctionCallError: The new parameter aliases property must be an array and must not be empty";
-                    if (typeof providedParameters.newParameters.name !== "string") throw "FunctionCallError: The new parameter name property must be a string";
-                    if (parameters.get(providedParameters.newParameters.name)) throw "FunctionCallError: The new parameter supplied is already defined";
+                    if (typeof providedParameters.newParameters !== "object") return reject("FunctionCallError: The new parameter must be an Object");
+                    if ((!providedParameters.newParameters.aliases) || (!providedParameters.newParameters.name)) return reject("FunctionCallError: The new parameter object must contain a \"aliases\" Array property and a \"name\" String property");
+                    if ((!Array.isArray(providedParameters.newParameters.aliases) || (providedParameters.newParameters.aliases.length < 1))) return reject("FunctionCallError: The new parameter aliases property must be an array and must not be empty");
+                    if (typeof providedParameters.newParameters.name !== "string") return reject("FunctionCallError: The new parameter name property must be a string");
+                    if (parameters.get(providedParameters.newParameters.name)) return reject("FunctionCallError: The new parameter supplied is already defined");
                     parameters.set(providedParameters.newParameters.name, providedParameters.newParameters);
                 }
             }

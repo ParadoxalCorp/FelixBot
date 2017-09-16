@@ -19,7 +19,7 @@ module.exports = async(client) => {
                 if (args[i].length >= (options.charLimit || 3)) { //(dont try to resolve too small stuff)
                     if (!isNaN(args[i])) {
                         if (message.guild.roles.get(args[i])) {
-                            resolvedRoles.set(message.guild.roles.get(args[i]).id, message.guild.roles.get(args[i]));
+                            resolvedRoles.set(args[i], message.guild.roles.get(args[i]));
                         }
                     }
                     //------------------Resolve by whole name--------------

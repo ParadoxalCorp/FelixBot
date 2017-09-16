@@ -113,7 +113,9 @@ client.imageTypes = {
 client.defaultUserData = function(id) {
     return {
         id: id,
-        cooldowns: {},
+        cooldowns: {
+            dailyCooldow: 0
+        },
         experience: {
             expCount: 0,
             level: 0
@@ -244,7 +246,7 @@ setTimeout(async function() {
             console.log(`Unable to load command ${f}: ${e.stack}`);
         }
     });
-    const categories = ["generic", "miscellaneous", "image", "utility", "fun", "moderation", "settings"];
+    const categories = ["generic", "misc", "image", "utility", "fun", "moderation", "settings"];
     for (let i = 0; i < categories.length; i++) {
         const categoryCommands = client.commands.filter(c => c.help.category == categories[i]);
         client.overallHelp += `**${categories[i]}** =>` + categoryCommands.map(c => `\`${c.help.name}\` `) + "\n\n";

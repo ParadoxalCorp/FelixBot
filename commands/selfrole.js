@@ -61,6 +61,7 @@ exports.run = async(client, message) => {
             var timeout = setTimeout(async function() {
                 collector.stop("timeout");
             }, 120000);
+            let isCollecting = false;
             collector.on('collect', async(r) => {
                 clearTimeout(timeout); //reset the timeout
                 if (r.emoji.name === pageReactions[0]) { //Move to first page
@@ -87,60 +88,65 @@ exports.run = async(client, message) => {
                         page = rolesFields.length - 1;
                         await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
                     }
-                } else if (r.emoji.name === pageReactions[4]) {
-                    if (guildEntry.generalSettings.autoAssignablesRoles.length < 1) await interactiveMessage.edit(secondaryObject(modes[1]));
-                    else await interactiveMessage.edit(mainObject(page, rolesFields, modes[1]));
-                    var role;
-                    try {
-                        const collected = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
-                            max: 1,
-                            time: 120000,
-                            errors: ["time"]
-                        });
-                        role = collected.first();
-                    } catch (e) {
-                        collector.stop('timeout');
-                    }
-                    if (role) {
-                        const guildRoles = await client.getRoleResolvable(role, {
-                            charLimit: 1
-                        });
-                        if (guildRoles.size < 1) {
-                            let noRoleFound = await message.channel.send(`:x: I couldn't find the role you specified`);
-                            noRoleFound.delete(5000);
-                        } else {
-                            if (guildEntry.generalSettings.autoAssignablesRoles.includes(guildRoles.first().id)) {
-                                let roleAlreadyIn = await message.channel.send(":x: This role is already in the list !");
-                                roleAlreadyIn.delete(5000);
-                            } else {
-                                guildEntry.generalSettings.autoAssignablesRoles.push(guildRoles.first().id);
-                                let guildRole = message.guild.roles.get(guildRoles.first().id);
-                                let mentionable = ':x:',
-                                    hoisted = ':x:';
-                                if (guildRole.mentionable) mentionable = ':white_check_mark:';
-                                if (guildRole.hoist) hoisted = ':white_check_mark:';
-                                rolesFields.push([{
-                                    name: 'Name',
-                                    value: `${guildRole.name}`,
-                                    inline: true
-                                }, {
-                                    name: 'HEX Color',
-                                    value: `${guildRole.hexColor}`,
-                                    inline: true
-                                }, {
-                                    name: `Hoisted`,
-                                    value: `${hoisted}`,
-                                    inline: true
-                                }, {
-                                    name: 'Mentionable',
-                                    value: `${mentionable}`,
-                                    inline: true
-                                }]);
-                                page = rolesFields.length - 1;
-                                await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
-                            }
+                } else if (r.emoji.name === pageReactions[4]) { //Add roles
+                    if (!isCollecting) {
+                        if (guildEntry.generalSettings.autoAssignablesRoles.length < 1) await interactiveMessage.edit(secondaryObject(modes[1]));
+                        else await interactiveMessage.edit(mainObject(page, rolesFields, modes[1]));
+                        isCollecting = true;
+                        let role;
+                        try {
+                            const collected = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                                max: 1,
+                                time: 120000,
+                                errors: ["time"]
+                            });
+                            role = collected.first();
+                        } catch (e) {
+                            collector.stop('timeout');
                         }
-                        if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) role.delete();
+                        if (role) {
+                            const guildRoles = await client.getRoleResolvable(role, {
+                                charLimit: 1
+                            });
+                            if (guildRoles.size < 1) {
+                                isCollecting = false;
+                                let noRoleFound = await message.channel.send(`:x: I couldn't find the role you specified`);
+                                noRoleFound.delete(5000);
+                            } else {
+                                isCollecting = false;
+                                if (guildEntry.generalSettings.autoAssignablesRoles.includes(guildRoles.first().id)) {
+                                    let roleAlreadyIn = await message.channel.send(":x: This role is already in the list !");
+                                    roleAlreadyIn.delete(5000);
+                                } else {
+                                    guildEntry.generalSettings.autoAssignablesRoles.push(guildRoles.first().id);
+                                    let guildRole = message.guild.roles.get(guildRoles.first().id);
+                                    let mentionable = ':x:',
+                                        hoisted = ':x:';
+                                    if (guildRole.mentionable) mentionable = ':white_check_mark:';
+                                    if (guildRole.hoist) hoisted = ':white_check_mark:';
+                                    rolesFields.push([{
+                                        name: 'Name',
+                                        value: `${guildRole.name}`,
+                                        inline: true
+                                    }, {
+                                        name: 'HEX Color',
+                                        value: `${guildRole.hexColor}`,
+                                        inline: true
+                                    }, {
+                                        name: `Hoisted`,
+                                        value: `${hoisted}`,
+                                        inline: true
+                                    }, {
+                                        name: 'Mentionable',
+                                        value: `${mentionable}`,
+                                        inline: true
+                                    }]);
+                                    page = rolesFields.length - 1;
+                                    await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
+                                }
+                            }
+                            if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) role.delete();
+                        }
                     }
                 } else if (r.emoji.name === pageReactions[5]) { //If deletion, delete
                     if (rolesFields.length > 0) {

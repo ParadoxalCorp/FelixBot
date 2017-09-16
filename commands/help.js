@@ -3,7 +3,7 @@ exports.run = async(client, message, userLevel) => {
         try {
             let args = message.content.split(/\s+/gim);
             args.shift();
-            const categories = ["generic", "miscellaneous", "image", "utility", "fun", "moderation", "settings"];
+            const categories = ["generic", "misc", "image", "utility", "fun", "moderation", "settings"];
             if (userLevel >= 42) categories.push('admin'); //If felix admin then show admin commands
             client.overallHelp = ""; //Nullify the one made in the index.js core
             for (let i = 0; i < categories.length; i++) {

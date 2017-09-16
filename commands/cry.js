@@ -4,7 +4,7 @@ exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
             fetch: {
-                await unirest.get("https://api.weeb.sh/images/random?type=cry")
+                await unirest.get("https://api.weeb.sh/images/random?type=cry&filetype=gif")
                 .header(`Authorization`, `Bearer ${client.database.wolkeImageKey}`)
                 .end(async function(result) {
                     var users = await client.getUserResolvable(message, {

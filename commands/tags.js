@@ -58,6 +58,7 @@ exports.run = async(client, message) => {
             var timeout = setTimeout(async function() {
                 collector.stop("timeout");
             }, 120000);
+            let isCollecting = false;
             collector.on('collect', async(r) => {
                 clearTimeout(timeout); //reset the timeout
                 if (tagsFields.length) var currentTag = client.tagData.get(tagsFields[page][0].value);
@@ -105,78 +106,82 @@ exports.run = async(client, message) => {
                         await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
                     }
                 } else if (r.emoji.name === "➕") {
-                    if (userTags.length < 1) await interactiveMessage.edit(secondaryObject(modes[1]));
-                    else await interactiveMessage.edit(mainObject(page, tagsFields, modes[1]));
-                    let tagName;
-                    try {
-                        const collectedName = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
-                            max: 1,
-                            time: 120000,
-                            errors: ["time"]
-                        });
-                        let args = collectedName.first().cleanContent.split(/\s+/);
-                        tagName = args[0];
-                        if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) collectedName.first().delete();
-                        collectedName.delete();
-                    } catch (e) {
-                        collector.stop('timeout');
-                    }
-                    if (tagName) {
-                        if (tagName.length > 84) {
-                            let tooLongName = await message.channel.send(":x: A tag name can't exceed 84 characters");
-                            tooLongName.delete(5000);
-                        } else if (client.tagData.has(tagName)) {
-                            let tagAlreadyIn = await message.channel.send(":x: This tag already exist !");
-                            tagAlreadyIn.delete(5000);
-                        } else if (tagName.length <= 84 && !client.tagData.has(tagName)) {
-                            let tagContent;
-                            let enterContent = await message.channel.send({
-                                embed: {
-                                    description: 'You can now enter the content of the tag',
-                                    footer: {
-                                        text: 'Time limit: 120 seconds'
+                    if (!isCollecting) {
+                        if (userTags.length < 1) await interactiveMessage.edit(secondaryObject(modes[1]));
+                        else await interactiveMessage.edit(mainObject(page, tagsFields, modes[1]));
+                        isCollecting = true;
+                        let tagName;
+                        try {
+                            const collectedName = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                                max: 1,
+                                time: 120000,
+                                errors: ["time"]
+                            });
+                            let args = collectedName.first().cleanContent.split(/\s+/);
+                            tagName = args[0];
+                            if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) collectedName.first().delete();
+                            collectedName.delete();
+                        } catch (e) {
+                            collector.stop('timeout');
+                        }
+                        if (tagName) {
+                            isCollecting = false;
+                            if (tagName.length > 84) {
+                                let tooLongName = await message.channel.send(":x: A tag name can't exceed 84 characters");
+                                tooLongName.delete(5000);
+                            } else if (client.tagData.has(tagName)) {
+                                let tagAlreadyIn = await message.channel.send(":x: This tag already exist !");
+                                tagAlreadyIn.delete(5000);
+                            } else if (tagName.length <= 84 && !client.tagData.has(tagName)) {
+                                let tagContent;
+                                let enterContent = await message.channel.send({
+                                    embed: {
+                                        description: 'You can now enter the content of the tag',
+                                        footer: {
+                                            text: 'Time limit: 120 seconds'
+                                        }
                                     }
-                                }
-                            });
-                            try {
-                                const collectedContent = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
-                                    max: 1,
-                                    time: 120000,
-                                    errors: ["time"]
                                 });
-                                tagContent = collectedContent.first().cleanContent;
-                                if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) collectedContent.first().delete();
-                                enterContent.delete();
-                            } catch (e) {
-                                enterContent.delete();
-                                collector.stop('timeout');
+                                try {
+                                    const collectedContent = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                                        max: 1,
+                                        time: 120000,
+                                        errors: ["time"]
+                                    });
+                                    tagContent = collectedContent.first().cleanContent;
+                                    if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) collectedContent.first().delete();
+                                    enterContent.delete();
+                                } catch (e) {
+                                    enterContent.delete();
+                                    collector.stop('timeout');
+                                }
+                                client.tagData.set(tagName, {
+                                    author: message.author.id,
+                                    name: tagName,
+                                    content: tagContent,
+                                    privacy: 'Public',
+                                    guild: false
+                                });
+                                tagsFields.push([{
+                                    name: ':pencil2: Name',
+                                    value: `${tagName}`,
+                                    inline: true
+                                }, {
+                                    name: ':notepad_spiral: Content',
+                                    value: `${tagContent.substr(0, 124)}`,
+                                    inline: true
+                                }, {
+                                    name: `:spy: Privacy`,
+                                    value: `Public`,
+                                    inline: true
+                                }, {
+                                    name: ':computer: Server',
+                                    value: `:x:`,
+                                    inline: true
+                                }]);
+                                page = tagsFields.length - 1;
+                                await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
                             }
-                            client.tagData.set(tagName, {
-                                author: message.author.id,
-                                name: tagName,
-                                content: tagContent,
-                                privacy: 'Public',
-                                guild: false
-                            });
-                            tagsFields.push([{
-                                name: ':pencil2: Name',
-                                value: `${tagName}`,
-                                inline: true
-                            }, {
-                                name: ':notepad_spiral: Content',
-                                value: `${tagContent.substr(0, 124)}`,
-                                inline: true
-                            }, {
-                                name: `:spy: Privacy`,
-                                value: `Public`,
-                                inline: true
-                            }, {
-                                name: ':computer: Server',
-                                value: `:x:`,
-                                inline: true
-                            }]);
-                            page = tagsFields.length - 1;
-                            await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
                         }
                     }
                 } else if (r.emoji.name === "🗑") { //If deletion, delete
@@ -214,6 +219,6 @@ exports.help = {
     name: 'tags',
     description: 'You can create new tags, delete some or just take a look at all your fancy tags here !',
     usage: 'tags',
-    category: 'miscellaneous',
+    category: 'misc',
     detailledUsage: 'Tags are basically customized output, to run a tag, use `{prefix}t [tagname]`'
 }
