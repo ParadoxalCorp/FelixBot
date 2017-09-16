@@ -19,7 +19,7 @@ module.exports = async(client, guild) => {
         client.latestDblUpdate = {
             date: new Date(),
             timestamp: Date.now(),
-            sucess: updateDbl.sucess
+            success: updateDbl.success
         }
     }
     client.guildData.set(guild.id, client.defaultGuildData(guild.id));

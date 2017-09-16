@@ -114,7 +114,7 @@ client.defaultUserData = function(id) {
     return {
         id: id,
         cooldowns: {
-            dailyCooldow: 0
+            dailyCooldown: 0
         },
         experience: {
             expCount: 0,

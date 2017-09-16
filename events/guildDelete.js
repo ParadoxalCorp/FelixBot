@@ -21,7 +21,7 @@ module.exports = async(client, guild) => {
         client.latestDblUpdate = {
             date: new Date(),
             timestamp: Date.now(),
-            sucess: updateDbl.sucess
+            success: updateDbl.success
         }
     }
 }
