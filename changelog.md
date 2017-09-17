@@ -1,3 +1,12 @@
+# Update 2.0.2 Changelog
+
+## New commands
+* `mdn` Updated to the 2.0 structure, works like the old one.
+* `npm` Updated to the 2.0 structure, works like the old one.
+
+## Bugs fixed
+* Fixed commands not working in direct messages
+
 # Update 2.0 Changelog
 
 This changelog contains all changes, including the backend stuff for later references, 
