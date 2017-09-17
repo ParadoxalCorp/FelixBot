@@ -23,7 +23,7 @@ module.exports = async(client) => {
             }
             try {
                 await unirest.post(`https://discordbots.org/api/bots/${client.user.id}/stats`)
-                    .header('Authorization', client.database.Data.global[0].discordBotList)
+                    .header('Authorization', client.database.discordBotList)
                     .send({
                         server_count: client.guilds.size
                     })
