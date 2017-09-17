@@ -1,7 +1,7 @@
 # Update 2.0 Changelog
 
 This changelog contains all changes, including the backend stuff for later references, 
-The actual notable parts are the [commands](https://github.com/ParadoxOrigins/FelixBot/blob/indev/changelog.md#commandes-changes) and [bugs fixes](https://github.com/ParadoxalCorp/FelixBot/blob/indev/changelog.md#bugs-fixes)
+The actual notable parts are the [commands](https://github.com/ParadoxOrigins/FelixBot/blob/master/changelog.md#commandes-changes) and [bugs fixes](https://github.com/ParadoxalCorp/FelixBot/blob/master/changelog.md#bugs-fixes)
 
 `v2 panel system` refer to interactive commands working with reactions
 
@@ -77,6 +77,10 @@ Things marked with *** might change before the official release or soon after
 ### Commands not yet rewritten
 * `trivia`
 * `animeseason`
+* `invite`
+* `mdn`
+* `npm`
+* `urban`
 
 ### Removed commands
 Commands marked with * might be added back later
