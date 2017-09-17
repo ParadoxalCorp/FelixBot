@@ -5,7 +5,7 @@ module.exports = async(client) => {
      * @param {Object} options The options
      */
     function getGuildResolvable(message, options) {
-        return new Promise(async(resolve, rejecy) => {
+        return new Promise(async(resolve, reject) => {
             let args = message.content.split(/\s+/gim);
             args.shift(); //Remove prefix + command
             const resolvedGuilds = new Discord.Collection();

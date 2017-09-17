@@ -7,7 +7,7 @@ module.exports = async(client) => {
      * @param {boolean} options.shift - Whether or not the first element should be removed, usually to dont include the prefix and make the search faster, default is false
      */
     function getRoleResolvable(message, options) {
-        return new Promise(async(resolve, rejecy) => {
+        return new Promise(async(resolve, reject) => {
             let args = message.content.split(/\s+/gim);
             if (options.shift) {
                 args.shift(); //Remove prefix + command
