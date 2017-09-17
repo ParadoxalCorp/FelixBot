@@ -1,51 +1,30 @@
-const fs = require("fs-extra");
-
 exports.run = async(client, message) => {
-    try {
-        var checkArgs = message.content.indexOf(" ");
-        var args;
-        const guildEntry = client.guildDatas.get(message.guild.id);
-        if (checkArgs !== -1) {
-            args = message.content.substr(checkArgs + 1).trim();
-        } else {
-            return await message.channel.send(":x: You need to specify the new prefix")
+    return new Promise(async(resolve, reject) => {
+        try {
+            let args = message.content.split(/\s+/gim);
+            args.shift();
+            const guildEntry = client.guildData.get(message.guild.id);
+            if (args.length < 1) return resolve(await message.channel.send(":x: You did not specified a new prefix"));
+            else if (args[0].length > 8) return resolve(await message.channel.send(`:x: The prefix cant exceed 8 characters !`));
+            guildEntry.generalSettings.prefix = args[0];
+            client.guildData.set(message.guild.id, guildEntry);
+            resolve(await message.channel.send(`:white_check_mark: The prefix is now \`${args[0]}\`, from now on commands will look like \`${args[0]}ping\``));
+        } catch (err) {
+            reject(client.emit('commandFail', message, err));
         }
-        if (!args) {
-            return await message.channel.send(":x: You need to specify the new prefix");
-        } else {
-            guildEntry.prefix = args;
-            client.guildDatas.set(message.guild.id, guildEntry);
-            return await message.channel.send("The new prefix has sucesfully been set to **" + args + "**");
-        }
-    } catch (err) {
-        var guild;
-        var detailledError; //that stuff is to avoid undefined logs
-        if (message.guild) {
-            guild = message.guild.name + "\n**Guild ID:** " + message.guild.id + "\n**Channel:** " + message.channel.name;
-        } else {
-            guild = "DM"
-        }
-        if (err.stack) {
-            detailledError = err.stack;
-        } else {
-            detailledError = "None";
-        }
-        console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
-    }
-};
+    })
+}
 
 exports.conf = {
-    enabled: true,
+    permLevel: 2,
     guildOnly: true,
-    aliases: ['prefix'],
-    disabled: false,
-    permLevel: 2
-};
-
+    aliases: ["prefix"],
+    disabled: false
+}
 exports.help = {
     name: 'setprefix',
-    description: 'Change Felix\'s prefix on this server, a access level of 2 is required to use this command',
-    usage: 'setprefix /',
-    category: 'settings'
-};
+    description: 'Change Felix\'s prefix',
+    usage: 'setprefix new prefix',
+    category: 'settings',
+    detailledUsage: '`{prefix}setprefix wew.` Will set the prefix to `wew.`, so commands will look like `wew.ping`'
+}

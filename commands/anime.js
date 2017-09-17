@@ -3,403 +3,126 @@ const popura = require('popura');
 const malScraper = require('mal-scraper');
 
 exports.run = async(client, message) => {
-    const config = client.database.Data.global[0];
-    const malClient = popura(config.malCredentials.name, config.malCredentials.password);
-    try {
-        const whitespace = message.content.indexOf(" ");
-        if (whitespace === -1) {
-            return await message.channel.send(":x: You did not enter an anime to search for");
-        }
-        var animeName = message.content.substr(whitespace + 1).trim();
-        const userMessage = message; //Keep a way to get info from the triggering message
-        await message.channel.send("Searching for " + animeName + "...").then(async(message) => {
-            try {
-                await malClient.searchAnimes(animeName)
-                    .then(async function (res) {
-                        if (!res[0]) {
-                            return message.edit(":x: Your search did not returned any result");
-                        }
-                        var title, //Stuff that will get edited by conditions to avoid as much as possible embed errors
-                            episodes,
-                            score,
-                            type,
-                            status,
-                            startDate,
-                            endDate,
-                            studios = "lol",
-                            notes,
-                            popularity,
-                            ranking,
-                            members,
-                            genres = "lol",
-                            synopsis,
-                            detailsLink,
-                            selectedAnime = res[0];
-                        if (res.length > 1) {
-                            var resultList;
-                            var i = 1;
-                            var replyNumber;
-                            resultList += res.map(a => `[${i++}] ${a.title}`).join('\n');
-                            resultList = resultList.replace(/undefined/gim, "");
-                            if (resultList.length > 2041) {
-                                resultList = resultList.substr(0, 2038) + "..."
-                            }
-                            console.log(resultList.length);
-                            Promise.resolve(client.awaitReply(userMessage, ":mag: Your search has returned more than one result, select one by typing a number", "```\n" + resultList + "```")).then(async(reply) => {
-                                if (!reply) {
-                                    return await message.channel.send(":x: Command aborted");
-                                }
-                                if ((typeof Number(reply.reply.content) !== "number") || (Number(reply.reply.content - 1) >= res.length) || (Number(reply.reply.content - 1) < 0) || (!reply)) {
-                                    if (message.guild) {
-                                        if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) {
-                                            await reply.reply.delete();
-                                        }
-                                    }
-                                    await reply.question.delete();
-                                    return await message.channel.send(":x: You did not enter a whole number or the number you specified is not valid");
-                                }
-                                selectedAnime = res[reply.reply.content - 1];
-                                await reply.reply.delete();
-                                await reply.question.delete();
-                                if (selectedAnime === undefined) {
-                                    return await message.channel.send(":x: You did not enter a number");
-                                }
-                                await malScraper.getInfoFromName(selectedAnime.title).then((anime) => {
-                                    if (anime.genres.length !== 0) {
-                                        genres = anime.genres.toString();
-                                    } else {
-                                        genres = "Unknown";
-                                    }
-                                    if (anime.detailsLink) {
-                                        detailsLink = anime.detailsLink;
-                                    } else {
-                                        detailsLink = "https://myanimelist.net/"
-                                    }
-                                    if (anime.studios.length !== 0) {
-                                        studios = anime.studios.toString();
-                                    } else {
-                                        studios = "Unknown";
-                                    }
-                                    if (anime.statistics.count !== "0") {
-                                        notes = anime.statistics.score.count;
-                                    } else {
-                                        notes = "None";
-                                    }
-                                    if (anime.statistics.popularity) {
-                                        popularity = anime.statistics.popularity;
-                                    } else {
-                                        popularity = "None";
-                                    }
-                                    if (anime.statistics.members !== "0") {
-                                        members = anime.statistics.members;
-                                    } else {
-                                        members = "None";
-                                    }
-                                    if (anime.statistics.ranking) {
-                                        ranking = anime.statistics.ranking;
-                                    } else {
-                                        ranking = "None";
-                                    }
-                                }).catch((err) => {
-                                    if (err) {
-                                        message.channel.send(":x: An error occured");
-                                        console.log("triggered");
-                                        return console.error(err);
-                                    }
-                                })
-                                if (selectedAnime.title) {
-                                    title = selectedAnime.title;
-                                } else {
-                                    title = "None";
-                                }
-                                if (selectedAnime.episodes !== undefined) {
-                                    if (res[0].episodes === 0) {
-                                        episodes = "Unknown";
-                                    } else {
-                                        episodes = selectedAnime.episodes.toString();
-                                    }
-                                } else {
-                                    episodes = "None";
-                                }
-                                if (selectedAnime.score !== undefined) {
-                                    if (selectedAnime.score === 0) {
-                                        score = "0";
-                                    } else {
-                                        score = `${selectedAnime.score.toString()}`;
-                                    }
-                                } else {
-                                    score = "None";
-                                }
-                                if (selectedAnime.type) {
-                                    type = selectedAnime.type;
-                                } else {
-                                    type = "None";
-                                }
-                                if (selectedAnime.status) {
-                                    status = selectedAnime.status;
-                                } else {
-                                    status = "None";
-                                }
-                                if (selectedAnime.start_date) {
-                                    startDate = selectedAnime.start_date.replace(/-/g, "/");
-                                } else {
-                                    startDate = "Unknown";
-                                }
-                                if (selectedAnime.end_date) {
-                                    var formatDate = selectedAnime.end_date.replace(/-/g, "/");
-                                    if (formatDate === "0000/00/00") {
-                                        endDate = "Unknown";
-                                    } else {
-                                        endDate = formatDate;
-                                    }
-                                } else {
-                                    endDate = "Unknown";
-                                }
-                                if (selectedAnime.synopsis) {
-                                    if (selectedAnime.synopsis.length > 1024) {
-                                        var extractFirstPart = res[0].synopsis.substr(0, 1021);
-                                        var cleanSynopsis = extractFirstPart.replace(/(&quot;|&mdash;|&rsquo;|&#039;|\[i]|\[\/i])/gim, "");
-                                        synopsis = cleanSynopsis + "..";
-                                    } else {
-                                        var cleanSynopsis = res[0].synopsis.replace(/(&quot;|&mdash;|&rsquo;|&#039;|\[i]|\[\/i])/gim, "");
-                                        synopsis = cleanSynopsis;
-                                    }
-                                } else {
-                                    synopsis = "None";
-                                }
-                                if (synopsis.length > 1024) {
-                                    synopsis = synopsis.substr(0, 1021) + "..";
-                                }
-                                return await message.edit({
-                                    embed: {
-                                        title: title,
-                                        url: detailsLink,
-                                        image: {
-                                            url: res[0].image
-                                        },
-                                        fields: [{
-                                                name: ":1234: Episodes",
-                                                value: episodes,
-                                                inline: true
-                            }, {
-                                                name: ":star: Score",
-                                                value: score,
-                                                inline: true
-                            }, {
-                                                name: ":open_file_folder: Genres",
-                                                value: genres,
-                                                inline: true
-                            }, {
-                                                name: ":film_frames: Studios",
-                                                value: studios,
-                                                inline: true
-                            }, {
-                                                name: ":projector: Type",
-                                                value: type,
-                                                inline: true
-                            }, {
-                                                name: ":tv: Status",
-                                                value: status,
-                                                inline: true
-                            }, {
-                                                name: ":calendar: Start Date",
-                                                value: startDate,
-                                                inline: true
-                            }, {
-                                                name: ":calendar: End Date",
-                                                value: endDate,
-                                                inline: true
-                            }, {
-                                                name: ":notepad_spiral: Synopsis",
-                                                value: synopsis,
-                            }
-                            ],
-                                        footer: {
-                                            text: "Notes count: " + notes + " Popularity: " + popularity + " Members: " + members + " Ranking: " + ranking
-                                        }
-                                    }
-                                }).catch(console.error);
-                            });
-                        } else {
-                            await malScraper.getInfoFromName(selectedAnime.title).then((anime) => {
-                                if (anime.genres.length !== 0) {
-                                    genres = anime.genres.toString();
-                                } else {
-                                    genres = "Unknown";
-                                }
-                                if (anime.detailsLink) {
-                                    detailsLink = anime.detailsLink;
-                                } else {
-                                    detailsLink = "https://myanimelist.net/"
-                                }
-                                if (anime.studios.length !== 0) {
-                                    studios = anime.studios.toString();
-                                } else {
-                                    studios = "Unknown";
-                                }
-                                if (anime.statistics.count !== "0") {
-                                    notes = anime.statistics.score.count;
-                                } else {
-                                    notes = "None";
-                                }
-                                if (anime.statistics.popularity) {
-                                    popularity = anime.statistics.popularity;
-                                } else {
-                                    popularity = "None";
-                                }
-                                if (anime.statistics.members !== "0") {
-                                    members = anime.statistics.members;
-                                } else {
-                                    members = "None";
-                                }
-                                if (anime.statistics.ranking) {
-                                    ranking = anime.statistics.ranking;
-                                } else {
-                                    ranking = "None";
-                                }
-                            }).catch((err) => {
-                                if (err) {
-                                    message.channel.send(":x: An error occured");
-                                    console.log("triggered");
-                                    return console.error(err);
-                                }
-                            })
-                            if (selectedAnime.title) {
-                                title = selectedAnime.title;
-                            } else {
-                                title = "None";
-                            }
-                            if (selectedAnime.episodes !== undefined) {
-                                if (res[0].episodes === 0) {
-                                    episodes = "Unknown";
-                                } else {
-                                    episodes = selectedAnime.episodes.toString();
-                                }
-                            } else {
-                                episodes = "None";
-                            }
-                            if (selectedAnime.score !== undefined) {
-                                if (selectedAnime.score === 0) {
-                                    score = "0";
-                                } else {
-                                    score = `${selectedAnime.score.toString()}`;
-                                }
-                            } else {
-                                score = "None";
-                            }
-                            if (selectedAnime.type) {
-                                type = selectedAnime.type;
-                            } else {
-                                type = "None";
-                            }
-                            if (selectedAnime.status) {
-                                status = selectedAnime.status;
-                            } else {
-                                status = "None";
-                            }
-                            if (selectedAnime.start_date) {
-                                startDate = selectedAnime.start_date.replace(/-/g, "/");
-                            } else {
-                                startDate = "Unknown";
-                            }
-                            if (selectedAnime.end_date) {
-                                var formatDate = selectedAnime.end_date.replace(/-/g, "/");
-                                if (formatDate === "0000/00/00") {
-                                    endDate = "Unknown";
-                                } else {
-                                    endDate = formatDate;
-                                }
-                            } else {
-                                endDate = "Unknown";
-                            }
-                            if (selectedAnime.synopsis) {
-                                if (selectedAnime.synopsis.length > 1024) {
-                                    var extractFirstPart = res[0].synopsis.substr(0, 1021);
-                                    var cleanSynopsis = extractFirstPart.replace(/(&quot;|&mdash;|&rsquo;|&#039;|\[i]|\[\/i])/gim, "");
-                                    synopsis = cleanSynopsis + ".."
-                                } else {
-                                    var cleanSynopsis = res[0].synopsis.replace(/(&quot;|&mdash;|&rsquo;|&#039;|\[i]|\[\/i])/gim, "");
-                                    synopsis = cleanSynopsis;
-                                }
-                            } else {
-                                synopsis = "None";
-                            }
-                            return await message.edit({
-                                embed: {
-                                    title: title,
-                                    url: detailsLink,
-                                    image: {
-                                        url: res[0].image
-                                    },
-                                    fields: [{
-                                            name: ":1234: Episodes",
-                                            value: episodes,
-                                            inline: true
-                            }, {
-                                            name: ":star: Score",
-                                            value: score,
-                                            inline: true
-                            }, {
-                                            name: ":open_file_folder: Genres",
-                                            value: genres,
-                                            inline: true
-                            }, {
-                                            name: ":film_frames: Studios",
-                                            value: studios,
-                                            inline: true
-                            }, {
-                                            name: ":projector: Type",
-                                            value: type,
-                                            inline: true
-                            }, {
-                                            name: ":tv: Status",
-                                            value: status,
-                                            inline: true
-                            }, {
-                                            name: ":calendar: Start Date",
-                                            value: startDate,
-                                            inline: true
-                            }, {
-                                            name: ":calendar: End Date",
-                                            value: endDate,
-                                            inline: true
-                            }, {
-                                            name: ":notepad_spiral: Synopsis",
-                                            value: synopsis,
-                            }
-                            ],
-                                    footer: {
-                                        text: "Notes count: " + notes + " Popularity: " + popularity + " Members: " + members + " Ranking: " + ranking
-                                    }
-                                }
-                            }).catch(console.error);
-                        }
-                    }).catch(err => console.error(err));
-            } catch (err) {
-                await message.channel.send(":x: I ran into a critical error, but dont worry, i sent the details to my developper. If you want to learn more about it, feel free to join the support server");
-                return console.error(err);
+    const malClient = popura(client.config.malCredentials.name, client.config.malCredentials.password);
+    return new Promise(async(resolve, reject) => {
+        try {
+            let args = message.content.split(/\s+/);
+            args.shift();
+            if (!args.length) {
+                return resolve(await message.channel.send(":x: You did not enter an anime to search for"));
             }
-        });
-    } catch (err) {
-        var guild;
-        var detailledError; //that stuff is to avoid undefined logs
-        if (message.guild) {
-            guild = message.guild.name + "\n**Guild ID:** " + message.guild.id + "\n**Channel:** " + message.channel.name;
-        } else {
-            guild = "DM"
+            var animeName = args.join(" ");
+            const res = await malClient.searchAnimes(animeName);
+            if (!res[0]) {
+                return resolve(await message.channel.send(":x: Your search did not returned any result"));
+            }
+            let embedFields = [];
+            let selectedAnime = res[0];
+            if (res.length > 1) {
+                let i = 1;
+                let resultList = res.map(a => `[${i++}] ${a.title}`).join('\n').replace(/undefined/gim, "");
+                if (resultList.length > 2030) resultList = resultList.substr(0, 2030) + '..';
+                const reply = await client.awaitReply({
+                    message: message,
+                    title: ":mag: Your search has returned more than one result, select one by typing a number",
+                    question: "```\n" + resultList + "```"
+                });
+                if (!reply.reply) {
+                    reply.question.delete();
+                    return resolve(await message.channel.send(":x: Timeout: Command aborted"));
+                }
+                if (isNaN(reply.reply.content) || reply.reply.content > res.length || reply.reply.content < 1) {
+                    if (message.guild && message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) await reply.reply.delete();
+                    await reply.question.delete();
+                    return resolve(await message.channel.send(":x: You did not enter a whole number or the number you specified is not valid"));
+                }
+                selectedAnime = res[Math.round(reply.reply.content - 1)];
+                await reply.reply.delete();
+                await reply.question.delete();
+            }
+            const anime = await malScraper.getInfoFromName(selectedAnime.title);
+            if (anime.genres.length > 0) {
+                embedFields.push({
+                    name: ':open_file_folder: Genres',
+                    value: anime.genres.join(', '),
+                    inline: true
+                });
+            }
+            if (anime.studios.length > 0) {
+                embedFields.push({
+                    name: ':film_frames: Studio',
+                    value: anime.studios.join(', '),
+                    inline: true
+                })
+            }
+            if (selectedAnime.episodes) {
+                embedFields.push({
+                    name: ':1234: Episodes',
+                    value: selectedAnime.episodes.toString(),
+                    inline: true
+                });
+            }
+            if (selectedAnime.score) {
+                embedFields.push({
+                    name: ':star: Score',
+                    value: selectedAnime.score.toString(),
+                    inline: true
+                });
+            }
+            if (selectedAnime.type) {
+                embedFields.push({
+                    name: ':projector: Type',
+                    value: selectedAnime.type
+                });
+            }
+            if (selectedAnime.status) {
+                embedFields.push({
+                    name: ':tv: Status',
+                    value: selectedAnime.status,
+                    inline: true
+                });
+            }
+            if (selectedAnime.start_date) {
+                embedFields.push({
+                    name: ':calendar: Start date',
+                    value: selectedAnime.start_date.replace(/-/g, "/"),
+                    inline: true
+                });
+            }
+            if (selectedAnime.end_date && selectedAnime.end_date !== '0000-00-00') {
+                embedFields.push({
+                    name: ':calendar: End date',
+                    value: selectedAnime.end_date.replace(/-/g, "/"),
+                    inline: true
+                });
+            }
+            if (selectedAnime.synopsis) {
+                if (selectedAnime.synopsis.length > 1024) selectedAnime.synopsis = selectedAnime.synopsis.substr(0, 1021) + '..';
+                embedFields.push({
+                    name: ':notepad_spiral: Synopsis',
+                    value: selectedAnime.synopsis.replace(/(&quot;|&mdash;|&rsquo;|&#039;|\[i]|\[\/i])/gim, ""),
+                });
+            }
+            return resolve(await message.channel.send({
+                embed: {
+                    title: selectedAnime.title,
+                    url: anime.detailsLink || 'https://myanimelist.net/',
+                    image: {
+                        url: selectedAnime.image
+                    },
+                    fields: embedFields,
+                    footer: {
+                        text: "Notes count: " + (anime.statistics.score.count || 'None') + " Popularity: " + (anime.statistics.popularity || 'None') + " Members: " + (anime.statistics.members || 'None') + " Ranking: " + (anime.statistics.ranking || 'None')
+                    }
+                }
+            }));
+        } catch (err) {
+            reject(client.emit('commandFail', message, err));
         }
-        if (err.stack) {
-            detailledError = err.stack;
-        } else {
-            detailledError = "None";
-        }
-        console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
-    }
+    });
 };
 
 exports.conf = {
-    enabled: true,
     guildOnly: true,
     aliases: [],
     disabled: false,

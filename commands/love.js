@@ -1,126 +1,94 @@
-const unirest = require("unirest");
-
 exports.run = async(client, message) => {
-    try {
-        const userEntry = client.userDatas.get(message.author.id);
-        const mentionned = message.mentions.users.first();
-        const convertToTime = function (timestamp) {
-            return {
-                hours: Math.floor((timestamp % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-                minutes: Math.floor((timestamp % (1000 * 60 * 60)) / (1000 * 60)),
-                seconds: Math.floor((timestamp % (1000 * 60)) / 1000)
-            }
-        }
-//--------------------------------Shows remaining time/remaining love points------------------------------------------------------------        
-        if (!mentionned) {
-            fetch: {
-                await unirest.get(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`)
-                .header('Authorization', client.database.Data.global[0].discordBotList)
-                .end(async function (result) {
-                    const upvoters = result.body;
-                    if (upvoters.indexOf(message.author.id) === -1) {
-                        if ((userEntry.loveCooldown > Date.now()) && (userEntry.loveCooldown !== 0)) {
-                            const timeRemaining = convertToTime(userEntry.loveCooldown - Date.now());
-                            return await message.channel.send(":x: You can only use this command once, time remaining: " + timeRemaining.hours + "h " + timeRemaining.minutes + "m " + timeRemaining.seconds + "s");
-                        } else {
-                            return await message.channel.send("You have one love point available");
-                        }
-                    } else {
-                        if ((userEntry.loveCooldown > Date.now()) && (userEntry.loveCooldown !== 0) && (userEntry.secondLoveCooldown > Date.now()) && (userEntry.secondLoveCooldown !== 0)) {
-                            var nearest;
-                            if (userEntry.loveCooldown > userEntry.secondLoveCooldown) {
-                                nearest = userEntry.secondLoveCooldown;
-                            } else {
-                                nearest = userEntry.loveCooldown;
-                            }
-                            const distance = convertToTime(nearest - Date.now());
-                            return await message.channel.send(":x: You can only use this command once, time remaining: " + distance.hours + "h " + distance.minutes + "m " + distance.seconds + "s");
-                        } else {
-                            var remainingPoints;
-                            if ((userEntry.loveCooldown > Date.now() && userEntry.secondLoveCooldown < Date.now()) || (userEntry.secondLoveCooldown > Date.now() && userEntry.loveCooldown < Date.now())) {
-                                remainingPoints = 1;
-                            } else if (userEntry.loveCooldown < Date.now() && userEntry.secondLoveCooldown < Date.now()){
-                                remainingPoints = 2;
-                            }
-                            return await message.channel.send("You have **" + remainingPoints + "** love points available");
-                        }
-                    }
-                })
-            }
-        }
-//---------------------------------------Love someone----------------------------------------------------        
-        else if (mentionned) {
-            if (message.author.id === mentionned.id) {
-                return await message.channel.send(":x: You cant love yourself lmao");
-            }
-            fetch: {
-                await unirest.get(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`)
-                .header('Authorization', client.database.Data.global[0].discordBotList)
-                .end(async function (result) {
-                    const upvoters = result.body;
-                    if (upvoters.indexOf(message.author.id) === -1) {
-                        if ((userEntry.loveCooldown > Date.now()) && (userEntry.loveCooldown !== 0)) {
-                            const distance = convertToTime(userEntry.loveCooldown - Date.now());
-                            return await message.channel.send(":x: You can only use this command once, time remaining: " + distance.hours + "h " + distance.minutes + "m " + distance.seconds + "s");
-                        }
-                        const mentionnedData = client.userDatas.get(mentionned.id);
-                        mentionnedData.lovePoints++;
-                        client.userDatas.set(mentionned.id, mentionnedData);
-                        const ratelimit = Date.now() + 43200000; //current date + 12h (it use ms)
-                        userEntry.loveCooldown = ratelimit;
-                        client.userDatas.set(message.author.id, userEntry);
-                        return await message.channel.send("You just gave 1 Love point to **" + mentionned.username + "#" + mentionned.discriminator + "**");
-                    } else {
-                        if ((userEntry.loveCooldown > Date.now()) && (userEntry.loveCooldown !== 0) && (userEntry.secondLoveCooldown > Date.now()) && (userEntry.secondLoveCooldown !== 0)) {
-                            var nearest;
-                            if (userEntry.loveCooldown > userEntry.secondLoveCooldown) {
-                                nearest = userEntry.secondLoveCooldown;
-                            } else {
-                                nearest = userEntry.loveCooldown;
-                            }
-                            const distance = convertToTime(nearest - Date.now());
-                            return await message.channel.send(":x: You can only use this command once, time remaining: " + distance.hours + "h " + distance.minutes + "m " + distance.seconds + "s");
-                        }
-                        const mentionnedData = client.userDatas.get(mentionned.id);
-                        mentionnedData.lovePoints++;
-                        client.userDatas.set(mentionned.id, mentionnedData);
-                        const ratelimit = Date.now() + 43200000; //current date + 12h (it use ms)
-                        if (userEntry.loveCooldown > Date.now()) {
-                            userEntry.secondLoveCooldown = ratelimit;
-                        } else {
-                            userEntry.loveCooldown = ratelimit;
-                        }
-                        var remainingPoints;
-                        if ((userEntry.loveCooldown > Date.now() && userEntry.secondLoveCooldown < Date.now()) || (userEntry.secondLoveCooldown > Date.now() && userEntry.loveCooldown < Date.now())) {
-                            remainingPoints = 1;
-                        } else {
-                            remainingPoints = 0;
-                        }
-                        client.userDatas.set(message.author.id, userEntry);
-                        return await message.channel.send("You just gave 1 Love point to **" + mentionned.username + "#" + mentionned.discriminator + "**, love points remaining: " + remainingPoints);
-                    }
-                })
+    return new Promise(async(resolve, reject) => {
+        try {
+            var userEntry = client.userData.get(message.author.id);
+            const users = await client.getUserResolvable(message, {
+                guildOnly: true
+            });
+
+            function convertToTime(timestamp) {
+                return {
+                    hours: Math.floor((timestamp % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                    minutes: Math.floor((timestamp % (1000 * 60 * 60)) / (1000 * 60)),
+                    seconds: Math.floor((timestamp % (1000 * 60)) / 1000)
+                }
             }
 
-        }
-    } catch (err) {
-        var guild;
-        var detailledError; //that stuff is to avoid undefined logs
-        if (message.guild) {
-            guild = message.guild.name + "\n**Guild ID:** " + message.guild.id + "\n**Channel:** " + message.channel.name;
-        } else {
-            guild = "DM"
-        }
-        if (err.stack) {
-            detailledError = err.stack;
-        } else {
-            detailledError = "None";
-        }
-        console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
-    }
-};
+            function getRemainingLps() {
+                let remainingLps = 0;
+                userEntry.generalSettings.perks.love.forEach(function(lp) {
+                    if (lp.cooldown < Date.now()) remainingLps++;
+                });
+                return remainingLps;
+            }
 
+            function getNearestCooldown() {
+                let sortByCooldown = userEntry.generalSettings.perks.love.sort(function(a, b) {
+                    return a.cooldown - b.cooldown;
+                });
+                return sortByCooldown[0].cooldown;
+            }
+            //------------------------------------------------------Check for upvote------------------------------------------
+            if (client.upvotes.users.includes(message.author.id) && userEntry.generalSettings.perks.love.filter(l => l.name === "upvote").length === 0) {
+                userEntry.generalSettings.perks.love.push({
+                    name: "upvote",
+                    cooldown: 0
+                });
+                client.userData.set(message.author.id, userEntry);
+            }
+            if (!users.size) { //--------------------------------------------Get remaining lps/time til refill------------------------------------
+                let remainingLps = getRemainingLps();
+                if (!remainingLps) {
+                    let remainingTime = convertToTime(getNearestCooldown() - Date.now());
+                    return resolve(await message.channel.send(`:x: You already used all your love points, time remaining: ${remainingTime.hours}h ${remainingTime.minutes}m ${remainingTime.seconds}s`));
+                } else return resolve(await message.channel.send(`You have **${remainingLps}** love point(s) available`));
+            } else if (users.size > 1 && users.size > getRemainingLps()) {
+                return resolve(await message.channel.send(`:x: You do not have enough love points to do that D:, you currently have ${getRemainingLps()} love point(s)`));
+            } else if (users.size === 1) { //----------------------------------Love a user------------------------------------------------
+                if (users.first().id === message.author.id) return resolve(await message.channel.send(":x: Are you trying to love yourself? At least love me instead if you dont know who to love  (╯°□°）╯︵ ┻━┻"));
+                let lpCount = message.content.split(/\s+/gim).filter(a => !isNaN(a)).toString();
+                if (lpCount.length === 0) lpCount = 1;
+                let remainingLps = getRemainingLps();
+                if (!remainingLps) {
+                    let remainingTime = convertToTime(getNearestCooldown() - Date.now());
+                    return resolve(await message.channel.send(`:x: You already used all your love points, time remaining: ${remainingTime.hours}h ${remainingTime.minutes}m ${remainingTime.seconds}s`));
+                }
+                if (Math.round(lpCount) > remainingLps) lpCount = remainingLps; //If the count of lps is superior to the remaining, give everything remaining
+                let receiverEntry = client.userData.get(users.first().id) || client.defaultUserData(users.first().id); //If the user is not in the db
+                receiverEntry.generalSettings.lovePoints = (Number(receiverEntry.generalSettings.lovePoints) + Math.round((lpCount)));
+                let cooldownsSet = 0;
+                for (let i = 0; i < userEntry.generalSettings.perks.love.length; i++) { //Add the cooldowns
+                    if (userEntry.generalSettings.perks.love[i].cooldown < Date.now() && cooldownsSet < Math.round(lpCount)) {
+                        userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
+                        cooldownsSet++;
+                    }
+                }
+                client.userData.set(users.first().id, receiverEntry);
+                client.userData.set(message.author.id, userEntry);
+                return resolve(await message.channel.send(`You just gave **${Math.round(lpCount)}** love point(s) to **${users.first().tag}** :heart:`));
+            } else if (users.size > 1) { //------------------------Love multiple users------------------------------------
+                users.forEach(function(usr) {
+                    if (usr.id === message.author.id) return users.delete(usr.id); //Remove from the collection the author if in and skip to the next
+                    let receiverEntry = client.userData.get(usr.id) || client.defaultUserData(usr.id);
+                    receiverEntry.generalSettings.lovePoints++;
+                    client.userData.set(usr.id, receiverEntry);
+                });
+                let cooldownsSet = 0;
+                for (let i = 0; i < userEntry.generalSettings.perks.love.length; i++) {
+                    if (userEntry.generalSettings.perks.love[i].cooldown < Date.now() && cooldownsSet < users.size) {
+                        userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
+                        cooldownsSet++;
+                    }
+                }
+                client.userData.set(message.author.id, userEntry);
+                return resolve(await message.channel.send(`You just gave **1** LP to **${users.map(u => u.tag).join(", ")}** :heart:`));
+            }
+        } catch (err) {
+            client.emit('commandFail', message, err);
+        }
+    });
+
+}
 exports.conf = {
     enabled: true,
     guildOnly: true,
@@ -132,7 +100,7 @@ exports.conf = {
 exports.help = {
     name: 'love',
     description: 'Love someone, bring some love to this world !',
-    usage: 'love @someone',
+    usage: 'love user resolvable',
     category: 'fun',
-    detailledUsage: 'You can only use one love points every 12 hours, if you upvoted Felix on Discord Bot List, you get an extra love point'
+    detailledUsage: 'You have by default only one love point that you can use every 12 hours, you get an extra love point if you upvoted Felix on Discord bot list\n`{prefix}love 2 user resolvable` Will gives two LPs to the specified user\n`{prefix}love user1 user2` Will give 1 LP to each users specified'
 };

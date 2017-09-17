@@ -1,24 +1,27 @@
-const fs = require("fs-extra");
-const unirest = require("unirest");
+const moment = require('moment');
 
-module.exports = async (client, guild) => {
-    client.eventLogs += `[${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}] Event guildDelete triggered, current memory usage: ${(process.memoryUsage().heapUsed / 1024 / 1000).toFixed(2)}MB\n`;        
-    // Send the server count to Discord Bot list
-    try {
-        unirest.post(`https://discordbots.org/api/bots/${client.user.id}/stats`)
-            .header('Authorization', client.database.Data.global[0].discordBotList)
-            .send({
-                server_count: client.guilds.size
-            }) 
-            .end(function (response) {
-                if (response.body.length > 1) {
-                    console.error("An error occured while sending data to discord bot list \nTriggered error: " + response.body);
-                    return client.channels.get(client.errorLog).send("```An error occured while sending data to discord bot list \nTriggered error: " + response.body);
+module.exports = async(client, guild) => {
+    if (client.guilds.get('328842643746324481')) {
+        try {
+            client.guilds.get('328842643746324481').channels.get('328847359100321792').send({
+                embed: {
+                    title: ':outbox_tray: I left the guild ' + guild.name,
+                    description: `**ID:** ${guild.id}\n**Members:** ${guild.members.filter(m => !m.user.bot).size}\n**Bots:** ${guild.members.filter(m => m.user.bot).size}\n**Owner:** ${guild.owner.user.tag}\n**Joined:** ${moment().to(guild.joinedAt)}`,
+                    timestamp: new Date(),
+                    image: {
+                        url: guild.iconURL
+                    }
                 }
             });
-        return;
-    } catch (err) {
-        console.error("A critical error occured while sending data to Discord Bot list \nTriggered error: " + err)
-        return await client.channels.get(client.errorLog).send("``` A critical error occured while sending data to Discord Bot list \nTriggered error: " + err + "```");
+        } catch (err) {
+            console.error(err);
+            client.Raven.captureException(err);
+        }
+        const updateDbl = await client.updateDbl();
+        client.latestDblUpdate = {
+            date: new Date(),
+            timestamp: Date.now(),
+            success: updateDbl.success
+        }
     }
-};
+}

@@ -1,30 +1,40 @@
-const fs = require("fs-extra");
-const unirest = require("unirest");
-
-module.exports = async (client, member) => {
-    try {
-        const guildEntry = client.guildDatas.get(member.guild.id);
-        const role = member.guild.roles.get(guildEntry.onJoinRole);
-        if ((guildEntry.onJoinRole !== "") && (member.user.bot !== true)) {
-            member.addRole(role);
-        }
-        if ((!member.guild.roles.get(guildEntry.onJoinRole)) && (guildEntry.onJoinRole !== "")) {
-            await member.guild.owner.send("Hey ! Sorry for disturbing you, but im supposed to give a role to every new members. However, it seems that the role doesnt exist anymore. Again, sorry for disturbing you, just in case you didnt knew. You can remove that role from my database using `f!onjoinrole -remove`");
-        }
-        if (guildEntry.greetings === "") return;
-        var greetingsMsg = guildEntry.greetings;
-        greetingsMsg = greetingsMsg.replace(/\{user\}/gim, `<@${member.id}>`);
-        greetingsMsg = greetingsMsg.replace(/\{username\}/gim, `${member.user.username}`);        
-        greetingsMsg = greetingsMsg.replace(/\{server\}/gim, `${member.guild.name}`);
-        if (guildEntry.greetingsMethod === "dm") {
-            return await member.send(greetingsMsg);
-        } else if (guildEntry.greetingsMethod === "channel") {
-            if ((!member.guild.channels.get(guildEntry.greetingsChan)) && (guildEntry.greetingsChan !== "")) {
-                return await member.guild.owner.send("Sorry to disturb you, but the channel where i am supposed to send the greetings dont exist anymore, just in case you didnt knew");
-            }
-            return await member.guild.channels.get(guildEntry.greetingsChan).send(greetingsMsg);
-        }
-    } catch (err) {
-        console.error(err);
+module.exports = async(client, member) => {
+    const guildEntry = client.guildData.get(member.guild.id) || client.defaultGuildData(member.guild.id);
+    if (guildEntry.onEvent.guildMemberAdd.onJoinRole.length > 0 && member.guild.member(client.user).hasPermission('MANAGE_ROLES')) { //----------------------------Add roles-----------------------
+        let existingRoles = guildEntry.onEvent.guildMemberAdd.onJoinRole.filter(r => member.guild.roles.get(r)); //Filter roles which doesnt exist anymore
+        if (existingRoles.length > 0) await member.addRoles(existingRoles); //Add roles
+        guildEntry.onEvent.guildMemberAdd.onJoinRole = existingRoles; //Update the
+        client.guildData.set(member.guild.id, guildEntry); //guild entry
     }
-};
+    if (guildEntry.onEvent.guildMemberAdd.greetings.message || guildEntry.onEvent.guildMemberAdd.greetings.embed) {
+        let message = guildEntry.onEvent.guildMemberAdd.greetings.message || guildEntry.onEvent.guildMemberAdd.greetings.embed; //Whether the message to send is an embed or not
+        let method = member.user;
+        //---------------------------------------Replace all instances of %USER%, %USERNAME% and %GUILD%--------------------------------------
+        if (typeof message === "string") {
+            message = message.replace(/\%USER\%/gim, `<@${member.user.id}>`).replace(/\%USERNAME\%/gim, `${member.user.username}`).replace(/\%USERTAG%/gim, `${member.user.tag}`).replace(/\%GUILD\%/gim, `${member.guild.name}`);
+        } else {
+            message.embed.description = message.embed.description.replace(/\%USER\%/gim, `<@${member.user.id}>`).replace(/\%USERNAME\%/gim, `${member.user.username}`).replace(/\%USERTAG%/gim, `${member.user.tag}`).replace(/\%GUILD\%/gim, `${member.guild.name}`);
+        }
+        //---------------------------------------------------------Greets------------------------------------------------------------
+        if (guildEntry.onEvent.guildMemberAdd.greetings.channel && !guildEntry.onEvent.guildMemberAdd.greetings.dm) method = member.guild.channels.get(guildEntry.onEvent.guildMemberAdd.greetings.channel);
+        try {
+            await method.send(message);
+        } catch (err) {
+            if (err.code === 50013) {
+                guildEntry.onEvent.guildMemberAdd.greetings.error = "Missing Permissions"; //error code for Missing Permissions
+                return client.guildData.set(member.guild.id, guildEntry);
+            } else if (typeof method === "undefined") {
+                guildEntry.onEvent.guildMemberAdd.greetings.error = "Unknown Channel";
+                return client.guildData.set(member.guild.id, guildEntry); //If getting the channel return undefined
+            } else if (err.code === 50001) {
+                guildEntry.onEvent.guildMemberAdd.greetings.error = "Missing Permissions" //error code for Missing Access
+                return client.guildData.set(member.guild.id, guildEntry);
+            }
+            //-----------------------------------If the error is not related to permissions nor unexisting channel-------------------------
+            guildEntry.onEvent.guildMemberAdd.greetings.error = "Unknown Error";
+            client.guildData.set(member.guild.id, guildEntry);
+            console.error(err);
+            return client.Raven.captureException(err);
+        }
+    }
+}

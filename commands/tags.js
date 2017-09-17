@@ -1,122 +1,224 @@
 exports.run = async(client, message) => {
-    try {
-        const whitespace = message.content.indexOf(" ");
-        const page = client.searchForParameter(message, "page");
-        const mine = client.searchForParameter(message, "mine", {
-            aliases: ["-mine", "-m"],
-            name: "mine"
-        });
-        if ((whitespace === -1) || (page && !mine)) {
-            const createdTags = client.pageResults(message, "", Array.from(client.tagDatas.filter(t => (JSON.parse(t).privacy === "Global") || (JSON.parse(t).privacy === "Server-wide" && JSON.parse(t).guild === message.guild.id) || (JSON.parse(t).author === message.author.id)).map(t => JSON.parse(t).name)), 20, true);
-            if (typeof createdTags !== "object") {
-                return await message.channel.send(createdTags);
-            } 
-            return await message.channel.send("Here's the created tags list, showing page " + createdTags.page + ". You can navigate through pages using `" + client.guildDatas.get(message.guild.id).prefix + client.commands.get(this.help.name).help.name + " -page 2` for example\n" + createdTags.results.map(t => `\`${t}\``).join(", "));
-        } else if (mine) {
-            return await message.channel.send(client.pageResults(message, "Here's the tags you created. ", client.getAuthorTags(message)));
-        } else if (whitespace !== -1) {
-            const tagName = message.content.substr(whitespace + 1).trim();
-            const availableTags = client.tagDatas.filter(t => (JSON.parse(t).privacy === "Global") || (JSON.parse(t).privacy === "Server-wide" && JSON.parse(t).guild === message.guild.id) || (JSON.parse(t).author === message.author.id));
-            if (!availableTags.get(tagName)) {
-                return await message.channel.send(":x: That tag does not exist");
-            }
-            const tag = JSON.parse(availableTags.get(tagName));
-            var embedFields = [];
-            console.log(tag);
-            if (tag.name) {
-                embedFields.push({
-                    name: ":bookmark: Tag name",
-                    value: tag.name,
-                    inline: true
-                });
-            }
-            if (tag.author) {
-                var user = client.users.get(tag.author);
-                if (!user) {
-                    user === "Unknown";
-                } else {
-                    user = client.users.get(tag.author).username + "#" + client.users.get(tag.author).discriminator;
+    return new Promise(async(resolve, reject) => {
+        try {
+            const userTags = client.tagData.filter(t => JSON.parse(t).author == message.author.id);
+            let modes = ['Navigation mode, you can enter the edition mode with :heavy_plus_sign:', 'Edition mode, you can write down the name of the tag to add (only first word will be used)'];
+            const mainObject = function(page, embedFields, mode) {
+                return {
+                    embed: {
+                        title: ':gear: Tags settings',
+                        description: `Use the arrows to navigate through your tags list, you can use :heavy_plus_sign: to start typing the name of a tag to add or :wastebasket: to remove one. You can end this command at any moment with :x:.\n\n**Mode:** ${mode}`,
+                        fields: embedFields[page],
+                        footer: {
+                            text: `Showing page ${page + 1}/${userTags.size} | Time limit: 120 seconds`
+                        }
+                    }
                 }
-                embedFields.push({
-                    name: ":bust_in_silhouette: Author",
-                    value: user,
+            }
+            let tagsFields = [];
+            userTags.forEach(function(tag) { //Build tags fields
+                let guild = ':x:';
+                tag = JSON.parse(tag);
+                if (tag.guild && client.guilds.has(tag.guild)) guild = client.guilds.get(tag.guild).name;
+                tagsFields.push([{
+                    name: ':pencil2: Name',
+                    value: `${tag.name}`,
                     inline: true
-                });
-            }
-            if (tag.content) {
-                var content = tag.content;
-                if (content.length > 84) {
-                    content = tag.content.substr(0, 81) + "...";
-                }
-                embedFields.push({
-                    name: ":notepad_spiral: Content",
-                    value: content,
-                    inline: false
-                });
-            }
-            if (tag.privacy) {
-                embedFields.push({
-                    name: ":spy: Privacy",
-                    value: tag.privacy,
+                }, {
+                    name: ':notepad_spiral: Content',
+                    value: `${tag.content.substr(0, 124)}`,
                     inline: true
-                });
-            }
-            if (tag.guild) {
-                var guild = client.guilds.get(tag.guild);
-                if (!guild) {
-                    guild = "Unknown";
-                } else {
-                    guild = client.guilds.get(tag.guild).name;
-                }
-                embedFields.push({
-                    name: ":desktop: Server",
-                    value: guild,
+                }, {
+                    name: `:spy: Privacy`,
+                    value: `${tag.privacy}`,
                     inline: true
-                });
-            }
-            return await message.channel.send({
-                embed: {
-                    color: 3447003,
-                    author: {
-                        name: "Requested by: " + message.author.username + "#" + message.author.discriminator,
-                        icon_url: message.author.avatarURL
-                    },
-                    fields: embedFields,
-                    timestamp: new Date()
+                }, {
+                    name: ':computer: Server',
+                    value: `${guild}`,
+                    inline: true
+                }]);
+            });
+            const secondaryObject = function(mode) {
+                return {
+                    embed: {
+                        title: ':gear: Tags settings',
+                        description: `Use the arrows to navigate through your tags list, you can use :heavy_plus_sign: to start typing the name of a tag to add or :wastebasket: to remove one, you can end this command at any moment with :x:.\n\n**Mode:** ${mode}\n\nSeems like you didn't created any tag yet, start by adding one with :heavy_plus_sign: !`,
+                    }
                 }
-            }).catch(console.error);
+            }
+            let page = 0; //current page
+            var interactiveMessage;
+            if (userTags.size < 1) interactiveMessage = await message.channel.send(secondaryObject(modes[0]));
+            else interactiveMessage = await message.channel.send(mainObject(page, tagsFields, modes[0]));
+            const collector = interactiveMessage.createReactionCollector((reaction, user) => user.id === message.author.id);
+            let pageReactions = ["⏮", "◀", "▶", "⏭", "🕵", "➕", "🗑", "❌"];
+            for (let i = 0; i < pageReactions.length; i++) {
+                await interactiveMessage.react(pageReactions[i]);
+            }
+            var timeout = setTimeout(async function() {
+                collector.stop("timeout");
+            }, 120000);
+            let isCollecting = false;
+            collector.on('collect', async(r) => {
+                clearTimeout(timeout); //reset the timeout
+                if (tagsFields.length) var currentTag = client.tagData.get(tagsFields[page][0].value);
+                if (tagsFields.length) { //Dont let people 'navigate' through pages if there's no tags
+                    if (r.emoji.name === '⏮') { //Move to first page
+                        if (page !== 0) { //Dont edit for nothing
+                            page = 0;
+                            await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
+                        }
+                    } else if (r.emoji.name === '◀') { //Move to previous page
+                        if (page === 0) {
+                            page = tagsFields.length - 1;
+                        } else {
+                            page--;
+                        }
+                        await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
+                    } else if (r.emoji.name === '▶') { //Move to next page
+                        if (page === tagsFields.length - 1) {
+                            page = 0;
+                        } else {
+                            page++;
+                        }
+                        await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
+                    } else if (r.emoji.name === '⏭') { //Move to last page
+                        if (!page !== tagsFields.length - 1) { //Dont edit if already at last page
+                            page = tagsFields.length - 1;
+                            await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
+                        }
+                    }
+                }
+                if (r.emoji.name === "🕵") {
+                    if (currentTag) {
+                        if (currentTag.privacy === 'Server-wide') {
+                            currentTag.privacy = 'Private';
+                            currentTag.guild = false;
+                            tagsFields[page][3].value = ':x:';
+                        } else if (currentTag.privacy === 'Private') currentTag.privacy = 'Public';
+                        else if (currentTag.privacy === 'Public') {
+                            currentTag.privacy = 'Server-wide';
+                            currentTag.guild = message.guild.id;
+                            tagsFields[page][3].value = message.guild.name;
+                        }
+                        client.tagData.set(currentTag.name, currentTag);
+                        tagsFields[page][2].value = currentTag.privacy;
+                        await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
+                    }
+                } else if (r.emoji.name === "➕") {
+                    if (!isCollecting) {
+                        if (userTags.length < 1) await interactiveMessage.edit(secondaryObject(modes[1]));
+                        else await interactiveMessage.edit(mainObject(page, tagsFields, modes[1]));
+                        isCollecting = true;
+                        let tagName;
+                        try {
+                            const collectedName = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                                max: 1,
+                                time: 120000,
+                                errors: ["time"]
+                            });
+                            let args = collectedName.first().cleanContent.split(/\s+/);
+                            tagName = args[0];
+                            if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) collectedName.first().delete();
+                            collectedName.delete();
+                        } catch (e) {
+                            collector.stop('timeout');
+                        }
+                        if (tagName) {
+                            isCollecting = false;
+                            if (tagName.length > 84) {
+                                let tooLongName = await message.channel.send(":x: A tag name can't exceed 84 characters");
+                                tooLongName.delete(5000);
+                            } else if (client.tagData.has(tagName)) {
+                                let tagAlreadyIn = await message.channel.send(":x: This tag already exist !");
+                                tagAlreadyIn.delete(5000);
+                            } else if (tagName.length <= 84 && !client.tagData.has(tagName)) {
+                                let tagContent;
+                                let enterContent = await message.channel.send({
+                                    embed: {
+                                        description: 'You can now enter the content of the tag',
+                                        footer: {
+                                            text: 'Time limit: 120 seconds'
+                                        }
+                                    }
+                                });
+                                try {
+                                    const collectedContent = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                                        max: 1,
+                                        time: 120000,
+                                        errors: ["time"]
+                                    });
+                                    tagContent = collectedContent.first().cleanContent;
+                                    if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) collectedContent.first().delete();
+                                    enterContent.delete();
+                                } catch (e) {
+                                    enterContent.delete();
+                                    collector.stop('timeout');
+                                }
+                                client.tagData.set(tagName, {
+                                    author: message.author.id,
+                                    name: tagName,
+                                    content: tagContent,
+                                    privacy: 'Public',
+                                    guild: false
+                                });
+                                tagsFields.push([{
+                                    name: ':pencil2: Name',
+                                    value: `${tagName}`,
+                                    inline: true
+                                }, {
+                                    name: ':notepad_spiral: Content',
+                                    value: `${tagContent.substr(0, 124)}`,
+                                    inline: true
+                                }, {
+                                    name: `:spy: Privacy`,
+                                    value: `Public`,
+                                    inline: true
+                                }, {
+                                    name: ':computer: Server',
+                                    value: `:x:`,
+                                    inline: true
+                                }]);
+                                page = tagsFields.length - 1;
+                                await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
+                            }
+                        }
+                    }
+                } else if (r.emoji.name === "🗑") { //If deletion, delete
+                    if (tagsFields.length > 0) {
+                        client.tagData.delete(currentTag.name);
+                        tagsFields.splice(page, 1);
+                        if (page !== 0) page--;
+                        if (tagsFields.length > 0) await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
+                        else await interactiveMessage.edit(secondaryObject(modes[0]));
+                    }
+                } else if (r.emoji.name === "❌") { //Abort the command
+                    collector.stop("aborted"); //End the collector
+                }
+                await r.remove(message.author.id); //Delete user reaction
+                timeout = setTimeout(async function() {
+                    collector.stop("timeout");
+                }, 120000); //Restart the timeout
+            });
+            collector.on('end', async(collected, reason) => { //-------------------------------------------------------------On collector end-------------------------------------
+                await interactiveMessage.delete();
+            });
+        } catch (err) {
+            reject(client.emit('commandFail', message, err));
         }
-    } catch (err) {
-        var guild;
-        var detailledError; //that stuff is to avoid undefined logs
-        if (message.guild) {
-            guild = message.guild.name + "\n**Guild ID:** " + message.guild.id + "\n**Channel:** " + message.channel.name;
-        } else {
-            guild = "DM"
-        }
-        if (err.stack) {
-            detailledError = err.stack;
-        } else {
-            detailledError = "None";
-        }
-        console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get(client.errorLog).send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
-    }
-};
+    });
+}
 
 exports.conf = {
-    enabled: true,
-    guildOnly: true,
-    aliases: [],
     disabled: false,
-    permLevel: 1
-};
-
+    permLevel: 1,
+    aliases: ['tag'],
+    guildOnly: true
+}
 exports.help = {
     name: 'tags',
-    parameters: "`-mine`",
-    description: 'Show all the tags created',
+    description: 'You can create new tags, delete some or just take a look at all your fancy tags here !',
     usage: 'tags',
-    category: 'generic',
-    detailledUsage: 'Tags are basically customized output, to run a tag, use `{prefix}t tagname`\n`{prefix}tags -mine` Will return the list of tags you created\n`{prefix}tags owo` Will return detailled infos about the tag **owo**\nThe created tags list actually only return tags set as global, this server tags and your tags'
-};
+    category: 'misc',
+    detailledUsage: 'Tags are basically customized output, to run a tag, use `{prefix}t [tagname]`'
+}

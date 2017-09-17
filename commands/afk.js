@@ -1,55 +1,40 @@
-const fs = require("fs-extra");
-
 exports.run = async(client, message) => {
-    try {
-        const remove = client.searchForParameter(message, "remove");
-        const userEntry = client.userDatas.get(message.author.id);
-        const whitespace = message.content.indexOf(" ");
-        if (remove) {
-            if (userEntry.afk === "") {
-                return await message.channel.send(":x: You dont have any afk status to remove");
+    return new Promise(async(resolve, reject) => {
+        try {
+            const userEntry = client.userData.get(message.author.id);
+            let args = message.content.split(/\s+/gim);
+            args.shift();
+            if (!args.length) {
+                if (userEntry.generalSettings.afk === false) {
+                    userEntry.generalSettings.afk = "";
+                    client.userData.set(message.author.id, userEntry);
+                    resolve(await message.channel.send(`:white_check_mark: Alright, i enabled your afk status`));
+                } else {
+                    userEntry.generalSettings.afk = false;
+                    client.userData.set(message.author.id, userEntry);
+                    resolve(await message.channel.send(`:white_check_mark: Alright, i disabled your afk status`));
+                }
+            } else {
+                userEntry.generalSettings.afk = args.join(" ");
+                client.userData.set(message.author.id, userEntry);
+                resolve(await message.channel.send(`:white_check_mark: Alright, i updated your afk status`));
             }
-            userEntry.afk = "";
-            client.userDatas.set(message.author.id, userEntry);
-            return await message.channel.send(":white_check_mark: Alright, i removed your afk status");
+        } catch (err) {
+            reject(client.emit('commandFail', message, err));
         }
-        if (whitespace === -1) {
-            return await message.channel.send(":x: You cannot set your afk status to nothing");
-        }
-        userEntry.afk = message.content.substr(whitespace + 1);
-        client.userDatas.set(message.author.id, userEntry);
-        return await message.channel.send(":white_check_mark: Alright, i updated your afk status");
-    } catch (err) {
-        var guild;
-        var detailledError; //that stuff is to avoid undefined logs
-        if (message.guild) {
-            guild = message.guild.name + "\n**Guild ID:** " + message.guild.id + "\n**Channel:** " + message.channel.name;
-        } else {
-            guild = "DM"
-        }
-        if (err.stack) {
-            detailledError = err.stack;
-        } else {
-            detailledError = "None";
-        }
-        console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
-    }
-};
+    })
+}
 
 exports.conf = {
-    enabled: true,
     guildOnly: false,
-    aliases: [],
     disabled: false,
-    permLevel: 1
-};
-
+    permLevel: 1,
+    aliases: []
+}
 exports.help = {
     name: 'afk',
-    parameters: '`-remove`',
-    description: 'Update your afk status, Felix will display your afk message everytime you will get mentionned',
-    usage: 'afk im busy playing',
+    usage: 'afk im afk dont bother kthx',
+    description: 'Set your afk status, if your afk status is on, Felix will send your fancy afk status to everyone who mention you',
     category: 'generic',
-    detailledUsage: 'You can remove your afk status using `{prefix}afk -remove`, if you dont use any parameters, it will update your afk message'
-};
+    detailledUsage: '`{prefix}afk` If on, this will disable your afk status, else it will enable your afk status\n`{prefix}afk im sleeping` Will update your afk status to `im sleeping`'
+}

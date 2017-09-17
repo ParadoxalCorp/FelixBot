@@ -2,19 +2,22 @@ const Discord = require("discord.js");
 const client = new Discord.Client({
     disabledEvents: ["TYPING_START"]
 });
+
 const fs = require("fs-extra");
 const unirest = require("unirest");
-const dbPath = "database/database.json";
-const database = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
-const PersistentCollection = require('djs-collection-persistent');
-//const memwatch = require("memwatch-next");
-//const heapdump = require("heapdump");
-
-const {Wit, log} = require('node-wit');
+const { Wit, log } = require('node-wit');
 
 const wit = new Wit({
-  accessToken: "wew",
+    accessToken: "VBDY3FZZCLSQMISZNLUGQYG4EQCTKTQI",
 });
+
+const dbPath = "config/config.json";
+const PersistentCollection = require('djs-collection-persistent');
+
+const database = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
+
+var Raven = require('raven');
+Raven.config(database.raven).install();
 
 const {
     promisify
@@ -22,29 +25,36 @@ const {
 const readdir = promisify(require("fs-extra").readdir);
 
 //Database initialization
-const userDatas = new PersistentCollection({
-    name: 'userDatas'
+const userData = new PersistentCollection({
+    name: 'userData'
 });
-console.log("[INFO] Users database loaded");
-const guildDatas = new PersistentCollection({
-    name: 'guildDatas'
+console.log("[INFO] => Users database loaded");
+const guildData = new PersistentCollection({
+    name: 'guildData'
 });
-console.log("[INFO] Guilds database loaded");
-const tagDatas = new PersistentCollection({
-    name: 'tagDatas'
+console.log("[INFO] => Guilds database loaded");
+const tagData = new PersistentCollection({
+    name: 'tagData'
 });
 console.log("[INFO] => Tags database loaded");
-const clientDatas = new PersistentCollection({
-    name: 'clientDatas'
+const clientData = new PersistentCollection({
+    name: 'clientData'
 });
 console.log("[INFO] => Client database loaded");
+
 //Load functions
-try {
-    require("./modules/functions.js")(client);
-    console.log("[INFO] => Loaded functions");
-} catch (err) {
-    console.error("[ERROR] => Failed to load functions: " + err.stack);
-}
+(async function() {
+    const clientFunctions = await readdir('./modules/clientFunctions');
+    console.log(`----------------------------------------------------------------------------------------------\nLoading a total of ${clientFunctions.length} functions.`);
+    clientFunctions.forEach(f => {
+        try {
+            const props = require(`./modules/clientFunctions/${f}`)(client);
+            console.log(`Loading function: ${f}. 👌`);
+        } catch (e) {
+            console.log(`Unable to load function ${f}: ${e.stack}`);
+        }
+    });
+}());
 //Load malsearch module
 try {
     require("./modules/malsearch.js")(client);
@@ -52,8 +62,8 @@ try {
 } catch (err) {
     console.error("[ERROR] => Failed to load the malsearch module: " + err.stack);
 }
-client.mention = `<@327144735359762432>`;
-client.config = database.Data.global[0];
+client.mention = "<@343527831034265612>";
+client.config = database;
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 client.database = database;
@@ -64,20 +74,127 @@ client.bugChan = "328843250687279105";
 client.overallHelp; //Will get initialized later
 client.cmdsUsed = 0; //Will contain the count of commands used since restart
 client.cmdsLogs; //Will get initialized in the message event
-client.userDatas = userDatas;
-client.guildDatas = guildDatas;
-client.tagDatas = tagDatas;
-client.clientDatas = clientDatas;
-client.wit = wit;
+client.userData = userData;
+client.guildData = guildData;
+client.tagData = tagData;
+client.clientData = clientData;
 client.talkedRecently = new Set(); //cooldown stuff
+client.wit = wit;
+client.maintenance = false; //Will be used to ignore users when performing maintenance stuff
+client.Raven = Raven;
+client.upvotes = {
+    users: false,
+    latestUpdate: Date.now(),
+    count: function() {
+        return this.users.length
+    }
+}
+client.statsUpdate = {
+    success: {
+        name: 'No Data',
+        message: 'Server count hasn\'t been sent yet',
+        description: function() {
+            return `${this.name}: ${this.message}`;
+        }
+    },
+    latestUpdate: false
+}
+client.imageTypes = {
+    success: {
+        name: 'No Data',
+        message: `The weeb's image types didnt got fetched yet`,
+        description: function() {
+            return `${this.name}: ${this.message}`;
+        }
+    },
+    latestUpdate: Date.now()
+}
+
+client.defaultUserData = function(id) {
+    return {
+        id: id,
+        cooldowns: {
+            dailyCooldown: 0
+        },
+        experience: {
+            expCount: 0,
+            level: 0
+        },
+        generalSettings: {
+            lovePoints: 0,
+            malAccount: "",
+            blackListed: false,
+            afk: false,
+            reminders: [],
+            points: 0,
+            perks: {
+                love: [{
+                    type: 'default',
+                    cooldown: 0
+                }]
+            }
+        },
+        dataPrivacy: {
+            publicLevel: true,
+            publicProfile: true,
+            publicLove: true,
+            publicPoints: true
+        }
+    }
+}
+
+client.defaultGuildData = function(id) {
+    return {
+        id: id,
+        generalSettings: {
+            autoAssignablesRoles: [],
+            modLog: [],
+            prefix: client.database.prefix,
+            levelSystem: {
+                enabled: true,
+                public: true,
+                levelUpNotif: false,
+                roles: [],
+                users: [],
+                totalExp: 0
+            },
+        },
+        permissionsLevels: {
+            things: [
+                [],
+                [],
+                []
+            ],
+            globalLevel: "none"
+        },
+        onEvent: {
+            guildMemberAdd: {
+                onJoinRole: [],
+                greetings: {
+                    enabled: false,
+                    message: false,
+                    embed: false,
+                    method: false,
+                    channel: false,
+                    error: false //Will be used for missing permissions case
+                }
+            },
+            guildMemberRemove: {
+                farewell: {
+                    enabled: false,
+                    message: false,
+                    embed: false,
+                    channel: false,
+                    error: false //Will be used for missing permissions case
+                }
+            }
+        }
+    }
+}
 
 process.on('uncaughtException', (err) => {
     try {
         console.error(err);
-        if (err === "DiscordAPIError: Missing Permissions") {
-            return;
-        }
-        client.channels.get(client.errorLog).send("Uncaught Exception: " + err + "\n**Detailled log:** " + err.stack);
     } catch (err) {
         return;
     }
@@ -88,7 +205,7 @@ process.on("unhandledRejection", err => {
         if (err.message === "Missing Permissions") {
             return;
         }
-        client.channels.get(client.errorLog).send("**Unhandled Rejection: " + err + "\n**Detailled log:** " + err.stack);
+        Raven.captureException(err);
     } catch (err) {
         return;
     }
@@ -100,20 +217,27 @@ process.on("error", err => {
     } catch (err) {
         console.error(err);
         return;
-    }    
+    }
 });
+setTimeout(async function() {
+    client.loadReminders(); //Launch reminders loading
+}, 7500); //Wait for the db to be properly loaded
 
-client.loadReminders();
+setTimeout(async function() {
+    client.updateDatabase(client); //Update database
+}, 7500);
+
 //require node 8 or higher
-(async function () {
+(async function() {
 
     // Here we load commands into memory, as a collection, so they're accessible everywhere
     const files = await readdir('./commands/');
-    console.log(`Loading a total of ${files.length} commands.`);
+    console.log(`------------------------------------------------------------------------\nLoading a total of ${files.length} commands.`);
     files.forEach(f => {
         try {
             const props = require(`./commands/${f}`);
             console.log(`Loading Command: ${props.help.name}. 👌`);
+            props.uses = 0; //For stats purposes
             client.commands.set(props.help.name, props);
             props.conf.aliases.forEach(alias => {
                 client.aliases.set(alias, props.help.name);
@@ -122,22 +246,12 @@ client.loadReminders();
             console.log(`Unable to load command ${f}: ${e.stack}`);
         }
     });
-    try { //Build the help on launch instead of everytime the help is triggered to decrease the ressources usage
-        console.log("Building the help...");
-        const categories = ["generic", "image", "utility", "fun", "moderation", "settings", "miscellaneous"];
-        var i;
-        for (i = 0; i < categories.length; i++) {
-            const categoryCommands = client.commands.filter(c => c.help.category == categories[i]);
-            client.overallHelp += `**${categories[i]}** =>`
-            client.overallHelp += categoryCommands.map(c => `\`${c.help.name}\` `);
-            client.overallHelp += "\n\n";
-        }
-        client.overallHelp = client.overallHelp.replace(/undefined/gim, ""); //To remove the "undefined"
-        console.log("Success !");
-        //console.log(client.overallHelp);
-    } catch (err) {
-        console.error(`[ERROR] => Failed to build the help: ${err.stack}`);
+    const categories = ["generic", "misc", "image", "utility", "fun", "moderation", "settings"];
+    for (let i = 0; i < categories.length; i++) {
+        const categoryCommands = client.commands.filter(c => c.help.category == categories[i]);
+        client.overallHelp += `**${categories[i]}** =>` + categoryCommands.map(c => `\`${c.help.name}\` `) + "\n\n";
     }
+    client.overallHelp = client.overallHelp.replace(/undefined/gim, ""); //To remove the "undefined"
     const evtFiles = await readdir('./events/');
     console.log(`Loading a total of ${evtFiles.length} events.`);
     evtFiles.forEach(file => {

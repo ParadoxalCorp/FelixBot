@@ -1,36 +1,39 @@
 const unirest = require("unirest");
 
 exports.run = async(client, message) => {
-    try {
+    return new Promise(async(resolve, reject) => {
+        try {
             fetch: {
-                await unirest.get("https://staging.weeb.sh/images/random?type=cry")
-                .header(`Authorization`, `Bearer ${client.database.Data.global[0].wolkeImageKey}`)
-                .end(async function (result) {
+                await unirest.get("https://api.weeb.sh/images/random?type=cry&filetype=gif")
+                .header(`Authorization`, `Bearer ${client.database.wolkeImageKey}`)
+                .end(async function(result) {
+                    var users = await client.getUserResolvable(message, {
+                        guildOnly: true
+                    });
+                    if (!result.body || !result.body.url) return resolve(await message.channel.send(":x: An error occured :v"));
                     var cryUrl = result.body.url;
-                    await message.channel.send(cryUrl);
+                    resolve(await message.channel.send({
+                        embed: {
+                            image: {
+                                url: cryUrl
+                            },
+                            footer: {
+                                text: `Powered by https://weeb.sh/`
+                            }
+                        }
+                    }));
+
                 });
             }
-    } catch (err) {
-        var guild;
-        var detailledError; //that stuff is to avoid undefined logs
-        if (message.guild) {
-            guild = message.guild.name + "\n**Guild ID:** " + message.guild.id + "\n**Channel:** " + message.channel.name;
-        } else {
-            guild = "DM"
         }
-        if (err.stack) {
-            detailledError = err.stack;
-        } else {
-            detailledError = "None";
+        catch (err) {
+            reject(client.emit('commandFail', message, err));
         }
-        console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
-    }
+    });
 };
 
 exports.conf = {
-    enabled: true,
-    guildOnly: false,
+    guildOnly: true,
     aliases: [],
     disabled: false,
     permLevel: 1
@@ -38,7 +41,7 @@ exports.conf = {
 
 exports.help = {
     name: 'cry',
-    description: 'i cri everitim',
-    usage: 'cri',
+    description: 'cry someone',
+    usage: 'cry user resolvable',
     category: 'image'
 };

@@ -1,43 +1,52 @@
 const unirest = require("unirest");
 
 exports.run = async(client, message) => {
-    try {
+    return new Promise(async(resolve, reject) => {
+        try {
             fetch: {
-                await unirest.get("https://staging.weeb.sh/images/random?type=kiss")
-                .header(`Authorization`, `Bearer ${client.database.Data.global[0].wolkeImageKey}`)
-                .end(async function (result) {
-                    var mentionned = message.mentions.users.first();
+                await unirest.get("https://api.weeb.sh/images/random?type=kiss&filetype=gif")
+                .header(`Authorization`, `Bearer ${client.database.wolkeImageKey}`)
+                .end(async function(result) {
+                    var users = await client.getUserResolvable(message, {
+                        guildOnly: true
+                    });
+                    if (!result.body || !result.body.url) return resolve(await message.channel.send(":x: An error occured :v"));
                     var kissUrl = result.body.url;
-                    if (mentionned) {
-                        if (mentionned.id === message.author.id) {
-                            return await message.channel.send(":x: You cant kiss yourself .-.");
-                        }
-                        await message.channel.send("Hey **" + mentionned.username + "** You just received a kiss from **" + message.author.username + "** " + kissUrl);
+                    if (users.get(message.author.id)) users.delete(message.author.id); //Remove the author from the users 
+                    if (users.size > 0) {
+                        resolve(await message.channel.send({
+                            embed: {
+                                description: `Hey ${users.map(u => '**' + u.tag + '**').join(", ")}, you've just been kissed by **${message.author.tag}**`,
+                                image: {
+                                    url: kissUrl
+                                },
+                                footer: {
+                                    text: `Powered by https://weeb.sh/`
+                                }
+                            }
+                        }));
                     } else {
-                        await message.channel.send("Are you trying to kiss yourself? >_> " + kissUrl);
+                        resolve(await message.channel.send({
+                            embed: {
+                                image: {
+                                    url: kissUrl
+                                },
+                                footer: {
+                                    text: `Powered by https://weeb.sh/`
+                                }
+                            }
+                        }));
                     }
                 });
             }
-    } catch (err) {
-        var guild;
-        var detailledError; //that stuff is to avoid undefined logs
-        if (message.guild) {
-            guild = message.guild.name + "\n**Guild ID:** " + message.guild.id + "\n**Channel:** " + message.channel.name;
-        } else {
-            guild = "DM"
         }
-        if (err.stack) {
-            detailledError = err.stack;
-        } else {
-            detailledError = "None";
+        catch (err) {
+            reject(client.emit('commandFail', message, err));
         }
-        console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
-    }
+    });
 };
 
 exports.conf = {
-    enabled: true,
     guildOnly: true,
     aliases: [],
     disabled: false,
@@ -47,6 +56,6 @@ exports.conf = {
 exports.help = {
     name: 'kiss',
     description: 'kiss someone',
-    usage: 'kiss @someone',
+    usage: 'kiss user resolvable',
     category: 'image'
 };

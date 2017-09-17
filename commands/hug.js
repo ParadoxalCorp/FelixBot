@@ -1,50 +1,52 @@
 const unirest = require("unirest");
 
 exports.run = async(client, message) => {
-    try {
-        fetch: {
-            await unirest.get("https://staging.weeb.sh/images/random?type=hug")
-            .header(`Authorization`, `Bearer ${client.database.Data.global[0].wolkeImageKey}`)
-            .end(async function (result) {
-                var mentionned = message.mentions.users.first();
-                var hugUrl = result.body.url;
-                if (mentionned) {
-                    if (mentionned.id === message.author.id) {
-                        return await message.channel.send(":x: You cant hug yourself .-.");
-                    }
-                    var mentionnedPeoples;
-                    const mentions = message.mentions.users.array();
-                    mentions.forEach(function (mention) {
-                        mentionnedPeoples += mention.username + ", "
-                        mentionnedPeoples = mentionnedPeoples.replace(/undefined/gm, ""); //get rid of the undefined cuz i dont know where it come from
+    return new Promise(async(resolve, reject) => {
+        try {
+            fetch: {
+                await unirest.get("https://api.weeb.sh/images/random?type=hug&filetype=gif")
+                .header(`Authorization`, `Bearer ${client.database.wolkeImageKey}`)
+                .end(async function(result) {
+                    var users = await client.getUserResolvable(message, {
+                        guildOnly: true
                     });
-                    await message.channel.send("Hey **" + mentionnedPeoples + "** You just received a hug from **" + message.author.username + "** " + hugUrl);
-                } else {
-                    await message.channel.send("Are you trying to hug yourself? >_> " + hugUrl);
-                }
-            });
+                    if (!result.body || !result.body.url) return resolve(await message.channel.send(":x: An error occured :v"));
+                    var hugUrl = result.body.url;
+                    if (users.get(message.author.id)) users.delete(message.author.id); //Remove the author from the users 
+                    if (users.size > 0) {
+                        resolve(await message.channel.send({
+                            embed: {
+                                description: `Hey ${users.map(u => '**' + u.tag + '**').join(", ")}, you just received a hug from **${message.author.tag}**`,
+                                image: {
+                                    url: hugUrl
+                                },
+                                footer: {
+                                    text: `Powered by https://weeb.sh/`
+                                }
+                            }
+                        }));
+                    } else {
+                        resolve(await message.channel.send({
+                            embed: {
+                                image: {
+                                    url: hugUrl
+                                },
+                                footer: {
+                                    text: `Powered by https://weeb.sh/`
+                                }
+                            }
+                        }));
+                    }
+                });
+            }
         }
-    }
-    catch (err) {
-        var guild;
-        var detailledError; //that stuff is to avoid undefined logs
-        if (message.guild) {
-            guild = message.guild.name + "\n**Guild ID:** " + message.guild.id + "\n**Channel:** " + message.channel.name;
-        } else {
-            guild = "DM"
+        catch (err) {
+            reject(client.emit('commandFail', message, err));
         }
-        if (err.stack) {
-            detailledError = err.stack;
-        } else {
-            detailledError = "None";
-        }
-        console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
-    }
+    });
 };
 
 exports.conf = {
-    enabled: true,
     guildOnly: true,
     aliases: [],
     disabled: false,
@@ -54,6 +56,6 @@ exports.conf = {
 exports.help = {
     name: 'hug',
     description: 'hug someone',
-    usage: 'hug @someone',
+    usage: 'hug user resolvable',
     category: 'image'
 };

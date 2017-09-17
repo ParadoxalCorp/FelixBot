@@ -1,19 +1,18 @@
-const fs = require("fs-extra");
 exports.run = async(client, message) => {
-    try {
-        if (!client.clientDatas.get('changelogs')) {
-            const defaultChangelogs = {
-                changelogs: [],
-                version: client.database.Data.global[0].version,
-                lastUpdateDate: false
-            }
-            client.clientDatas.set('changelogs', defaultChangelogs);
-        }
-        const changelogs = client.clientDatas.get('changelogs');
-        if (changelogs.changelogs.length === 0) {
-            return await message.channel.send(":x: There's no changelogs to show :v");
-        }
+    return new Promise(async(resolve, reject) => {
         try {
+            if (!client.clientData.get('changelogs')) {
+                const defaultChangelogs = {
+                    changelogs: [],
+                    version: client.database.version,
+                    lastUpdateDate: false
+                }
+                client.clientData.set('changelogs', defaultChangelogs);
+            }
+            const changelogs = client.clientData.get('changelogs');
+            if (changelogs.changelogs.length === 0) {
+                return await message.channel.send(":x: There's no changelog to show :v");
+            }
             const interactiveMessage = await message.channel.send(`__**${changelogs.changelogs[0].type}: ${changelogs.changelogs[0].name}**__ (${changelogs.changelogs[0].date})\n\n${changelogs.changelogs[0].content}\n\n:book:  [Page 1/${changelogs.changelogs.length}] :gear: Latest release: ${changelogs.version}`);
             await interactiveMessage.react("⏪");
             await interactiveMessage.react("◀");
@@ -22,7 +21,7 @@ exports.run = async(client, message) => {
             await interactiveMessage.react("❌");
             var currentPage = 0; //Keep track of where we are in the array
             const collector = interactiveMessage.createReactionCollector((reaction, user) => user.id === message.author.id)
-            var timeout = setTimeout(function () {
+            var timeout = setTimeout(function() {
                 return interactiveMessage.delete();
             }, 120000);
             collector.on('collect', async(r) => {
@@ -58,36 +57,21 @@ exports.run = async(client, message) => {
                     }
                     await r.remove(message.author.id);
                 } else if (r.emoji.name === "❌") {
-                    return await interactiveMessage.delete();
+                    collector.stop('aborted');
+                    return resolve(interactiveMessage.delete());
                 }
-                timeout = setTimeout(function () {
-                    return interactiveMessage.delete();
+                timeout = setTimeout(function() {
+                    collector.stop('timeout');
+                    return resolve(interactiveMessage.delete());
                 }, 120000);
             });
         } catch (err) {
-            await message.channel.send(":x: An error occured :v");
-            return console.error(err);
+            reject(client.emit('commandFail', message, err));
         }
-    } catch (err) {
-        var guild;
-        var detailledError; //that stuff is to avoid undefined logs
-        if (message.guild) {
-            guild = message.guild.name + "\n**Guild ID:** " + message.guild.id + "\n**Channel:** " + message.channel.name;
-        } else {
-            guild = "DM"
-        }
-        if (err.stack) {
-            detailledError = err.stack;
-        } else {
-            detailledError = "None";
-        }
-        console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
-    }
+    });
 };
 
 exports.conf = {
-    enabled: true,
     guildOnly: true,
     aliases: [],
     disabled: false,
@@ -98,5 +82,5 @@ exports.help = {
     name: 'changelog',
     description: 'Display Felix\'s changelogs',
     usage: 'changelog',
-    category: 'miscellaneous'
+    category: 'misc'
 };

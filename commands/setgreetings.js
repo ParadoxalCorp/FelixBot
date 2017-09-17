@@ -1,80 +1,174 @@
-const fs = require("fs-extra");
-
 exports.run = async(client, message) => {
-    try {
-        const remove = client.searchForParameter(message, "remove");
-        const dm = client.searchForParameter(message, "dm", {aliases: ["-message", "-dm"], name: "dm"});
-        const channel = client.searchForParameter(message, "channel", {aliases: ["-channel", "-chan", "-c"], name: "channel"});
-        const guildEntry = client.guildDatas.get(message.guild.id);
-        if ((remove) && (!dm) && (!channel)) {
-            if (guildEntry.greetings === "") {
-                return await message.channel.send(":x: There is not any greetings message");
+    return new Promise(async(resolve, reject) => {
+        try {
+            const guildEntry = client.guildData.get(message.guild.id);
+            let args = message.content.split(/\s+/gim);
+            args.shift();
+            if (args[0] === "raw") { //---------------------------------Return raw message------------------------------------------
+                if (!guildEntry.onEvent.guildMemberAdd.greetings.message && !guildEntry.onEvent.guildMemberAdd.greetings.embed) return resolve(await message.channel.send(`:x: There's no greetings message set yet`));
+                return resolve(await message.channel.send('```\n' + (guildEntry.onEvent.guildMemberAdd.greetings.message || guildEntry.onEvent.guildMemberAdd.greetings.embed.embed.description) + "```"));
             }
-            guildEntry.greetings = "";
-            client.guildDatas.set(message.guild.id, guildEntry);
-            return await message.channel.send(":white_check_mark: Alright, i removed the greetings message");
-        } else if ((dm) && (!remove) && (!channel)) {
-            const greetings = message.content.substr(dm.position + dm.length + 1);
-            if (greetings === "") {
-                return await message.channel.send(":x: You cannot set the greetings to nothing");
+            //----------------------------------------------------Interactive message-----------------------------------------
+            let status = guildEntry.onEvent.guildMemberAdd.greetings.error || ':white_check_mark:';
+            let method = 'Disabled';
+            if (guildEntry.onEvent.guildMemberAdd.greetings.enabled && !guildEntry.onEvent.guildMemberAdd.greetings.channel) method = 'Direct message';
+            else {
+                if (guildEntry.onEvent.guildMemberAdd.greetings.enabled) {
+                    let greetingsChan = message.guild.channels.get(guildEntry.onEvent.guildMemberAdd.greetings.channel);
+                    if (greetingsChan) {
+                        method = "#" + greetingsChan.name;
+                    } else {
+                        method = "#deleted-channel"
+                    }
+                }
             }
-            guildEntry.greetings = greetings;
-            guildEntry.greetingsMethod = "dm";
-            client.guildDatas.set(message.guild.id, guildEntry);
-            return await message.channel.send(":white_check_mark: Alright, i updated the greetings");
-        } else if ((channel) && (!dm) && (!remove)) {
-            const greetings = message.content.substr(channel.position + channel.length + 1);
-            if (greetings === "") {
-                return await message.channel.send(":x: You cannot set the greetings to nothing");
+            let embedDescription = guildEntry.onEvent.guildMemberAdd.greetings.embed;
+            if (embedDescription) embedDescription = guildEntry.onEvent.guildMemberAdd.greetings.embed.embed.description;
+            let greetings = guildEntry.onEvent.guildMemberAdd.greetings.message || embedDescription || "Nothing here yet, react with :pencil: to start writing";
+            greetings = greetings.replace(/\%USER\%/gim, `<@${message.author.id}>`).replace(/\%USERNAME\%/gim, `${message.author.username}`).replace(/\%USERTAG%/gim, `${message.author.tag}`).replace(/\%GUILD\%/gim, `${message.guild.name}`);
+            const mainObject = function(status, method, greetings) {
+                return {
+                    embed: {
+                        title: ':inbox_tray: Greetings settings',
+                        description: `Status: ${status}\n\n**Welcome to the greetings settings, here's how to set the greetings:**\n:incoming_envelope: => Edit where Felix greets (channel or private message)\n:pencil: => Edit the content of the greetings\n:postbox: => Set the channel where Felix should send the greetings\n:white_check_mark: => Save changes\n:x: => Discard changes\n\n**To:** ${method}\n\n**Preview:**\n${greetings.substr(0, 1500)}`,
+                        footer: {
+                            text: `Time of inactivity before shutdown: 120 seconds`
+                        }
+                    }
+                }
             }
-            guildEntry.greetings = greetings;
-            guildEntry.greetingsMethod = "channel";
-            guildEntry.greetingsChan = message.channel.id;
-            client.guildDatas.set(message.guild.id, guildEntry);
-            return await message.channel.send(":white_check_mark: Alright, i updated the greetings");
-        } else if ((!channel) && (!remove) && (!dm)) {
-            if (guildEntry.greetings === "") {
-                return await message.channel.send(":x: There is not any greetings message");
+            const interactiveMessage = await message.channel.send(mainObject(status, method, greetings));
+            async function updateMainMessage() {
+                if (method !== "Direct message" && method !== "Disabled" && method !== "Edition enabled: You can write the channel name") {
+                    let greetingsChan = message.guild.channels.get(guildEntry.onEvent.guildMemberAdd.greetings.channel);
+                    if (greetingsChan) {
+                        method = "#" + greetingsChan.name;
+                    } else {
+                        method = "#deleted-channel"
+                    }
+                }
+                greetings = greetings.replace(/\%USER\%/gim, `<@${message.author.id}>`).replace(/\%USERNAME\%/gim, `${message.author.username}`).replace(/\%USERTAG%/gim, `${message.author.tag}`).replace(/\%GUILD\%/gim, `${message.guild.name}`);
+                await interactiveMessage.edit(mainObject(status, method, greetings));
             }
-            var greetingsMsg;
-            if (guildEntry.greetings.length > 1900) {
-                greetingsMsg = guildEntry.greetings.substr(0, 1900) + "..."; //Just in case the greetings takes too much characters
-            } else {
-                greetingsMsg = guildEntry.greetings;
+            const mainCollector = interactiveMessage.createReactionCollector((reaction, user) => user.id === message.author.id);
+            let mainReactions = ['📨', '📝', '📮', '✅', '❌'];
+            for (let i = 0; i < mainReactions.length; i++) {
+                await interactiveMessage.react(mainReactions[i]);
             }
-            return await message.channel.send("The current greetings message is: ```" + greetingsMsg + "```");
+            let timeout = setTimeout(function() { //
+                mainCollector.stop('timeout');
+            }, 120000);
+            //--------------------------------------------------------------------------On collector collect-------------------------------------
+            mainCollector.on('collect', async(r) => {
+                clearTimeout(timeout); //Reset timeout
+                if (r.emoji.name === mainReactions[0]) { //---------------------------Change method------------------------------------
+                    if (method === "Disabled") {
+                        guildEntry.onEvent.guildMemberAdd.greetings.enabled = true; //If disabled switch to dm
+                        guildEntry.onEvent.guildMemberAdd.greetings.dm = true;
+                        method = "Direct message";
+                    } else if (method === "Direct message") {
+                        if (!guildEntry.onEvent.guildMemberAdd.greetings.channel) { //If dm switch to channel
+                            guildEntry.onEvent.guildMemberAdd.greetings.channel = message.channel.id;
+                            guildEntry.onEvent.guildMemberAdd.greetings.dm = false;
+                            method = `#${message.channel.name}`;
+                        } else {
+                            method = guildEntry.onEvent.guildMemberAdd.greetings.channel;
+                            guildEntry.onEvent.guildMemberAdd.greetings.dm = false;
+                        }
+                    } else if (method !== "Disabled" && method !== "Direct message") { //Finally if channel switch to disabled
+                        guildEntry.onEvent.guildMemberAdd.greetings.enabled = false;
+                        method = "Disabled";
+                    }
+                    updateMainMessage();
+                } else if (r.emoji.name === mainReactions[1]) { //--------------------------------Change greetings------------------------------------
+                    greetings = 'Edition enabled: You can write the new greetings';
+                    updateMainMessage();
+                    try {
+                        const collected = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                            max: 1,
+                            time: 120000,
+                            errors: ["time"]
+                        });
+                        guildEntry.onEvent.guildMemberAdd.greetings.message = collected.first().content;
+                        greetings = collected.first().content;
+                        updateMainMessage();
+                        if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) await collected.first().delete();
+                    } catch (e) {
+                        mainCollector.stop('timeout');
+                    }
+                } else if (r.emoji.name === mainReactions[2]) { //-----------------------------------Set channel-----------------------------------------
+                    method = 'Edition enabled: You can write the channel name';
+                    updateMainMessage();
+                    try {
+                        const collected = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                            max: 1,
+                            time: 120000,
+                            errors: ["time"]
+                        });
+                        if (!message.guild.channels.find('name', collected.first().content.toLowerCase())) {
+                            guildEntry.onEvent.guildMemberAdd.greetings.enabled = false;
+                            method = "Disabled";
+                            let notFoundMessage = await message.channel.send(":x: Channel not found");
+                            notFoundMessage.delete(5000);
+                        } else {
+                            method = message.guild.channels.find('name', collected.first().content.toLowerCase()).id;
+                            guildEntry.onEvent.guildMemberAdd.greetings.channel = message.guild.channels.find('name', collected.first().content.toLowerCase()).id;
+                        }
+                        updateMainMessage();
+                        if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) await collected.first().delete();
+                    } catch (e) {
+                        mainCollector.stop('timeout');
+                    }
+                } else if (r.emoji.name === mainReactions[3]) { //-----------------------------------------Confirm-----------------------------------
+                    mainCollector.stop('confirmed');
+                } else if (r.emoji.name === mainReactions[4]) { //----------------------------------------Abort-----------------------------------------
+                    mainCollector.stop('aborted');
+                }
+                await r.remove(message.author.id); //Delete user reaction   
+                timeout = setTimeout(function() { //
+                    mainCollector.stop('timeout');
+                }, 120000);
+            });
+            //-------------------------------------------------------On collector end----------------------------------------------------------
+            mainCollector.on('end', async(collected, reason) => {
+                if (reason === "timeout") {
+                    await interactiveMessage.clearReactions();
+                    await interactiveMessage.edit({
+                        embed: {
+                            description: 'Timeout: Cancelling the process...'
+                        }
+                    });
+                    return resolve(await interactiveMessage.delete(5000));
+                } else if (reason === "aborted") {
+                    return resolve(await interactiveMessage.delete());
+                } else if (reason === "confirmed") {
+                    await interactiveMessage.clearReactions();
+                    client.guildData.set(message.guild.id, guildEntry);
+                    await interactiveMessage.edit({
+                        embed: {
+                            description: 'Changes saved :white_check_mark:'
+                        }
+                    });
+                    return resolve(await interactiveMessage.delete(5000));
+                }
+            });
+        } catch (err) {
+            reject(client.emit('commandFail', message, err));
         }
-    } catch (err) {
-        var guild;
-        var detailledError; //that stuff is to avoid undefined logs
-        if (message.guild) {
-            guild = message.guild.name + "\n**Guild ID:** " + message.guild.id + "\n**Channel:** " + message.channel.name;
-        } else {
-            guild = "DM"
-        }
-        if (err.stack) {
-            detailledError = err.stack;
-        } else {
-            detailledError = "None";
-        }
-        console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
-    }
-};
+    });
+}
 
 exports.conf = {
-    enabled: true,
-    guildOnly: true,
-    aliases: ["greetings"],
     disabled: false,
-    permLevel: 2
-};
-
+    aliases: ['greetings'],
+    permLevel: 2,
+    guildOnly: true
+}
 exports.help = {
     name: 'setgreetings',
-    parameters: '`-remove`, `-dm`, `-channel`',
-    description: 'Set the greetings message that Felix will send either in a channel or to the new member',
-    usage: 'setgreetings -dm Welcome to our server !',
+    parameters: '`raw`',
+    description: 'Set the greetings of the server',
+    usage: 'setgreetings',
     category: 'settings',
-    detailledUsage: '`{prefix}setgreetings -dm Welcome` Will send the message "Welcome" to every new members in their private messages\n`{prefix}setgreetings -channel Welcome` Will send the message "Welcome" to every new members in the channel you used the command\n`{prefix}setgreetings -remove` Will remove the greetings message.\nYou can use `{user}` and `{server}` to add the new member name and your server name in the message, so \n`{prefix}setgreetings -channel Welcome {user} to {server}`\n will look like: `Welcome @Baguette to Felix\'s lovers`\nYou can display the current greetings message by using `{prefix}setgreetings`'
+    detailledUsage: '\n**FLAGS**\n`%USER%` The user that joined the server, will look like `@Bobby`\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`\n\n`{prefix}setgreetings raw` Will return the raw message(without flags replaced) that has been set'
 };

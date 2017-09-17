@@ -1,180 +1,125 @@
-const moment = require('moment');
+const moment = require('moment'); //Needed for dates stuff
 
 exports.run = async(client, message) => {
-    try {
-        const memberavatar = message.author.avatarURL,
-            membername = message.author.username,
-            mentionned = message.mentions.users.first();
-        var embedFields = [],
-            getValueOf,
-            checkbot,
-            status;
-        if (mentionned) {
-            getValueOf = mentionned;
-        } else {
-            getValueOf = message.author;
-        }
-        const userEntry = client.userDatas.get(getValueOf.id),
-              guildEntry = client.guildDatas.get(message.guild.id);
-        embedFields.push({
-            name: ":bust_in_silhouette: Username",
-            value: getValueOf.username + "#" + getValueOf.discriminator,
-            inline: true
-        });
-        embedFields.push({
-            name: ":1234: User ID",
-            value: getValueOf.id,
-            inline: true
-        });
-        if (message.guild.member(getValueOf).nickname) {
-            embedFields.push({
-                name: ":busts_in_silhouette: Nickname",
-                value: message.guild.member(getValueOf).nickname,
-                inline: true
+    return new Promise(async(resolve, reject) => {
+        try {
+            const users = await client.getUserResolvable(message, {
+                guildOnly: true
             });
-        }
-        if (userEntry.expCount) {
-            const levelDetails = client.getLevelDetails(userEntry.level, userEntry.expCount);
-            embedFields.push({
-                name: ":star: Global experience",
-                value: "Level " + userEntry.level + "\nExp: " + Math.round(userEntry.expCount) + `\nLevel progress: ${(levelDetails.levelProgress)}`,
-                inline: true
-            });
-        }
-        if (guildEntry.levelSystem && guildEntry.levelSystem.enabled && guildEntry.levelSystem.users.filter(u => u.id === getValueOf.id).length !== 0) {
-            const userPos = guildEntry.levelSystem.users.findIndex(function (element) {
-                return element.id === getValueOf.id;
-            });
-            const levelDetails = client.getLevelDetails(guildEntry.levelSystem.users[userPos].level, guildEntry.levelSystem.users[userPos].expCount);            
-            embedFields.push({
-                name: ":star: Local experience",
-                value: "Level " + guildEntry.levelSystem.users[userPos].level + "\nExp: " + Math.round(guildEntry.levelSystem.users[userPos].expCount) + `\nLevel progress: ${(levelDetails.levelProgress)}`,
-                inline: true
-            });
-        }
-        if (message.guild.member(getValueOf).hoistRole) {
-            embedFields.push({
-                name: ":trident: Hoist role",
-                value: message.guild.member(getValueOf).hoistRole.name,
-                inline: true
-            });
-        }
-        if (message.guild.member(getValueOf).highestRole) {
-            embedFields.push({
-                name: ":arrow_up_small: Highest Role",
-                value: message.guild.member(getValueOf).highestRole.name,
-                inline: true
-            });
-        }
-        if (message.guild.member(getValueOf).displayHexColor) {
-            embedFields.push({
-                name: ":large_blue_diamond: HEX color",
-                value: message.guild.member(getValueOf).displayHexColor,
-                inline: true
-            });
-        }
-        if (getValueOf.bot == true) {
-             checkbot = ":white_check_mark:";
-        } else {
-             checkbot = ":x:";
-        }
-        embedFields.push({
-            name: ":desktop: Bot",
-            value: checkbot,
-            inline: true
-        });
-        if (getValueOf.presence.status == 'online') {
-             status = "Online";
-        } else {
-             status = "Offline";
-        }
-        if (getValueOf.presence.status === 'dnd') {
-             status = "Do Not Disturb";
-        } else if (getValueOf.presence.status === 'idle') {
-             status = "Idle";
-        }
-        embedFields.push({
-            name: ":red_circle: Status",
-            value: status,
-            inline: true
-        });
-        if (getValueOf.presence.game) {
-            embedFields.push({
-                name: ":video_game: Playing",
-                value: getValueOf.presence.game.name,
-                inline: true
-            });
-        }
-        embedFields.push({
-            name: ":date: Created",
-            value: moment().to(getValueOf.createdAt),
-            inline: true
-        });
-        embedFields.push({
-            name: ":date: Joined",
-            value: moment().to(message.guild.member(getValueOf).joinedAt),
-            inline: true
-        });
-        embedFields.push({
-            name: ":notepad_spiral: Roles",
-            value: message.guild.member(getValueOf).roles.size - 1, //Dont count the everyone role
-            inline: true
-        });
-        if (client.userDatas.get(getValueOf.id).lovePoints) {
-            embedFields.push({
-                name: ":heart: Love Points",
-                value: client.userDatas.get(getValueOf.id).lovePoints,
-                inline: true
-            });
-        }
-        return await message.channel.send({
-            embed: {
-                image: {
-                    url: getValueOf.avatarURL
-                },
-                color: 3447003,
-                author: {
-                    name: "Requested by: " + message.author.username + "#" + message.author.discriminator,
-                    icon_url: message.author.avatarURL
-                },
-                title: "User info",
-                fields: embedFields,
-                timestamp: new Date(),
-                footer: {
-                    icon_url: client.user.avatarURL,
-                    text: message.guild.name
-                }
+            let target = message.author;
+            if (users.size > 0) target = users.first();
+            const userEntry = client.userData.get(target.id) || client.defaultUserData(target.id);
+            const guildEntry = client.guildData.get(message.guild.id);
+            if (target.id !== message.author.id && !userEntry.dataPrivacy.publicProfile) return resolve(await message.channel.send(":x: Sorry but the profile of this user is private :v"));
+            let embedFields = [];
+            //Awesome code from Rem to make gifs great again
+            let avatar = target.avatar ? (target.avatar.startsWith('a_') ? `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.gif` : `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.webp`) : target.defaultAvatarURL;
+            avatar = avatar.replace(/[^a-zA-Z0-9_\-./:]/, '');
+            avatar += '?size=1024';
+            if (target.avatar.startsWith('a_')) {
+                avatar += '&f=.gif';
             }
-        }).catch(console.error);
-    } catch (err) {
-        var guild;
-        var detailledError; //that stuff is to avoid undefined logs
-        if (message.guild) {
-            guild = message.guild.name + "\n**Guild ID:** " + message.guild.id + "\n**Channel:** " + message.channel.name;
-        } else {
-            guild = "DM"
+            //----------------------------------------------------------------------------------
+            if (message.guild.member(target).nickname) {
+                embedFields.push({
+                    name: ":busts_in_silhouette: Nickname",
+                    value: message.guild.member(target).nickname,
+                    inline: true
+                });
+            }
+            if (userEntry.dataPrivacy.publicLevel || userEntry.id === message.author.id) {
+                const levelDetails = client.getLevelDetails(userEntry.experience.level, userEntry.experience.expCount);
+                embedFields.push({
+                    name: ":star: Global experience",
+                    value: "Level " + userEntry.experience.level + "\nExp: " + Math.round(userEntry.experience.expCount) + `\nLevel progress: ${(levelDetails.levelProgress)}`,
+                    inline: true
+                });
+            }
+            if (guildEntry.generalSettings.levelSystem.enabled && guildEntry.generalSettings.levelSystem.users.filter(u => u.id === target.id).length !== 0) {
+                const userPos = guildEntry.generalSettings.levelSystem.users.findIndex(function(element) {
+                    return element.id === target.id;
+                });
+                const levelDetails = client.getLevelDetails(guildEntry.generalSettings.levelSystem.users[userPos].level, guildEntry.generalSettings.levelSystem.users[userPos].expCount);
+                embedFields.push({
+                    name: ":star: Local experience",
+                    value: "Level " + guildEntry.generalSettings.levelSystem.users[userPos].level + "\nExp: " + Math.round(guildEntry.generalSettings.levelSystem.users[userPos].expCount) + `\nLevel progress: ${(levelDetails.levelProgress)}`,
+                    inline: true
+                });
+            }
+            if (message.guild.member(target).hoistRole) {
+                embedFields.push({
+                    name: ":mag: Hoist role",
+                    value: message.guild.member(target).hoistRole.name,
+                    inline: true
+                });
+            }
+            if (message.guild.member(target).highestRole) {
+                embedFields.push({
+                    name: ":arrow_up_small: Highest Role",
+                    value: message.guild.member(target).highestRole.name,
+                    inline: true
+                });
+            }
+            embedFields.push({
+                name: ":date: Created",
+                value: moment().to(target.createdAt),
+                inline: true
+            });
+            embedFields.push({
+                name: ":date: Joined",
+                value: moment().to(message.guild.member(target).joinedAt),
+                inline: true
+            });
+            embedFields.push({
+                name: ":notepad_spiral: Roles",
+                value: message.guild.member(target).roles.size - 1, //Dont count the everyone role
+                inline: true
+            });
+            if (message.guild.member(target).displayHexColor) {
+                embedFields.push({
+                    name: ":large_blue_diamond: HEX color",
+                    value: message.guild.member(target).displayHexColor,
+                    inline: true
+                });
+            }
+            if (userEntry.dataPrivacy.publicPoints || userEntry.id === message.author.id) {
+                embedFields.push({
+                    name: ":ribbon: Points",
+                    value: userEntry.generalSettings.points,
+                    inline: true
+                });
+            }
+            if (userEntry.dataPrivacy.publicLove || userEntry.id === message.author.id) {
+                embedFields.push({
+                    name: ":heart: Love points",
+                    value: userEntry.generalSettings.lovePoints,
+                    inline: true
+                });
+            }
+            resolve(await message.channel.send({
+                embed: {
+                    title: ':bust_in_silhouette: User info',
+                    fields: embedFields,
+                    timestamp: new Date(),
+                    image: {
+                        url: avatar
+                    }
+                }
+            }));
+        } catch (err) {
+            reject(client.emit('commandFail', message, err));
         }
-        if (err.stack) {
-            detailledError = err.stack;
-        } else {
-            detailledError = "None";
-        }
-        console.error("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Log to the console           
-        return await client.channels.get("328847359100321792").send("**Server**: " + guild + "\n**Author**: " + message.author.username + "#" + message.author.discriminator + "\n**Triggered Error**: " + err + "\n**Command**: " + client.commands.get(this.help.name).help.name + "\n**Message**: " + message.content + "\n**Detailled log:** " + detailledError); //Send a detailled error log to the #error-log channel of the support server
-    }
-};
-
+    });
+}
 exports.conf = {
-    enabled: true,
-    guildOnly: true,
-    aliases: ["userinfo", "profile"],
     disabled: false,
-    permLevel: 1
-};
-
+    aliases: ["profile"],
+    permLevel: 1,
+    guildOnly: true
+}
 exports.help = {
     name: 'uinfo',
-    description: 'Display some infos about a user',
-    usage: 'uinfo @someone',
+    description: 'Display some infos about a user or yourself',
+    usage: 'uinfo user resolvable',
     category: 'generic'
-};
+}
