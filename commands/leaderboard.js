@@ -10,7 +10,7 @@ exports.run = async(client, message) => {
             let loveLeaderboard = client.userData.filterArray(u => message.guild.members.has(JSON.parse(u).id)).sort(function(a, b) {
                 return JSON.parse(b).generalSettings.lovePoints - JSON.parse(a).generalSettings.lovePoints;
             });
-            let pointsLeaderboard = client.userData.filterArray(u => message.guild.members.has(JSON.parse(u).id)).sort(function(a, b) {
+            let pointsLeaderboard = client.userData.filterArray(u => message.guild.members.has(JSON.parse(u).id) && !message.guild.members.get(JSON.parse(u).id).bot).sort(function(a, b) {
                 return JSON.parse(b).generalSettings.points - JSON.parse(a).generalSettings.points;
             });
             let glbLeaderboard = client.userData.filterArray(u => JSON.parse(u).dataPrivacy.publicLevel && client.users.has(JSON.parse(u).id)).sort(function(a, b) {
@@ -71,7 +71,7 @@ exports.run = async(client, message) => {
                 embed: {
                     title: `${message.guild.name}'s points leaderboard`,
                     color: 3447003,
-                    description: pointsLeaderboard.slice(0, 10).map(u => `#${position(JSON.parse(u).id, pointsLeaderboard)} - **${message.guild.members.get(JSON.parse(u).id).user.tag}**\nLove points: ${JSON.parse(u).generalSettings.points}`).join("\n\n"),
+                    description: pointsLeaderboard.slice(0, 10).map(u => `#${position(JSON.parse(u).id, pointsLeaderboard)} - **${message.guild.members.get(JSON.parse(u).id).user.tag}**\nPoints: ${JSON.parse(u).generalSettings.points}`).join("\n\n"),
                     footer: {
                         text: `Your position: #${pointsLeaderboard.findIndex(function (element) {return JSON.parse(element).id === message.author.id}) + 1}/${pointsLeaderboard.length}`
                     },
@@ -110,7 +110,7 @@ exports.run = async(client, message) => {
                 embed: {
                     title: `Global points leaderboard`,
                     color: 3447003,
-                    description: glbPointsLeaderboard.slice(0, 10).map(u => `#${position(JSON.parse(u).id, glbPointsLeaderboard)} - **${client.users.get(JSON.parse(u).id).tag}**\nLove points: ${JSON.parse(u).generalSettings.points}`).join("\n\n"),
+                    description: glbPointsLeaderboard.slice(0, 10).map(u => `#${position(JSON.parse(u).id, glbPointsLeaderboard)} - **${client.users.get(JSON.parse(u).id).tag}**\nPoints: ${JSON.parse(u).generalSettings.points}`).join("\n\n"),
                     footer: {
                         text: `Your position: #${glbPointsLeaderboard.findIndex(function (element) {return JSON.parse(element).id === message.author.id}) + 1}/${glbPointsLeaderboard.length}`
                     },
