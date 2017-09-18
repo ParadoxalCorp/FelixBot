@@ -77,26 +77,25 @@ module.exports = async(client) => {
             }
         }, 1800000);
         //------------------------------------------------------------------------------------------
-        var upvoterText = "";
-        var confirmedUpvoters = [];
-        if (upvoters) {
-            upvoters.forEach(function(upvoter) { //Convert to usernames and remove users which "do not use Felix anymore"
-                var pos = upvoters.findIndex(function(element) {
-                    return element === upvoter;
+        let upvoterText = "";
+        let confirmedUpvoters = [];
+        setTimeout(function() {
+            if (upvoters) {
+                upvoters.filter(u => client.users.has(u) && client.userData.has(u) && client.userData.get(u).dataPrivacy.publicUpvote).forEach(function(upvoter) { //Convert to usernames and filter users which either do not use Felix anymore or set their upvote to private
+                    confirmedUpvoters.push(client.users.get(upvoter).tag);
                 });
-                var user = client.users.get(upvoter);
-                if (user) {
-                    confirmedUpvoters.push(client.users.get(upvoter).username + "#" + client.users.get(upvoter).discriminator);
-                }
-            });
-            upvoterText = `with ${confirmedUpvoters[getRandomNumber(confirmedUpvoters.length - 1, 0)]} |`
-        }
+                upvoterText = `with ${confirmedUpvoters[getRandomNumber(confirmedUpvoters.length - 1, 0)]} |`
+            }
+        }, 1500); //wait db load
         setTimeout(function() {
             client.user.setPresence({ game: { name: `${upvoterText} ${client.database.prefix}help for commands | On ${client.guilds.size} servers`, type: 0 } });
-        }, 1000); //Wait db load
+        }, 2000); //Wait db load
         setInterval(function() {
-            if (upvoters) { //Regenerate random number
-                var random = getRandomNumber(confirmedUpvoters.length - 1, 0);
+            confirmedUpvoters = [];
+            if (client.upvotes.users) { //Regenerate random number
+                client.upvotes.users.filter(u => client.users.get(u) && client.userData.has(u) && client.userData.get(u).dataPrivacy.publicUpvote).forEach(function(upvoter) { //Convert to usernames and filter users which either do not use Felix anymore or set their upvote to private
+                    confirmedUpvoters.push(client.users.get(upvoter).tag);
+                });
                 upvoterText = `with ${confirmedUpvoters[getRandomNumber(confirmedUpvoters.length - 1, 0)]} |`
             }
             client.user.setPresence({ game: { name: `${upvoterText} ${client.database.prefix}help for commands | On ${client.guilds.size} servers`, type: 0 } });

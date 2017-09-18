@@ -138,7 +138,8 @@ client.defaultUserData = function(id) {
             publicLevel: true,
             publicProfile: true,
             publicLove: true,
-            publicPoints: true
+            publicPoints: true,
+            publicUpvote: true
         }
     }
 }
@@ -155,8 +156,7 @@ client.defaultGuildData = function(id) {
                 public: true,
                 levelUpNotif: false,
                 roles: [],
-                users: [],
-                totalExp: 0
+                users: []
             },
         },
         permissionsLevels: {
