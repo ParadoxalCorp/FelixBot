@@ -18,6 +18,7 @@ exports.run = async(client, message) => {
                 title.question.delete();
                 return resolve(await message.channel.send(":x: timeout: command aborted"));
             }
+            if (title.reply.content.trim() === "abort") return resolve(await message.channel.send(":x: Command aborted"));
             if (title.reply.content.trim() !== 'none') embedObject.title = title.reply.content.substr(0, 256);
             await title.question.delete();
             if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) title.reply.delete();
@@ -30,6 +31,7 @@ exports.run = async(client, message) => {
                 title.question.delete();
                 return resolve(await message.channel.send(":x: timeout: command aborted"));
             }
+            if (userColor.reply.content.trim() === "abort") return resolve(await message.channel.send(":x: Command aborted"));
             await userColor.question.delete();
             if (userColor.reply.content.trim() === "red") embedObject.color = 0xff0000;
             else if (userColor.reply.content.trim() === "orange") embedObject.color = 0xff6600;
@@ -47,6 +49,7 @@ exports.run = async(client, message) => {
                 content.question.delete();
                 return resolve(await message.channel.send(":x: timeout: command aborted"));
             }
+            if (content.reply.content.trim() === "abort") return resolve(await message.channel.send(":x: Command aborted"));
             embedObject.description = content.reply.content;
             await content.question.delete();
             if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) content.reply.delete();
@@ -60,7 +63,8 @@ exports.run = async(client, message) => {
                 mention.question.delete();
                 return resolve(await message.channel.send(':x: timeout: command aborted'));
             }
-            if (mention.reply.content.trim() === ('here' || 'everyone')) announcementMention = `@${mention.reply.content.trim()}`;
+            if (mention.reply.content.trim() === "abort") return resolve(await message.channel.send(":x: Command aborted"));
+            if (mention.reply.content.trim() === 'here' || mention.reply.content.trim() === 'everyone') announcementMention = `@${mention.reply.content.trim()}`;
             mention.question.delete();
             if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) mention.reply.delete();
             await message.channel.send("Alright, your announcement will looks like that");
