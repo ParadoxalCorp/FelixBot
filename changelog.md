@@ -1,3 +1,12 @@
+# Update 2.1.0 Changelog
+## New commands/improvements
+* Added `transfer`
+* Added back `urban`, `animeseason`, `npm`, `mdn` and `invite`
+
+## Bugs fixes
+* Fixed the pageResults() module and all its dependents
+* Fixed love not working correctly when using an id as user resolvable
+
 # Update 2.0.2 Changelog
 
 ## New commands
