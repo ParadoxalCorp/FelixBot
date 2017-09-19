@@ -28,9 +28,7 @@ module.exports = async(client, message) => {
                 });
                 client.guildData.set(message.guild.id, guildEntry);
             }
-            const userPos = guildEntry.generalSettings.levelSystem.users.findIndex(function(element) {
-                return element.id === message.author.id;
-            });
+            const userPos = guildEntry.generalSettings.levelSystem.users.findIndex(u => u.id === message.author.id);
             const curLevel = getCurrentLevel(guildEntry.generalSettings.levelSystem.users[userPos].level, guildEntry.generalSettings.levelSystem.users[userPos].expCount + expGain);
             if (curLevel > guildEntry.generalSettings.levelSystem.users[userPos].level) {
                 guildEntry.generalSettings.levelSystem.users[userPos].level = curLevel;
@@ -63,15 +61,7 @@ module.exports = async(client, message) => {
                     }
                 }
             }
-            guildEntry.generalSettings.levelSystem.totalExp = expGain;
-            client.guildData.set(message.guild.id, guildEntry);
-
             guildEntry.generalSettings.levelSystem.users[userPos].expCount = guildEntry.generalSettings.levelSystem.users[userPos].expCount + expGain;
-            let totalExp = 0;
-            guildEntry.generalSettings.levelSystem.users.forEach(function(user) {
-                totalExp = totalExp + user.expCount;
-            });
-            guildEntry.generalSettings.levelSystem.totalExp = totalExp;
             client.guildData.set(message.guild.id, guildEntry);
         }
     }

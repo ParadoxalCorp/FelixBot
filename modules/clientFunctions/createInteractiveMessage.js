@@ -15,7 +15,7 @@ module.exports = async(client, message) => {
             const interactiveMessage = await message.channel.send({
                 embed: {
                     title: params.title || ':gear: List',
-                    description: params.description + "\n\n```\n" + params.content[0].join("\n") + "```",
+                    description: params.description + "\n\n```\n" + params.content[0][0].join("\n") + "```",
                     footer: {
                         text: `Showing page 1/${params.content.length} | Inactivity time limit: ${limit / 1000} seconds`
                     }
@@ -25,7 +25,7 @@ module.exports = async(client, message) => {
                 interactiveMessage.edit({
                     embed: {
                         title: params.title || ':gear: List',
-                        description: params.description + "\n\n```\n" + params.content[page].join("\n") + "```",
+                        description: params.description + "\n\n```\n" + params.content[page][0].join("\n") + "```",
                         footer: {
                             text: `Showing page ${page + 1}/${params.content.length} | Inactivity time limit: ${limit / 1000} seconds`
                         }

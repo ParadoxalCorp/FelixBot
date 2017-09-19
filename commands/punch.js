@@ -3,7 +3,7 @@ const unirest = require("unirest");
 exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
-            let punchLinks = ['https://imgur.com/wuAdVR7', 'https://imgur.com/VkBZ2z4', 'https://imgur.com/hBgl9as', 'https://imgur.com/AObIGqV', 'https://imgur.com/HHdbvDh', 'https://imgur.com/zKxUzOG', 'https://imgur.com/CvjCIQN', 'https://imgur.com/u7SzkEY', 'https://imgur.com/Ht0IVA9', 'https://imgur.com/LJYvAKa', 'https://imgur.com/j0xliMY', 'https://imgur.com/qzJXFW8', 'https://imgur.com/pZqIoJc', 'https://imgur.com/QVPPvkV', 'https://imgur.com/WC0aLio', 'https://imgur.com/tSf7Q9f', 'https://imgur.com/xU6OkEl', 'https://imgur.com/DNkVySg', 'https://imgur.com/ctHoTwl']
+            let punchLinks = ['https://imgur.com/j6YGjQ5', 'https://imgur.com/wuAdVR7', 'https://imgur.com/VkBZ2z4', 'https://imgur.com/hBgl9as', 'https://imgur.com/AObIGqV', 'https://imgur.com/HHdbvDh', 'https://imgur.com/zKxUzOG', 'https://imgur.com/CvjCIQN', 'https://imgur.com/u7SzkEY', 'https://imgur.com/Ht0IVA9', 'https://imgur.com/LJYvAKa', 'https://imgur.com/j0xliMY', 'https://imgur.com/qzJXFW8', 'https://imgur.com/pZqIoJc', 'https://imgur.com/QVPPvkV', 'https://imgur.com/WC0aLio', 'https://imgur.com/tSf7Q9f', 'https://imgur.com/xU6OkEl', 'https://imgur.com/DNkVySg', 'https://imgur.com/ctHoTwl']
             var users = await client.getUserResolvable(message, {
                 guildOnly: true
             });

@@ -2,11 +2,12 @@ exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
             let userEntry = client.userData.get(message.author.id);
-            let possibleActions = ['[1] - Global level & experience privacy: Public', '[2] - Profile privacy: Public', '[3] - Love points privacy: Public', '[4] - Points privacy: Public', '[5] - Reset global experience', '[6] - Reset all account data'];
+            let possibleActions = ['[1] - Global level & experience privacy: Public', '[2] - Profile privacy: Public', '[3] - Love points privacy: Public', '[4] - Points privacy: Public', '[5] - Upvote privacy: Public', '[5] - Reset global experience', '[6] - Reset all account data'];
             if (!userEntry.dataPrivacy.publicLevel) possibleActions[0] = '[1] - Global level & experience privacy: Private';
             if (!userEntry.dataPrivacy.publicProfile) possibleActions[1] = '[2] - Profile privacy: Private. Warning: Private means nobody can get your profile with the uinfo command';
             if (!userEntry.dataPrivacy.publicLove) possibleActions[2] = '[3] - Love points privacy: Private';
             if (!userEntry.dataPrivacy.publicPoints) possibleActions[3] = '[4] - Points privacy: Private';
+            if (!userEntry.dataPrivacy.publicUpvote) possibleActions[4] = '[5] - Upvote privacy: Private';
             let numberReactions = ["1⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣"];
             let mainObject = function(actions) {
                 return {
@@ -67,11 +68,20 @@ exports.run = async(client, message) => {
                         possibleActions[3] = '[4] - Points privacy: Public';
                     }
                     await interactiveMessage.edit(mainObject(possibleActions));
-                } else if (r.emoji.name === numberReactions[4]) { //Reset experience
+                } else if (r.emoji.name === numberReactions[4]) { //5 - Change points privacy
+                    if (userEntry.dataPrivacy.publicUpvote) {
+                        userEntry.dataPrivacy.publicUpvote = false;
+                        possibleActions[4] = '[5] - Upvote privacy: Private';
+                    } else {
+                        userEntry.dataPrivacy.publicUpvote = true;
+                        possibleActions[4] = '[5] - Upvote privacy: Public';
+                    }
+                    await interactiveMessage.edit(mainObject(possibleActions));
+                } else if (r.emoji.name === numberReactions[5]) { //Reset experience
                     userEntry.experience = client.defaultUserData(message.author.id).experience; //reset experience
                     possibleActions[4] = '[5] - Warning: Confirming will wipe out your global level and experience';
                     await interactiveMessage.edit(mainObject(possibleActions));
-                } else if (r.emoji.name === numberReactions[5]) {
+                } else if (r.emoji.name === numberReactions[6]) {
                     userEntry = client.defaultUserData(message.author.id);
                     possibleActions[5] = '[6] - Warning: Confirming will wipe out all your data, including your love points, points, experience...';
                     await interactiveMessage.edit(mainObject(possibleActions));
