@@ -45,7 +45,7 @@ exports.run = async(client, message) => {
                 return {
                     embed: {
                         title: ':gear: Self-assignables roles settings',
-                        description: `Use the arrows to navigate through the roles list, you can use :heavy_plus_sign: to start typing the name of a role to add or :wastebasket: to remove one, you can end this command at any moment with :x:.\nNote: You can't add more than 5 roles to the list\n\n**Mode:** ${mode}\n\nSeems like there is not any roles in the list yet, start by adding one with :heavy_plus_sign: !`,
+                        description: `Use the arrows to navigate through the roles list, you can use :heavy_plus_sign: to start typing the name of a role to add or :wastebasket: to remove one, you can end this command at any moment with :x:.\n\n**Mode:** ${mode}\n\nSeems like there is not any roles in the list yet, start by adding one with :heavy_plus_sign: !`,
                     }
                 }
             }

@@ -11,7 +11,7 @@ exports.run = async(client, message) => {
                 guildEntry.generalSettings.autoAssignablesRoles.forEach(function(r) {
                     roleList.push(message.guild.roles.get(r).name);
                 });
-                const paginatedRoleList = await client.pageResults(message, {
+                const paginatedRoleList = await client.pageResults({
                     results: roleList
                 });
                 await client.createInteractiveMessage(message, {

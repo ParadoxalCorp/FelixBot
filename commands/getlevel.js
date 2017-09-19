@@ -220,7 +220,7 @@ exports.run = async(client, message) => {
                     list.push(`Server level: ${guildEntry.permissionsLevels.globalLevel}`);
                 }
                 guildLevel = guildEntry.permissionsLevels.globalLevel;
-                const resultsPage = await client.pageResults(message, {
+                const resultsPage = await client.pageResults({
                     results: list
                 });
                 return resolve(await client.createInteractiveMessage(message, {

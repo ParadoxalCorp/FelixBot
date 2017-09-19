@@ -46,7 +46,7 @@ exports.run = async(client, message) => {
                 return resolve(await message.channel.send(`:x: You do not have enough love points to do that D:, you currently have ${getRemainingLps()} love point(s)`));
             } else if (users.size === 1) { //----------------------------------Love a user------------------------------------------------
                 if (users.first().id === message.author.id) return resolve(await message.channel.send(":x: Are you trying to love yourself? At least love me instead if you dont know who to love  (╯°□°）╯︵ ┻━┻"));
-                let lpCount = message.content.split(/\s+/gim).filter(a => !isNaN(a)).toString();
+                let lpCount = message.content.split(/\s+/gim).filter(a => !isNaN(a) && a !== users.first().id).toString();
                 if (lpCount.length === 0) lpCount = 1;
                 let remainingLps = getRemainingLps();
                 if (!remainingLps) {

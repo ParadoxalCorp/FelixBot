@@ -7,11 +7,8 @@ exports.run = async(client, message) => {
             guildEntry.generalSettings.autoAssignablesRoles = guildEntry.generalSettings.autoAssignablesRoles.filter(r => message.guild.roles.get(r)); //Filter deleted roles
             if (args.length < 1) {
                 if (guildEntry.generalSettings.autoAssignablesRoles.length < 1) return resolve(await message.channel.send(":x: There is no self-assignable role set on this server"));
-                let roleList = [];
-                guildEntry.generalSettings.autoAssignablesRoles.forEach(function(r) {
-                    roleList.push(message.guild.roles.get(r).name);
-                });
-                const paginatedRoleList = await client.pageResults(message, {
+                let roleList = guildEntry.generalSettings.autoAssignablesRoles.filter(r => message.guild.roles.has(r)).map(r => message.guild.roles.get(r).name);
+                const paginatedRoleList = await client.pageResults({
                     results: roleList
                 });
                 await client.createInteractiveMessage(message, {
