@@ -171,9 +171,7 @@ exports.conf = {
 
 exports.help = {
     name: 'animeseason',
-    parameters: "`-year`, `-season`, `-genre`, `-type`",
     description: 'Get the animes for the specified season',
-    usage: 'animeseason -season winter',
+    usage: 'animeseason',
     category: 'utility',
-    detailledUsage: "All parameters are optional and they all can be combined, a few examples: \n`{prefix}animeseason` Will return a list of this season planned anime with the type tv\n`{prefix}animeseason -year 2016 -season winter -genre Drama -type Movies` Will return a list of drama animes movies aired during winter 2016\n-**Types:** `tv`, `movies` `ovas`\n-**Genres:** A list of all usable genres here: <https://www.livechart.me/preferences>"
 };
