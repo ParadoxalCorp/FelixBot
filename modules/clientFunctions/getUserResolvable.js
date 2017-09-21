@@ -1,70 +1,91 @@
 const Discord = require("discord.js");
 module.exports = async(client, message) => {
     /**
-     * @param {Object} message The message object that triggered the command
-     * @param {Object} options The options object
-     * @param {boolean} options.guildOnly Whether or not the search should be restricted to this guild
-     * @returns {Collection<userId, User>}
+     * Get the users resolvable of a message.
+     * @param {Object} [message] The message object in which the search should be executed
+     * @param {Object} [options] The options to provide
+     * @param {Number} [options.charLimit] The needed characters for a word to be considered as user resolvable
+     * @param {boolean} [options.guildOnly] Whether or not the resolve attempt should be limited to the guild members
+     * @param {boolean} [options.shift] Whether or not the first word should be removed
+     * @returns {Promise<Collection<id, User>>}
+     * @example
+     * // Get the users of a message
+     * message.getUserResolvable()
+     *   .then(collection => console.log(`Resolved ${collection.size} users`))
+     *   .catch(console.error);
      */
     function getUserResolvable(message, options) {
         return new Promise(async(resolve, reject) => {
             if (!message.content) {
                 return reject("The message content must be provided !");
             }
-            var potentialUserResolvables = message.content.split(/\s+/gim);
-            potentialUserResolvables.shift();
+            if (!options) var options = {
+                guildOnly: true
+            };
+            let potentialUserResolvables = message.content.split(/\s+/gim).filter(c => c.length >= (options.charLimit || 3));
+            if (options.shift) potentialUserResolvables.shift();
             const usersResolved = new Discord.Collection();
-            var matchedByPartial = false;
-            if (options && options.guildOnly) { //Only the provided guild members
+            let matchedByPartial = false;
+            if (options.guildOnly) { //Only the provided guild members
                 for (let i = 0; i < potentialUserResolvables.length; i++) {
                     //------------------Resolve by ID--------------------
-                    if (potentialUserResolvables[i].length >= 3) {
-                        if (!isNaN(potentialUserResolvables[i])) {
-                            if (message.guild.members.get(potentialUserResolvables[i])) {
-                                usersResolved.set(message.guild.members.get(potentialUserResolvables[i]).id, message.guild.members.get(potentialUserResolvables[i]).user);
-                            }
+                    if (!isNaN(potentialUserResolvables[i])) {
+                        if (message.guild.members.get(potentialUserResolvables[i])) {
+                            usersResolved.set(message.guild.members.get(potentialUserResolvables[i]).id, message.guild.members.get(potentialUserResolvables[i]).user);
                         }
-                        //------------------Resolve by whole name--------------
-                        let filterByWholeName = message.guild.members.filter(u => u.user.username === potentialUserResolvables[i]);
-                        if (filterByWholeName.size > 0) {
-                            usersResolved.set(filterByWholeName.first().id, filterByWholeName.first().user);
-                        } else {
-                            //-----------------Resolve by case-insensitive name or nickname-----------------------------------
-                            let filterUsers = message.guild.members.filter(u => u.user.username.toLowerCase() === potentialUserResolvables[i].toLowerCase() || (u.nickname && u.nickname.toLowerCase() === potentialUserResolvables[i].toLowerCase()));
-                            if (filterUsers.size > 0) {
-                                usersResolved.set(filterUsers.first().id, filterUsers.first().user);
+                    }
+                    //------------------Resolve by whole name--------------
+                    let filterByWholeName = message.guild.members.filter(u => u.user.username === potentialUserResolvables[i]);
+                    if (filterByWholeName.size > 0) {
+                        usersResolved.set(filterByWholeName.first().id, filterByWholeName.first().user);
+                    } else {
+                        //-----------------Resolve by case-insensitive name or nickname-----------------------------------
+                        let filterUsers = message.guild.members.filter(u => u.user.username.toLowerCase() === potentialUserResolvables[i].toLowerCase() || (u.nickname && u.nickname.toLowerCase() === potentialUserResolvables[i].toLowerCase()));
+                        if (filterUsers.size > 1) {
+                            let i = 1;
+                            filterUsers = Array.from(filterUsers.values());
+                            const selectedUser = await client.awaitReply({
+                                message: message,
+                                limit: 30000,
+                                title: ":mag: User search",
+                                question: "Multiple users found, select one by typing a number ```\n" + filterUsers.map(u => `[${i++}] ${u.user.tag}`).join("\n") + "```"
+                            });
+                            if (!selectedUser.reply || isNaN(selectedUser.reply.content) || Math.round(selectedUser.reply.content) > filterUsers.length || selectedUser.reply.content < 1) {
+                                await selectedUser.question.delete();
+                                if (selectedUser.reply && message.deletable) await selectedUser.reply.delete();
                             } else {
-                                //----------------Resolve by partial case-insensitive name or nickname-------------------------
-                                let filterByPartial = message.guild.members.filter(u => u.user.username.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) || (u.nickname && u.nickname.toLowerCase().includes(potentialUserResolvables[i].toLowerCase())));
-                                if (filterByPartial.size > 0) {
-                                    let userObject = filterByPartial.first().user;
-                                    if (!matchedByPartial || !matchedByPartial.username.toLowerCase().includes(userObject.username)) {
-                                        if (filterByPartial.size > 1) {
-                                            let filteredArray = Array.from(filterByPartial.values());
-                                            let c = 1;
-                                            const selectedUser = await client.awaitReply({
-                                                message: message,
-                                                limit: 30000,
-                                                title: ":mag: User search",
-                                                question: "Multiple users found, select one by typing a number ```\n" + filteredArray.map(u => `[${c++}] ${u.user.tag}`).join("\n") + "```"
-                                            });
-                                            if (!selectedUser.reply || isNaN(selectedUser.reply.content) || selectedUser.reply.content > filteredArray.length || selectedUser.reply.content < 1) {
-                                                await selectedUser.question.delete();
-                                                if (selectedUser.reply && message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) {
-                                                    await selectedUser.reply.delete();
-                                                }
-                                            } else {
-                                                userObject = filteredArray[selectedUser.reply.content - 1].user;
-                                                await selectedUser.question.delete();
-                                                if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) {
-                                                    await selectedUser.reply.delete();
-                                                }
-                                            }
+                                usersResolved.set(filterUsers[Math.round(selectedUser.reply.content - 1)].id, filterUsers[Math.round(selectedUser.reply.content - 1)].user);
+                                await selectedUser.question.delete();
+                                if (message.deletable) await selectedUser.reply.delete();
+                            }
+                        } else if (filterUsers.size === 1) usersResolved.set(filterUsers.first().id, filterUsers.first().user);
+                        else {
+                            //----------------Resolve by partial case-insensitive name or nickname-------------------------
+                            let filterByPartial = message.guild.members.filter(u => u.user.username.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) || (u.nickname && u.nickname.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()))).filter(m => !usersResolved.has(m.id));
+                            if (filterByPartial.size > 0) {
+                                let userObject = filterByPartial.first().user;
+                                if (!matchedByPartial || !matchedByPartial.username.toLowerCase().includes(userObject.username)) {
+                                    if (filterByPartial.size > 1) {
+                                        let filteredArray = Array.from(filterByPartial.values());
+                                        let c = 1;
+                                        const selectedUser = await client.awaitReply({
+                                            message: message,
+                                            limit: 30000,
+                                            title: ":mag: User search",
+                                            question: "Multiple users found, select one by typing a number ```\n" + filteredArray.map(u => `[${c++}] ${u.user.tag}`).join("\n") + "```"
+                                        });
+                                        if (!selectedUser.reply || isNaN(selectedUser.reply.content) || Math.round(selectedUser.reply.content) > filteredArray.length || selectedUser.reply.content < 1) {
+                                            await selectedUser.question.delete();
+                                            if (selectedUser.reply && message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) await selectedUser.reply.delete();
+                                        } else {
+                                            userObject = filteredArray[Math.round(selectedUser.reply.content - 1)].user;
+                                            await selectedUser.question.delete();
+                                            if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) await selectedUser.reply.delete();
                                         }
                                     }
-                                    matchedByPartial = userObject;
-                                    usersResolved.set(userObject.id, userObject);
                                 }
+                                matchedByPartial = userObject;
+                                usersResolved.set(userObject.id, userObject);
                             }
                         }
                     }
@@ -99,11 +120,7 @@ module.exports = async(client, message) => {
                 });
             }
             //--------------Finally, resolve by mentions--------------------
-            if (message.mentions.users.first()) {
-                message.mentions.users.forEach(function(mentionned) {
-                    return usersResolved.set(mentionned.id, mentionned);
-                });
-            }
+            if (message.mentions.users.first()) message.mentions.users.forEach(m => usersResolved.set(m.id, m));
             resolve(usersResolved);
         });
     }

@@ -16,7 +16,7 @@ exports.run = async(client, message) => {
                     if (users.size > 0) {
                         resolve(await message.channel.send({
                             embed: {
-                                description: `Hey ${users.map(u => '**' + u.tag + '**').join(", ")}, you've just been cuddled **${message.author.tag}**`,
+                                description: `Hey ${users.map(u => '**' + u.tag + '**').join(", ")}, you've just been cuddled by **${message.author.tag}**`,
                                 image: {
                                     url: cuddleUrl
                                 },

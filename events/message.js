@@ -9,7 +9,7 @@ module.exports = async(client, message) => {
     const mentionned = message.mentions.users.first(); //--Afk feature--
     if (mentionned) {
         if (client.userData.get(mentionned.id)) {
-            if (client.userData.get(mentionned.id).generalSettings.afk !== false) { //If the mentionned user hasnt set any afk status, do nothing
+            if (client.userData.get(mentionned.id).generalSettings.afk !== false) { //If the mentionned user hasn't set any afk status, do nothing
                 await message.channel.send({
                     embed: ({
                         color: 3447003,
@@ -35,14 +35,6 @@ module.exports = async(client, message) => {
             client.Raven.captureException(err);
         }
         const guildEntry = client.guildData.get(message.guild.id);
-        if (message.content.startsWith(guildEntry.generalSettings.prefix + "t ")) {
-            try {
-                return require("../handlers/tagHandler.js")(client, message);
-            } catch (err) {
-                console.error(err);
-                return client.Raven.captureException(err);
-            }
-        }
         require("../handlers/expHandler.js")(client, message);
         if (message.content.startsWith(`<@${client.user.id}>`) || message.content.startsWith(`<@!${client.user.id}>`)) { //Stuff like @Felix prefix            
             var args = message.content.split(/\s+/gim);
