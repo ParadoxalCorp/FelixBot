@@ -1,3 +1,23 @@
+# Update 2.2.0 Changelog
+## Improvements
+* `slots` now is a bit kinder when you lose, there is less chances to lose more than what you gambled
+* `t`is now a command, still only run tags, but now as a help, i guess *shrug*
+* Now if you edit your last message to a command, like if you made a typo, it will work owo
+
+## Fixes
+* Fixed `animeseason` not updating the list directly after a new search
+* Fixed some grammar
+
+## Backend breaking changes
+* Moved `malsearch.js` to the new `modules` folder inside the `modules` folder *modulesception*
+* Deleted `tagHandler.js` since the `t` command replace it
+* Added `logger.js` by `Aetheryx#2222` to the custom modules
+* Improved `getUserResolvable.js`, search is now smarter, however, global search still shouldn't be used atm
+* Removed logs to the console in `loadReminders.js` and `updateDatabase.js`
+* Added the event `messageUpdate.js` which emit a new message event if the edited message is the latest of the user
+* Added draft logs to the `ready.js` event
+* Added a custom modules loader and draft logs in the core
+
 # Update 2.1.0 Changelog
 ## New commands/improvements
 * Added `transfer`
