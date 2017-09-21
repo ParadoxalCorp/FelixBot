@@ -24,7 +24,6 @@
         "mal-scraper": "^1.4.1",
         "moment": "^2.17.1",
         "node-gyp": "^3.6.2",
-        "node-wit": "^4.3.0",
         "npm-module-search": "^2.0.0",
         "popura": "^1.2.5",
         "rapidapi-connect": "0.0.4",
