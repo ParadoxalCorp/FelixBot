@@ -134,7 +134,11 @@ exports.run = async(client, message) => {
                 } else if (r.emoji.name === "🔍") { //Launch search
                     page = 0;
                     currentPeriod = await client.getSeason(newConfig.year, newConfig.season);
-                    currentConfig = newConfig;
+                    currentConfig.season = newConfig.season;
+                    currentConfig.year = newConfig.year;
+                    paginatedResults = await client.pageResults({
+                        results: currentPeriod.info.TV
+                    });
                     await interactiveMessage.edit(mainObject(currentPeriod));
                 } else if (r.emoji.name === "◀") { //Move to previous page
                     if (page === 0) page = paginatedResults.length - 1;

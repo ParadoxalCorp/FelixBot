@@ -33,24 +33,24 @@ exports.run = async(client, message) => {
                     multiplier: 3,
                     name: ":gem:"
                 }, {
-                    multiplier: -2,
+                    multiplier: -1,
                     name: ":money_with_wings:"
                 }, {
-                    multiplier: -2,
+                    multiplier: -1,
                     name: ":bomb:"
                 }, {
-                    multiplier: -2,
+                    multiplier: -1,
                     name: ":space_invader:"
                 }, {
-                    multiplier: -2,
+                    multiplier: -1,
                     name: ":gun:"
                 }, {
-                    multiplier: -3,
+                    multiplier: -2,
                     name: ":coffin:"
                 }];
-                var firstResult = slotsOutputs[getRandomNumber(0, slotsOutputs.length)],
-                    secondResult = slotsOutputs[getRandomNumber(0, slotsOutputs.length)],
-                    thirdResult = slotsOutputs[getRandomNumber(0, slotsOutputs.length)];
+                var firstResult = slotsOutputs[getRandomNumber(0, slotsOutputs.length - 1)],
+                    secondResult = slotsOutputs[getRandomNumber(0, slotsOutputs.length - 1)],
+                    thirdResult = slotsOutputs[getRandomNumber(0, slotsOutputs.length - 1)];
                 let results = [firstResult, secondResult, thirdResult];
                 let match;
                 results.forEach(function(result) {

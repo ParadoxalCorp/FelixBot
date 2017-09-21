@@ -43,34 +43,37 @@ const clientData = new PersistentCollection({
 console.log("[INFO] => Client database loaded");
 
 //Load functions
-(async function() {
-    const clientFunctions = await readdir('./modules/clientFunctions');
-    console.log(`----------------------------------------------------------------------------------------------\nLoading a total of ${clientFunctions.length} functions.`);
-    clientFunctions.forEach(f => {
-        try {
-            const props = require(`./modules/clientFunctions/${f}`)(client);
-            console.log(`Loading function: ${f}. 👌`);
-        } catch (e) {
-            console.log(`Unable to load function ${f}: ${e.stack}`);
-        }
+let modulesLoading = async function() {
+    return new Promise(async(resolve, reject) => {
+        const clientFunctions = await readdir('./modules/clientFunctions');
+        console.log(`----------------------------------------------------------------------------------------------\nLoading a total of ${clientFunctions.length} functions.`);
+        clientFunctions.forEach(f => {
+            try {
+                require(`./modules/clientFunctions/${f}`)(client);
+                console.log(`Loading function: ${f}. 👌`);
+            } catch (e) {
+                console.log(`Unable to load function ${f}: ${e.stack}`);
+            }
+        });
+        const customModules = await readdir('./modules/modules');
+        console.log(`----------------------------------------------------------------------------------------------\nLoading a total of ${customModules.length} modules.`);
+        customModules.forEach(f => {
+            try {
+                require(`./modules/modules/${f}`)(client);
+                console.log(`Loading custom module: ${f}. 👌`);
+            } catch (e) {
+                console.log(`Unable to load custom module ${f}: ${e.stack}`);
+            }
+        });
+        resolve();
     });
-}());
-//Load malsearch module
-try {
-    require("./modules/malsearch.js")(client);
-    console.log("[INFO] => Malsearch module loaded");
-} catch (err) {
-    console.error("[ERROR] => Failed to load the malsearch module: " + err.stack);
-}
+};
 client.mention = "<@343527831034265612>";
 client.config = database;
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 client.database = database;
 client.dbPath = dbPath;
-client.errorLog = "328847359100321792";
-client.featureChan = "328843222837362689";
-client.bugChan = "328843250687279105";
 client.overallHelp; //Will get initialized later
 client.cmdsUsed = 0; //Will contain the count of commands used since restart
 client.cmdsLogs; //Will get initialized in the message event
@@ -79,7 +82,6 @@ client.guildData = guildData;
 client.tagData = tagData;
 client.clientData = clientData;
 client.talkedRecently = new Set(); //cooldown stuff
-client.wit = wit;
 client.maintenance = false; //Will be used to ignore users when performing maintenance stuff
 client.Raven = Raven;
 client.upvotes = {
@@ -219,25 +221,19 @@ process.on("error", err => {
         return;
     }
 });
-setTimeout(async function() {
-    client.loadReminders(); //Launch reminders loading
-}, 7500); //Wait for the db to be properly loaded
-
-setTimeout(async function() {
-    client.updateDatabase(client); //Update database
-}, 7500);
-
 //require node 8 or higher
 (async function() {
-
-    // Here we load commands into memory, as a collection, so they're accessible everywhere
+    await modulesLoading();
+    client.logger.draft('processLaunch', 'create', 'Logging in...');
+    // load commands into memory, as a collection, so they're accessible everywhere
     const files = await readdir('./commands/');
-    console.log(`------------------------------------------------------------------------\nLoading a total of ${files.length} commands.`);
+    client.logger.draft('loadingCommands', 'create', `Loading a total of ${files.length} commands.`);
+    let loadedCommands = 0;
     files.forEach(f => {
         try {
             const props = require(`./commands/${f}`);
-            console.log(`Loading Command: ${props.help.name}. 👌`);
             props.uses = 0; //For stats purposes
+            loadedCommands++;
             client.commands.set(props.help.name, props);
             props.conf.aliases.forEach(alias => {
                 client.aliases.set(alias, props.help.name);
@@ -246,6 +242,7 @@ setTimeout(async function() {
             console.log(`Unable to load command ${f}: ${e.stack}`);
         }
     });
+    client.logger.draft('loadingCommands', 'end', `Successfully loaded ${loadedCommands}/${files.length} commands`, true);
     const categories = ["generic", "misc", "image", "utility", "fun", "moderation", "settings"];
     for (let i = 0; i < categories.length; i++) {
         const categoryCommands = client.commands.filter(c => c.help.category == categories[i]);
@@ -253,13 +250,29 @@ setTimeout(async function() {
     }
     client.overallHelp = client.overallHelp.replace(/undefined/gim, ""); //To remove the "undefined"
     const evtFiles = await readdir('./events/');
-    console.log(`Loading a total of ${evtFiles.length} events.`);
-    evtFiles.forEach(file => {
-        const eventName = file.split(".")[0];
-        const event = require(`./events/${file}`);
-        // This line is awesome by the way. Just sayin'.
-        client.on(eventName, event.bind(null, client));
-        delete require.cache[require.resolve(`./events/${file}`)];
-    });
+    let eventsLoading = function() {
+        return new Promise(async(resolve, reject) => {
+            client.logger.draft('eventsLoading', 'create', `Loading a total of ${evtFiles.length} events.`);
+            evtFiles.forEach(file => {
+                const eventName = file.split(".")[0];
+                const event = require(`./events/${file}`);
+                // This line is awesome by the way. Just sayin'.
+                client.on(eventName, event.bind(null, client));
+                delete require.cache[require.resolve(`./events/${file}`)];
+            });
+            resolve(client.logger.draft('eventsLoading', 'end', `Loaded ${evtFiles.length} events`, true));
+        });
+    }
+    await eventsLoading();
+    client.logger.draft('database', 'create', 'Waiting for the database to be fully loaded...')
+    setTimeout(async function() {
+        await client.loadReminders(); //Launch reminders loading
+    }, 7500); //Wait for the db to be properly loaded
+
+    setTimeout(async function() {
+        client.logger.draft('database', 'edit', 'Database load complete, launching database auto-update')
+        let dbUpdate = await client.updateDatabase(client); //Update database
+        client.logger.draft('database', 'end', `Database auto-update complete:\n${dbUpdate.usersUpdate}\n${dbUpdate.guildsUpdate}`, true);
+    }, 7500);
     client.login(client.config.token);
 }());

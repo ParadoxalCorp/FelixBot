@@ -2,15 +2,8 @@ module.exports = async(client) => {
     client.updateDatabase = function(client) {
         return new Promise(async(resolve, reject) => {
             const updateStatus = {
-                usersUpdate: {
-                    sucess: false,
-                    error: false
-                },
-                guildsUpdate: {
-                    sucess: false,
-                    error: false
-                },
-                overallSucess: false
+                usersUpdate: false,
+                guildsUpdate: false
             }
             let userUpdateTime = Date.now();
             let guildUpdateTime = Date.now();
@@ -35,11 +28,9 @@ module.exports = async(client) => {
                     });
                     client.userData.set(user.id, defaultUserData);
                 });
-                console.info("Updated " + client.userData.size + " entries in the user database, took " + (Date.now() - userUpdateTime) + "ms");
-                updateStatus.usersUpdate.sucess = true;
+                updateStatus.usersUpdate = `Updated ${client.userData.size} entries in the user database, took ${(Date.now() - userUpdateTime)}ms`;
             } catch (err) {
-                console.error(err);
-                updateStatus.usersUpdate.error = err;
+                updateStatus.usersUpdate = err;
                 client.Raven.captureException(err);
             }
             try {
@@ -63,21 +54,12 @@ module.exports = async(client) => {
                     });
                     client.guildData.set(guild.id, defaultGuildData);
                 });
-                console.info("Updated " + client.guildData.size + " entries in the guild database, took " + (Date.now() - guildUpdateTime) + "ms");
-                updateStatus.guildsUpdate.sucess = true;
+                updateStatus.guildsUpdate = `Updated ${client.guildData.size} entries in the guild database, took ${(Date.now() - guildUpdateTime)}ms`;
             } catch (err) {
-                console.error(err);
                 updateStatus.guildsUpdate.error = err;
                 client.Raven.captureException(err);
             }
-            if (!updateStatus.usersUpdate.error && !updateStatus.guildsUpdate.error) {
-                updateStatus.overallSucess = true;
-                console.log(updateStatus);
-                resolve(updateStatus);
-            } else {
-                console.error(updateStatus);
-                reject(updateStatus);
-            }
+            resolve(updateStatus);
         });
     }
 }

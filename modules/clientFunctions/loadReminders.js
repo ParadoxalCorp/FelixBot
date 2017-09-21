@@ -43,7 +43,6 @@ module.exports = async(client) => {
                     restartedReminders++;
                 });
             });
-            console.log("Loaded and restarted " + restartedReminders + " reminders");
             resolve({
                 remindersRestarted: restartedReminders,
                 remindersDeleted: deletedReminders
