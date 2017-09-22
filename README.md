@@ -41,7 +41,6 @@ Before diving into how it works, here's some rules that you should know:
 
 -If a user has two roles with 2 differents levels, this user level will be the one of the highest role
 
--No matter what, users will always be able to use the help command
 #### The levels
 * Level 0: The user cant use any commands besides help
 * Level 1: The user can use every commands besides moderation and settings one
