@@ -10,7 +10,7 @@ exports.run = async(client, message) => {
                     var users = await client.getUserResolvable(message, {
                         guildOnly: true
                     });
-                    if (!result.body || !result.body.url) return resolve(await message.channel.send(":x: An error occured :v"));
+                    if (!result.body || !result.body.url) return resolve(await message.channel.send(":x: An error occurred :v"));
                     var cryUrl = result.body.url;
                     resolve(await message.channel.send({
                         embed: {

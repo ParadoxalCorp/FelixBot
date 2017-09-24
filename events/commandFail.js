@@ -1,6 +1,6 @@
 module.exports = async(client, message, err) => {
     try {
-        message.channel.send(":x: An error occured");
+        message.channel.send(":x: An error occurred");
     } catch (error) {
         err.replyAttempt = error;
     }

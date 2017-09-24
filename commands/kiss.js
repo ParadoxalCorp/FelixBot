@@ -10,7 +10,7 @@ exports.run = async(client, message) => {
                     var users = await client.getUserResolvable(message, {
                         guildOnly: true
                     });
-                    if (!result.body || !result.body.url) return resolve(await message.channel.send(":x: An error occured :v"));
+                    if (!result.body || !result.body.url) return resolve(await message.channel.send(":x: An error occurred :v"));
                     var kissUrl = result.body.url;
                     if (users.get(message.author.id)) users.delete(message.author.id); //Remove the author from the users 
                     if (users.size > 0) {
