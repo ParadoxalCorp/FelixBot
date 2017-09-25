@@ -14,6 +14,7 @@ exports.run = async(client, message) => {
             if (!users.first()) return resolve(await message.channel.send(`:x: You did not specified any user or i couldn't find them :v`));
             let amount = args.filter(a => !isNaN(a) && a !== users.first().id); //Get the amount and make id resolvable work
             if (!amount[0]) return resolve(await message.channel.send(':x: You did not specified the amount of points that i should transfer to them'));
+            else if (amount[0] < 0) return resolve(await message.channel.send(`:x: Ehhhhh, do you wanna steal **${users.first().username}**'s points or something? Thats baaaadddd`))
             else if (Math.round(amount[0]) > userEntry.generalSettings.points) return resolve(await message.channel.send(`:x: Sorry but you dont have enough points to do that, you currently have **${userEntry.generalSettings.points}** points`));
             let mentionnedEntry = client.userData.get(users.first().id) || client.defaultUserData(users.first().id);
             //Transfer the points

@@ -17,9 +17,7 @@ module.exports = async(client, member) => {
         }
         //---------------------------------------------------------Greets------------------------------------------------------------
         if (guildEntry.onEvent.guildMemberAdd.greetings.channel && !guildEntry.onEvent.guildMemberAdd.greetings.dm) method = member.guild.channels.get(guildEntry.onEvent.guildMemberAdd.greetings.channel);
-        try {
-            await method.send(message);
-        } catch (err) {
+        await method.send(message).catch(err => {
             if (err.code === 50013) {
                 guildEntry.onEvent.guildMemberAdd.greetings.error = "Missing Permissions"; //error code for Missing Permissions
                 return client.guildData.set(member.guild.id, guildEntry);
@@ -35,6 +33,6 @@ module.exports = async(client, member) => {
             client.guildData.set(member.guild.id, guildEntry);
             console.error(err);
             return client.Raven.captureException(err);
-        }
+        });
     }
 }

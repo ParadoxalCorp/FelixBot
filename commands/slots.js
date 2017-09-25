@@ -11,12 +11,11 @@ exports.run = async(client, message) => {
                     return Math.floor(Math.random() * (max - min + 1)) + min;
                 }
                 var gambledPoints = args[0];
-                if (isNaN(gambledPoints)) { //If invalid number set to 1
-                    gambledPoints = 1;
-                }
-                if (gambledPoints > userEntry.generalSettings.points) {
-                    return resolve(await message.channel.send(":x: You do not have enough points ! You currently have **" + userEntry.generalSettings.points + "** points"));
-                }
+                //If invalid number set to 1
+                if (isNaN(gambledPoints)) gambledPoints = 1;
+                //Handle invalid arguments
+                if (gambledPoints > userEntry.generalSettings.points) return resolve(await message.channel.send(":x: You do not have enough points ! You currently have **" + userEntry.generalSettings.points + "** points"));
+                if (gambledPoints < 0) return resolve(await message.channel.send(':x: Ehhhh, what do you want me to do with that'));
                 var slotsOutputs = [{ //Possible outputs and multipliers array
                     multiplier: 2,
                     name: ":cherries:"
