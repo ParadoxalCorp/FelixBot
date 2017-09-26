@@ -5,11 +5,6 @@ const client = new Discord.Client({
 
 const fs = require("fs-extra");
 const unirest = require("unirest");
-const { Wit, log } = require('node-wit');
-
-const wit = new Wit({
-    accessToken: "VBDY3FZZCLSQMISZNLUGQYG4EQCTKTQI",
-});
 
 const dbPath = "config/config.json";
 const PersistentCollection = require('djs-collection-persistent');
