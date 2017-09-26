@@ -1,8 +1,8 @@
 <h1 align="center"> FelixBot </h1>
   <p align="center">
-    <a href="https://david-dm.org/ParadoxOrigins/FelixBot" target="_blank"><img src="https://david-dm.org/ParadoxOrigins/FelixBot/status.svg" alt="Dependencies"></a>
-    <a href="https://github.com/ParadoxOrigins/FelixBot/blob/master" target="_blank"><img src="https://img.shields.io/github/stars/ParadoxOrigins/FelixBot.svg?style=social&label=Star" alt="Github Stars"></a>
-    <a href="https://github.com/ParadoxOrigins/FelixBot/issues" target="_blank"><img src="https://img.shields.io/github/issues/ParadoxOrigins/FelixBot.svg" alt="Github Issues"></a>
+    <a href="https://david-dm.org/ParadoxalCorp/FelixBot" target="_blank"><img src="https://david-dm.org/ParadoxalCorp/FelixBot/status.svg" alt="Dependencies"></a>
+    <a href="https://github.com/ParadoxalCorp/FelixBot/blob/master" target="_blank"><img src="https://img.shields.io/github/stars/ParadoxalCorp/FelixBot.svg?style=social&label=Star" alt="Github Stars"></a>
+    <a href="https://github.com/ParadoxalCorp/FelixBot/issues" target="_blank"><img src="https://img.shields.io/github/issues/ParadoxalCorp/FelixBot.svg" alt="Github Issues"></a>
   </p>
 
 Felix is here, was first supposed to be a meme but hey, its a thing now ! 
