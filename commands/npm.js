@@ -9,11 +9,8 @@ exports.run = async(client, message) => {
                 return await message.channel.send(":x: You must specify at least one argument");
             }
             await npm.search(`${args.join(" ")}`, async function(err, modules) {
-                if (!modules[0]) {
-                    return await message.edit(":x: Your search did not return any result");
-                }
-                var embedFields = []; //Dynamically build the embed fields
-                var description;
+                if (!modules[0]) return resolve(await message.channel.send(":x: Your search did not return any result"));
+                let embedFields = []; //Dynamically build the embed fields
                 if (modules[0].name) {
                     embedFields.push({
                         name: "Name",
