@@ -1,3 +1,13 @@
+# Update 2.3.0 Changelog
+## New stuff/Improvements
+* Added `rps`, basic game but another way to win some points ^
+* You can now use partial types name in the `image` command
+
+## Fixes (tbh, this update is kinda just a big fix)
+* Fixed a lot of grammar
+* Fixed negative values possible in games as well as in transfer which was giving you the possibility to litterally get endless points
+* Fixed greetings and farewell error catch which means now the `Status` thing is finally working
+
 # Update 2.2.0 Changelog
 ## Improvements
 * `slots` now is a bit kinder when you lose, there is less chances to lose more than what you gambled
