@@ -56,7 +56,7 @@ module.exports = async(client, message) => {
                                 await message.author.send(`:tada: Congratulations **${message.author.username}**, you leveled up to level **${guildEntry.generalSettings.levelSystem.users[userPos].level}** ${wonRoles}`);
                             }
                         } catch (err) {
-                            console.error('An error occured while trying to notif a user for their level up', err);
+                            console.error('An error occurred while trying to notif a user for their level up', err);
                         }
                     }
                 }

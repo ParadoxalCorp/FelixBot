@@ -11,7 +11,7 @@ exports.run = async(client, message) => {
                 cmd.conf.aliases.forEach(alias => {
                     client.aliases.set(alias, cmd.help.name);
                 });
-                return resolve(await message.channel.send(`:white_check_mark: Sucessfully added the \`${args[0]}\` command`));
+                return resolve(await message.channel.send(`:white_check_mark: Successfully added the \`${args[0]}\` command`));
             } catch (err) {
                 console.error(err);
                 return resolve(await message.channel.send(":x: Invalid command"));
@@ -34,7 +34,7 @@ exports.run = async(client, message) => {
             return resolve(await message.channel.send(`:white_check_mark: \`${command}\` has been reloaded`))
         } catch (err) {
             console.error(err);
-            return reject(await message.channel.send(":x: An error occured, logged the stuff to the console fam"));
+            return reject(await message.channel.send(":x: An error occurred, logged the stuff to the console fam"));
         }
     });
 }

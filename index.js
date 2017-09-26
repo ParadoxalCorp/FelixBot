@@ -175,7 +175,6 @@ client.defaultGuildData = function(id) {
                 greetings: {
                     enabled: false,
                     message: false,
-                    embed: false,
                     method: false,
                     channel: false,
                     error: false //Will be used for missing permissions case
@@ -185,7 +184,6 @@ client.defaultGuildData = function(id) {
                 farewell: {
                     enabled: false,
                     message: false,
-                    embed: false,
                     channel: false,
                     error: false //Will be used for missing permissions case
                 }

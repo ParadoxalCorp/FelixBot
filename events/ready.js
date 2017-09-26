@@ -12,7 +12,7 @@ module.exports = async(client) => {
                         .end(async function(result) {
                             if (!result.body || result.body.status !== 200) {
                                 client.imageTypes.success.name = "External Error";
-                                client.imageTypes.success.message = "An error occured within weeb.sh end or the request was wrong";
+                                client.imageTypes.success.message = "An error occurred within weeb.sh end or the request was wrong";
                                 console.error(result.body);
                             } else {
                                 client.imageTypes.success.name = "Update successful";

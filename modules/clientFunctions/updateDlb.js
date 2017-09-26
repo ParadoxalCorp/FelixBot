@@ -46,7 +46,7 @@ module.exports = async(client) => {
                 console.error(err);
                 client.Raven.captureException(err);
                 client.statsUpdate.name = "Critical Error",
-                    client.statsUpdate.message = "A critical error occured";
+                    client.statsUpdate.message = "A critical error occurred";
                 return reject({
                     success: 'Critical error',
                     error: err

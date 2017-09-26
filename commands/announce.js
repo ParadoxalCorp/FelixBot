@@ -94,7 +94,7 @@ exports.run = async(client, message) => {
                 });
                 resolve(await message.channel.send(":white_check_mark:"));
             } catch (err) {
-                resolve(await message.channel.send(":x: An error occured, this may be because i lack some permissions"));
+                resolve(await message.channel.send(":x: An error occurred, this may be because i lack some permissions"));
             }
         } catch (err) {
             reject(client.emit('commandFail', message, err));

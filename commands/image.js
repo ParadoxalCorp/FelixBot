@@ -3,46 +3,42 @@ const unirest = require("unirest");
 exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
-            if (!client.imageTypes.types) return resolve(await message.channel.send(":x: An error occured :v"));
+            //If the first types request failed
+            if (!client.imageTypes.types) return resolve(await message.channel.send(":x: An error occurred :v"));
+            //Split args into an array
             let args = message.content.split(/\s+/gim);
             args.shift();
+            //If no args ask for user input to determine a type
             if (args.length < 1) {
-                var i = 1;
+                let i = 1;
                 const reply = await client.awaitReply({
                     message: message,
                     title: ":gear: Image parameter",
                     question: "Hoi, welcome to the weeb's image central :wave: ! Select the image type you want by either typing the number or the name of a type\n" + client.imageTypes.types.map(t => `\`(${i++})${t}\``).join(", ")
                 });
-                if (!reply) {
+                //If no reply after 60 secs
+                if (!reply.reply) {
+                    reply.question.delete();
                     return resolve(await message.channel.send(":x: Command aborted"));
                 }
-                if (isNaN(reply.reply.content) && !client.imageTypes.types.includes(reply)) {
-                    return resolve(await message.channel.send(":x: That type does not exist"));
-                } else if (reply.reply.content > client.imageTypes.types.length || reply.reply.content < 1) {
-                    return resolve(await message.channel.send(":x: The number you specified is not valid"));
-                }
-                var type;
-                if (typeof client.imageTypes.types[reply.reply.content - 1] === "undefined") {
-                    if (!client.imageTypes.types.includes(reply.reply.content)) {
-                        return resolve(await message.channel.send(":x: That type does not exist"));
-                    }
-                    type = reply.reply.content;
-                } else {
-                    type = client.imageTypes.types[reply.reply.content - 1];
-                }
-                if (message.guild) {
-                    if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) {
-                        await reply.reply.delete();
-                    }
-                }
-                await reply.question.delete();
+                //Try to resolve to a type
+                let type;
+                if (!client.imageTypes.types[Math.round(Number(reply.reply.content - 1))]) {
+                    if (!client.imageTypes.types.includes(reply.reply.content.trim().toLowerCase())) {
+                        let filteredTypes = client.imageTypes.types.filter(t => t.includes(reply.reply.content.trim().toLowerCase()));
+                        if (filteredTypes.length) type = filteredTypes[0];
+                    } else type = reply.reply.content.trim().toLowerCase();
+                } else type = client.imageTypes.types[Math.round(Number(reply.reply.content - 1))];
+                //Delete messages and return if type is unresolved
+                reply.question.delete();
+                if (message.guild && reply.reply.deletable) reply.reply.delete();
+                if (!type) return resolve(await message.channel.send(':x: That tag does not exist'));
+                //Request the image and return it in an embed
                 await unirest.get(`https://api.weeb.sh/images/random?type=${type}`)
                     .header(`Authorization`, `Bearer ${client.database.wolkeImageKey}`)
                     .end(async function(image) {
-                        if (!image.body || !image.body.url) {
-                            return resolve(await message.channel.send(":x: No image found :v"));
-                        }
-                        return resolve(await message.channel.send({
+                        if (!image.body || !image.body.url) return resolve(await message.channel.send(":x: No image found :v"));
+                        resolve(await message.channel.send({
                             embed: {
                                 image: {
                                     url: image.body.url
@@ -53,18 +49,20 @@ exports.run = async(client, message) => {
                             }
                         }));
                     });
-            } else {
-                var type = args[0];
-                if (!client.imageTypes.types.includes(type)) {
-                    return resolve(await message.channel.send(":x: The image type you specified does not exist"));
-                }
+            } else { //If args resolve the arg to a type
+                //Resolve to type
+                let type;
+                if (!client.imageTypes.types.includes(args[0].toLowerCase())) {
+                    let filteredTypes = client.imageTypes.types.filter(t => t.includes(args[0].toLowerCase()));
+                    if (filteredTypes.length) type = filteredTypes[0];
+                } else type = args[0].toLowerCase();
+                if (!type) return resolve(await message.channel.send(":x: The image type you specified does not exist"));
+                //Request the image and return it in an embed
                 await unirest.get(`https://api.weeb.sh/images/random?type=${type}`)
                     .header(`Authorization`, `Bearer ${client.database.wolkeImageKey}`)
                     .end(async function(image) {
-                        if (!image.body || !image.body.url) {
-                            return resolve(await message.channel.send(":x: No image found :v"));
-                        }
-                        return resolve(await message.channel.send({
+                        if (!image.body || !image.body.url) return resolve(await message.channel.send(":x: No image found :v"));
+                        resolve(await message.channel.send({
                             embed: {
                                 image: {
                                     url: image.body.url
@@ -84,7 +82,7 @@ exports.run = async(client, message) => {
 
 exports.conf = {
     guildOnly: false,
-    aliases: ["img"],
+    aliases: ["img", "images"],
     disabled: false,
     permLevel: 1
 };
