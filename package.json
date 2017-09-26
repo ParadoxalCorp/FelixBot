@@ -10,7 +10,7 @@
         "url": "https://github.com/ParadoxalCorp/FelixBot"
     },
     "author": "ParadoxOrigins",
-    "contributors": ['Niputi'],
+    "contributors": "['Niputi']",
     "license": "Apache-2.0",
     "bugs": {
         "url": "https://github.com/ParadoxalCorp/FelixBot/issues"
