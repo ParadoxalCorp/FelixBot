@@ -9,11 +9,10 @@ module.exports = async(client) => {
     function getRoleResolvable(message, options) {
         return new Promise(async(resolve, reject) => {
             let args = message.content.split(/\s+/gim);
-            if (options.shift) {
-                args.shift(); //Remove prefix + command
-            }
+            if (!options) options = Object.create(null);
+            if (options.shift) args.shift(); //Remove prefix + command
             const resolvedRoles = new Discord.Collection();
-            var matchedByPartial = false;
+            let matchedByPartial = false;
             for (let i = 0; i < args.length; i++) {
                 //------------------Resolve by ID--------------------
                 if (args[i].length >= (options.charLimit || 3)) { //(dont try to resolve too small stuff)

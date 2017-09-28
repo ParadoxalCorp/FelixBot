@@ -162,11 +162,18 @@ client.defaultGuildData = function(id) {
             },
         },
         permissionsLevels: {
+            users: [],
+            channels: [],
+            roles: [],
             things: [
                 [],
                 [],
                 []
             ],
+            global: {
+                allowedCommands: ['generic*', 'misc*', 'fun*', 'image*', 'utility*'],
+                restrictedCommands: ['moderation*', 'settings*']
+            },
             globalLevel: "none"
         },
         onEvent: {

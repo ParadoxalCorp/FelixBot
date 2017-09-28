@@ -9,9 +9,8 @@ module.exports = async(client) => {
     function getChannelResolvable(message, options) {
         return new Promise(async(resolve, reject) => {
             let args = message.content.split(/\s+/);
-            if (options.shift) {
-                args.shift(); //Remove prefix + command
-            }
+            if (!options) options = Object.create(null); //Handle missing parameter
+            if (options.shift) args.shift(); //Remove prefix + command
             const resolvedChannels = new Discord.Collection();
             var matchedByPartial = false;
             for (let i = 0; i < args.length; i++) {

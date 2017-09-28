@@ -158,7 +158,7 @@ exports.run = async(client, message) => {
             });
             //--------------------------On collector end-----------------------------------------------
             collector.on('end', async(collected, reason) => {
-                interactiveMessage.delete();
+                resolve(interactiveMessage.delete());
             });
         } catch (err) {
             reject(client.emit('commandFail', message, err));
