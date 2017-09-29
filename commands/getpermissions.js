@@ -12,8 +12,8 @@ exports.run = async(client, message) => {
             if (targets && targets.size < 1) return resolve(await message.channel.send(`:x: I couldn't find anything or you didn't specified anything to get the permissions from`));
             //Output global permissions
             if (!targets) {
-                if (!guildEntry.permissionsLevels.global.allowedCommands.length && guildEntry.permissionsLevels.global.restrictedCommands.length) return resolve(await message.channel.send(`:x: There's no permissions set for the whole server`));
-                let perms = guildEntry.permissionsLevels.global.allowedCommands.map(ac => `${ac} | Allowed`).concat(guildEntry.permissionsLevels.global.restrictedCommands.map(rc => `${rc} | Restricted`));
+                if (!guildEntry.permissions.global.allowedCommands.length && guildEntry.permissions.global.restrictedCommands.length) return resolve(await message.channel.send(`:x: There's no permissions set for the whole server`));
+                let perms = guildEntry.permissions.global.allowedCommands.map(ac => `${ac} | Allowed`).concat(guildEntry.permissions.global.restrictedCommands.map(rc => `${rc} | Restricted`));
                 let paginatedPerms = await client.pageResults({
                     results: perms
                 });
@@ -25,9 +25,9 @@ exports.run = async(client, message) => {
             }
             //Output channels permissions
             else if (targets.first().type) {
-                if (!targets.filter(t => guildEntry.permissionsLevels.channels.find(c => c.id === t.id)).size) return resolve(await message.channel.send(`:x: There's no permissions set for the channel(s) **${targets.map(t => '#' + t.name).join(", ")}**`));
+                if (!targets.filter(t => guildEntry.permissions.channels.find(c => c.id === t.id) && guildEntry.permissions.channels.find(c => c.id === t.id).allowedCommands.length > 0 && guildEntry.permissions.channels.find(c => c.id === t.id).restrictedCommands.length > 0).size) return resolve(await message.channel.send(`:x: There's no permissions set for the channel(s) **${targets.map(t => '#' + t.name).join(", ")}**`));
                 let perms = [];
-                targets.filter(t => guildEntry.permissionsLevels.channels.find(c => c.id === t.id)).forEach(t => { perms = perms.concat(guildEntry.permissionsLevels.channels.find(c => c.id === t.id).allowedCommands.map(ac => `${ac} | Allowed | #${t.name}`).concat(guildEntry.permissionsLevels.channels.find(c => c.id === t.id).restrictedCommands.map(rc => `${rc} | Restricted | #${t.name}`))) });
+                targets.filter(t => guildEntry.permissions.channels.find(c => c.id === t.id)).forEach(t => { perms = perms.concat(guildEntry.permissions.channels.find(c => c.id === t.id).allowedCommands.map(ac => `${ac} | Allowed | #${t.name}`).concat(guildEntry.permissions.channels.find(c => c.id === t.id).restrictedCommands.map(rc => `${rc} | Restricted | #${t.name}`))) });
                 let paginatedPerms = await client.pageResults({
                     results: perms
                 });
@@ -40,9 +40,9 @@ exports.run = async(client, message) => {
             }
             //Output roles permissions
             else if (targets.first().hoist) {
-                if (!targets.filter(t => guildEntry.permissionsLevels.roles.find(r => r.id === t.id)).size) return resolve(await message.channel.send(`:x: There's no permissions set for the role(s) **${targets.map(t => t.name).join(', ')}**`));
+                if (!targets.filter(t => guildEntry.permissions.roles.find(r => r.id === t.id) && guildEntry.permissions.roles.find(r => r.id === t.id).allowedCommands.length > 0 && guildEntry.permissions.roles.find(r => r.id === t.id).restrictedCommands.length > 0).size) return resolve(await message.channel.send(`:x: There's no permissions set for the role(s) **${targets.map(t => t.name).join(', ')}**`));
                 let perms = [];
-                targets.filter(t => guildEntry.permissionsLevels.roles.find(r => r.id === t.id)).forEach(t => { perms = perms.concat(guildEntry.permissionsLevels.roles.find(r => r.id === t.id).allowedCommands.map(ac => `${ac} | Allowed | ${t.name}`).concat(guildEntry.permissionsLevels.roles.find(r => r.id === t.id).restrictedCommands.map(rc => `${rc} | Restricted | ${t.name}`))) });
+                targets.filter(t => guildEntry.permissions.roles.find(r => r.id === t.id)).forEach(t => { perms = perms.concat(guildEntry.permissions.roles.find(r => r.id === t.id).allowedCommands.map(ac => `${ac} | Allowed | ${t.name}`).concat(guildEntry.permissions.roles.find(r => r.id === t.id).restrictedCommands.map(rc => `${rc} | Restricted | ${t.name}`))) });
                 let paginatedPerms = await client.pageResults({
                     results: perms
                 });
@@ -54,9 +54,9 @@ exports.run = async(client, message) => {
             }
             //Output users permissions
             else if (targets.first().username) {
-                if (!targets.filter(t => guildEntry.permissionsLevels.users.find(u => u.id === t.id)).size) return resolve(await message.channel.send(`:x: There's no permissions set for the user(s) **${targets.map(t => t.tag).join(', ')}**`));
+                if (!targets.filter(t => guildEntry.permissions.users.find(u => u.id === t.id) && guildEntry.permissions.users.find(u => u.id === t.id).allowedCommands.length > 0 && guildEntry.permissions.users.find(u => u.id === t.id).restrictedCommands.length > 0).size) return resolve(await message.channel.send(`:x: There's no permissions set for the user(s) **${targets.map(t => t.tag).join(', ')}**`));
                 let perms = [];
-                targets.filter(t => guildEntry.permissionsLevels.users.find(u => u.id === t.id)).forEach(t => { perms = perms.concat(guildEntry.permissionsLevels.users.find(u => u.id === t.id).allowedCommands.map(ac => `${ac} | Allowed | ${t.tag}`).concat(guildEntry.permissionsLevels.users.find(u => u.id === t.id).restrictedCommands.map(rc => `${rc} | Restricted | ${t.tag}`))) });
+                targets.filter(t => guildEntry.permissions.users.find(u => u.id === t.id)).forEach(t => { perms = perms.concat(guildEntry.permissions.users.find(u => u.id === t.id).allowedCommands.map(ac => `${ac} | Allowed | ${t.tag}`).concat(guildEntry.permissions.users.find(u => u.id === t.id).restrictedCommands.map(rc => `${rc} | Restricted | ${t.tag}`))) });
                 let paginatedPerms = await client.pageResults({
                     results: perms
                 });
@@ -75,8 +75,7 @@ exports.run = async(client, message) => {
 exports.conf = {
     guildOnly: true,
     aliases: ["getperms", "gp"],
-    disabled: false,
-    permLevel: 2
+    disabled: false
 };
 
 exports.help = {

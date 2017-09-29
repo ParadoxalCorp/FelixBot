@@ -161,7 +161,6 @@ exports.run = async(client, message) => {
 exports.conf = {
     disabled: false,
     aliases: ['greetings'],
-    permLevel: 2,
     guildOnly: true
 }
 exports.help = {

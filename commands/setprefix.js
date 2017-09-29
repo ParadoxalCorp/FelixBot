@@ -16,7 +16,6 @@ exports.run = async(client, message) => {
 }
 
 exports.conf = {
-    permLevel: 2,
     guildOnly: true,
     aliases: ["prefix"],
     disabled: false

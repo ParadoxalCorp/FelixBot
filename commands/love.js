@@ -90,11 +90,9 @@ exports.run = async(client, message) => {
 
 }
 exports.conf = {
-    enabled: true,
     guildOnly: true,
     aliases: ["luv"],
-    disabled: false,
-    permLevel: 1
+    disabled: false
 };
 
 exports.help = {

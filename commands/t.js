@@ -20,8 +20,7 @@ exports.run = async(client, message) => {
 exports.conf = {
     guildOnly: true,
     aliases: ["runtag"],
-    disabled: false,
-    permLevel: 1
+    disabled: false
 };
 
 exports.help = {

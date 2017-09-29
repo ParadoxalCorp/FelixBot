@@ -31,9 +31,11 @@ exports.run = async(client, message) => {
             mainCollector.on('collect', async(r) => { //-------------------------On collect----------------------------
                 clearTimeout(timeout); //Reset the timeout
                 if (r.emoji.name === numberReactions[0]) { //1 - Reset permissions
-                    for (i = 0; i < guildEntry.permissionsLevels.things.length; i++) {
-                        guildEntry.permissionsLevels.things[i] = [];
-                    }
+                    guildEntry.permissions.users = [];
+                    guildEntry.permissions.channels = [];
+                    guildEntry.permissions.roles = [];
+                    guildEntry.permissions.global.allowedCommands = ['generic*', 'fun*', 'misc*', 'utility*', 'image*'];
+                    guildEntry.permissions.global.restrictedCommands = ['moderation*', 'settings*'];
                     possibleActions[0] = "Permissions have been reset";
                     await interactiveMessage.edit(mainObject(possibleActions));
                 } else if (r.emoji.name === numberReactions[1]) { //2 - Reset prefix
@@ -84,7 +86,6 @@ exports.run = async(client, message) => {
 
 exports.conf = {
     disabled: false,
-    permLevel: 42,
     aliases: [],
     guildOnly: true
 }

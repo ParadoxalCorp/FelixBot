@@ -11,7 +11,7 @@ module.exports = async(client, message) => {
         if (!command) return;
         if (!client.userData.get(message.author.id)) client.userData.set(message.author.id, client.defaultUserData(message.author.id));
         const commandFile = require(`../commands/${command}.js`);
-        if (commandFile.conf.guildOnly || (commandFile.help.category === 'admin' && !client.config.thingsLevel42.includes(message.author.id))) return await message.channel.send(":x: This command can only be used in a guild or you don't have the permission to use it");
+        if (commandFile.conf.guildOnly || (commandFile.help.category === 'admin' && !client.config.admins.includes(message.author.id))) return await message.channel.send(":x: This command can only be used in a guild or you don't have the permission to use it");
         if (commandFile.conf.disabled !== false) return await message.channel.send(":x: Sorry but this command is disabled for now\n**Reason:** " + commandFile.conf.disabled);
         try {
             await commandFile.run(client, message, args);

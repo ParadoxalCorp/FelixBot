@@ -49,7 +49,6 @@ exports.run = async(client, message) => {
     })
 }
 exports.conf = {
-    permLevel: 2,
     disabled: false,
     guildOnly: true,
     aliases: ['nuke', 'purge', 'clean']

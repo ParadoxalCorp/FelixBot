@@ -34,7 +34,6 @@ exports.conf = {
     guildOnly: true,
     aliases: ["give"],
     disabled: false,
-    permLevel: 1
 };
 
 exports.help = {

@@ -21,15 +21,15 @@ exports.run = async(client, message) => {
             if (targets === 'global') {
                 if (action[0] === 'true') {
                     //If already set to this, return
-                    if (guildEntry.permissionsLevels.global.allowedCommands.includes(permission[0])) return resolve(await message.channel.send(`:x: \`${permission[0]}\` is already set to \`true\``));
+                    if (guildEntry.permissions.global.allowedCommands.includes(permission[0])) return resolve(await message.channel.send(`:x: \`${permission[0]}\` is already set to \`true\``));
                     //If was restricted, remove it from the restricted commands
-                    if (guildEntry.permissionsLevels.global.restrictedCommands.includes(permission[0])) guildEntry.permissionsLevels.global.restrictedCommands.splice(guildEntry.permissionsLevels.global.restrictedCommands.findIndex(rc => rc === permission[0]), 1);
+                    if (guildEntry.permissions.global.restrictedCommands.includes(permission[0])) guildEntry.permissions.global.restrictedCommands.splice(guildEntry.permissions.global.restrictedCommands.findIndex(rc => rc === permission[0]), 1);
                     //Finally push to allowed commands
-                    guildEntry.permissionsLevels.global.allowedCommands.push(permission[0]);
+                    guildEntry.permissions.global.allowedCommands.push(permission[0]);
                 } else if (action[0] === 'false') {
-                    if (guildEntry.permissionsLevels.global.restrictedCommands.includes(permission[0])) return resolve(await message.channel.send(`:x: \`${permission[0]}\` is already set to \`false\``));
-                    if (guildEntry.permissionsLevels.global.allowedCommands.includes(permission[0])) guildEntry.permissionsLevels.global.allowedCommands.splice(guildEntry.permissionsLevels.global.allowedCommands.findIndex(ac => ac === permission[0]), 1);
-                    guildEntry.permissionsLevels.global.restrictedCommands.push(permission[0]);
+                    if (guildEntry.permissions.global.restrictedCommands.includes(permission[0])) return resolve(await message.channel.send(`:x: \`${permission[0]}\` is already set to \`false\``));
+                    if (guildEntry.permissions.global.allowedCommands.includes(permission[0])) guildEntry.permissions.global.allowedCommands.splice(guildEntry.permissions.global.allowedCommands.findIndex(ac => ac === permission[0]), 1);
+                    guildEntry.permissions.global.restrictedCommands.push(permission[0]);
                 }
                 client.guildData.set(message.guild.id, guildEntry);
                 resolve(await message.channel.send(`:white_check_mark: Alright, \`${permission[0]}\` has been set to \`${action[0]}\``));
@@ -37,20 +37,20 @@ exports.run = async(client, message) => {
             //Set users permissions
             else if (targets.first().username) { //(If the collection contains user objects)
                 targets.forEach(m => {
-                    if (!guildEntry.permissionsLevels.users.find(u => u.id === m.id)) guildEntry.permissionsLevels.users.push({
+                    if (!guildEntry.permissions.users.find(u => u.id === m.id)) guildEntry.permissions.users.push({
                         id: m.id,
                         allowedCommands: [],
                         restrictedCommands: []
                     });
-                    let userPos = guildEntry.permissionsLevels.users.findIndex(u => u.id === m.id);
+                    let userPos = guildEntry.permissions.users.findIndex(u => u.id === m.id);
                     if (action[0] === 'true') {
-                        if (guildEntry.permissionsLevels.users[userPos].allowedCommands.includes(permission[0])) return;
-                        if (guildEntry.permissionsLevels.users[userPos].restrictedCommands.includes(permission[0])) guildEntry.permissionsLevels.users[userPos].restrictedCommands.splice(guildEntry.permissionsLevels.users[userPos].restrictedCommands.findIndex(rc => rc === permission[0]), 1);
-                        guildEntry.permissionsLevels.users[userPos].allowedCommands.push(permission[0]);
+                        if (guildEntry.permissions.users[userPos].allowedCommands.includes(permission[0])) return;
+                        if (guildEntry.permissions.users[userPos].restrictedCommands.includes(permission[0])) guildEntry.permissions.users[userPos].restrictedCommands.splice(guildEntry.permissions.users[userPos].restrictedCommands.findIndex(rc => rc === permission[0]), 1);
+                        guildEntry.permissions.users[userPos].allowedCommands.push(permission[0]);
                     } else if (action[0] === 'false') {
-                        if (guildEntry.permissionsLevels.users[userPos].restrictedCommands.includes(permission[0])) return;
-                        if (guildEntry.permissionsLevels.users[userPos].allowedCommands.includes(permission[0])) guildEntry.permissionsLevels.users[userPos].allowedCommands.splice(guildEntry.permissionsLevels.users[userPos].allowedCommands.findIndex(ac => ac === permission[0]), 1);
-                        guildEntry.permissionsLevels.users[userPos].restrictedCommands.push(permission[0]);
+                        if (guildEntry.permissions.users[userPos].restrictedCommands.includes(permission[0])) return;
+                        if (guildEntry.permissions.users[userPos].allowedCommands.includes(permission[0])) guildEntry.permissions.users[userPos].allowedCommands.splice(guildEntry.permissions.users[userPos].allowedCommands.findIndex(ac => ac === permission[0]), 1);
+                        guildEntry.permissions.users[userPos].restrictedCommands.push(permission[0]);
                     }
                 });
                 client.guildData.set(message.guild.id, guildEntry);
@@ -59,20 +59,20 @@ exports.run = async(client, message) => {
             //Set channels permissions
             else if (targets.first().type) { //(If the collection contains channels objects)
                 targets.forEach(gc => {
-                    if (!guildEntry.permissionsLevels.channels.find(c => c.id === gc.id)) guildEntry.permissionsLevels.channels.push({
+                    if (!guildEntry.permissions.channels.find(c => c.id === gc.id)) guildEntry.permissions.channels.push({
                         id: gc.id,
                         allowedCommands: [],
                         restrictedCommands: []
                     });
-                    let channelPos = guildEntry.permissionsLevels.channels.findIndex(c => c.id === gc.id);
+                    let channelPos = guildEntry.permissions.channels.findIndex(c => c.id === gc.id);
                     if (action[0] === 'true') {
-                        if (guildEntry.permissionsLevels.channels[channelPos].allowedCommands.includes(permission[0])) return;
-                        if (guildEntry.permissionsLevels.channels[channelPos].restrictedCommands.includes(permission[0])) guildEntry.permissionsLevels.channels[channelPos].restrictedCommands.splice(guildEntry.permissionsLevels.channels[channelPos].restrictedCommands.findIndex(rc => rc === permission[0]), 1);
-                        guildEntry.permissionsLevels.channels[channelPos].allowedCommands.push(permission[0]);
+                        if (guildEntry.permissions.channels[channelPos].allowedCommands.includes(permission[0])) return;
+                        if (guildEntry.permissions.channels[channelPos].restrictedCommands.includes(permission[0])) guildEntry.permissions.channels[channelPos].restrictedCommands.splice(guildEntry.permissions.channels[channelPos].restrictedCommands.findIndex(rc => rc === permission[0]), 1);
+                        guildEntry.permissions.channels[channelPos].allowedCommands.push(permission[0]);
                     } else if (action[0] === 'false') {
-                        if (guildEntry.permissionsLevels.channels[channelPos].restrictedCommands.includes(permission[0])) return;
-                        if (guildEntry.permissionsLevels.channels[channelPos].allowedCommands.includes(permission[0])) guildEntry.permissionsLevels.channels[channelPos].allowedCommands.splice(guildEntry.permissionsLevels.channels[channelPos].allowedCommands.findIndex(ac => ac === permission[0]), 1);
-                        guildEntry.permissionsLevels.channels[channelPos].restrictedCommands.push(permission[0]);
+                        if (guildEntry.permissions.channels[channelPos].restrictedCommands.includes(permission[0])) return;
+                        if (guildEntry.permissions.channels[channelPos].allowedCommands.includes(permission[0])) guildEntry.permissions.channels[channelPos].allowedCommands.splice(guildEntry.permissions.channels[channelPos].allowedCommands.findIndex(ac => ac === permission[0]), 1);
+                        guildEntry.permissions.channels[channelPos].restrictedCommands.push(permission[0]);
                     }
                 });
                 client.guildData.set(message.guild.id, guildEntry);
@@ -81,20 +81,20 @@ exports.run = async(client, message) => {
             //Set roles permissions
             else if (targets.first().hoist) { //(If the collection contains roles objects)
                 targets.forEach(gr => {
-                    if (!guildEntry.permissionsLevels.roles.find(r => r.id === gr.id)) guildEntry.permissionsLevels.roles.push({
+                    if (!guildEntry.permissions.roles.find(r => r.id === gr.id)) guildEntry.permissions.roles.push({
                         id: gr.id,
                         allowedCommands: [],
                         restrictedCommands: []
                     });
-                    let rolePos = guildEntry.permissionsLevels.roles.findIndex(r => r.id === gr.id);
+                    let rolePos = guildEntry.permissions.roles.findIndex(r => r.id === gr.id);
                     if (action[0] === 'true') {
-                        if (guildEntry.permissionsLevels.roles[rolePos].allowedCommands.includes(permission[0])) return;
-                        if (guildEntry.permissionsLevels.roles[rolePos].restrictedCommands.includes(permission[0])) guildEntry.permissionsLevels.roles[rolePos].restrictedCommands.splice(guildEntry.permissionsLevels.roles[rolePos].restrictedCommands.findIndex(rc => rc === permission[0]), 1);
-                        guildEntry.permissionsLevels.roles[rolePos].allowedCommands.push(permission[0]);
+                        if (guildEntry.permissions.roles[rolePos].allowedCommands.includes(permission[0])) return;
+                        if (guildEntry.permissions.roles[rolePos].restrictedCommands.includes(permission[0])) guildEntry.permissions.roles[rolePos].restrictedCommands.splice(guildEntry.permissions.roles[rolePos].restrictedCommands.findIndex(rc => rc === permission[0]), 1);
+                        guildEntry.permissions.roles[rolePos].allowedCommands.push(permission[0]);
                     } else if (action[0] === 'false') {
-                        if (guildEntry.permissionsLevels.roles[rolePos].restrictedCommands.includes(permission[0])) return;
-                        if (guildEntry.permissionsLevels.roles[rolePos].allowedCommands.includes(permission[0])) guildEntry.permissionsLevels.roles[rolePos].allowedCommands.splice(guildEntry.permissionsLevels.roles[rolePos].allowedCommands.findIndex(ac => ac === permission[0]), 1);
-                        guildEntry.permissionsLevels.roles[rolePos].restrictedCommands.push(permission[0]);
+                        if (guildEntry.permissions.roles[rolePos].restrictedCommands.includes(permission[0])) return;
+                        if (guildEntry.permissions.roles[rolePos].allowedCommands.includes(permission[0])) guildEntry.permissions.roles[rolePos].allowedCommands.splice(guildEntry.permissions.roles[rolePos].allowedCommands.findIndex(ac => ac === permission[0]), 1);
+                        guildEntry.permissions.roles[rolePos].restrictedCommands.push(permission[0]);
                     }
                 });
                 client.guildData.set(message.guild.id, guildEntry);

@@ -211,7 +211,6 @@ exports.run = async(client, message) => {
 
 exports.conf = {
     disabled: false,
-    permLevel: 1,
     aliases: ['tag'],
     guildOnly: true
 }

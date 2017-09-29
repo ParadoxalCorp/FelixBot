@@ -153,7 +153,6 @@ exports.run = async(client, message) => {
 exports.conf = {
     disabled: false,
     aliases: ['farewell'],
-    permLevel: 2,
     guildOnly: true
 }
 exports.help = {
