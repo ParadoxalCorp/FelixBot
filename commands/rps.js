@@ -81,5 +81,5 @@ exports.help = {
     description: 'Play a game of rock-paper-scissors against Felix, you can also gamble and try to win some points !',
     usage: 'rps rock',
     category: 'fun',
-    detailledUsage: '`{prefix}rps rock` Will casually play rock against Felix\n`{prefix}rps paper 500` Will play paper against Felix and gamble 500 of your points'
+    detailedUsage: '`{prefix}rps rock` Will casually play rock against Felix\n`{prefix}rps paper 500` Will play paper against Felix and gamble 500 of your points'
 };

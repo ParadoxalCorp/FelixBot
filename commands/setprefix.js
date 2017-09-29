@@ -26,5 +26,5 @@ exports.help = {
     description: 'Change Felix\'s prefix',
     usage: 'setprefix new prefix',
     category: 'settings',
-    detailledUsage: '`{prefix}setprefix wew.` Will set the prefix to `wew.`, so commands will look like `wew.ping`'
+    detailedUsage: '`{prefix}setprefix wew.` Will set the prefix to `wew.`, so commands will look like `wew.ping`'
 }

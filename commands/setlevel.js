@@ -178,5 +178,5 @@ exports.help = {
     description: 'Set the access level of the targetted element(role, user...). If no arguments are provided, the level will be assigned to the server',
     usage: 'setlevel 0 -u user resolvable (mention, username, nickname...)',
     category: 'moderation',
-    detailledUsage: '`{prefix}setlevel 2 -r Moderators` Will set the level of the role `Moderators` to 2\n`{prefix}setlevel 0 -c general` Will set the level of the channel `#general` to 0\n\n**Levels**\n`Level 0` => Cant use any commands\n`Level 1` => Can use every commands but the moderation and settings one\n`Level 2` => Can use every commands'
+    detailedUsage: '`{prefix}setlevel 2 -r Moderators` Will set the level of the role `Moderators` to 2\n`{prefix}setlevel 0 -c general` Will set the level of the channel `#general` to 0\n\n**Levels**\n`Level 0` => Cant use any commands\n`Level 1` => Can use every commands but the moderation and settings one\n`Level 2` => Can use every commands'
 };

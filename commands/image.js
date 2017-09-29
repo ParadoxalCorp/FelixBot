@@ -92,5 +92,5 @@ exports.help = {
     description: 'Get random images from the weeb\'s images api',
     usage: 'image',
     category: 'image',
-    detailledUsage: '\n`{prefix}image` Will return a list of available images types where you can select from\n`{prefix}image owo` Will return a random image from the **owo** image type'
+    detailedUsage: '\n`{prefix}image` Will return a list of available images types where you can select from\n`{prefix}image owo` Will return a random image from the **owo** image type'
 };

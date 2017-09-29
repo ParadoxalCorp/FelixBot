@@ -108,14 +108,15 @@ exports.run = async(client, message) => {
 
 exports.conf = {
     guildOnly: true,
-    aliases: ['permission'],
+    aliases: ['setperm', 'sp'],
     disabled: false,
-    permLevel: 2
 };
 
 exports.help = {
     name: 'setpermission',
     description: 'A more advanced way to set the permissions of a role/channel/user, allowing you to allow and restrict specific commands',
-    usage: 'setpermission',
-    category: 'moderation'
+    parameters: '`-user`, `-role`, `-channel`',
+    usage: 'setpermission [command] [true/false]',
+    category: 'moderation',
+    detailedUsage: '`{prefix}setpermission ping false` Will disable the ping command for the whole server\n`{prefix}setpermission ping true -role [role_resolvable(s)]` Will enable the ping command for the specified role(s)\n`{prefix}setpermission ping true -user [user_resolvable(s)]` Will enable the ping command for the specified user(s)\n`{prefix}setpermission ping true -channel [channel_resolvable(s)]` Will enable the ping command for the specified channel(s)\n\n**Note:** You can use `[category]*` instead of a command name to enable/disable a whole command category, so for example\n`{prefix}setpermission generic* false` Will disable all the generic commands for the whole server'
 };

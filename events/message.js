@@ -44,9 +44,9 @@ module.exports = async(client, message) => {
                 return message.channel.send("The current prefix on this server is **" + guildEntry.generalSettings.prefix + "**");
             } else if (request === "help") {
                 if (message.guild) {
-                    return await message.channel.send("Here's the commands list, you can see the detailled help of a command using `" + guildEntry.generalSettings.prefix + "help commandname`\n\n" + client.overallHelp);
+                    return await message.channel.send("Here's the commands list, you can see the detailed help of a command using `" + guildEntry.generalSettings.prefix + "help commandname`\n\n" + client.overallHelp);
                 } else {
-                    return await message.channel.send("Here's the commands list, you can see the detailled help of a command using `" + client.database.prefix + "help commandname`\n\n" + client.overallHelp);
+                    return await message.channel.send("Here's the commands list, you can see the detailed help of a command using `" + client.database.prefix + "help commandname`\n\n" + client.overallHelp);
                 }
             }
         }

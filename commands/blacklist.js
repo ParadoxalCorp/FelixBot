@@ -41,5 +41,5 @@ exports.help = {
     description: 'Blacklist/whitelist a/or multiple users',
     usage: 'blacklist @mention || ID || username',
     category: 'admin',
-    detailledUsage: 'If specified user is blacklisted, they will be whitelisted, and if the user is whitelisted, they will be blacklisted'
+    detailedUsage: 'If specified user is blacklisted, they will be whitelisted, and if the user is whitelisted, they will be blacklisted'
 };
