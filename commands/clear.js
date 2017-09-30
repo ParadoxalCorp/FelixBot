@@ -49,7 +49,6 @@ exports.run = async(client, message) => {
     })
 }
 exports.conf = {
-    permLevel: 2,
     disabled: false,
     guildOnly: true,
     aliases: ['nuke', 'purge', 'clean']
@@ -60,5 +59,5 @@ exports.help = {
     usage: 'clear 50',
     parameters: '`-b`, `-u`',
     category: 'moderation',
-    detailledUsage: '`{prefix}clear 50` Will clear 50 messages from the current channel\n`{prefix}clear 50 -b` Will clear all bots messages from the 50 last messages\n`{prefix}clear 50 -u user resolvable` Will clear all the messages of the specified users from the 50 last messages\n`{prefix}clear 50 -bu user resolvable` You can combine filters, this will do the same thing that the two above examples combined\n**Notes:** Felix cannot delete messages older than 2 weeks nor more than 100 messages, also, you can specify multiple users'
+    detailedUsage: '`{prefix}clear 50` Will clear 50 messages from the current channel\n`{prefix}clear 50 -b` Will clear all bots messages from the 50 last messages\n`{prefix}clear 50 -u user resolvable` Will clear all the messages of the specified users from the 50 last messages\n`{prefix}clear 50 -bu user resolvable` You can combine filters, this will do the same thing that the two above examples combined\n**Notes:** Felix cannot delete messages older than 2 weeks nor more than 100 messages, also, you can specify multiple users'
 }

@@ -161,7 +161,6 @@ exports.run = async(client, message) => {
 exports.conf = {
     disabled: false,
     aliases: ['greetings'],
-    permLevel: 2,
     guildOnly: true
 }
 exports.help = {
@@ -170,5 +169,5 @@ exports.help = {
     description: 'Set the greetings of the server',
     usage: 'setgreetings',
     category: 'settings',
-    detailledUsage: '\n**FLAGS**\n`%USER%` The user that joined the server, will look like `@Bobby`\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`\n\n`{prefix}setgreetings raw` Will return the raw message(without flags replaced) that has been set'
+    detailedUsage: '\n**FLAGS**\n`%USER%` The user that joined the server, will look like `@Bobby`\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`\n\n`{prefix}setgreetings raw` Will return the raw message(without flags replaced) that has been set'
 };

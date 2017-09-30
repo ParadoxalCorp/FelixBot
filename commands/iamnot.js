@@ -35,7 +35,6 @@ exports.run = async(client, message) => {
 exports.conf = {
     disabled: false,
     guildOnly: true,
-    permLevel: 1,
     aliases: []
 }
 exports.help = {
@@ -43,5 +42,5 @@ exports.help = {
     description: 'Get the list of the self-assignables roles on this server or remove one from yourself',
     usage: 'iamnot',
     category: 'misc',
-    detailledUsage: '`{prefix}iam` Will return the list of the self-assignables roles set on this server\n`{prefix}iam Neko` Will remove from you the self-assignable role `Neko`'
+    detailedUsage: '`{prefix}iam` Will return the list of the self-assignables roles set on this server\n`{prefix}iam Neko` Will remove from you the self-assignable role `Neko`'
 }

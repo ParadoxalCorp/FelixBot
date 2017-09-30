@@ -43,8 +43,7 @@ exports.run = async(client, message) => {
 exports.conf = {
     guildOnly: false,
     aliases: ["urdef", "define"],
-    disabled: false,
-    permLevel: 1
+    disabled: false
 };
 
 exports.help = {

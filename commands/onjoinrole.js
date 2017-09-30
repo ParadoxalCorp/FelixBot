@@ -180,7 +180,6 @@ exports.run = async(client, message) => {
 
 exports.conf = {
     disabled: false,
-    permLevel: 2,
     aliases: [],
     guildOnly: true
 }

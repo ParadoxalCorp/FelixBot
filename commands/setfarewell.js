@@ -153,7 +153,6 @@ exports.run = async(client, message) => {
 exports.conf = {
     disabled: false,
     aliases: ['farewell'],
-    permLevel: 2,
     guildOnly: true
 }
 exports.help = {
@@ -162,5 +161,5 @@ exports.help = {
     description: 'Set the farewell of the server',
     usage: 'setfarewell',
     category: 'settings',
-    detailledUsage: '**FLAGS**\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`\n\n`{prefix}setfarewell raw` Will return the raw message(without flags replaced) that has been set'
+    detailedUsage: '**FLAGS**\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`\n\n`{prefix}setfarewell raw` Will return the raw message(without flags replaced) that has been set'
 };

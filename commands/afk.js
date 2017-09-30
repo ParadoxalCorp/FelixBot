@@ -28,7 +28,6 @@ exports.run = async(client, message) => {
 exports.conf = {
     guildOnly: false,
     disabled: false,
-    permLevel: 1,
     aliases: []
 }
 exports.help = {
@@ -36,5 +35,5 @@ exports.help = {
     usage: 'afk im afk dont bother kthx',
     description: 'Set your afk status, if your afk status is on, Felix will send your fancy afk status to everyone who mention you',
     category: 'generic',
-    detailledUsage: '`{prefix}afk` If on, this will disable your afk status, else it will enable your afk status\n`{prefix}afk im sleeping` Will update your afk status to `im sleeping`'
+    detailedUsage: '`{prefix}afk` If on, this will disable your afk status, else it will enable your afk status\n`{prefix}afk im sleeping` Will update your afk status to `im sleeping`'
 }

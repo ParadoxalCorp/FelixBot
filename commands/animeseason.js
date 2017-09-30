@@ -158,7 +158,7 @@ exports.run = async(client, message) => {
             });
             //--------------------------On collector end-----------------------------------------------
             collector.on('end', async(collected, reason) => {
-                interactiveMessage.delete();
+                resolve(interactiveMessage.delete());
             });
         } catch (err) {
             reject(client.emit('commandFail', message, err));
@@ -170,7 +170,6 @@ exports.conf = {
     guildOnly: false,
     aliases: ["as"],
     disabled: false,
-    permLevel: 1
 };
 
 exports.help = {

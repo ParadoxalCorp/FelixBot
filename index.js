@@ -156,13 +156,14 @@ client.defaultGuildData = function(id) {
                 users: []
             },
         },
-        permissionsLevels: {
-            things: [
-                [],
-                [],
-                []
-            ],
-            globalLevel: "none"
+        permissions: {
+            users: [],
+            channels: [],
+            roles: [],
+            global: {
+                allowedCommands: ['generic*', 'misc*', 'fun*', 'image*', 'utility*'],
+                restrictedCommands: ['moderation*', 'settings*']
+            }
         },
         onEvent: {
             guildMemberAdd: {

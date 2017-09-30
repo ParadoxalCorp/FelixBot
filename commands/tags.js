@@ -211,7 +211,6 @@ exports.run = async(client, message) => {
 
 exports.conf = {
     disabled: false,
-    permLevel: 1,
     aliases: ['tag'],
     guildOnly: true
 }
@@ -220,5 +219,5 @@ exports.help = {
     description: 'You can create new tags, delete some or just take a look at all your fancy tags here !',
     usage: 'tags',
     category: 'misc',
-    detailledUsage: 'Tags are basically customized output, to run a tag, use `{prefix}t [tagname]`'
+    detailedUsage: 'Tags are basically customized output, to run a tag, use `{prefix}t [tagname]`'
 }

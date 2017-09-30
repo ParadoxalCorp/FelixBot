@@ -16,7 +16,6 @@ exports.run = async(client, message) => {
 }
 
 exports.conf = {
-    permLevel: 2,
     guildOnly: true,
     aliases: ["prefix"],
     disabled: false
@@ -26,5 +25,5 @@ exports.help = {
     description: 'Change Felix\'s prefix',
     usage: 'setprefix new prefix',
     category: 'settings',
-    detailledUsage: '`{prefix}setprefix wew.` Will set the prefix to `wew.`, so commands will look like `wew.ping`'
+    detailedUsage: '`{prefix}setprefix wew.` Will set the prefix to `wew.`, so commands will look like `wew.ping`'
 }
