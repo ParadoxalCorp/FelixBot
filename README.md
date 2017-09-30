@@ -12,7 +12,7 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 * [Commands](https://github.com/ParadoxOrigins/FelixBot/wiki/Generic)
 * [Invite link and support server](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#invite-link-and-support-server)
 * [Planned stuff](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#planned-stuff)
-* [Permissions system](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#level-system)
+* [Permissions system](https://github.com/ParadoxalCorp/FelixBot/blob/master/README.md#permissions-system)
 * [FAQ](https://github.com/ParadoxOrigins/FelixBot/wiki/FAQ)
 * [Installation](https://github.com/ParadoxOrigins/FelixBot/wiki/Linux)
 ## Features
