@@ -1,6 +1,6 @@
 {
     "name": "FelixBot",
-    "version": "2.0.0",
+    "version": "2.3.1",
     "description": "Felix, a Discord bot",
     "main": "index.js",
     "scripts": {
@@ -10,7 +10,8 @@
         "url": "https://github.com/ParadoxalCorp/FelixBot"
     },
     "author": "ParadoxOrigins",
-    "license": "APACHE 2.0",
+    "contributors": "['Niputi']",
+    "license": "Apache-2.0",
     "bugs": {
         "url": "https://github.com/ParadoxalCorp/FelixBot/issues"
     },
@@ -24,7 +25,6 @@
         "mal-scraper": "^1.4.1",
         "moment": "^2.17.1",
         "node-gyp": "^3.6.2",
-        "node-wit": "^4.3.0",
         "npm-module-search": "^2.0.0",
         "popura": "^1.2.5",
         "rapidapi-connect": "0.0.4",

@@ -11,8 +11,7 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 * [Features](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#features)
 * [Commands](https://github.com/ParadoxOrigins/FelixBot/wiki/Generic)
 * [Invite link and support server](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#invite-link-and-support-server)
-* [Planned stuff](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#planned-stuff)
-* [Permissions system](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#permissions-system)
+* [Permissions system](https://github.com/ParadoxalCorp/FelixBot/blob/master/README.md#permissions-system)
 * [FAQ](https://github.com/ParadoxOrigins/FelixBot/wiki/FAQ)
 * [Installation](https://github.com/ParadoxOrigins/FelixBot/wiki/Linux)
 ## Features
@@ -30,11 +29,6 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 [invite link](https://discordapp.com/oauth2/authorize?&client_id=327144735359762432&scope=bot&permissions=2146950271)
 
 [Support server](https://discord.gg/Ud49hQJ)
-### Planned stuff
-* Better interface => WIP
-* Slots => WIP
-* Points system, earnable in games, with a leaderboard => WIP
-* Some stuff that im still not sure about so i wont put it here *shrug*
 # Permissions system
 * How does the permissions system work?
 ----

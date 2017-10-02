@@ -1,7 +1,55 @@
+# Update 2.3.0 Changelog
+## New stuff/Improvements
+* Added `rps`, basic game but another way to win some points ^
+* You can now use partial types name in the `image` command
+
+## Fixes (tbh, this update is kinda just a big fix)
+* Fixed a lot of grammar
+* Fixed negative values possible in games as well as in transfer which was giving you the possibility to litterally get endless points
+* Fixed greetings and farewell error catch which means now the `Status` thing is finally working
+
+# Update 2.2.0 Changelog
+## Improvements
+* `slots` now is a bit kinder when you lose, there is less chances to lose more than what you gambled
+* `t`is now a command, still only run tags, but now as a help, i guess *shrug*
+* Now if you edit your last message to a command, like if you made a typo, it will work owo
+
+## Fixes
+* Fixed `animeseason` not updating the list directly after a new search
+* Fixed some grammar
+
+## Backend breaking changes
+* Moved `malsearch.js` to the new `modules` folder inside the `modules` folder *modulesception*
+* Deleted `tagHandler.js` since the `t` command replace it
+* Added `logger.js` by `Aetheryx#2222` to the custom modules
+* Improved `getUserResolvable.js`, search is now smarter, however, global search still shouldn't be used atm
+* Removed logs to the console in `loadReminders.js` and `updateDatabase.js`
+* Added the event `messageUpdate.js` which emit a new message event if the edited message is the latest of the user
+* Added draft logs to the `ready.js` event
+* Added a custom modules loader and draft logs in the core
+
+# Update 2.1.0 Changelog
+## New commands/improvements
+* Added `transfer`
+* Added back `urban`, `animeseason`, `npm`, `mdn` and `invite`
+
+## Bugs fixes
+* Fixed the pageResults() module and all its dependents
+* Fixed love not working correctly when using an id as user resolvable
+
+# Update 2.0.2 Changelog
+
+## New commands
+* `mdn` Updated to the 2.0 structure, works like the old one.
+* `npm` Updated to the 2.0 structure, works like the old one.
+
+## Bugs fixed
+* Fixed commands not working in direct messages
+
 # Update 2.0 Changelog
 
 This changelog contains all changes, including the backend stuff for later references, 
-The actual notable parts are the [commands](https://github.com/ParadoxOrigins/FelixBot/blob/indev/changelog.md#commandes-changes) and [bugs fixes](https://github.com/ParadoxalCorp/FelixBot/blob/indev/changelog.md#bugs-fixes)
+The actual notable parts are the [commands](https://github.com/ParadoxOrigins/FelixBot/blob/master/changelog.md#commandes-changes) and [bugs fixes](https://github.com/ParadoxalCorp/FelixBot/blob/master/changelog.md#bugs-fixes)
 
 `v2 panel system` refer to interactive commands working with reactions
 
@@ -77,6 +125,10 @@ Things marked with *** might change before the official release or soon after
 ### Commands not yet rewritten
 * `trivia`
 * `animeseason`
+* `invite`
+* `mdn`
+* `npm`
+* `urban`
 
 ### Removed commands
 Commands marked with * might be added back later
