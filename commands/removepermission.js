@@ -31,6 +31,7 @@ exports.run = async(client, message) => {
                     let userPos = guildEntry.permissions.users.findIndex(u => u.id === m.id);
                     if (guildEntry.permissions.users[userPos].allowedCommands.includes(permission[0])) guildEntry.permissions.users[userPos].allowedCommands.splice(guildEntry.permissions.users[userPos].allowedCommands.findIndex(ac => ac === permission[0]), 1);
                     if (guildEntry.permissions.users[userPos].restrictedCommands.includes(permission[0])) guildEntry.permissions.users[userPos].restrictedCommands.splice(guildEntry.permissions.users[userPos].restrictedCommands.findIndex(rc => rc === permission[0]), 1);
+                    if (guildEntry.permissions.users[userPos].allowedCommands.length === 0 && guildEntry.permissions.users[userPos].restrictedCommands.length === 0) guildEntry.permissions.users.splice(userPos, 1);
                 });
                 client.guildData.set(message.guild.id, guildEntry);
                 resolve(await message.channel.send(`:white_check_mark: Alright, \`${permission[0]}\` has been removed from the user(s) **${targets.map(u => u.tag).join(', ')}**`));
@@ -42,6 +43,7 @@ exports.run = async(client, message) => {
                     let channelPos = guildEntry.permissions.channels.findIndex(c => c.id === gc.id);
                     if (guildEntry.permissions.channels[channelPos].allowedCommands.includes(permission[0])) guildEntry.permissions.channels[channelPos].allowedCommands.splice(guildEntry.permissions.channels[channelPos].allowedCommands.findIndex(ac => ac === permission[0]), 1);
                     if (guildEntry.permissions.channels[channelPos].restrictedCommands.includes(permission[0])) guildEntry.permissions.channels[channelPos].restrictedCommands.splice(guildEntry.permissions.channels[channelPos].restrictedCommands.findIndex(rc => rc === permission[0]), 1);
+                    if (guildEntry.permissions.channels[channelPos].allowedCommands.length === 0 && guildEntry.permissions.channels[channelPos].restrictedCommands.length === 0) guildEntry.permissions.channels.splice(channelPos, 1);
                 });
                 client.guildData.set(message.guild.id, guildEntry);
                 resolve(await message.channel.send(`:white_check_mark: Alright, \`${permission[0]}\` has been removed from the channel(s) **${targets.map(c => c.name).join(', ')}**`));
@@ -53,6 +55,7 @@ exports.run = async(client, message) => {
                     let rolePos = guildEntry.permissions.roles.findIndex(r => r.id === gr.id);
                     if (guildEntry.permissions.roles[rolePos].allowedCommands.includes(permission[0])) guildEntry.permissions.roles[rolePos].allowedCommands.splice(guildEntry.permissions.roles[rolePos].allowedCommands.findIndex(ac => ac === permission[0]), 1);
                     if (guildEntry.permissions.roles[rolePos].restrictedCommands.includes(permission[0])) guildEntry.permissions.roles[rolePos].restrictedCommands.splice(guildEntry.permissions.roles[rolePos].restrictedCommands.findIndex(rc => rc === permission[0]), 1);
+                    if (guildEntry.permissions.roles[rolePos].allowedCommands.length === 0 && guildEntry.permissions.roles[rolePos].restrictedCommands.length === 0) guildEntry.permissions.roles.splice(rolePos, 1);
                 });
                 client.guildData.set(message.guild.id, guildEntry);
                 resolve(await message.channel.send(`:white_check_mark: Alright, \`${permission[0]}\` has been removed from the role(s) **${targets.map(c => c.name).join(', ')}**`));

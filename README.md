@@ -11,7 +11,6 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 * [Features](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#features)
 * [Commands](https://github.com/ParadoxOrigins/FelixBot/wiki/Generic)
 * [Invite link and support server](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#invite-link-and-support-server)
-* [Planned stuff](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#planned-stuff)
 * [Permissions system](https://github.com/ParadoxalCorp/FelixBot/blob/master/README.md#permissions-system)
 * [FAQ](https://github.com/ParadoxOrigins/FelixBot/wiki/FAQ)
 * [Installation](https://github.com/ParadoxOrigins/FelixBot/wiki/Linux)
@@ -30,7 +29,7 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 [invite link](https://discordapp.com/oauth2/authorize?&client_id=327144735359762432&scope=bot&permissions=2146950271)
 
 [Support server](https://discord.gg/Ud49hQJ)
-### Permissions system
+# Permissions system
 * How does the permissions system work?
 ----
 Before diving into how it works, here's some rules that you should know:
