@@ -9,7 +9,6 @@ module.exports = async(client) => {
             let guildUpdateTime = Date.now();
             try {
                 client.userData.forEach(function(user) {
-                    user = JSON.parse(user);
                     var defaultUserData = client.defaultUserData(user.id);
                     var userKeys = Object.keys(user),
                         defaultKeys = Object.keys(defaultUserData);
@@ -35,7 +34,6 @@ module.exports = async(client) => {
             }
             try {
                 client.guildData.forEach(function(guild) {
-                    guild = JSON.parse(guild);
                     var defaultGuildData = client.defaultGuildData(guild.id);
                     var guildKeys = Object.keys(guild),
                         defaultKeys = Object.keys(defaultGuildData);
