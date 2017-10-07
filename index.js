@@ -258,11 +258,7 @@ process.on("error", err => {
         });
     }
     await eventsLoading();
-    client.logger.draft('database', 'create', 'Waiting for the database to be fully loaded...')
-    setTimeout(async function() {
-        await client.loadReminders(); //Launch reminders loading
-    }, 7500); //Wait for the db to be properly loaded
-
+    client.logger.draft('database', 'create', 'Waiting for the database to be fully loaded...');
     setTimeout(async function() {
         client.logger.draft('database', 'edit', 'Database load complete, launching database auto-update')
         let dbUpdate = await client.updateDatabase(client); //Update database
