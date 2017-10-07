@@ -8,11 +8,11 @@ module.exports = async(client) => {
             let userUpdateTime = Date.now();
             let guildUpdateTime = Date.now();
             try {
-                client.userData.forEach(function(user) {
-                    var defaultUserData = client.defaultUserData(user.id);
-                    var userKeys = Object.keys(user),
+                client.userData.forEach(user => {
+                    let defaultUserData = client.defaultUserData(user.id);
+                    let userKeys = Object.keys(user),
                         defaultKeys = Object.keys(defaultUserData);
-                    userKeys.forEach(function(key) {
+                    userKeys.forEach(key => {
                         if (typeof user[key] === "object" && defaultUserData[key]) {
                             let userPropertyObject = Object.keys(user[key]),
                                 defaultPropertyObject = Object.keys(defaultUserData[key]);
@@ -33,11 +33,11 @@ module.exports = async(client) => {
                 client.Raven.captureException(err);
             }
             try {
-                client.guildData.forEach(function(guild) {
-                    var defaultGuildData = client.defaultGuildData(guild.id);
-                    var guildKeys = Object.keys(guild),
+                client.guildData.forEach(guild => {
+                    let defaultGuildData = client.defaultGuildData(guild.id);
+                    let guildKeys = Object.keys(guild),
                         defaultKeys = Object.keys(defaultGuildData);
-                    guildKeys.forEach(function(key) {
+                    guildKeys.forEach(key => {
                         if (typeof guild[key] === "object" && defaultGuildData[key]) {
                             let guildPropertyObject = Object.keys(guild[key]),
                                 defaultPropertyObject = Object.keys(defaultGuildData[key]);
