@@ -4,9 +4,9 @@ exports.run = async(client, message) => {
             let args = message.content.split(/\s+/);
             args.shift();
             if (args[0]) { //-----------------------------------------------------------Get specified tags info-----------------------------------------------------------------
-                let filteredTags = client.tagData.filter(t => JSON.parse(t).privacy === "Public" || JSON.parse(t).guild === message.guild.id || JSON.parse(t).author === message.author.id);
+                let filteredTags = client.tagData.filter(t => t.privacy === "Public" || t.guild === message.guild.id || t.author === message.author.id);
                 if (!filteredTags.get(args[0])) return resolve(await message.channel.send(':x: That tag does not exist'));
-                const tag = JSON.parse(filteredTags.get(args[0]));
+                const tag = filteredTags.get(args[0]);
                 var embedFields = [];
                 embedFields.push({
                     name: ":bookmark: Tag name",
@@ -55,7 +55,7 @@ exports.run = async(client, message) => {
                     }
                 }));
             } //---------------------------------------------------------------------------------Get tags list--------------------------------------------------------
-            let filteredTags = client.tagData.filterArray(t => JSON.parse(t).privacy == 'Public' || JSON.parse(t).guild == message.guild.id || JSON.parse(t).author == message.author.id).map(t => JSON.parse(t).name);
+            let filteredTags = client.tagData.filterArray(t => t.privacy == 'Public' || t.guild == message.guild.id || t.author == message.author.id).map(t => t.name);
             if (!filteredTags.length) return resolve(await message.channel.send(":x: Seems like there's nothing to show yet"));
             let pageResults = await client.pageResults({
                 results: filteredTags

@@ -1,7 +1,7 @@
 exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const userTags = client.tagData.filter(t => JSON.parse(t).author == message.author.id);
+            const userTags = client.tagData.filter(t => t.author == message.author.id);
             let modes = ['Navigation mode, you can enter the edition mode with :heavy_plus_sign:', 'Edition mode, you can write down the name of the tag to add (only first word will be used)'];
             const mainObject = function(page, embedFields, mode) {
                 return {
@@ -16,9 +16,8 @@ exports.run = async(client, message) => {
                 }
             }
             let tagsFields = [];
-            userTags.forEach(function(tag) { //Build tags fields
+            userTags.forEach(tag => { //Build tags fields
                 let guild = ':x:';
-                tag = JSON.parse(tag);
                 if (tag.guild && client.guilds.has(tag.guild)) guild = client.guilds.get(tag.guild).name;
                 tagsFields.push([{
                     name: ':pencil2: Name',
@@ -69,18 +68,12 @@ exports.run = async(client, message) => {
                             await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
                         }
                     } else if (r.emoji.name === '◀') { //Move to previous page
-                        if (page === 0) {
-                            page = tagsFields.length - 1;
-                        } else {
-                            page--;
-                        }
+                        if (page === 0) page = tagsFields.length - 1;
+                        else page--;
                         await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
                     } else if (r.emoji.name === '▶') { //Move to next page
-                        if (page === tagsFields.length - 1) {
-                            page = 0;
-                        } else {
-                            page++;
-                        }
+                        if (page === tagsFields.length - 1) page = 0;
+                        else page++;
                         await interactiveMessage.edit(mainObject(page, tagsFields, modes[0]));
                     } else if (r.emoji.name === '⏭') { //Move to last page
                         if (!page !== tagsFields.length - 1) { //Dont edit if already at last page

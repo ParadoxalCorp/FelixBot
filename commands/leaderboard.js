@@ -12,9 +12,9 @@ exports.run = async(client, message) => {
             let glbPointsLeaderboard = client.userData.filterArray(u => u.dataPrivacy.publicPoints && client.users.has(u.id)).sort((a, b) => b.generalSettings.points - a.generalSettings.points);
             const position = function(id, target) {
                 let userPosition = target.findIndex(e => e.id === id);
-                if (userPosition === 0) return ":trophy:";                   
-                else if (userPosition === 1) return ":second_place:";                   
-                else if (userPosition === 2)  return ":third_place:"
+                if (userPosition === 0) return ":trophy:";
+                else if (userPosition === 1) return ":second_place:";
+                else if (userPosition === 2) return ":third_place:"
                 else return userPosition + 1;
             }
             let localExpLeaderboard = {
@@ -23,7 +23,7 @@ exports.run = async(client, message) => {
                     color: 3447003,
                     description: leaderboard.slice(0, 10).map(u => `#${position(u.id, leaderboard)} - **${message.guild.members.get(u.id).user.tag}**\nLevel: ${u.level} | Exp: ${Math.round(u.expCount)}`).join("\n\n"),
                     footer: {
-                        text: `Your position: #${leaderboard.findIndex(function (element) {return element.id === message.author.id}) + 1}/${leaderboard.length}`
+                        text: `Your position: #${leaderboard.findIndex(element => element.id === message.author.id) + 1}/${leaderboard.length}`
                     },
                     thumbnail: {
                         url: message.guild.iconURL
@@ -49,7 +49,7 @@ exports.run = async(client, message) => {
                     color: 3447003,
                     description: pointsLeaderboard.slice(0, 10).map(u => `#${position(u.id, pointsLeaderboard)} - **${message.guild.members.get(u.id).user.tag}**\nPoints: ${u.generalSettings.points}`).join("\n\n"),
                     footer: {
-                        text: `Your position: #${pointsLeaderboard.findIndex(function (element) {return element.id === message.author.id}) + 1}/${pointsLeaderboard.length}`
+                        text: `Your position: #${pointsLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${pointsLeaderboard.length}`
                     },
                     thumbnail: {
                         url: message.guild.iconURL
@@ -62,7 +62,7 @@ exports.run = async(client, message) => {
                     color: 3447003,
                     description: glbLeaderboard.slice(0, 10).map(u => `#${position(u.id, glbLeaderboard)} - **${client.users.get(u.id).tag}**\nLevel: ${u.experience.level} | Exp: ${Math.round(u.experience.expCount)}`).join("\n\n"),
                     footer: {
-                        text: `Your position: #${glbLeaderboard.findIndex(function (element) {return element.id === message.author.id}) + 1}/${glbLeaderboard.length}`
+                        text: `Your position: #${glbLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${glbLeaderboard.length}`
                     },
                     thumbnail: {
                         url: client.user.avatarURL
@@ -75,7 +75,7 @@ exports.run = async(client, message) => {
                     color: 3447003,
                     description: glbLoveLeaderboard.slice(0, 10).map(u => `#${position(u.id, glbLoveLeaderboard)} - **${client.users.get(u.id).tag}**\nLove points: ${u.generalSettings.lovePoints}`).join("\n\n"),
                     footer: {
-                        text: `Your position: #${glbLoveLeaderboard.findIndex(function (element) {return element.id === message.author.id}) + 1}/${glbLoveLeaderboard.length}`
+                        text: `Your position: #${glbLoveLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${glbLoveLeaderboard.length}`
                     },
                     thumbnail: {
                         url: client.user.avatarURL
@@ -88,7 +88,7 @@ exports.run = async(client, message) => {
                     color: 3447003,
                     description: glbPointsLeaderboard.slice(0, 10).map(u => `#${position(u.id, glbPointsLeaderboard)} - **${client.users.get(u.id).tag}**\nPoints: ${u.generalSettings.points}`).join("\n\n"),
                     footer: {
-                        text: `Your position: #${glbPointsLeaderboard.findIndex(function (element) {return element.id === message.author.id}) + 1}/${glbPointsLeaderboard.length}`
+                        text: `Your position: #${glbPointsLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${glbPointsLeaderboard.length}`
                     },
                     thumbnail: {
                         url: client.user.avatarURL
@@ -99,9 +99,7 @@ exports.run = async(client, message) => {
             const collector = interactiveMessage.createReactionCollector((reaction, user) => user.id === message.author.id);
             let pageReactions = ["⭐", "❤", "🎀", "🌐", "❌"];
             if (localExpLeaderboard.length > 0 && guildEntry.generalSettings.levelSystem.enabled) pageReactions.unshift();
-            for (let i = 0; i < pageReactions.length; i++) {
-                await interactiveMessage.react(pageReactions[i]);
-            }
+            for (let i = 0; i < pageReactions.length; i++) await interactiveMessage.react(pageReactions[i]);
             var timeout = setTimeout(async function() {
                 collector.stop("timeout");
             }, 120000);
@@ -119,27 +117,19 @@ exports.run = async(client, message) => {
                                     }
                                 });
                             } else await interactiveMessage.edit(localExpLeaderboard);
-                        } else {
-                            await interactiveMessage.edit(globalExpLeaderboard);
-                        }
+                        } else await interactiveMessage.edit(globalExpLeaderboard);
                         page = 'exp';
                     }
                 } else if (r.emoji.name === "❤") { //Get love leaderboard
                     if (page !== 'love') { //Dont edit for nothing
-                        if (!global) {
-                            await interactiveMessage.edit(localLoveLeaderboard);
-                        } else {
-                            await interactiveMessage.edit(globalLoveLeaderboard);
-                        }
+                        if (!global) await interactiveMessage.edit(localLoveLeaderboard);
+                        else await interactiveMessage.edit(globalLoveLeaderboard);
                         page = 'love';
                     }
                 } else if (r.emoji.name === "🎀") { //Get points leaderboard
                     if (page !== 'points') { //Dont edit for nothing
-                        if (!global) {
-                            await interactiveMessage.edit(localPointsLeaderboard);
-                        } else {
-                            await interactiveMessage.edit(globalPointsLeaderboard);
-                        }
+                        if (!global) await interactiveMessage.edit(localPointsLeaderboard);
+                        await interactiveMessage.edit(globalPointsLeaderboard);
                         page = 'points';
                     }
                 } else if (r.emoji.name === "🌐") { //Change global
@@ -169,7 +159,7 @@ exports.run = async(client, message) => {
                 }, 120000); //Restart the timeout
             });
             collector.on('end', async(collected, reason) => { //On collector end
-                return resolve(await interactiveMessage.delete());
+                resolve(await interactiveMessage.delete());
             });
         } catch (err) {
             reject(client.emit('commandFail', message, err));
