@@ -6,9 +6,7 @@ exports.run = async(client, message) => {
             args.shift();
             const tagCommand = args[0];
             //Search for the tags through the filtered list
-            if (!client.tagData.filter(t => (JSON.parse(t).privacy === "Public") || JSON.parse(t).guild === message.guild.id || (JSON.parse(t).author === message.author.id)).get(tagCommand)) {
-                return resolve(await message.channel.send(":x: That tag does not exist or is private"));
-            }
+            if (!client.tagData.filter(t => t.privacy === "Public" || t.guild === message.guild.id || t.author === message.author.id).get(tagCommand)) return resolve(await message.channel.send(":x: That tag does not exist or is private"));
             //"Run" the tag
             resolve(await message.channel.send(client.tagData.get(tagCommand).content));
         } catch (err) {
