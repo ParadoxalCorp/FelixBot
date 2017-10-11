@@ -119,13 +119,13 @@ exports.run = async(client, message) => {
                         }
                         if (tagName) {
                             isCollecting = false;
-                            if (tagName.length > 84) {
-                                let tooLongName = await message.channel.send(":x: A tag name can't exceed 84 characters");
+                            if (tagName.length > 48) {
+                                let tooLongName = await message.channel.send(":x: A tag name can't exceed 48 characters");
                                 tooLongName.delete(5000);
                             } else if (client.tagData.has(tagName)) {
                                 let tagAlreadyIn = await message.channel.send(":x: This tag already exist !");
                                 tagAlreadyIn.delete(5000);
-                            } else if (tagName.length <= 84 && !client.tagData.has(tagName)) {
+                            } else if (tagName.length <= 48 && !client.tagData.has(tagName)) {
                                 let tagContent;
                                 let enterContent = await message.channel.send({
                                     embed: {
@@ -213,4 +213,28 @@ exports.help = {
     usage: 'tags',
     category: 'misc',
     detailedUsage: 'Tags are basically customized output, to run a tag, use `{prefix}t [tagname]`'
+}
+exports.shortcut = {
+    triggers: new Map([
+        ['create_tag', {
+            args: 3, //Since '|' is considered as an arg
+            script: 'createTag.js'
+        }],
+        ['delete_tag', {
+            args: 1,
+            script: 'deleteTag.js'
+        }],
+        ['edit_tag', {
+            args: 3,
+            script: 'editTag.js'
+        }],
+        ['edit_tag_privacy', {
+            args: 3,
+            script: 'editTagPrivacy.js'
+        }],
+        ['edit_tag_name', {
+            args: 3,
+            script: 'editTagName.js'
+        }]
+    ])
 }

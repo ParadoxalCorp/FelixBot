@@ -92,3 +92,16 @@ exports.help = {
     usage: 'settings',
     category: 'moderation'
 }
+exports.shortcut = {
+    triggers: new Map([
+        ['reset_prefix', {
+            script: 'resetPrefix.js'
+        }],
+        ['reset_permissions', {
+            script: 'resetPermissions.js'
+        }],
+        ['reset_everything', {
+            script: 'resetEverything.js'
+        }]
+    ])
+}

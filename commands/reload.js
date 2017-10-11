@@ -31,10 +31,22 @@ exports.run = async(client, message) => {
             cmd.conf.aliases.forEach(alias => {
                 client.aliases.set(alias, cmd.help.name);
             });
-            return resolve(await message.channel.send(`:white_check_mark: \`${command}\` has been reloaded`))
+            let shortcutsReloaded = "";
+            if (cmd.shortcut) {
+                let i = 0;
+                const readdir = require("fs-extra").readdir;
+                let cmdShortcuts = await readdir(`./modules/shortcuts/${cmd.help.name}`);
+                cmdShortcuts.forEach(async(s) => {
+                    await delete require.cache[require.resolve(`./modules/shortcuts/${cmd.help.name}/${s}`)];
+                    let shortcut = require(`./modules/shortcuts/${cmd.help.name}/${s}`);
+                    i++;
+                });
+                shortcutsReloaded = `and ${i} shortcuts have been reloaded out of ${cmdShortcuts.length}`;
+            }
+            resolve(await message.channel.send(`:white_check_mark: \`${command}\` has been reloaded ${shortcutsReloaded}`))
         } catch (err) {
             console.error(err);
-            return reject(await message.channel.send(":x: An error occurred, logged the stuff to the console fam"));
+            reject(await message.channel.send(":x: An error occurred, logged the stuff to the console fam"));
         }
     });
 }

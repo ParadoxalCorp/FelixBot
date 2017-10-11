@@ -15,7 +15,7 @@ module.exports = async(client, message) => {
         if (commandFile.conf.disabled !== false) return await message.channel.send(":x: Sorry but this command is disabled for now\n**Reason:** " + commandFile.conf.disabled);
         try {
             await commandFile.run(client, message, args);
-            return client.cmdsUsed++;
+            client.cmdsUsed++;
         } catch (err) {
             console.error(err);
             client.Raven.captureException(err);
@@ -35,16 +35,21 @@ module.exports = async(client, message) => {
         if (client.commands.get(supposedCommand)) command = client.commands.get(supposedCommand).help.name;
         else if (client.commands.get(client.aliases.get(supposedCommand))) command = client.commands.get(client.aliases.get(supposedCommand)).help.name;
         const commandFile = require(`../commands/${command}.js`);
-        if (commandFile.conf.disabled !== false) {
-            return message.channel.send(":x: Sorry but this command is disabled for now\n**Reason:** " + commandFile.conf.disabled);
-        }
+        if (commandFile.conf.disabled !== false) return message.channel.send(":x: Sorry but this command is disabled for now\n**Reason:** " + commandFile.conf.disabled);
         const allowed = await require(`../handlers/permissionsChecker.js`)(client, message, client.commands.get(command));
         if (allowed) { //If the user is allowed
             try {
-                await commandFile.run(client, message);
+                //Shortcuts
+                if (commandFile.shortcut && args.filter(a => commandFile.shortcut.triggers.has(a.toLowerCase())).length > 0) {
+                    let trigger = args.filter(a => commandFile.shortcut.triggers.has(a.toLowerCase()))[0];
+                    //Handle missing argument here to save a line in every shortcut script
+                    if (commandFile.shortcut.triggers.get(trigger).args && (args.length - 1) < commandFile.shortcut.triggers.get(trigger).args) return await message.channel.send(`:x: You didn't specified any or not enough arguments`);
+                    await require(`../modules/shortcuts/${command}/${commandFile.shortcut.triggers.get(trigger).script}`)(client, message, args);
+                }
+                //Default command 
+                else await commandFile.run(client, message);
             } catch (err) {
-                console.error(err);
-                client.Raven.captureException(err);
+                client.emit('commandFail', message, err);
             } finally {
                 client.commands.get(command).uses++;
                 client.cmdsUsed++;
