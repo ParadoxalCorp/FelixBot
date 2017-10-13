@@ -190,29 +190,30 @@ client.defaultGuildData = function(id) {
 
 process.on('uncaughtException', (err) => {
     try {
+        Raven.captureException(err);
+    } catch (ravenErr) {
+        console.error(ravenErr)
+    } finally {
         console.error(err);
-    } catch (err) {
-        return;
     }
 });
 process.on("unhandledRejection", err => {
+    if (err.code === 50013) return; //Missing permissions    
     try {
-        console.error(err);
-        if (err.message === "Missing Permissions") {
-            return;
-        }
         Raven.captureException(err);
-    } catch (err) {
-        return;
+    } catch (ravenErr) {
+        console.error(ravenErr)
+    } finally {
+        console.error(err);
     }
 });
 process.on("error", err => {
     try {
+        Raven.captureException(err);
+    } catch (ravenErr) {
+        console.error(ravenErr);
+    } finally {
         console.error(err);
-        client.channels.get(client.errorLog).send("**Error: " + err + err.stack);
-    } catch (err) {
-        console.error(err);
-        return;
     }
 });
 //require node 8 or higher

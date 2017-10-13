@@ -171,3 +171,20 @@ exports.help = {
     category: 'settings',
     detailedUsage: '\n**FLAGS**\n`%USER%` The user that joined the server, will look like `@Bobby`\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`\n\n`{prefix}setgreetings raw` Will return the raw message(without flags replaced) that has been set'
 };
+exports.shortcut = {
+    triggers: new Map([
+        ['enable_greetings', {
+            script: 'enableGreetings.js',
+            help: 'Enable the greetings'
+        }],
+        ['disable_greetings', {
+            script: 'disableGreetings.js',
+            help: `Disable the greetings(but keep the current settings)`
+        }],
+        ['set_target', {
+            script: 'setTarget.js',
+            args: 1,
+            help: `Set the target of greetings, use \`channel_name\` to target a channel or \`dm\` to target the new member direct messages`
+        }]
+    ])
+}

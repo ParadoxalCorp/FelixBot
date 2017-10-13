@@ -218,23 +218,29 @@ exports.shortcut = {
     triggers: new Map([
         ['create_tag', {
             args: 3, //Since '|' is considered as an arg
-            script: 'createTag.js'
+            script: 'createTag.js',
+            help: `Create a new tag, correct syntax should be \`create_tag [new_tag_name] | [new_tag_content]\``
         }],
         ['delete_tag', {
             args: 1,
-            script: 'deleteTag.js'
+            script: 'deleteTag.js',
+            help: `Delete one of your tags, correct syntax should be \`delete_tag [tag_name]\``
+
         }],
         ['edit_tag', {
             args: 3,
-            script: 'editTag.js'
+            script: 'editTag.js',
+            help: `Edit one of your tags, correct syntax should be \`edit_tag [tag_name] | [new_tag_content]\``
         }],
         ['edit_tag_privacy', {
             args: 3,
-            script: 'editTagPrivacy.js'
+            script: 'editTagPrivacy.js',
+            help: `Edit the privacy of one of your tags, correct syntax should be \`edit_tag_privacy [tag_name] | ["Public"/"Private"]\``
         }],
         ['edit_tag_name', {
             args: 3,
-            script: 'editTagName.js'
+            script: 'editTagName.js',
+            help: `Edit the name of one of your tags, correct syntax should be \`edit_tag_name [tag_name] | [new_tag_name]\``
         }]
     ])
 }

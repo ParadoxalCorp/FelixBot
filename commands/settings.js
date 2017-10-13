@@ -95,13 +95,16 @@ exports.help = {
 exports.shortcut = {
     triggers: new Map([
         ['reset_prefix', {
-            script: 'resetPrefix.js'
+            script: 'resetPrefix.js',
+            help: `Reset the prefix to the default prefix`
         }],
         ['reset_permissions', {
-            script: 'resetPermissions.js'
+            script: 'resetPermissions.js',
+            help: `Reset the permissions to the default ones`
         }],
         ['reset_everything', {
-            script: 'resetEverything.js'
+            script: 'resetEverything.js',
+            help: `Wipe out all your guild-related data, that includes prefix, levels, permissions...`
         }]
     ])
 }
