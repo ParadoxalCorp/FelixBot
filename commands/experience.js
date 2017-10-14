@@ -10,7 +10,7 @@ exports.run = async(client, message) => {
                 const mainObject = function(page, embedFields, mode) {
                     return {
                         embed: {
-                            title: ':gear: Self-assignables roles settings',
+                            title: ':gear: Experience roles settings',
                             description: `Use the arrows to navigate through the roles list, you can use :heavy_plus_sign: to start typing the name of a role to add or :wastebasket: to remove one, you can end this command at any moment with :x:.\n**Note:** The upward and downward arrows are a quick way to change the level of the current role\n\n**Mode:** ${mode}`,
                             fields: embedFields[page],
                             footer: {
@@ -209,11 +209,7 @@ exports.run = async(client, message) => {
                     await interactiveMessage.delete();
                 });
             } else {
-                let possibleActions = ['[1] - Enabled: Disabled', '[2] - Privacy: Private', '[3] - Level up notifications: Disabled', '[4] - Reset experience of specified users', '[5] - Reset experience of everyone'];
-                if (guildEntry.generalSettings.levelSystem.enabled) possibleActions[0] = '[1] - Enabled: Enabled';
-                if (guildEntry.generalSettings.levelSystem.public) possibleActions[1] = '[2] - Privacy: Public';
-                if (guildEntry.generalSettings.levelSystem.levelUpNotif === 'dm') possibleActions[2] = '[3] - Level up notifications: Direct message';
-                else if (guildEntry.generalSettings.levelSystem.levelUpNotif === 'channel') possibleActions[2] = '[3] - Level up notifications: Channel';
+                let possibleActions = [`[1] - Enabled: ${guildEntry.generalSettings.levelSystem.enabled ? 'Enabled' : 'Disabled'}`, `[2] - Level up notifications: ${guildEntry.generalSettings.levelSystem.levelUpNotif ? guildEntry.generalSettings.levelSystem.levelUpNotif : 'Disabled'}`, '[3] - Reset experience of specified users', '[4] - Reset experience of everyone'];
                 let numberReactions = ["1⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣"];
                 let mainObject = function(actions) {
                     return {
@@ -228,9 +224,7 @@ exports.run = async(client, message) => {
                 }
                 const interactiveMessage = await message.channel.send(mainObject(possibleActions));
                 const mainCollector = interactiveMessage.createReactionCollector((reaction, user) => user.id === message.author.id);
-                for (let i = 0; i < possibleActions.length; i++) {
-                    await interactiveMessage.react(numberReactions[i]);
-                }
+                for (let i = 0; i < possibleActions.length; i++) await interactiveMessage.react(numberReactions[i]);
                 await interactiveMessage.react('✅');
                 await interactiveMessage.react('❌');
                 let timeout = setTimeout(function() {
@@ -247,16 +241,7 @@ exports.run = async(client, message) => {
                             possibleActions[0] = '[1] - Enabled: Enabled';
                         }
                         await interactiveMessage.edit(mainObject(possibleActions));
-                    } else if (r.emoji.name === numberReactions[1]) { //2 - Change privacy
-                        if (guildEntry.generalSettings.levelSystem.public) {
-                            guildEntry.generalSettings.levelSystem.public = false;
-                            possibleActions[1] = '[2] - Privacy: Private';
-                        } else {
-                            guildEntry.generalSettings.levelSystem.public = true;
-                            possibleActions[1] = '[2] - Privacy: Public';
-                        }
-                        await interactiveMessage.edit(mainObject(possibleActions));
-                    } else if (r.emoji.name === numberReactions[2]) { //3 - Change level up notifications methods
+                    } else if (r.emoji.name === numberReactions[1]) { //3 - Change level up notifications methods
                         if (!guildEntry.generalSettings.levelSystem.levelUpNotif) { //If disabled switch to dm
                             guildEntry.generalSettings.levelSystem.levelUpNotif = 'dm';
                             possibleActions[2] = '[3] - Level up notifications: Direct message';
@@ -268,7 +253,7 @@ exports.run = async(client, message) => {
                             possibleActions[2] = '[3] - Level up notifications: Disabled';
                         }
                         await interactiveMessage.edit(mainObject(possibleActions));
-                    } else if (r.emoji.name === numberReactions[3]) {
+                    } else if (r.emoji.name === numberReactions[2]) {
                         let notifMessage = await message.channel.send({
                             embed: {
                                 description: 'You can start writing the users, note that you need to confirm the changes or the reset wont work'
@@ -309,7 +294,7 @@ exports.run = async(client, message) => {
                             });
                             notifMessage.delete(5000);
                         }
-                    } else if (r.emoji.name === numberReactions[4]) {
+                    } else if (r.emoji.name === numberReactions[3]) {
                         guildEntry.generalSettings.levelSystem.users = [];
                         possibleActions[4] = '[5] - Warning: Confirming will wipe out the experience of all members';
                         await interactiveMessage.edit(mainObject(possibleActions));
@@ -363,4 +348,16 @@ exports.help = {
     description: 'Enter the activity experience system settings of this server, this allow you to do stuff like disable level up notifications for example',
     category: 'settings',
     detailedUsage: '`{prefix}experience rolelist` Will return a list of all roles sets to be given on level up in which you can add and remove some'
+}
+exports.shortcut = {
+    triggers: new Map([
+        ['enable', {
+            script: 'enable.js',
+            help: 'Enable the system, members will win xp by chatting'
+        }],
+        ['disable', {
+            script: 'disable.js',
+            help: 'Disable the system, current data are preserved'
+        }]
+    ])
 }

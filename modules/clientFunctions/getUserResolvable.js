@@ -29,17 +29,11 @@ module.exports = async(client, message) => {
             if (options.guildOnly) { //Only the provided guild members
                 for (let i = 0; i < potentialUserResolvables.length; i++) {
                     //------------------Resolve by ID--------------------
-                    if (!isNaN(potentialUserResolvables[i])) {
-                        if (message.guild.members.get(potentialUserResolvables[i])) {
-                            usersResolved.set(message.guild.members.get(potentialUserResolvables[i]).id, message.guild.members.get(potentialUserResolvables[i]).user);
-                        }
-                    }
+                    if (!isNaN(potentialUserResolvables[i]) && message.guild.members.get(potentialUserResolvables[i])) usersResolved.set(message.guild.members.get(potentialUserResolvables[i]), message.guild.members.get(potentialUserResolvables[i]).user);
                     //------------------Resolve by whole name--------------
                     let filterByWholeName = message.guild.members.filter(u => u.user.username === potentialUserResolvables[i]);
-                    if (filterByWholeName.size > 0) {
-                        usersResolved.set(filterByWholeName.first().id, filterByWholeName.first().user);
-                    } else {
-                        //-----------------Resolve by case-insensitive name or nickname-----------------------------------
+                    if (filterByWholeName.size > 0) usersResolved.set(filterByWholeName.first().id, filterByWholeName.first().user);
+                    else { //-----------------Resolve by case-insensitive name or nickname-----------------------------------
                         let filterUsers = message.guild.members.filter(u => u.user.username.toLowerCase() === potentialUserResolvables[i].toLowerCase() || (u.nickname && u.nickname.toLowerCase() === potentialUserResolvables[i].toLowerCase()));
                         if (filterUsers.size > 1) {
                             let i = 1;

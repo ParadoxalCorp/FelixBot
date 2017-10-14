@@ -3,19 +3,14 @@ module.exports = async(client, message) => {
     if (client.userData.get(message.author.id) && guildEntry.generalSettings.levelSystem.enabled) { //Activity level system
         if (!client.talkedRecently.has(message.author.id)) {
             var expGain = Math.round(1 * message.content.length / 4);
-            if (expGain > 100) { //no 500 points messages kthx
-                expGain = 100;
-            }
+            if (expGain > 75) expGain = 75; //no 500 points messages kthx
             const userEntry = client.userData.get(message.author.id);
             const getCurrentLevel = function(level, exp) { //--------Get level function-----------------
                 const exponent = 2;
                 const baseXP = 100;
                 const requiredXp = Math.floor(baseXP * (level ** exponent));
-                if (exp >= requiredXp) {
-                    return level + 1;
-                } else {
-                    return level;
-                }
+                if (exp >= requiredXp) return level + 1;
+                else return level;
             }
             userEntry.experience.expCount = userEntry.experience.expCount + expGain;
             userEntry.experience.level = getCurrentLevel(userEntry.experience.level, userEntry.experience.expCount + expGain);
@@ -34,30 +29,21 @@ module.exports = async(client, message) => {
                 guildEntry.generalSettings.levelSystem.users[userPos].level = curLevel;
                 client.guildData.set(message.guild.id, guildEntry);
                 let wonRoles = "";
-                if (guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel)) {
-                    if (message.guild.member(client.user).hasPermission("MANAGE_ROLES")) {
-                        const roles = guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel).filter(r => message.guild.roles.has(r.id) && !message.guild.member(message.author).roles.has(r.id)); // filter deleted roles and roles the user have from the list
-                        if (roles.length !== 0) {
-                            let roleIds = [];
-                            roles.forEach(function(role) {
-                                roleIds.push(role.id);
-                            });
-                            message.member.addRoles(roleIds);
-                            wonRoles += "and won the role(s) " + guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel).map(r => `\`${message.guild.roles.get(r.id).name}\``).join(", ");
-                        }
+                if (guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel) && message.guild.member(client.user).hasPermission("MANAGE_ROLES")) {
+                    const roles = guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel).filter(r => message.guild.roles.has(r.id) && !message.guild.member(message.author).roles.has(r.id)); // filter deleted roles and roles the user have from the list
+                    if (roles.length !== 0) {
+                        let roleIds = [];
+                        roles.forEach(role => { roleIds.push(role.id); });
+                        message.member.addRoles(roleIds);
+                        wonRoles += "and won the role(s) " + guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel).map(r => `\`${message.guild.roles.get(r.id).name}\``).join(", ");
                     }
                 }
-                if (message.guild.member(client.user).hasPermission("SEND_MESSAGES")) {
-                    if (guildEntry.generalSettings.levelSystem.levelUpNotif) {
-                        try {
-                            if (guildEntry.generalSettings.levelSystem.levelUpNotif === "channel") {
-                                await message.channel.send(`:tada: Congratulations **${message.author.username}**, you leveled up to level **${guildEntry.generalSettings.levelSystem.users[userPos].level}** ${wonRoles}`);
-                            } else {
-                                await message.author.send(`:tada: Congratulations **${message.author.username}**, you leveled up to level **${guildEntry.generalSettings.levelSystem.users[userPos].level}** ${wonRoles}`);
-                            }
-                        } catch (err) {
-                            console.error('An error occurred while trying to notif a user for their level up', err);
-                        }
+                if (message.guild.member(client.user).hasPermission("SEND_MESSAGES") && guildEntry.generalSettings.levelSystem.levelUpNotif) {
+                    try {
+                        if (guildEntry.generalSettings.levelSystem.levelUpNotif === "channel") await message.channel.send(`:tada: Congratulations **${message.author.username}**, you leveled up to level **${guildEntry.generalSettings.levelSystem.users[userPos].level}** ${wonRoles}`);
+                        else await message.author.send(`:tada: Congratulations **${message.author.username}**, you leveled up to level **${guildEntry.generalSettings.levelSystem.users[userPos].level}** ${wonRoles}`);
+                    } catch (err) {
+                        console.error('An error occurred while trying to notif a user for their level up', err);
                     }
                 }
             }

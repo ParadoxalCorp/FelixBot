@@ -24,9 +24,6 @@ exports.run = async(client, message) => {
                 let keys = Array.from(commandHelp.shortcut.triggers.keys());
                 shortcuts = keys.map(k => `\`${k}\` ${commandHelp.shortcut.triggers.get(k).help}`).join('\n');
             }
-            /*if (1 <= commandHelp.conf.aliases.length) aliases = commandHelp.conf.aliases.join(', ');
-            if (commandHelp.help.detailedUsage) detailedUsage = commandHelp.help.detailedUsage.replace(/\{prefix\}/gim, `${client.prefix}`);
-            if (commandHelp.help.parameters) parameters = commandHelp.help.parameters;*/
             resolve(await message.channel.send(`${commandHelp.help.description}\n**Parameters:** ${parameters}\n**Usage Example:**\n\`${client.prefix + commandHelp.help.usage}\`\n**Category:** \`${commandHelp.help.category}\`\n**Aliases:** \`${aliases}\`\n**Detailed usage:**\n${detailedUsage}\n**Shortcuts:**\n${shortcuts}`));
         } catch (err) {
             reject(client.emit('commandFail', message, err));

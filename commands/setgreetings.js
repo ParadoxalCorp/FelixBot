@@ -15,11 +15,8 @@ exports.run = async(client, message) => {
             else {
                 if (guildEntry.onEvent.guildMemberAdd.greetings.enabled) {
                     let greetingsChan = message.guild.channels.get(guildEntry.onEvent.guildMemberAdd.greetings.channel);
-                    if (greetingsChan) {
-                        method = "#" + greetingsChan.name;
-                    } else {
-                        method = "#deleted-channel"
-                    }
+                    if (greetingsChan) method = "#" + greetingsChan.name;
+                    else method = "#deleted-channel";
                 }
             }
             let embedDescription = guildEntry.onEvent.guildMemberAdd.greetings.embed;
@@ -41,20 +38,15 @@ exports.run = async(client, message) => {
             async function updateMainMessage() {
                 if (method !== "Direct message" && method !== "Disabled" && method !== "Edition enabled: You can write the channel name") {
                     let greetingsChan = message.guild.channels.get(guildEntry.onEvent.guildMemberAdd.greetings.channel);
-                    if (greetingsChan) {
-                        method = "#" + greetingsChan.name;
-                    } else {
-                        method = "#deleted-channel"
-                    }
+                    if (greetingsChan) method = "#" + greetingsChan.name;
+                    else method = "#deleted-channel";
                 }
                 greetings = greetings.replace(/\%USER\%/gim, `<@${message.author.id}>`).replace(/\%USERNAME\%/gim, `${message.author.username}`).replace(/\%USERTAG%/gim, `${message.author.tag}`).replace(/\%GUILD\%/gim, `${message.guild.name}`);
                 await interactiveMessage.edit(mainObject(status, method, greetings));
             }
             const mainCollector = interactiveMessage.createReactionCollector((reaction, user) => user.id === message.author.id);
             let mainReactions = ['📨', '📝', '📮', '✅', '❌'];
-            for (let i = 0; i < mainReactions.length; i++) {
-                await interactiveMessage.react(mainReactions[i]);
-            }
+            for (let i = 0; i < mainReactions.length; i++) await interactiveMessage.react(mainReactions[i]);
             let timeout = setTimeout(function() { //
                 mainCollector.stop('timeout');
             }, 120000);
@@ -185,6 +177,10 @@ exports.shortcut = {
             script: 'setTarget.js',
             args: 1,
             help: `Set the target of greetings, use \`channel_name\` to target a channel or \`dm\` to target the new member direct messages`
+        }],
+        ['set_greetings', {
+            script: 'setGreetings.js',
+            help: 'Set the greetings message, flags are allowed'
         }]
     ])
 }

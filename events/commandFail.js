@@ -1,6 +1,7 @@
 module.exports = async(client, message, err) => {
     try {
-        message.channel.send(":x: An error occurred");
+        let error = err.code === 50013 ? `:x: An error occurred(missing permissions)` : `:x: An error occurred`;
+        message.channel.send(error);
     } catch (error) {
         err.replyAttempt = error;
     }
