@@ -150,7 +150,6 @@ client.defaultGuildData = function(id) {
             prefix: client.database.prefix,
             levelSystem: {
                 enabled: true,
-                public: true,
                 levelUpNotif: false,
                 roles: [],
                 users: []
