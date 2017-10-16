@@ -34,21 +34,18 @@ exports.run = async(client, message) => {
                 if (message.guild && reply.reply.deletable) reply.reply.delete();
                 if (!type) return resolve(await message.channel.send(':x: That tag does not exist'));
                 //Request the image and return it in an embed
-                await unirest.get(`https://api.weeb.sh/images/random?type=${type}`)
-                    .header(`Authorization`, `Bearer ${client.database.wolkeImageKey}`)
-                    .end(async function(image) {
-                        if (!image.body || !image.body.url) return resolve(await message.channel.send(":x: No image found :v"));
-                        resolve(await message.channel.send({
-                            embed: {
-                                image: {
-                                    url: image.body.url
-                                },
-                                footer: {
-                                    text: `Powered by https://weeb.sh/`
-                                }
-                            }
-                        }));
-                    });
+                let image = await client.request(`https://api.weeb.sh/images/random?type=${type}`, { header: 'Authorization', value: `Bearer ${client.database.wolkeImageKey}` });
+                if (!image.body || !image.body.url) return resolve(await message.channel.send(":x: No image found :v"));
+                resolve(await message.channel.send({
+                    embed: {
+                        image: {
+                            url: image.body.url
+                        },
+                        footer: {
+                            text: `Powered by https://weeb.sh/`
+                        }
+                    }
+                }));
             } else { //If args resolve the arg to a type
                 //Resolve to type
                 let type;
@@ -58,21 +55,18 @@ exports.run = async(client, message) => {
                 } else type = args[0].toLowerCase();
                 if (!type) return resolve(await message.channel.send(":x: The image type you specified does not exist"));
                 //Request the image and return it in an embed
-                await unirest.get(`https://api.weeb.sh/images/random?type=${type}`)
-                    .header(`Authorization`, `Bearer ${client.database.wolkeImageKey}`)
-                    .end(async function(image) {
-                        if (!image.body || !image.body.url) return resolve(await message.channel.send(":x: No image found :v"));
-                        resolve(await message.channel.send({
-                            embed: {
-                                image: {
-                                    url: image.body.url
-                                },
-                                footer: {
-                                    text: `Powered by https://weeb.sh/`
-                                }
-                            }
-                        }));
-                    });
+                let image = await client.request(`https://api.weeb.sh/images/random?type=${type}`, { header: 'Authorization', value: `Bearer ${client.database.wolkeImageKey}` });
+                if (!image.body || !image.body.url) return resolve(await message.channel.send(":x: No image found :v"));
+                resolve(await message.channel.send({
+                    embed: {
+                        image: {
+                            url: image.body.url
+                        },
+                        footer: {
+                            text: `Powered by https://weeb.sh/`
+                        }
+                    }
+                }));
             }
         } catch (err) {
             reject(client.emit('commandFail', message, err));
