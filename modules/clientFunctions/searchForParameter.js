@@ -1,4 +1,5 @@
 module.exports = async(client) => {
+    //Deprecated
     client.searchForParameter = async function(params) {
         return new Promise(async(resolve, reject) => {
             var providedParameters = {
