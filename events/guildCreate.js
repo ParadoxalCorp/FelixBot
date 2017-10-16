@@ -22,5 +22,5 @@ module.exports = async(client, guild) => {
             success: updateDbl.success
         }
     }
-    client.guildData.set(guild.id, client.defaultGuildData(guild.id));
+    if (!client.guildData.get(guild.id)) client.guildData.set(guild.id, client.defaultGuildData(guild.id));
 }
