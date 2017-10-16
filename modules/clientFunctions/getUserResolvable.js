@@ -27,6 +27,7 @@ module.exports = async(client, message) => {
             const usersResolved = new Discord.Collection();
             let matchedByPartial = false;
             if (options.guildOnly) { //Only the provided guild members
+                if (message.guild.members.size >= 250) message.guild.members = await message.guild.fetchMembers();
                 for (let i = 0; i < potentialUserResolvables.length; i++) {
                     //------------------Resolve by ID--------------------
                     if (!isNaN(potentialUserResolvables[i]) && message.guild.members.get(potentialUserResolvables[i])) usersResolved.set(message.guild.members.get(potentialUserResolvables[i]), message.guild.members.get(potentialUserResolvables[i]).user);

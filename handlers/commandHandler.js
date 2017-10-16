@@ -39,6 +39,7 @@ module.exports = async(client, message) => {
         const allowed = await require(`../handlers/permissionsChecker.js`)(client, message, client.commands.get(command));
         if (allowed) { //If the user is allowed
             try {
+                if (message.guild.members.size >= 250) message.guild.members = await message.guild.fetchMembers();
                 //Shortcuts
                 if (commandFile.shortcut && args.filter(a => commandFile.shortcut.triggers.has(a.toLowerCase())).length > 0) {
                     let trigger = args.filter(a => commandFile.shortcut.triggers.has(a.toLowerCase()))[0];

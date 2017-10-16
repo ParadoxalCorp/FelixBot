@@ -99,7 +99,7 @@ client.statsUpdate = {
 client.imageTypes = {
     success: {
         name: 'No Data',
-        message: `The weeb's image types didnt got fetched yet`,
+        message: `The weeb's image types didn't got fetched yet`,
         description: function() {
             return `${this.name}: ${this.message}`;
         }
