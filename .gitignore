@@ -2,3 +2,4 @@ commands/dummy.js
 config/config.json
 node_modules
 data
+config/config.example.json
