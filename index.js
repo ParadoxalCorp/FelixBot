@@ -77,6 +77,7 @@ client.guildData = guildData;
 client.tagData = tagData;
 client.clientData = clientData;
 client.talkedRecently = new Set(); //cooldown stuff
+client.ratelimited = new Set();
 client.maintenance = false; //Will be used to ignore users when performing maintenance stuff
 client.Raven = Raven;
 client.upvotes = {
@@ -150,6 +151,8 @@ client.defaultGuildData = function(id) {
             prefix: client.database.prefix,
             levelSystem: {
                 enabled: true,
+                downGrade: true,
+                interval: false,
                 levelUpNotif: false,
                 roles: [],
                 users: []

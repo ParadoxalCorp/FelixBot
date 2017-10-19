@@ -9,24 +9,21 @@ exports.run = async(client, message) => {
             });
             let punchUrl = punchLinks[Math.floor(Math.random() * ((punchLinks.length - 1) - 0 + 1)) + 0];
             if (users.get(message.author.id)) users.delete(message.author.id); //Remove the author from the users 
-            if (users.size > 0) {
-                resolve(await message.channel.send({
-                    embed: {
-                        description: `Hey ${users.map(u => '**' + u.tag + '**').join(", ")}, you've just been punched by **${message.author.tag}**`,
-                        image: {
-                            url: `${punchUrl}.gif` //Otherwise wont be resolved
-                        },
-                    }
-                }));
-            } else {
-                resolve(await message.channel.send({
-                    embed: {
-                        image: {
-                            url: `${punchUrl}.gif` //Otherwise wont be resolved
-                        },
-                    }
-                }));
-            }
+            resolve(await message.channel.send({
+                embed: {
+                    description: users.size > 0 ? `Hey ${users.map(u => '**' + u.tag + '**').join(", ")}, you've just been punched by **${message.author.tag}**` : '',
+                    image: {
+                        url: `${punchUrl}.gif` //Otherwise wont be resolved
+                    },
+                }
+            }));
+            resolve(await message.channel.send({
+                embed: {
+                    image: {
+                        url: `${punchUrl}.gif` //Otherwise wont be resolved
+                    },
+                }
+            }));
         } catch (err) {
             reject(client.emit('commandFail', message, err));
         }

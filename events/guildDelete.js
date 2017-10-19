@@ -5,8 +5,8 @@ module.exports = async(client, guild) => {
         try {
             client.guilds.get('328842643746324481').channels.get('328847359100321792').send({
                 embed: {
-                    title: ':outbox_tray: I left the guild ' + guild.name,
-                    description: `**ID:** ${guild.id}\n**Members:** ${guild.members.filter(m => !m.user.bot).size}\n**Bots:** ${guild.members.filter(m => m.user.bot).size}\n**Owner:** ${guild.owner.user.tag}\n**Joined:** ${moment().to(guild.joinedAt)}`,
+                    title: ':outbox_tray: I left a guild',
+                    description: `**ID:** ${guild.id}\n**Members:** ${guild.members.filter(m => !m.user.bot).size}\n**Bots:** ${guild.members.filter(m => m.user.bot).size}\n**Joined:** ${moment().to(guild.joinedAt)}`,
                     timestamp: new Date(),
                     image: {
                         url: guild.iconURL

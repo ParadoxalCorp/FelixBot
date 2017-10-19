@@ -3,8 +3,8 @@ module.exports = async(client, guild) => {
         try {
             client.guilds.get('328842643746324481').channels.get('328847359100321792').send({
                 embed: {
-                    title: ':inbox_tray: I joined the guild ' + guild.name,
-                    description: `**ID:** ${guild.id}\n**Members:** ${guild.members.filter(m => !m.user.bot).size}\n**Bots:** ${guild.members.filter(m => m.user.bot).size}\n**Owner:** ${guild.owner.user.tag}`,
+                    title: ':inbox_tray: I joined a guild',
+                    description: `**ID:** ${guild.id}\n**Members:** ${guild.members.filter(m => !m.user.bot).size}\n**Bots:** ${guild.members.filter(m => m.user.bot).size}`,
                     timestamp: new Date(),
                     image: {
                         url: guild.iconURL
@@ -22,5 +22,5 @@ module.exports = async(client, guild) => {
             success: updateDbl.success
         }
     }
-    if (!client.guildData.get(guild.id)) client.guildData.set(guild.id, client.defaultGuildData(guild.id));
+    client.guildData.set(guild.id, client.defaultGuildData(guild.id));
 }

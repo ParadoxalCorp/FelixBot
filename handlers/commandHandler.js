@@ -27,15 +27,14 @@ module.exports = async(client, message) => {
         // Someone once told me that it was the best way to define args
         const args = message.content.split(/\s+/g);
         const supposedCommand = args.shift().slice(client.prefix.length).toLowerCase();
-        if ((!client.commands.get(supposedCommand)) && (!client.aliases.get(supposedCommand))) return; //Just return if the command is not found
-        if (!client.userData.get(message.author.id)) { //Once the command is confirmed
-            client.userData.set(message.author.id, client.defaultUserData(message.author.id));
-        }
-        let command;
-        if (client.commands.get(supposedCommand)) command = client.commands.get(supposedCommand).help.name;
-        else if (client.commands.get(client.aliases.get(supposedCommand))) command = client.commands.get(client.aliases.get(supposedCommand)).help.name;
+        if ((!client.commands.has(supposedCommand)) && (!client.aliases.has(supposedCommand))) return; //Just return if the command is not found
+        if (!client.userData.has(message.author.id)) client.userData.set(message.author.id, client.defaultUserData(message.author.id)); //Once the command is confirmed
+        let command = client.commands.get(supposedCommand) ? client.commands.get(supposedCommand).help.name : client.commands.get(client.aliases.get(supposedCommand)).help.name
+        if (client.ratelimited.has(message.author.id)) return await message.channel.send(`:x: Chill a bit, there, a 20 seconds cooldown for ya :heart:`);
+        //else if (client.commands.get(client.aliases.get(supposedCommand))) command = ;
         const commandFile = require(`../commands/${command}.js`);
-        if (commandFile.conf.disabled !== false) return message.channel.send(":x: Sorry but this command is disabled for now\n**Reason:** " + commandFile.conf.disabled);
+        //Back to the first command
+        if (commandFile.conf.disabled) return message.channel.send(":x: Sorry but this command is disabled for now\n**Reason:** " + commandFile.conf.disabled);
         const allowed = await require(`../handlers/permissionsChecker.js`)(client, message, client.commands.get(command));
         if (allowed) { //If the user is allowed
             try {
@@ -49,6 +48,23 @@ module.exports = async(client, message) => {
                 }
                 //Default command 
                 else await commandFile.run(client, message);
+                //Command confirmed, check for multiple commands
+                let multipleCmds = message.content.split('&&');
+                multipleCmds.shift();
+                if (multipleCmds[0]) {
+                    //Emit a new message for all supposed commands, limit to 3 commands max once tho because nu spam
+                    for (let i = 0; i < multipleCmds.length && i < 2; i++) {
+                        let newMessage = message;
+                        newMessage.content = multipleCmds[i].trim();
+                        client.emit('message', newMessage);
+                        await client.sleep(1000);
+                    }
+                    //Ratelimit
+                    client.ratelimited.add(message.author.id);
+                    setTimeout(() => {
+                        client.ratelimited.delete(message.author.id);
+                    }, 20000);
+                }
             } catch (err) {
                 client.emit('commandFail', message, err);
             } finally {
