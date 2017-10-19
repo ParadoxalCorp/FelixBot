@@ -39,6 +39,8 @@ module.exports = async(client, message) => {
         if (allowed) { //If the user is allowed
             try {
                 if (message.guild.members.size >= 250) message.guild.members = await message.guild.fetchMembers();
+                let multipleCmds = message.content.split('&&');
+                if (multipleCmds.length > 1) message.content = multipleCmds[0];
                 //Shortcuts
                 if (commandFile.shortcut && args.filter(a => commandFile.shortcut.triggers.has(a.toLowerCase())).length > 0) {
                     let trigger = args.filter(a => commandFile.shortcut.triggers.has(a.toLowerCase()))[0];
@@ -49,7 +51,6 @@ module.exports = async(client, message) => {
                 //Default command 
                 else await commandFile.run(client, message);
                 //Command confirmed, check for multiple commands
-                let multipleCmds = message.content.split('&&');
                 multipleCmds.shift();
                 if (multipleCmds[0]) {
                     //Emit a new message for all supposed commands, limit to 3 commands max once tho because nu spam
