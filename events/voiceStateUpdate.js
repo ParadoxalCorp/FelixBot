@@ -18,5 +18,5 @@ module.exports = async(client, oldMember, newMember) => {
         guildEntry.generalSettings.levelSystem.users[userPos].leftVc = Date.now();
         if (guildEntry.generalSettings.levelSystem.users[userPos].joinedVc) guildEntry.generalSettings.levelSystem.users[userPos].totalVcTime = guildEntry.generalSettings.levelSystem.users[userPos].leftVc - guildEntry.generalSettings.levelSystem.users[userPos].joinedVc;
     }
-    client.guildData.set(message.guild.id, guildEntry);
+    client.guildData.set(newMember.guild.id, guildEntry);
 }
