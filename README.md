@@ -6,7 +6,7 @@
   </p>
 
 Felix is here, was first supposed to be a meme but hey, its a thing now ! 
-About Felix's source usage, note that Felix is under APACHE 2.0 license, more informations at the very bottom of this readme.
+About Felix's source usage, note that Felix is under APACHE 2.0 license, more informations on the wiki.
 # Tables of contents
 * [Features](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#features)
 * [Commands](https://github.com/ParadoxOrigins/FelixBot/wiki/Generic)
