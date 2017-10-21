@@ -150,7 +150,7 @@ client.defaultGuildData = function(id) {
             modLog: [],
             prefix: client.database.prefix,
             levelSystem: {
-                enabled: true,
+                enabled: false,
                 downGrade: true,
                 interval: false,
                 levelUpNotif: false,
