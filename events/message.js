@@ -22,13 +22,12 @@ module.exports = async(client, message) => {
         if (!client.guildData.get(message.guild.id)) client.guildData.set(message.guild.id, client.defaultGuildData(message.guild.id));
         const guildEntry = client.guildData.get(message.guild.id);
         require("../handlers/expHandler.js")(client, message);
-        if (message.content.startsWith(`<@${client.user.id}>`) || message.content.startsWith(`<@!${client.user.id}>`)) { //Stuff like @Felix prefix            
+        /*if (message.content.startsWith(`<@${client.user.id}>`) || message.content.startsWith(`<@!${client.user.id}>`)) { //Stuff like @Felix prefix            
             let args = message.content.split(/\s+/gim);
-            args.shift();
             const request = args[0];
             if (request === "prefix") return message.channel.send("The current prefix on this server is **" + guildEntry.generalSettings.prefix + "**");
             else if (request === "help") return await message.channel.send("Here's the commands list, you can see the detailed help of a command using `" + guildEntry.generalSettings.prefix + "help commandname`\n\n" + client.overallHelp);
-        }
+        }*/
     }
     //Commands
     require("../handlers/commandHandler.js")(client, message);

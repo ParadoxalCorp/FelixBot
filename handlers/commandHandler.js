@@ -5,9 +5,7 @@ module.exports = async(client, message) => {
         // Someone once told me that it was the best way to define args
         const args = message.content.split(/\s+/g);
         const supposedCommand = args.shift().slice(client.prefix.length).toLowerCase();
-        var command;
-        if (client.commands.get(supposedCommand)) command = client.commands.get(supposedCommand).help.name;
-        else if (client.commands.get(client.aliases.get(supposedCommand))) command = client.commands.get(client.aliases.get(supposedCommand)).help.name;
+        let command = client.commands.get(supposedCommand) ? client.commands.get(supposedCommand).help.name : client.commands.get(client.aliases.get(supposedCommand)).help.name;
         if (!command) return;
         if (!client.userData.get(message.author.id)) client.userData.set(message.author.id, client.defaultUserData(message.author.id));
         const commandFile = require(`../commands/${command}.js`);
@@ -22,21 +20,20 @@ module.exports = async(client, message) => {
         }
     } else {
         const guildEntry = client.guildData.get(message.guild.id);
-        if (!message.content.startsWith(guildEntry.generalSettings.prefix)) return;
+        if (!message.content.startsWith(guildEntry.generalSettings.prefix) && !message.content.startsWith(`<@${client.user.id}>`) && !message.content.startsWith(`<@!${client.user.id}>`)) return;
         client.prefix = guildEntry.generalSettings.prefix;
         // Someone once told me that it was the best way to define args
         const args = message.content.split(/\s+/g);
-        const supposedCommand = args.shift().slice(client.prefix.length).toLowerCase();
+        const supposedCommand = !message.content.startsWith('<') ? args.shift().slice(guildEntry.generalSettings.prefix.length).toLowerCase() : (args[1] ? args[1].toLowerCase() : false);
         if ((!client.commands.has(supposedCommand)) && (!client.aliases.has(supposedCommand))) return; //Just return if the command is not found
         if (!client.userData.has(message.author.id)) client.userData.set(message.author.id, client.defaultUserData(message.author.id)); //Once the command is confirmed
         let command = client.commands.get(supposedCommand) ? client.commands.get(supposedCommand).help.name : client.commands.get(client.aliases.get(supposedCommand)).help.name
         if (client.ratelimited.has(message.author.id)) return await message.channel.send(`:x: Chill a bit, there, a 20 seconds cooldown for ya :heart:`);
-        //else if (client.commands.get(client.aliases.get(supposedCommand))) command = ;
         const commandFile = require(`../commands/${command}.js`);
-        //Back to the first command
         if (commandFile.conf.disabled) return message.channel.send(":x: Sorry but this command is disabled for now\n**Reason:** " + commandFile.conf.disabled);
         const allowed = await require(`../handlers/permissionsChecker.js`)(client, message, client.commands.get(command));
         if (allowed) { //If the user is allowed
+            if (message.content.startsWith('<')) message.content = message.content.substr(args[0].length).trim();
             try {
                 if (message.guild.members.size >= 250) message.guild.members = await message.guild.fetchMembers();
                 let multipleCmds = message.content.split('&&');
