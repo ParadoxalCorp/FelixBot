@@ -15,7 +15,7 @@ module.exports = async(client, message) => {
             userEntry.experience.expCount = userEntry.experience.expCount + expGain;
             userEntry.experience.level = getCurrentLevel(userEntry.experience.level, userEntry.experience.expCount + expGain);
             client.userData.set(message.author.id, userEntry);
-            if (guildEntry.generalSettings.levelSystem.users.filter(u => u.id == message.author.id).length < 1) {
+            if (!guildEntry.generalSettings.levelSystem.users.find(u => u.id == message.author.id)) {
                 guildEntry.generalSettings.levelSystem.users.push({
                     id: message.author.id,
                     expCount: 0,
@@ -52,6 +52,7 @@ module.exports = async(client, message) => {
                 }
             }
             guildEntry.generalSettings.levelSystem.users[userPos].expCount = guildEntry.generalSettings.levelSystem.users[userPos].expCount + expGain;
+            guildEntry.generalSettings.levelSystem.users[userPos].messages++;
             client.guildData.set(message.guild.id, guildEntry);
         }
     }
