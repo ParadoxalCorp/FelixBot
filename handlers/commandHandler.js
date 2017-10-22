@@ -33,7 +33,10 @@ module.exports = async(client, message) => {
         if (commandFile.conf.disabled) return message.channel.send(":x: Sorry but this command is disabled for now\n**Reason:** " + commandFile.conf.disabled);
         const allowed = await require(`../handlers/permissionsChecker.js`)(client, message, client.commands.get(command));
         if (allowed) { //If the user is allowed
-            if (message.content.startsWith('<')) message.content = message.content.substr(args[0].length).trim();
+            if (message.content.startsWith('<')) {
+                message.content = message.content.substr(args[0].length).trim();
+                args.splice(0, 2);
+            };
             try {
                 if (message.guild.members.size >= 250) message.guild.members = await message.guild.fetchMembers();
                 let multipleCmds = message.content.split('&&');
@@ -46,7 +49,7 @@ module.exports = async(client, message) => {
                     await require(`../modules/shortcuts/${command}/${commandFile.shortcut.triggers.get(trigger).script}`)(client, message, args);
                 }
                 //Default command 
-                else await commandFile.run(client, message);
+                else await commandFile.run(client, message, args);
                 //Command confirmed, check for multiple commands
                 multipleCmds.shift();
                 if (multipleCmds[0]) {
@@ -64,7 +67,7 @@ module.exports = async(client, message) => {
                     }, 20000);
                 }
             } catch (err) {
-                client.emit('commandFail', message, err);
+                console.error(err);
             } finally {
                 client.commands.get(command).uses++;
                 client.cmdsUsed++;
