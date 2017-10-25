@@ -262,10 +262,11 @@ process.on("error", err => {
     }
     await eventsLoading();
     client.logger.draft('database', 'create', 'Waiting for the database to be fully loaded...');
-    setTimeout(async function() {
+    setTimeout(async() => {
         client.logger.draft('database', 'edit', 'Database load complete, launching database auto-update')
         let dbUpdate = await client.updateDatabase(client); //Update database
-        client.logger.draft('database', 'end', `Database auto-update complete:\n${dbUpdate.usersUpdate}\n${dbUpdate.guildsUpdate}`, true);
+        client.logger.draft('database', 'end', `Database auto-update complete: ${dbUpdate.usersUpdate} and ${dbUpdate.guildsUpdate}`, true);
+        require('./api/server.js').launch(client, readdir);
     }, 7500);
     client.login(client.config.token);
 }());
