@@ -1,4 +1,4 @@
-const Discord = require("discord.js");
+const Discord = require("./paradoxal-d.js");
 const client = new Discord.Client({
     disabledEvents: ["TYPING_START"]
 });
