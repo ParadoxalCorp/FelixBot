@@ -5,7 +5,7 @@ exports.run = async(client, message) => {
         if (args.length === 0) {
             return resolve(await message.channel.send(":x: I need a user resolvable in order to do that"));
         }
-        const users = await client.getUserResolvable(message);
+        const users = await message.getUserResolvable({ guildOnly: false });
         if (users.size > 0) {
             let whiteListed = [],
                 blackListed = [];

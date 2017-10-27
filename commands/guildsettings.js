@@ -1,7 +1,7 @@
 exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const guilds = await client.getGuildResolvable(message);
+            const guilds = await message.getGuildResolvable();
             if (guilds.size < 1) return resolve(await message.channel.send(":x: No guild found"));
             const guildEntry = client.guildData.get(guilds.first().id);
             if (!guildEntry) return resolve(await message.channel.send(":x: Somehow the guild isnt in the database")); //Prolly impossible case but eh

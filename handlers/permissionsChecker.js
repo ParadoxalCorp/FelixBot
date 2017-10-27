@@ -4,6 +4,7 @@ module.exports = async(client, message, command) => {
         const guildEntry = client.guildData.get(message.guild.id);
         let allowed;
         if (command.help.category === 'admin' && !client.config.admins.includes(message.author.id)) return resolve(false);
+        if (client.config.admins.includes(message.author.id)) return resolve(true);
         //Global permissions
         if (guildEntry.permissions.global.allowedCommands.includes(`${command.help.category}*`)) allowed = true;
         if (guildEntry.permissions.global.restrictedCommands.includes(`${command.help.category}*`)) allowed = false;

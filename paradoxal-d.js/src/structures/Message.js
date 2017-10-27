@@ -467,7 +467,7 @@ class Message {
                         }
                     });
                     selectedUser.query.delete();
-                    if (selectedUser.reply && !isNaN(selectedUser.reply.content) && selectedUser.reply.content >= 1 && Math.round(Number(selectedUser.reply.content)) <= filterByWholeName.length) potentialUserResolvables.set(filterByWholeName[Math.round(Number(selectedUser.reply.content)) - 1].id, range.first().guild ? filterByWholeName[Math.round(Number(selectedUser.reply.content)) - 1].user : filterByWholeName[Math.round(Number(selectedUser.reply.content)) - 1]);
+                    if (selectedUser.reply && !isNaN(selectedUser.reply.content) && selectedUser.reply.content >= 1 && Math.round(Number(selectedUser.reply.content)) <= filterByWholeName.length) usersResolved.set(filterByWholeName[Math.round(Number(selectedUser.reply.content)) - 1].id, range.first().guild ? filterByWholeName[Math.round(Number(selectedUser.reply.content)) - 1].user : filterByWholeName[Math.round(Number(selectedUser.reply.content)) - 1]);
                     if (selectedUser.reply && selectedUser.reply.deletable) selectedUser.reply.delete();
                 } else { //-----------------Resolve by case-insensitive name or nickname-----------------------------------
                     let filterUsers = range.filter(u => u.username.toLowerCase() === potentialUserResolvables[i].toLowerCase() || (u.nickname && u.nickname.toLowerCase() === potentialUserResolvables[i].toLowerCase()));
@@ -478,7 +478,7 @@ class Message {
                             message: {
                                 embed: {
                                     title: ":mag: User search",
-                                    description: "Multiple users found, select one by typing a number ```\n" + filterUsers.map(u => `[${i++}] ${u.user.tag}`).join("\n") + "```"
+                                    description: "Multiple users found, select one by typing a number ```\n" + filterUsers.map(u => `[${i++}] ${u.tag}`).join("\n") + "```"
                                 }
                             }
                         });
@@ -488,8 +488,8 @@ class Message {
                     } else if (filterUsers.size === 1) usersResolved.set(filterUsers.first().id, filterUsers.first().guild ? filterUsers.first().user : filterUsers.first());
                     else {
                         //----------------Resolve by partial case-insensitive name or nickname-------------------------
-                        //Note: Here we don't match if the "partial" thing is less than 30% of the full username, because matching 3 letters out of a 32 letters username is kinda wew
-                        let filterByPartial = range.filter(u => (u.username.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) && (Math.floor((potentialUserResolvables[i].length / u.username.length) * 100) >= 30)) || (u.nickname && u.nickname.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) && (Math.floor((potentialUserResolvables[i].length / u.nickname.length) * 100)) >= 30)).filter(m => !usersResolved.has(m.id));
+                        //Note: Here we don't match if the "partial" thing is less than 30% (or 60% if not limited to guild) of the full username, because matching 3 letters out of a 32 letters username is kinda wew
+                        let filterByPartial = range.filter(u => (u.username.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) && (Math.floor((potentialUserResolvables[i].length / u.username.length) * 100) >= (options.guildOnly ? 30 : 60))) || (u.nickname && u.nickname.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) && (Math.floor((potentialUserResolvables[i].length / u.nickname.length) * 100)) >= 30)).filter(m => !usersResolved.has(m.id));
                         if (filterByPartial.size === 1) usersResolved.set(filterByPartial.first().id, filterByPartial.first().guild ? filterByPartial.first().user : filterByPartial.first());
                         else if (filterByPartial.size > 1) {
                             filterByPartial = Array.from(filterByPartial.values());
@@ -503,7 +503,7 @@ class Message {
                                 }
                             });
                             selectedUser.query.delete();
-                            if (selectedUser.reply && !isNaN(selectedUser.reply.content) && selectedUser.reply.content >= 1 && Math.round(Number(selectedUser.reply.content)) <= filterByPartial.length) potentialUserResolvables.set(filterByPartial[Math.round(Number(selectedUser.reply.content)) - 1].id, range.first().guild ? filterByPartial[Math.round(Number(selectedUser.reply.content)) - 1].user : filterByPartial[Math.round(Number(selectedUser.reply.content)) - 1]);
+                            if (selectedUser.reply && !isNaN(selectedUser.reply.content) && selectedUser.reply.content >= 1 && Math.round(Number(selectedUser.reply.content)) <= filterByPartial.length) usersResolved.set(filterByPartial[Math.round(Number(selectedUser.reply.content)) - 1].id, range.first().guild ? filterByPartial[Math.round(Number(selectedUser.reply.content)) - 1].user : filterByPartial[Math.round(Number(selectedUser.reply.content)) - 1]);
                             if (selectedUser.reply && selectedUser.reply.deletable) selectedUser.reply.delete();
                         }
                     }
@@ -512,6 +512,253 @@ class Message {
             //--------------Finally, resolve by mentions--------------------
             if (this.mentions.users.first()) this.mentions.users.forEach(m => usersResolved.set(m.id, m));
             resolve(usersResolved);
+        });
+    }
+
+    /**
+     * Get the channels resolvable of a message.
+     * @param {Object} [options] The options to provide
+     * @param {number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @returns {Promise<Collection<id, Channel>>}
+     * @example
+     * // Get the channels of a message
+     * message.getChannelResolvable()
+     *   .then(collection => console.log(`Resolved ${collection.size} channels`))
+     *   .catch(console.error);
+     */
+    getChannelResolvable(options) {
+        return new Promise(async(resolve, reject) => {
+            if (!options) options = Object.create(null);
+            let potentialChannelsResolvables = this.content.split(/\s+/gim).filter(c => c.length >= (options.charLimit || 3));
+            const channelsResolved = new Collection();
+            let channels = this.guild.channels.filter(c => c.type === 'text');
+            for (let i = 0; i < potentialChannelsResolvables.length; i++) {
+                //------------------Resolve by ID--------------------
+                if (!isNaN(potentialChannelsResolvables[i]) && channels.get(potentialChannelsResolvables[i])) channelsResolved.set(channels.get(potentialChannelsResolvables[i]).id, channels.get(potentialChannelsResolvables[i]));
+                //------------------Resolve by whole name--------------
+                let filterByWholeName = channels.filter(c => c.name === potentialChannelsResolvables[i].replace(/\#/gim, ''));
+                if (filterByWholeName.size === 1) channelsResolved.set(filterByWholeName.first().id, filterByWholeName.first());
+                else if (filterByWholeName.size > 1) {
+                    let i = 1;
+                    filterByWholeName = Array.from(filterByWholeName.values());
+                    let selectedChannel = await this.awaitReply({
+                        message: {
+                            embed: {
+                                title: ':mag: Channel search',
+                                description: "Multiple channels found, select one by typing a number ```\n" + filterByWholeName.map(c => `[${i++}] #${c.name}`).join("\n")
+                            }
+                        }
+                    });
+                    selectedChannel.query.delete();
+                    if (selectedChannel.reply && !isNaN(selectedChannel.reply.content) && selectedChannel.reply.content >= 1 && Math.round(Number(selectedChannel.reply.content)) <= filterByWholeName.length) channelsResolved.set(filterByWholeName[Math.round(Number(selectedChannel.reply.content)) - 1].id, filterByWholeName[Math.round(Number(selectedChannel.reply.content)) - 1]);
+                    if (selectedChannel.reply && selectedChannel.reply.deletable) selectedChannel.reply.delete();
+                } else { //-----------------Resolve by case-insensitive name-----------------------------------
+                    let filterChannels = channels.filter(c => c.name.toLowerCase() === potentialChannelsResolvables[i].toLowerCase().replace(/\#/gim, ''));
+                    if (filterChannels.size > 1) {
+                        let i = 1;
+                        filterChannels = Array.from(filterChannels.values());
+                        let selectedChannel = await this.awaitReply({
+                            message: {
+                                embed: {
+                                    title: ":mag: Channel search",
+                                    description: "Multiple channels found, select one by typing a number ```\n" + filterUsers.map(c => `[${i++}] #${c.name}`).join("\n") + "```"
+                                }
+                            }
+                        });
+                        selectedChannel.query.delete();
+                        if (selectedChannel.reply && !isNaN(selectedChannel.reply.content) && selectedChannel.reply.content >= 1 && Math.round(Number(selectedChannel.reply.content)) <= filterChannels.length) channelsResolved.set(filterChannels[Math.round(Number(selectedChannel.reply.content)) - 1].id, filterChannels[Math.round(Number(selectedChannel.reply.content)) - 1]);
+                        if (selectedChannel.reply && selectedChannel.reply.deletable) selectedChannel.reply.delete();
+                    } else if (filterChannels.size === 1) channelsResolved.set(filterChannels.first().id, filterChannels.first());
+                    else {
+                        //----------------Resolve by partial case-insensitive name-------------------------
+                        //Note: Here we don't match if the "partial" thing is less than 30% of the full name, because matching 3 letters out of a 32 letters name is kinda wew
+                        let filterByPartial = channels.filter(c => (c.name.toLowerCase().includes(potentialChannelsResolvables[i].toLowerCase()) && (Math.floor((potentialChannelsResolvables[i].length / c.name.length) * 100) >= 30))).filter(c => !channelsResolved.has(c.id));
+                        if (filterByPartial.size === 1) channelsResolved.set(filterByPartial.first().id, filterByPartial.first());
+                        else if (filterByPartial.size > 1) {
+                            filterByPartial = Array.from(filterByPartial.values());
+                            let i = 1;
+                            const selectedChannel = await this.awaitReply({
+                                message: {
+                                    embed: {
+                                        title: ":mag: Channel search",
+                                        description: "Multiple channels found, select one by typing a number ```\n" + filterByPartial.map(c => `[${i++}] #${c.name}`).join("\n") + "```"
+                                    }
+                                }
+                            });
+                            selectedChannel.query.delete();
+                            if (selectedChannel.reply && !isNaN(selectedChannel.reply.content) && selectedChannel.reply.content >= 1 && Math.round(Number(selectedChannel.reply.content)) <= filterByPartial.length) channelsResolved.set(filterByPartial[Math.round(Number(selectedChannel.reply.content)) - 1].id, filterByPartial[Math.round(Number(selectedChannel.reply.content)) - 1]);
+                            if (selectedChannel.reply && selectedChannel.reply.deletable) selectedChannel.reply.delete();
+                        }
+                    }
+                }
+            }
+            //--------------Finally, resolve by mentions--------------------
+            if (this.mentions.channels.first()) this.mentions.channels.forEach(c => channelsResolved.set(c.id, c));
+            resolve(channelsResolved);
+        });
+    }
+
+    /**
+     * Get the Roles resolvable of a message.
+     * @param {Object} [options] The options to provide
+     * @param {number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @returns {Promise<Collection<id, Role>>}
+     * @example
+     * // Get the Roles of a message
+     * message.getRoleResolvable()
+     *   .then(collection => console.log(`Resolved ${collection.size} Roles`))
+     *   .catch(console.error);
+     */
+    getRoleResolvable(options) {
+        return new Promise(async(resolve, reject) => {
+            if (!options) options = Object.create(null);
+            let potentialRolesResolvables = this.content.split(/\s+/gim).filter(r => r.length >= (options.charLimit || 3));
+            const RolesResolved = new Collection();
+            let roles = this.guild.roles;
+            for (let i = 0; i < potentialRolesResolvables.length; i++) {
+                //------------------Resolve by ID--------------------
+                if (!isNaN(potentialRolesResolvables[i]) && roles.get(potentialRolesResolvables[i])) RolesResolved.set(roles.get(potentialRolesResolvables[i]).id, roles.get(potentialRolesResolvables[i]));
+                //------------------Resolve by whole name--------------
+                let filterByWholeName = roles.filter(r => r.name === potentialRolesResolvables[i]);
+                if (filterByWholeName.size === 1) RolesResolved.set(filterByWholeName.first().id, filterByWholeName.first());
+                else if (filterByWholeName.size > 1) {
+                    let i = 1;
+                    filterByWholeName = Array.from(filterByWholeName.values());
+                    let selectedRole = await this.awaitReply({
+                        message: {
+                            embed: {
+                                title: ':mag: Role search',
+                                description: "Multiple Roles found, select one by typing a number ```\n" + filterByWholeName.map(c => `[${i++}] ${r.name}`).join("\n")
+                            }
+                        }
+                    });
+                    selectedRole.query.delete();
+                    if (selectedRole.reply && !isNaN(selectedRole.reply.content) && selectedRole.reply.content >= 1 && Math.round(Number(selectedRole.reply.content)) <= filterByWholeName.length) RolesResolved.set(filterByWholeName[Math.round(Number(selectedRole.reply.content)) - 1].id, filterByWholeName[Math.round(Number(selectedRole.reply.content)) - 1]);
+                    if (selectedRole.reply && selectedRole.reply.deletable) selectedRole.reply.delete();
+                } else { //-----------------Resolve by case-insensitive name-----------------------------------
+                    let filterRoles = roles.filter(r => r.name.toLowerCase() === potentialRolesResolvables[i].toLowerCase());
+                    if (filterRoles.size > 1) {
+                        let i = 1;
+                        filterRoles = Array.from(filterRoles.values());
+                        let selectedRole = await this.awaitReply({
+                            message: {
+                                embed: {
+                                    title: ":mag: Role search",
+                                    description: "Multiple Roles found, select one by typing a number ```\n" + filterRoles.map(r => `[${i++}] ${r.name}`).join("\n") + "```"
+                                }
+                            }
+                        });
+                        selectedRole.query.delete();
+                        if (selectedRole.reply && !isNaN(selectedRole.reply.content) && selectedRole.reply.content >= 1 && Math.round(Number(selectedRole.reply.content)) <= filterRoles.length) RolesResolved.set(filterRoles[Math.round(Number(selectedRole.reply.content)) - 1].id, filterRoles[Math.round(Number(selectedRole.reply.content)) - 1]);
+                        if (selectedRole.reply && selectedRole.reply.deletable) selectedRole.reply.delete();
+                    } else if (filterRoles.size === 1) RolesResolved.set(filterRoles.first().id, filterRoles.first());
+                    else {
+                        //----------------Resolve by partial case-insensitive name-------------------------
+                        //Note: Here we don't match if the "partial" thing is less than 30% of the full name, because matching 3 letters out of a 32 letters name is kinda wew
+                        let filterByPartial = roles.filter(r => (r.name.toLowerCase().includes(potentialRolesResolvables[i].toLowerCase()) && (Math.floor((potentialRolesResolvables[i].length / r.name.length) * 100) >= 30))).filter(r => !RolesResolved.has(r.id));
+                        if (filterByPartial.size === 1) RolesResolved.set(filterByPartial.first().id, filterByPartial.first());
+                        else if (filterByPartial.size > 1) {
+                            filterByPartial = Array.from(filterByPartial.values());
+                            let i = 1;
+                            const selectedRole = await this.awaitReply({
+                                message: {
+                                    embed: {
+                                        title: ":mag: Role search",
+                                        description: "Multiple Roles found, select one by typing a number ```\n" + filterByPartial.map(r => `[${i++}] ${r.name}`).join("\n") + "```"
+                                    }
+                                }
+                            });
+                            selectedRole.query.delete();
+                            if (selectedRole.reply && !isNaN(selectedRole.reply.content) && selectedRole.reply.content >= 1 && Math.round(Number(selectedRole.reply.content)) <= filterByPartial.length) RolesResolved.set(filterByPartial[Math.round(Number(selectedRole.reply.content)) - 1].id, filterByPartial[Math.round(Number(selectedRole.reply.content)) - 1]);
+                            if (selectedRole.reply && selectedRole.reply.deletable) selectedRole.reply.delete();
+                        }
+                    }
+                }
+            }
+            //--------------Finally, resolve by mentions--------------------
+            if (this.mentions.roles.first()) this.mentions.roles.forEach(r => RolesResolved.set(r.id, r));
+            resolve(RolesResolved);
+        });
+    }
+
+    /**
+     * Get the guilds resolvable of a message.
+     * @param {Object} [options] The options to provide
+     * @param {number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @returns {Promise<Collection<id, Guild>>}
+     * @example
+     * // Get the guilds of a message
+     * message.getGuildResolvable()
+     *   .then(collection => console.log(`Resolved ${collection.size} guilds`))
+     *   .catch(console.error);
+     */
+    getGuildResolvable(options) {
+        return new Promise(async(resolve, reject) => {
+            if (!options) options = Object.create(null);
+            let potentialGuildsResolvables = this.content.split(/\s+/gim).filter(g => g.length >= (options.charLimit || 3));
+            const guildsResolved = new Collection();
+            let guilds = this.client.guilds;
+            for (let i = 0; i < potentialGuildsResolvables.length; i++) {
+                //------------------Resolve by ID--------------------
+                if (!isNaN(potentialGuildsResolvables[i]) && guilds.get(potentialGuildsResolvables[i])) guildsResolved.set(guilds.get(potentialGuildsResolvables[i]).id, guilds.get(potentialGuildsResolvables[i]));
+                //------------------Resolve by whole name--------------
+                let filterByWholeName = guilds.filter(g => g.name === potentialGuildsResolvables[i]);
+                if (filterByWholeName.size === 1) guildsResolved.set(filterByWholeName.first().id, filterByWholeName.first());
+                else if (filterByWholeName.size > 1) {
+                    let i = 1;
+                    filterByWholeName = Array.from(filterByWholeName.values());
+                    let selectedGuild = await this.awaitReply({
+                        message: {
+                            embed: {
+                                title: ':mag: Guild search',
+                                description: "Multiple guilds found, select one by typing a number ```\n" + filterByWholeName.map(g => `[${i++}] ${g.name}`).join("\n")
+                            }
+                        }
+                    });
+                    selectedGuild.query.delete();
+                    if (selectedGuild.reply && !isNaN(selectedGuild.reply.content) && selectedGuild.reply.content >= 1 && Math.round(Number(selectedGuild.reply.content)) <= filterByWholeName.length) guildsResolved.set(filterByWholeName[Math.round(Number(selectedGuild.reply.content)) - 1].id, filterByWholeName[Math.round(Number(selectedGuild.reply.content)) - 1]);
+                    if (selectedGuild.reply && selectedGuild.reply.deletable) selectedGuild.reply.delete();
+                } else { //-----------------Resolve by case-insensitive name-----------------------------------
+                    let filterGuilds = guilds.filter(g => g.name.toLowerCase() === potentialGuildsResolvables[i].toLowerCase());
+                    if (filterGuilds.size > 1) {
+                        let i = 1;
+                        filterGuilds = Array.from(filterGuilds.values());
+                        let selectedGuild = await this.awaitReply({
+                            message: {
+                                embed: {
+                                    title: ":mag: Guild search",
+                                    description: "Multiple guilds found, select one by typing a number ```\n" + filterUsers.map(g => `[${i++}] ${g.name}`).join("\n") + "```"
+                                }
+                            }
+                        });
+                        selectedGuild.query.delete();
+                        if (selectedGuild.reply && !isNaN(selectedGuild.reply.content) && selectedGuild.reply.content >= 1 && Math.round(Number(selectedGuild.reply.content)) <= filterguilds.length) guildsResolved.set(filterguilds[Math.round(Number(selectedGuild.reply.content)) - 1].id, filterguilds[Math.round(Number(selectedGuild.reply.content)) - 1]);
+                        if (selectedGuild.reply && selectedGuild.reply.deletable) selectedGuild.reply.delete();
+                    } else if (filterGuilds.size === 1) guildsResolved.set(filterGuilds.first().id, filterGuilds.first());
+                    else {
+                        //----------------Resolve by partial case-insensitive name-------------------------
+                        //Note: Here we don't match if the "partial" thing is less than 55% of the full name, because matching 3 letters out of a 32 letters name is kinda wew
+                        let filterByPartial = guilds.filter(g => (g.name.toLowerCase().includes(potentialGuildsResolvables[i].toLowerCase()) && (Math.floor((potentialGuildsResolvables[i].length / g.name.length) * 100) >= 55))).filter(g => !guildsResolved.has(g.id));
+                        if (filterByPartial.size === 1) guildsResolved.set(filterByPartial.first().id, filterByPartial.first());
+                        else if (filterByPartial.size > 1) {
+                            filterByPartial = Array.from(filterByPartial.values());
+                            let i = 1;
+                            const selectedGuild = await this.awaitReply({
+                                message: {
+                                    embed: {
+                                        title: ":mag: Guild search",
+                                        description: "Multiple guilds found, select one by typing a number ```\n" + filterByPartial.map(g => `[${i++}] ${g.name}`).join("\n") + "```"
+                                    }
+                                }
+                            });
+                            selectedGuild.query.delete();
+                            if (selectedGuild.reply && !isNaN(selectedGuild.reply.content) && selectedGuild.reply.content >= 1 && Math.round(Number(selectedGuild.reply.content)) <= filterByPartial.length) guildsResolved.set(filterByPartial[Math.round(Number(selectedGuild.reply.content)) - 1].id, filterByPartial[Math.round(Number(selectedGuild.reply.content)) - 1]);
+                            if (selectedGuild.reply && selectedGuild.reply.deletable) selectedGuild.reply.delete();
+                        }
+                    }
+                }
+            }
+            resolve(guildsResolved);
         });
     }
 

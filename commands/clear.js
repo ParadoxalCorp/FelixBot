@@ -25,14 +25,9 @@ exports.run = async(client, message) => {
                         filtered = filtered.concat(fetchedMessages.filter(m => m.author.bot));
                     }
                     if (args[i].toLowerCase().includes('u')) { //Filter specified users messages
-                        const users = await client.getUserResolvable(message, {
-                            guildOnly: true
-                        });
-                        if (users.size < 1) {
-                            filtered = filtered.concat(fetchedMessages.filter(m => m.author.id === message.author.id)); //If no users found then filter author messages
-                        } else {
-                            filtered = filtered.concat(fetchedMessages.filter(m => users.has(m.author.id)));
-                        }
+                        const users = await message.getUserResolvable();
+                        if (users.size < 1) filtered = filtered.concat(fetchedMessages.filter(m => m.author.id === message.author.id)); //If no users found then filter author messages
+                        else filtered = filtered.concat(fetchedMessages.filter(m => users.has(m.author.id)));
                     }
                 }
             }

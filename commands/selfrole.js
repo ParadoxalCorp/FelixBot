@@ -99,9 +99,7 @@ exports.run = async(client, message) => {
                             collector.stop('timeout');
                         }
                         if (role) {
-                            const guildRoles = await client.getRoleResolvable(role, {
-                                charLimit: 1
-                            });
+                            const guildRoles = await role.getRoleResolvable({ charLimit: 1 });
                             if (guildRoles.size < 1) {
                                 isCollecting = false;
                                 let noRoleFound = await message.channel.send(`:x: I couldn't find the role you specified`);

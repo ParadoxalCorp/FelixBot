@@ -7,9 +7,7 @@ module.exports = async(client, message, args) => {
      */
     return new Promise(async(resolve, reject) => {
         const guildEntry = client.guildData.get(message.guild.id);
-        let getChannels = await client.getChannelResolvable(message, {
-            shift: true
-        });
+        let getChannels = await message.getChannelResolvable(message);
         if (!getChannels.first()) return resolve(await message.channel.send(`:x: I couldn't find the channel you specified`));
         guildEntry.onEvent.guildMemberRemove.farewell.dm = false;
         guildEntry.onEvent.guildMemberRemove.farewell.channel = getChannels.first().id;

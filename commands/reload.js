@@ -37,8 +37,8 @@ exports.run = async(client, message) => {
                 const readdir = require("fs-extra").readdir;
                 let cmdShortcuts = await readdir(`./modules/shortcuts/${cmd.help.name}`);
                 cmdShortcuts.forEach(async(s) => {
-                    await delete require.cache[require.resolve(`./modules/shortcuts/${cmd.help.name}/${s}`)];
-                    let shortcut = require(`./modules/shortcuts/${cmd.help.name}/${s}`);
+                    delete require.cache[require.resolve(`../modules/shortcuts/${cmd.help.name}/${s}`)];
+                    let shortcut = require(`../modules/shortcuts/${cmd.help.name}/${s}`);
                     i++;
                 });
                 shortcutsReloaded = `and ${i} shortcuts have been reloaded out of ${cmdShortcuts.length}`;

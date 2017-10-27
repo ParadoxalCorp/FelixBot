@@ -6,13 +6,16 @@ module.exports = async(client, message, args) => {
      * @param {Array} args The splitted arguments
      */
     return new Promise(async(resolve, reject) => {
-        const confirmation = await client.awaitReply({
-            message: message,
-            title: ':warning: Reset confirmation',
-            question: `There's no going back, you're going to lose your global experience, love points, points... sure you want to do that? Type \`yes\` to confirm or anything else to abort`,
-            limit: 30000
+        const confirmation = await message.awaitReply({
+            message: {
+                embed: {
+                    title: ':warning: Reset confirmation',
+                    description: `There's no going back, you're going to lose your global experience, love points, points... sure you want to do that? Type \`yes\` to confirm or anything else to abort`
+                }
+            },
+            timeout: 30000
         });
-        confirmation.question.delete();
+        confirmation.query.delete();
         if (!confirmation.reply || confirmation.reply.content.toLowerCase() !== 'yes') {
             let aborting = await message.channel.send(`:x: Reset process aborted`);
             return resolve(aborting.delete(5000));

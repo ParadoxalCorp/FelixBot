@@ -19,12 +19,15 @@ exports.run = async(client, message) => {
             let pointsGambled = args.filter(a => !isNaN(a))[0];
             //If no args provided ask for user input
             if (!userChoice) {
-                let choice = await client.awaitReply({
-                    message: message,
-                    title: ':gear: Rock-Paper-Scissors parameter',
-                    question: `Eh? You forgot to say what you wanted to play? Don't worry since i am kind i give you 60 seconds more :^). Answer with \`rock\`, \`paper\` or \`scissors\``
+                let choice = await message.awaitReply({
+                    message: {
+                        embed: {
+                            title: ':gear: Rock-Paper-Scissors parameter',
+                            description: `Eh? You forgot to say what you wanted to play? Don't worry since i am kind i give you 60 seconds more :^). Answer with \`rock\`, \`paper\` or \`scissors\``
+                        }
+                    }
                 });
-                choice.question.delete();
+                choice.query.delete();
                 if (!choice.reply || !rps.find(c => c.name === choice.reply.content.trim().toLowerCase())) return resolve(await message.channel.send(':x: Command aborted'));
                 userChoice = rps.find(c => c.name === choice.reply.content.trim().toLowerCase());
                 if (choice.reply.deletable) choice.reply.delete();

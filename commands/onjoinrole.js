@@ -109,9 +109,7 @@ exports.run = async(client, message) => {
                                 collector.stop('timeout');
                             }
                             if (role) {
-                                const guildRoles = await client.getRoleResolvable(role, {
-                                    charLimit: 1
-                                });
+                                const guildRoles = await role.getRoleResolvable({ charLimit: 1 });
                                 if (guildRoles.size < 1) {
                                     let noRoleFound = await message.channel.send(`:x: I couldn't find the role you specified`);
                                     noRoleFound.delete(5000);
@@ -148,7 +146,7 @@ exports.run = async(client, message) => {
                                     }
                                 }
                             }
-                            if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) role.delete();
+                            if (role.deletable) role.delete();
                             let isCollecting = false;
                         }
                     }

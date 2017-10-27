@@ -11,14 +11,17 @@ exports.run = async(client, message) => {
             //If no args ask for user input to determine a type
             if (args.length < 1) {
                 let i = 1;
-                const reply = await client.awaitReply({
-                    message: message,
-                    title: ":gear: Image parameter",
-                    question: "Hoi, welcome to the weeb's image central :wave: ! Select the image type you want by either typing the number or the name of a type\n" + client.imageTypes.types.map(t => `\`(${i++})${t}\``).join(", ")
+                const reply = await message.awaitReply({
+                    message: {
+                        embed: {
+                            title: ":gear: Image parameter",
+                            description: "Hoi, welcome to the weeb's image central :wave: ! Select the image type you want by either typing the number or the name of a type\n" + client.imageTypes.types.map(t => `\`(${i++})${t}\``).join(", ")
+                        }
+                    }
                 });
                 //If no reply after 60 secs
                 if (!reply.reply) {
-                    reply.question.delete();
+                    reply.query.delete();
                     return resolve(await message.channel.send(":x: Command aborted"));
                 }
                 //Try to resolve to a type
@@ -30,7 +33,7 @@ exports.run = async(client, message) => {
                     } else type = reply.reply.content.trim().toLowerCase();
                 } else type = client.imageTypes.types[Math.round(Number(reply.reply.content - 1))];
                 //Delete messages and return if type is unresolved
-                reply.question.delete();
+                reply.query.delete();
                 if (message.guild && reply.reply.deletable) reply.reply.delete();
                 if (!type) return resolve(await message.channel.send(':x: That tag does not exist'));
                 //Request the image and return it in an embed
