@@ -1,3 +1,18 @@
+
+# Update 2.5.0 Changelog
+## New stuff
+* Added `choose`, now you can choose between coffee and tea when waking up (Actually don't do that, always take coffee :^))
+* Added multi-commands, what it meansis that you can now run up to 3 commands at once using `&&`
+* Commands now also works with mentions instead of prefix
+
+## Improvements
+* All resolver modules (userResolver, roleResoler..) now ask for user confirmation if mutliple users/channels.. have the same name/username. Also, User matching by partial username/nickname now match only if the match is over 30%, so it won't resolve `Hey i love baguettes#0000` when you put `love` anymore
+
+## Backend breaking changes
+* To read carefully for selfhost case: Now doesn't use the original d.js module but a enhanced version for felix so no need to install d.js anymore
+* `client.awaitReply()`, `client.getUserResolvable()`, `client.getRoleResolvable()`, `client.getGuildResolvable()` and `client.getChannelResolvable()` aren't methods of the `Client` anymore but directly of `Message` (refer to the enhanced d.js(paradoxal-d.js) docs)
+* The `Member` class now has the `username`, `tag` and `discriminator` property as well, so you don't need to the `User` class for that anymore 
+
 # Update 2.3.0 Changelog
 ## New stuff/Improvements
 * Added `rps`, basic game but another way to win some points ^
@@ -11,7 +26,7 @@
 # Update 2.2.0 Changelog
 ## Improvements
 * `slots` now is a bit kinder when you lose, there is less chances to lose more than what you gambled
-* `t`is now a command, still only run tags, but now as a help, i guess *shrug*
+* `t`is now a command, still only run tags, but now has a help, i guess *shrug*
 * Now if you edit your last message to a command, like if you made a typo, it will work owo
 
 ## Fixes
