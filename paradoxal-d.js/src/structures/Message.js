@@ -810,7 +810,7 @@ class Message {
      */
     delete(timeout = 0) {
         if (timeout <= 0) {
-            return this.client.rest.methods.deleteMessage(this);
+            return this.client.rest.methods.deleteMessage(this).catch(err => { console.error(err); return false });
         } else {
             return new Promise(resolve => {
                 this.client.setTimeout(() => {

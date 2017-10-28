@@ -1,3 +1,4 @@
+nes(365 sloc) 23.5 KB
 exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -6,12 +7,11 @@ exports.run = async(client, message) => {
             args.shift();
             if (args[0] === "rolelist") {
                 guildEntry.generalSettings.levelSystem.roles = guildEntry.generalSettings.levelSystem.roles.filter(r => message.guild.roles.get(r.id)); //Filter deleted roles
-                let modes = ['Navigation mode, you can enter the edition mode with :heavy_plus_sign:', 'Edition mode, you can write down the name of the role to add'];
-                const mainObject = function(page, embedFields, mode) {
+                const mainObject = function(page, embedFields) {
                     return {
                         embed: {
-                            title: ':gear: Experience roles settings',
-                            description: `Use the arrows to navigate through the roles list, you can use :heavy_plus_sign: to start typing the name of a role to add or :wastebasket: to remove one, you can end this command at any moment with :x:.\n**Note:** The upward and downward arrows are a quick way to change the level of the current role\n\n**Mode:** ${mode}`,
+                            title: ':gear: Self-assignables roles settings',
+                            description: `Use the arrows to navigate through the roles list, you can use :heavy_plus_sign: to start typing the name of a role to add or :wastebasket: to remove one, you can end this command at any moment with :x:.\n**Note:** The upward and downward arrows are a quick way to change the level of the current role`,
                             fields: embedFields[page],
                             footer: {
                                 text: `Showing page ${page + 1}/${guildEntry.generalSettings.levelSystem.roles.length} | Time limit: 120 seconds`
@@ -48,24 +48,22 @@ exports.run = async(client, message) => {
                         inline: true
                     }]);
                 });
-                const secondaryObject = function(mode) {
+                const secondaryObject = function() {
                     return {
                         embed: {
                             title: ':gear: Roles given on level up settings',
-                            description: `Use the arrows to navigate through the roles list, you can use :heavy_plus_sign: to start typing the name of a role to add or :wastebasket: to remove one, You can end this command at any moment with :x:.\n\n**Mode:** ${mode}\n\nSeems like there is not any roles in the list yet, start by adding one with :heavy_plus_sign: !`,
+                            description: `Use the arrows to navigate through the roles list, you can use :heavy_plus_sign: to start typing the name of a role to add or :wastebasket: to remove one, You can end this command at any moment with :x:.\n\nSeems like there is not any roles in the list yet, start by adding one with :heavy_plus_sign: !`,
                         }
                     }
                 }
                 let page = 0; //current page
                 let interactiveMessage;
                 if (guildEntry.generalSettings.levelSystem.roles.length < 1) interactiveMessage = await message.channel.send(secondaryObject(modes[0]));
-                else interactiveMessage = await message.channel.send(mainObject(page, rolesFields, modes[0]));
+                else interactiveMessage = await message.channel.send(mainObject(page, rolesFields));
                 const collector = interactiveMessage.createReactionCollector((reaction, user) => user.id === message.author.id);
                 let pageReactions = ["⏮", "◀", "▶", "⏭", "🔼", "🔽", "➕", "🗑", "❌"];
-                for (let i = 0; i < pageReactions.length; i++) {
-                    await interactiveMessage.react(pageReactions[i]);
-                }
-                var timeout = setTimeout(async function() {
+                for (let i = 0; i < pageReactions.length; i++) await interactiveMessage.react(pageReactions[i]);
+                let timeout = setTimeout(async function() {
                     collector.stop("timeout");
                 }, 120000);
                 collector.on('collect', async(r) => {
@@ -73,55 +71,47 @@ exports.run = async(client, message) => {
                     if (r.emoji.name === pageReactions[0]) { //Move to first page---------------------------------------------------------------------------------------------------
                         if (page !== 0) { //Dont edit for nothing
                             page = 0;
-                            await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
+                            await interactiveMessage.edit(mainObject(page, rolesFields));
                         }
                     } else if (r.emoji.name === pageReactions[1]) { //Move to previous page-----------------------------------------------------------------------------------------
-                        if (page === 0) {
-                            page = rolesFields.length - 1;
-                        } else {
-                            page--;
-                        }
-                        await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
+                        if (page === 0) page = rolesFields.length - 1;
+                        else page--;
+                        await interactiveMessage.edit(mainObject(page, rolesFields));
                     } else if (r.emoji.name === pageReactions[2]) { //Move to next page--------------------------------------------------------------------------------------------
-                        if (page === rolesFields.length - 1) {
-                            page = 0;
-                        } else {
-                            page++;
-                        }
-                        await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
+                        if (page === rolesFields.length - 1) page = 0;
+                        else page++;
+                        await interactiveMessage.edit(mainObject(page, rolesFields));
                     } else if (r.emoji.name === pageReactions[3]) { //Move to last page---------------------------------------------------------------------------------------------
                         if (!page !== rolesFields.length - 1) { //Dont edit if already at last page
                             page = rolesFields.length - 1;
-                            await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
+                            await interactiveMessage.edit(mainObject(page, rolesFields));
                         }
-                    } else if (r.emoji.name === pageReactions[4]) { //+ 1 level-----------------------------------------------------------------------------------------------------
+                    } else if (r.emoji.name === pageReactions[4]) { //+1 level-----------------------------------------------------------------------------------------------------
                         if (guildEntry.generalSettings.levelSystem.roles.length > 0) {
                             guildEntry.generalSettings.levelSystem.roles[page].atLevel++;
                             rolesFields[page][4].value = guildEntry.generalSettings.levelSystem.roles[page].atLevel;
-                            await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
+                            await interactiveMessage.edit(mainObject(page, rolesFields));
                         }
                     } else if (r.emoji.name === pageReactions[5]) { //-1 level------------------------------------------------------------------------------------------------------
                         if (guildEntry.generalSettings.levelSystem.roles.length > 0) {
                             guildEntry.generalSettings.levelSystem.roles[page].atLevel--;
                             rolesFields[page][4].value = guildEntry.generalSettings.levelSystem.roles[page].atLevel;
-                            await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
+                            await interactiveMessage.edit(mainObject(page, rolesFields));
                         }
                     } else if (r.emoji.name === pageReactions[6]) { //Add a new role------------------------------------------------------------------------------------------------
-                        if (guildEntry.generalSettings.levelSystem.roles.length < 1) await interactiveMessage.edit(secondaryObject(modes[1]));
-                        else await interactiveMessage.edit(mainObject(page, rolesFields, modes[1]));
-                        let role;
-                        try {
-                            const collected = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
-                                max: 1,
-                                time: 120000,
-                                errors: ["time"]
-                            });
-                            role = collected.first();
-                        } catch (e) {
-                            collector.stop('timeout');
-                        }
-                        if (role) {
-                            const guildRoles = await role.getRoleResolvable({ charLimit: 2 });
+                        if (guildEntry.generalSettings.levelSystem.roles.length < 1) await interactiveMessage.edit(secondaryObject());
+                        else await interactiveMessage.edit(mainObject(page, rolesFields));
+                        const role = await message.awaitReply({
+                            message: {
+                                embed: {
+                                    description: `You can now write the name of the role to add`
+                                }
+                            }
+                        });
+                        if (!role.reply) collector.stop('timeout');
+                        else if (role.reply) {
+                            role.query.delete();
+                            const guildRoles = await role.reply.getRoleResolvable({ charLimit: 1 });
                             if (guildRoles.size < 1) {
                                 let noRoleFound = await message.channel.send(`:x: I couldn't find the role you specified`);
                                 noRoleFound.delete(5000);
@@ -132,36 +122,29 @@ exports.run = async(client, message) => {
                                     let roleAlreadyIn = await message.channel.send(":x: This role is already in the list !");
                                     roleAlreadyIn.delete(5000);
                                 } else {
-                                    let collectedArgs;
-                                    let insertLevelNotif = await message.channel.send({
-                                        embed: {
-                                            description: `You can now enter the message count required or the experience required ([count 'exp' || 'msg']). Using experience takes also into account the message length, you can win up to 75xp experience per message. for this role and the time in a voice channel required, if you don't specify a duration for voice channels i will automatically do it`
+                                    let atLevel;
+                                    const collected = await message.awaitReply({
+                                        message: {
+                                            embed: {
+                                                description: 'You can now enter the experience level at which i should give this role'
+                                            }
                                         }
                                     });
-                                    try {
-                                        const collected = await message.channel.awaitMessages(m => m.author.id === message.author.id, {
-                                            max: 1,
-                                            time: 120000,
-                                            errors: ["time"]
-                                        });
-                                        collectedArgs = collected.first().content;
-                                        insertLevelNotif.delete();
-                                        if (collected.first().deletable) collected.first().delete();
-                                    } catch (e) {
-                                        collector.stop('timeout');
-                                    }
-                                    let roleArgs = collectedArgs.split('|');
-                                    if ((!roleArgs[0].toLowerCase().includes('exp') && !roleArgs[0].toLowerCase().includes('msg')) || roleArgs[0].split(' ').filter(a => !isNaN(a)).length > 0) return resolve(await message.channel.send(`:x: Invalid stuff, aborted command`));
+                                    if (!atLevel.reply) collector.stop('timeout');
+                                    atLevel = collected.reply.content;
+                                    collected.query.delete();
+                                    if (collected.reply.deletable) collected.reply.delete();
+
+                                    if (isNaN(atLevel)) atLevel = 1;
                                     guildEntry.generalSettings.levelSystem.roles.push({
                                         id: guildRoles.first().id,
-                                        at: Math.round(roleArgs[0].split(' ').filter(a => !isNaN(a))[0]),
-                                        vc: roleArgs[1] && !isNaN(roleArgs[1]) ? Number(roleArgs[1]) : roleArgs[0].split(' ').filter(a => !isNaN(a))[0],
-                                        method: roleArgs[0].toLowerCase().includes('exp') ? 'exp' : 'msg'
+                                        atLevel: Math.round(atLevel)
                                     });
                                     let guildRole = message.guild.roles.get(guildRoles.first().id);
-                                    let storedRole = guildEntry.generalSettings.levelSystem.roles.find(r => r.id === guildRoles.first().id);
-                                    let mentionable = guildRole.mentionable ? ':white_check_mark:' : ':x:',
-                                        hoisted = guildRole.hoist ? ':white_check_mark:' : ':x:';
+                                    let mentionable = ':x:',
+                                        hoisted = ':x:';
+                                    if (guildRole.mentionable) mentionable = ':white_check_mark:';
+                                    if (guildRole.hoist) hoisted = ':white_check_mark:';
                                     rolesFields.push([{
                                         name: 'Name',
                                         value: `${guildRole.name}`,
@@ -179,22 +162,22 @@ exports.run = async(client, message) => {
                                         value: `${mentionable}`,
                                         inline: true
                                     }, {
-                                        name: `At`,
-                                        value: `${Math.round(storedRole.at)} ${storedRole.method}(text channel)\n${storedRole.vc} milliseconds(voice channel)`
+                                        name: `At level`,
+                                        value: `${Math.round(atLevel)}`
                                     }]);
                                     page = rolesFields.length - 1;
-                                    await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
+                                    await interactiveMessage.edit(mainObject(page, rolesFields));
                                 }
                             }
-                            if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) role.delete();
+                            if (role.reply.deletable) role.reply.delete();
                         }
                     } else if (r.emoji.name === pageReactions[7]) { //If deletion, delete-----------------------------------------------------------------------------------
                         if (rolesFields.length > 0) {
                             rolesFields.splice(page, 1);
                             guildEntry.generalSettings.levelSystem.roles.splice(page, 1);
                             if (page !== 0) page--;
-                            if (rolesFields.length > 0) await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
-                            else await interactiveMessage.edit(secondaryObject(modes[0]));
+                            if (rolesFields.length > 0) await interactiveMessage.edit(mainObject(page, rolesFields));
+                            else await interactiveMessage.edit(secondaryObject());
                         }
                     } else if (r.emoji.name === pageReactions[8]) { //Abort the command-------------------------------------------------------------------------------------
                         collector.stop("aborted"); //End the collector
@@ -209,7 +192,7 @@ exports.run = async(client, message) => {
                     await interactiveMessage.delete();
                 });
             } else {
-                let possibleActions = [`[1] - Enabled: ${guildEntry.generalSettings.levelSystem.enabled ? 'Enabled' : 'Disabled'}`, `[2] - Level up notifications: ${guildEntry.generalSettings.levelSystem.levelUpNotif ? guildEntry.generalSettings.levelSystem.levelUpNotif : 'Disabled'}`, `[3] - Downgrades/Upgrades(automatically remove roles): ${guildEntry.generalSettings.levelSystem.downGrade ? 'Enabled' : 'Disabled'}`, '[4] - Reset experience of specified users', '[5] - Reset experience of everyone'];
+                let possibleActions = [`[1] - Enabled: ${guildEntry.generalSettings.levelSystem.enabled ? 'Enabled' : 'Disabled'}`, `[2] - Privacy: ${guildEntry.generalSettings.levelSystem.public ? 'Public' : 'Private'}`, `[3] - Level up notifications: ${guildEntry.generalSettings.levelSystem.levelUpNotif ? (guildEntry.generalSettings.levelSystem.levelUpNotif === "dm" ? 'Direct message' : 'Channel') : 'Disabled'}`, '[4] - Reset experience of specified users', '[5] - Reset experience of everyone'];
                 let numberReactions = ["1⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣"];
                 let mainObject = function(actions) {
                     return {
@@ -224,7 +207,9 @@ exports.run = async(client, message) => {
                 }
                 const interactiveMessage = await message.channel.send(mainObject(possibleActions));
                 const mainCollector = interactiveMessage.createReactionCollector((reaction, user) => user.id === message.author.id);
-                for (let i = 0; i < possibleActions.length; i++) await interactiveMessage.react(numberReactions[i]);
+                for (let i = 0; i < possibleActions.length; i++) {
+                    await interactiveMessage.react(numberReactions[i]);
+                }
                 await interactiveMessage.react('✅');
                 await interactiveMessage.react('❌');
                 let timeout = setTimeout(function() {
@@ -241,25 +226,25 @@ exports.run = async(client, message) => {
                             possibleActions[0] = '[1] - Enabled: Enabled';
                         }
                         await interactiveMessage.edit(mainObject(possibleActions));
-                    } else if (r.emoji.name === numberReactions[1]) { //3 - Change level up notifications methods
-                        if (!guildEntry.generalSettings.levelSystem.levelUpNotif) { //If disabled switch to dm
-                            guildEntry.generalSettings.levelSystem.levelUpNotif = 'dm';
-                            possibleActions[1] = '[2] - Level up notifications: Direct message';
-                        } else if (guildEntry.generalSettings.levelSystem.levelUpNotif === 'dm') { //If dm switch to channel
-                            guildEntry.generalSettings.levelSystem.levelUpNotif = 'channel';
-                            possibleActions[1] = '[2] - Level up notifications: Channel';
-                        } else if (guildEntry.generalSettings.levelSystem.levelUpNotif === 'channel') { //Finally if channel switch to disabled
-                            guildEntry.generalSettings.levelSystem.levelUpNotif = false;
-                            possibleActions[1] = '[2] - Level up notifications: Disabled';
+                    } else if (r.emoji.name === numberReactions[1]) { //2 - Change privacy
+                        if (guildEntry.generalSettings.levelSystem.public) {
+                            guildEntry.generalSettings.levelSystem.public = false;
+                            possibleActions[1] = '[2] - Privacy: Private';
+                        } else {
+                            guildEntry.generalSettings.levelSystem.public = true;
+                            possibleActions[1] = '[2] - Privacy: Public';
                         }
                         await interactiveMessage.edit(mainObject(possibleActions));
-                    } else if (r.emoji.name === numberReactions[2]) {
-                        if (guildEntry.generalSettings.levelSystem.downGrade) {
-                            guildEntry.generalSettings.levelSystem.downGrade = false;
-                            possibleActions[2] = '[3] - Downgrades/Upgrades(automatically remove roles): Disabled';
-                        } else {
-                            guildEntry.generalSettings.levelSystem.downGrade = true;
-                            possibleActions[2] = '[3] - Downgrades/Upgrades(automatically remove roles): Enabled';
+                    } else if (r.emoji.name === numberReactions[2]) { //3 - Change level up notifications methods
+                        if (!guildEntry.generalSettings.levelSystem.levelUpNotif) { //If disabled switch to dm
+                            guildEntry.generalSettings.levelSystem.levelUpNotif = 'dm';
+                            possibleActions[2] = '[3] - Level up notifications: Direct message';
+                        } else if (guildEntry.generalSettings.levelSystem.levelUpNotif === 'dm') { //If dm switch to channel
+                            guildEntry.generalSettings.levelSystem.levelUpNotif = 'channel';
+                            possibleActions[2] = '[3] - Level up notifications: Channel';
+                        } else if (guildEntry.generalSettings.levelSystem.levelUpNotif === 'channel') { //Finally if channel switch to disabled
+                            guildEntry.generalSettings.levelSystem.levelUpNotif = false;
+                            possibleActions[2] = '[3] - Level up notifications: Disabled';
                         }
                         await interactiveMessage.edit(mainObject(possibleActions));
                     } else if (r.emoji.name === numberReactions[3]) {
@@ -289,15 +274,14 @@ exports.run = async(client, message) => {
                             }
                             await notifMessage.edit({
                                 embed: {
-                                    description: `: white_check_mark: The experience of ${usersToReset.map(u => '**' + u.tag + '**').join(', ')}
-                                            has been reset`
+                                    description: `:white_check_mark: The experience of ${usersToReset.map(u => '**' + u.tag + '**').join(', ')} has been reset`
                                 }
                             });
                             notifMessage.delete(5000);
                         } else {
                             await notifMessage.edit({
                                 embed: {
-                                    description: `: x: No users found `
+                                    description: `:x: No users found`
                                 }
                             });
                             notifMessage.delete(5000);
@@ -306,11 +290,9 @@ exports.run = async(client, message) => {
                         guildEntry.generalSettings.levelSystem.users = [];
                         possibleActions[4] = '[5] - Warning: Confirming will wipe out the experience of all members';
                         await interactiveMessage.edit(mainObject(possibleActions));
-                    } else if (r.emoji.name === '✅') {
-                        mainCollector.stop('confirmed');
-                    } else if (r.emoji.name === '❌') {
-                        mainCollector.stop('aborted');
-                    }
+                    } else if (r.emoji.name === '✅') mainCollector.stop('confirmed');
+                    else if (r.emoji.name === '❌') mainCollector.stop('aborted');
+
                     await r.remove(message.author.id); //Delete user reaction                   
                     timeout = setTimeout(function() { //Restart the timeout
                         mainCollector.stop('timeout');
@@ -356,7 +338,6 @@ exports.help = {
     description: 'Enter the activity experience system settings of this server, this allow you to do stuff like disable level up notifications for example',
     category: 'settings',
     detailedUsage: '`{prefix}experience rolelist` Will return a list of all roles sets to be given on level up in which you can add and remove some'
-
 }
 exports.shortcut = {
     triggers: new Map([
@@ -367,11 +348,6 @@ exports.shortcut = {
         ['disable', {
             script: 'disable.js',
             help: 'Disable the system, current data are preserved'
-        }],
-        ['set_interval', {
-            script: 'setInterval.js',
-            help: 'Set the interval between each downgrade/upgrade, basically, the time duration at which Felix will check each members activity and give them roles',
-            args: 1
         }]
     ])
 }
