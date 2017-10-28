@@ -7,6 +7,7 @@
 
 ## Improvements
 * All resolver modules (userResolver, roleResoler..) now ask for user confirmation if mutliple users/channels.. have the same name/username. Also, User matching by partial username/nickname now match only if the match is over 30%, so it won't resolve `Hey i love baguettes#0000` when you put `love` anymore
+* Files gives you experience too now
 
 ## Backend breaking changes
 * To read carefully for selfhost case: Now doesn't use the original d.js module but a enhanced version for felix so no need to install d.js anymore
