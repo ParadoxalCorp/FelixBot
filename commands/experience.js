@@ -129,7 +129,7 @@ exports.run = async(client, message) => {
                                             }
                                         }
                                     });
-                                    if (!atLevel.reply) collector.stop('timeout');
+                                    if (!collected.reply) collector.stop('timeout');
                                     atLevel = collected.reply.content;
                                     collected.query.delete();
                                     if (collected.reply.deletable) collected.reply.delete();
