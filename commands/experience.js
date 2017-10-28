@@ -1,4 +1,3 @@
-nes(365 sloc) 23.5 KB
 exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
