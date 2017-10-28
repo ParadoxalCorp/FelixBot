@@ -4,6 +4,7 @@
 * Added `choose`, now you can choose between coffee and tea when waking up (Actually don't do that, always take coffee :^))
 * Added multi-commands, what it meansis that you can now run up to 3 commands at once using `&&`
 * Commands now also works with mentions instead of prefix
+* Shortcuts: Felix is designed to be usable and understandable the very first time, that's why advanced commands use reactions rather than a complex setup of parameter, however you can quickly be annoyed by that since its pretty slower. That's why there is now shortcuts for these commands, you can see them in the help of each commands
 
 ## Improvements
 * All resolver modules (userResolver, roleResoler..) now ask for user confirmation if mutliple users/channels.. have the same name/username. Also, User matching by partial username/nickname now match only if the match is over 30%, so it won't resolve `Hey i love baguettes#0000` when you put `love` anymore
