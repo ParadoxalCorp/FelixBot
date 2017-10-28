@@ -57,7 +57,7 @@ exports.run = async(client, message) => {
                 }
                 let page = 0; //current page
                 let interactiveMessage;
-                if (guildEntry.generalSettings.levelSystem.roles.length < 1) interactiveMessage = await message.channel.send(secondaryObject(modes[0]));
+                if (guildEntry.generalSettings.levelSystem.roles.length < 1) interactiveMessage = await message.channel.send(secondaryObject());
                 else interactiveMessage = await message.channel.send(mainObject(page, rolesFields));
                 const collector = interactiveMessage.createReactionCollector((reaction, user) => user.id === message.author.id);
                 let pageReactions = ["⏮", "◀", "▶", "⏭", "🔼", "🔽", "➕", "🗑", "❌"];
