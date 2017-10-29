@@ -29,3 +29,17 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 [invite link](https://discordapp.com/oauth2/authorize?&client_id=327144735359762432&scope=bot&permissions=2146950271)
 
 [Support server](https://discord.gg/Ud49hQJ)
+
+### What happen to users data?
+Im that kind of guy who likes to know what exactly happen to my data when a application or something collect it, so even if probably very few users cares about how a bot use their data, here's what we exactly store and do with it:
+
+#### Yes, what do you store about me?
+Basically, only your Discord user ID, that allow us to efficiently store and differenciate users, all of the other data we store "about you" are Felix-related(Your points, experience, market items you bought...) 
+
+#### And, is that all?
+Well yes but no, we(well only me use these data) log guilds(servers) joined and left, however since 2.5.0, as pointed out by someone, we do not log guild names and guild owners anymore. We only log: The members count, the bots count and the guild ID in case we need to retrieve the guild someday, these are for statistics purposes and aren't stored anywhere in our database, only in a Discord channel. 
+
+#### Alright but when do you store users? Who are "users" and how can i stop be a "user"?
+A new entry in the database is created when you first use a command, which means you won't be considered as a "user" and therefore won't be in the database as long as you don't use Felix.
+
+However, there is a special case, in which in order to prevent crash Felix create a database entry when a user specify you in a command. You can always reset your data with the `account` command and join the support server to request a full deletion of your data(but you will still be stored again once you use a command)
