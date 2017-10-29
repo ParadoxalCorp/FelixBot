@@ -8,9 +8,6 @@ module.exports = async(client, guild) => {
                     title: ':outbox_tray: I left a guild',
                     description: `**ID:** ${guild.id}\n**Members:** ${guild.members.filter(m => !m.user.bot).size}\n**Bots:** ${guild.members.filter(m => m.user.bot).size}\n**Joined:** ${moment().to(guild.joinedAt)}`,
                     timestamp: new Date(),
-                    image: {
-                        url: guild.iconURL
-                    }
                 }
             });
         } catch (err) {

@@ -8,18 +8,18 @@ module.exports = async(client, member) => {
     }
     if (guildEntry.onEvent.guildMemberAdd.greetings.message && guildEntry.onEvent.guildMemberAdd.greetings.enabled) {
         let message = guildEntry.onEvent.guildMemberAdd.greetings.message || guildEntry.onEvent.guildMemberAdd.greetings.embed; //Whether the message to send is an embed or not
-        let method = member.user;
+        let method = guildEntry.onEvent.guildMemberAdd.greetings.channel && !guildEntry.onEvent.guildMemberAdd.greetings.dm ? member.guild.channels.get(guildEntry.onEvent.guildMemberAdd.greetings.channel) : member.user;
+        if (typeof method === "undefined") {
+            guildEntry.onEvent.guildMemberAdd.greetings.error = "Unknown Channel";
+            return client.guildData.set(member.guild.id, guildEntry); //If getting the channel return undefined
+        }
         //---------------------------------------Replace all instances of %USER%, %USERNAME% and %GUILD%--------------------------------------
         message = message.replace(/\%USER\%/gim, `<@${member.user.id}>`).replace(/\%USERNAME\%/gim, `${member.user.username}`).replace(/\%USERTAG%/gim, `${member.user.tag}`).replace(/\%GUILD\%/gim, `${member.guild.name}`);
         //---------------------------------------------------------Greets------------------------------------------------------------
-        if (guildEntry.onEvent.guildMemberAdd.greetings.channel && !guildEntry.onEvent.guildMemberAdd.greetings.dm) method = member.guild.channels.get(guildEntry.onEvent.guildMemberAdd.greetings.channel);
         await method.send(message).catch(err => {
             if (err.code === 50013) {
                 guildEntry.onEvent.guildMemberAdd.greetings.error = "Missing Permissions"; //error code for Missing Permissions
                 return client.guildData.set(member.guild.id, guildEntry);
-            } else if (typeof method === "undefined") {
-                guildEntry.onEvent.guildMemberAdd.greetings.error = "Unknown Channel";
-                return client.guildData.set(member.guild.id, guildEntry); //If getting the channel return undefined
             } else if (err.code === 50001) {
                 guildEntry.onEvent.guildMemberAdd.greetings.error = "Missing Permissions" //error code for Missing Access
                 return client.guildData.set(member.guild.id, guildEntry);

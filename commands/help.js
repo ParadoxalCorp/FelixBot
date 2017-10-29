@@ -19,7 +19,7 @@ exports.run = async(client, message) => {
             const commandHelp = client.commands.get(arg) || client.commands.get(client.aliases.get(arg));
             if (!commandHelp) return resolve();
             let aliases = 1 <= commandHelp.conf.aliases.length ? commandHelp.conf.aliases.join(', ') : "None";
-            let detailedUsage = commandHelp.help.detailedUsage ? commandHelp.help.detailedUsage : "There is no detailed usage for this command";
+            let detailedUsage = commandHelp.help.detailedUsage ? commandHelp.help.detailedUsage.replace(/\{prefix\}/gim, `${prefix}`) : "There is no detailed usage for this command";
             let parameters = commandHelp.help.parameters ? commandHelp.help.parameters : "None";
             let shortcuts = "None";
             if (commandHelp.shortcut) {

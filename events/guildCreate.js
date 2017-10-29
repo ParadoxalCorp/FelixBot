@@ -6,9 +6,6 @@ module.exports = async(client, guild) => {
                     title: ':inbox_tray: I joined a guild',
                     description: `**ID:** ${guild.id}\n**Members:** ${guild.members.filter(m => !m.user.bot).size}\n**Bots:** ${guild.members.filter(m => m.user.bot).size}`,
                     timestamp: new Date(),
-                    image: {
-                        url: guild.iconURL
-                    }
                 }
             });
         } catch (err) {

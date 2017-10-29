@@ -85,7 +85,7 @@ exports.conf = {
 
 exports.help = {
     name: 'image',
-    description: 'Get random images from the weeb\'s images api',
+    description: 'Get random images from the weeb images api(weeb.sh)',
     usage: 'image',
     category: 'image',
     detailedUsage: '\n`{prefix}image` Will return a list of available images types where you can select from\n`{prefix}image owo` Will return a random image from the **owo** image type'

@@ -1,5 +1,7 @@
 const unirest = require("unirest");
 module.exports = async(client) => {
+        if (client.readyFired) return; //Ready should be run only once
+        client.readyFired = true;
         const getRandomNumber = function(max, min) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
