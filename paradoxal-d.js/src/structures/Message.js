@@ -762,6 +762,7 @@ class Message {
         });
     }
 
+
     /**
      * Pins this message to the channel's pinned messages.
      * @returns {Promise<Message>}
