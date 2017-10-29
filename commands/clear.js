@@ -6,14 +6,8 @@ exports.run = async(client, message) => {
             if (!message.guild.member(client.user).hasPermission('MANAGE_MESSAGES')) return resolve(await message.channel.send(':x: I don\'t have the permissions to do that'));
             let args = message.content.split(/\s+/gim);
             args.shift();
-            let limit = 2;
+            let limit = args.filter(a => !isNaN(a)).length > 0 ? (args.filter(a => !isNaN(a))[0] > 100 ? 100 : args.filter(a => !isNaN(a))[0]) : 2;
             var filtered = new Discord.Collection();
-            args.forEach(function(arg) { //Get message count to delete
-                if (!isNaN(arg)) {
-                    if (arg > 100) return limit = 100;
-                    else return limit = Math.round(arg);
-                }
-            });
             const fetchedMessages = await message.channel.fetchMessages({
                 limit: limit
             });
@@ -21,9 +15,8 @@ exports.run = async(client, message) => {
             for (let i = 0; i < args.length; i++) {
                 if (args[i].startsWith('-')) {
                     filters = true;
-                    if (args[i].toLowerCase().includes('b')) { //Filter bots messages
-                        filtered = filtered.concat(fetchedMessages.filter(m => m.author.bot));
-                    }
+                    if (args[i].toLowerCase().includes('b')) filtered = filtered.concat(fetchedMessages.filter(m => m.author.bot)); //Filter bots messages
+
                     if (args[i].toLowerCase().includes('u')) { //Filter specified users messages
                         const users = await message.getUserResolvable();
                         if (users.size < 1) filtered = filtered.concat(fetchedMessages.filter(m => m.author.id === message.author.id)); //If no users found then filter author messages
@@ -33,7 +26,7 @@ exports.run = async(client, message) => {
             }
             if (!filters) filtered = fetchedMessages;
             if (filtered.size < 2) return resolve(await message.channel.send(':x: Not enough messages have been matched with the filter'));
-            const deletedMessages = await message.channel.bulkDelete(filtered, {
+            const deletedMessages = await message.channel.bulkDelete(Array.from(filtered.values()), {
                 filterOld: true
             });
             const deletedMessageNotice = await message.channel.send(`:white_check_mark: Deleted **${deletedMessages.size}** messages`);
