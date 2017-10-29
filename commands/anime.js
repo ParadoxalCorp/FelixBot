@@ -8,37 +8,36 @@ exports.run = async(client, message) => {
         try {
             let args = message.content.split(/\s+/);
             args.shift();
-            if (!args.length) {
-                return resolve(await message.channel.send(":x: You did not enter an anime to search for"));
-            }
-            var animeName = args.join(" ");
+            if (!args.length) return resolve(await message.channel.send(":x: You did not enter an anime to search for"));
+            let animeName = args.join(" ");
             const res = await malClient.searchAnimes(animeName);
-            if (!res[0]) {
-                return resolve(await message.channel.send(":x: Your search did not returned any result"));
-            }
+            if (!res[0]) return resolve(await message.channel.send(":x: Your search did not returned any result"));
             let embedFields = [];
             let selectedAnime = res[0];
             if (res.length > 1) {
                 let i = 1;
                 let resultList = res.map(a => `[${i++}] ${a.title}`).join('\n').replace(/undefined/gim, "");
                 if (resultList.length > 2030) resultList = resultList.substr(0, 2030) + '..';
-                const reply = await client.awaitReply({
-                    message: message,
-                    title: ":mag: Your search has returned more than one result, select one by typing a number",
-                    question: "```\n" + resultList + "```"
+                const reply = await message.awaitReply({
+                    message: {
+                        embed: {
+                            title: ":mag: Your search has returned more than one result, select one by typing a number",
+                            description: "```\n" + resultList + "```"
+                        }
+                    }
                 });
                 if (!reply.reply) {
-                    reply.question.delete();
+                    reply.query.delete();
                     return resolve(await message.channel.send(":x: Timeout: Command aborted"));
                 }
                 if (isNaN(reply.reply.content) || reply.reply.content > res.length || reply.reply.content < 1) {
                     if (message.guild && message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) await reply.reply.delete();
-                    await reply.question.delete();
+                    await reply.query.delete();
                     return resolve(await message.channel.send(":x: You did not enter a whole number or the number you specified is not valid"));
                 }
                 selectedAnime = res[Math.round(reply.reply.content - 1)];
-                await reply.reply.delete();
-                await reply.question.delete();
+                if (reply.reply.deletable) reply.reply.delete();
+                reply.query.delete();
             }
             const anime = await malScraper.getInfoFromName(selectedAnime.title);
             if (anime.genres.length > 0) {

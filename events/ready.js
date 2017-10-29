@@ -6,24 +6,18 @@ module.exports = async(client) => {
         if (client.database.wolkeImageKey !== "") {
             async function updateImageTypes() {
                 try {
-                    fetch: {
-                        await unirest.get(`https://api.weeb.sh/images/types`)
-                        .header('Authorization', `Bearer ${client.database.wolkeImageKey}`)
-                        .end(async function(result) {
-                            if (!result.body || result.body.status !== 200) {
-                                client.imageTypes.success.name = "External Error";
-                                client.imageTypes.success.message = "An error occurred within weeb.sh end or the request was wrong";
-                                console.error(result.body);
-                            } else {
-                                client.imageTypes.success.name = "Update successful";
-                                client.imageTypes.success.message = "Latest update request was successful";
-                            }
-                            client.imageTypes.latestUpdate = Date.now();
-                            client.imageTypes.types = result.body.types;
-                        })
+                    let result = await client.request(`https://api.weeb.sh/images/types`, { header: 'Authorization', value: `Bearer ${client.config.wolkeImageKey}` });
+                    if (!result.body || result.body.status !== 200) {
+                        client.imageTypes.success.name = "External Error";
+                        client.imageTypes.success.message = "An error occurred within weeb.sh end or the request was wrong";
+                        console.error(result.body);
+                    } else {
+                        client.imageTypes.success.name = "Update successful";
+                        client.imageTypes.success.message = "Latest update request was successful";
                     }
-                }
-                catch (err) {
+                    client.imageTypes.latestUpdate = Date.now();
+                    client.imageTypes.types = result.body.types;
+                } catch (err) {
                     console.error(err);
                     client.Raven.captureException(err);
                 }
@@ -36,19 +30,13 @@ module.exports = async(client) => {
             var upvoters = async function() {
                 return new Promise(async(resolve, reject) => {
                     try {
-                        fetch: {
-                            await unirest.get(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`)
-                            .header('Authorization', client.database.discordBotList)
-                            .end(async function(result) {
-                                if (!Array.isArray(result.body)) {
-                                    console.error(result.body);
-                                    resolve(upvoters = false);
-                                }
-                                resolve(upvoters = result.body);
-                            });
+                        let result = await client.request(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`, { header: 'Authorization', value: client.config.discordBotList });
+                        if (!Array.isArray(result.body)) {
+                            console.error(result.body);
+                            resolve(upvoters = false);
                         }
-                    }
-                    catch (err) {
+                        resolve(upvoters = result.body);
+                    } catch (err) {
                         console.error(err);
                         resolve(upvoters = false);
                     }
@@ -59,19 +47,13 @@ module.exports = async(client) => {
             //----------------------------Update upvoters every 30 minutes-----------------------------------------
             setInterval(async function() {
                 try {
-                    fetch: {
-                        await unirest.get(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`)
-                        .header('Authorization', client.database.discordBotList)
-                        .end(async function(result) {
-                            if (!Array.isArray(result.body)) {
-                                console.error(result.body);
-                            }
-                            client.upvotes.users = upvoters;
-                            client.upvotes.latestUpdate = Date.now();
-                        });
-                    }
-                }
-                catch (err) {
+                    let result = await client.request(`https://discordbots.org/api/bots/327144735359762432/votes?onlyids=true`, { header: 'Authorization', value: client.config.discordBotList });
+                    if (!Array.isArray(result.body)) {
+                        console.error(result.body)
+                    };
+                    client.upvotes.users = upvoters;
+                    client.upvotes.latestUpdate = Date.now();
+                } catch (err) {
                     console.error(err);
                     client.Raven.captureException(err);
                 }

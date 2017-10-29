@@ -26,11 +26,8 @@ class Logger {
 
     log(message, type, returnString) {
         const log = chalk[types[type] || 'green'](`[${Date().toString().split(' ').slice(1, 5).join(' ')}, ${type ? type.toUpperCase() : 'INFO'}] `) + message;
-        if (returnString) {
-            return log;
-        } else {
-            console.log(log);
-        }
+        if (returnString) return log;
+        else console.log(log);
     }
 
     async draft(name, type, string, succeed) {

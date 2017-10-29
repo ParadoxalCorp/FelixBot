@@ -163,3 +163,24 @@ exports.help = {
     category: 'settings',
     detailedUsage: '**FLAGS**\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`\n\n`{prefix}setfarewell raw` Will return the raw message(without flags replaced) that has been set'
 };
+exports.shortcut = {
+    triggers: new Map([
+        ['enable_farewell', {
+            script: 'enableFarewell.js',
+            help: 'Enable the farewell'
+        }],
+        ['disable_farewell', {
+            script: 'disableFarewell.js',
+            help: `Disable the farewell(but keep the current settings)`
+        }],
+        ['set_target', {
+            script: 'setTarget.js',
+            args: 1,
+            help: `Set the target of farewell, use \`channel_name\` to send the farewell in this channel`
+        }],
+        ['set_farewell', {
+            script: 'setFarewell.js',
+            help: 'Set the farewell message, flags are allowed'
+        }]
+    ])
+}

@@ -70,18 +70,12 @@ exports.run = async(client, message) => {
                         await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
                     }
                 } else if (r.emoji.name === pageReactions[1]) { //Move to previous page
-                    if (page === 0) {
-                        page = rolesFields.length - 1;
-                    } else {
-                        page--;
-                    }
+                    if (page === 0) page = rolesFields.length - 1;
+                    else page--;
                     await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
                 } else if (r.emoji.name === pageReactions[2]) { //Move to next page
-                    if (page === rolesFields.length - 1) {
-                        page = 0;
-                    } else {
-                        page++;
-                    }
+                    if (page === rolesFields.length - 1) page = 0;
+                    else page++;
                     await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
                 } else if (r.emoji.name === pageReactions[3]) { //Move to last page
                     if (!page !== rolesFields.length - 1) { //Dont edit if already at last page
@@ -105,9 +99,7 @@ exports.run = async(client, message) => {
                             collector.stop('timeout');
                         }
                         if (role) {
-                            const guildRoles = await client.getRoleResolvable(role, {
-                                charLimit: 1
-                            });
+                            const guildRoles = await role.getRoleResolvable({ charLimit: 1 });
                             if (guildRoles.size < 1) {
                                 isCollecting = false;
                                 let noRoleFound = await message.channel.send(`:x: I couldn't find the role you specified`);
@@ -145,7 +137,7 @@ exports.run = async(client, message) => {
                                     await interactiveMessage.edit(mainObject(page, rolesFields, modes[0]));
                                 }
                             }
-                            if (message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) role.delete();
+                            if (role.deletable) role.delete();
                         }
                     }
                 } else if (r.emoji.name === pageReactions[5]) { //If deletion, delete
@@ -184,4 +176,18 @@ exports.help = {
     description: 'Set the self-assignables roles',
     usage: 'selfrole',
     category: 'settings'
+}
+exports.shortcut = {
+    triggers: new Map([
+        ['add_role', {
+            script: 'addRole.js',
+            args: 1,
+            help: 'Add a role to the auto-assignables list'
+        }],
+        ['remove_role', {
+            script: 'removeRole.js',
+            args: 1,
+            help: 'Remove a role from the auto-assignables roles list'
+        }]
+    ])
 }

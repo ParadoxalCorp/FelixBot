@@ -176,5 +176,5 @@ exports.help = {
     name: 'animeseason',
     description: 'Get the animes for the specified season',
     usage: 'animeseason',
-    category: 'utility',
+    category: 'utility'
 };

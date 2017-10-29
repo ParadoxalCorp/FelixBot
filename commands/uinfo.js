@@ -3,9 +3,7 @@ const moment = require('moment'); //Needed for dates stuff
 exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const users = await client.getUserResolvable(message, {
-                guildOnly: true
-            });
+            const users = await message.getUserResolvable();
             let target = message.author;
             if (users.size > 0) target = users.first();
             const userEntry = client.userData.get(target.id) || client.defaultUserData(target.id);

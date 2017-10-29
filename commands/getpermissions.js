@@ -6,9 +6,9 @@ exports.run = async(client, message) => {
             let args = message.content.split(/\s+/);
             args.shift();
             let targets;
-            if (args.find(a => a.toLowerCase() === '-user') || args.find(a => a.toLowerCase() === '-u')) targets = await client.getUserResolvable(message);
-            if (args.find(a => a.toLowerCase() === '-role') || args.find(a => a.toLowerCase() === '-r')) targets = await client.getRoleResolvable(message);
-            if (args.find(a => a.toLowerCase() === '-channel') || args.find(a => a.toLowerCase() === '-c')) targets = await client.getChannelResolvable(message);
+            if (args.find(a => a.search(/\-user|\-u/gim) !== -1)) targets = await message.getUserResolvable();
+            if (args.find(a => a.search(/\-role|\-r/gim) !== -1)) targets = await message.getRoleResolvable();
+            if (args.find(a => a.search(/\-channel|\-c/gim) !== -1)) targets = await message.getChannelResolvable();
             if (targets && targets.size < 1) return resolve(await message.channel.send(`:x: I couldn't find anything or you didn't specified anything to get the permissions from`));
             //Output global permissions
             if (!targets) {

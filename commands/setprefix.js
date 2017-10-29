@@ -4,7 +4,7 @@ exports.run = async(client, message) => {
             let args = message.content.split(/\s+/gim);
             args.shift();
             const guildEntry = client.guildData.get(message.guild.id);
-            if (args.length < 1) return resolve(await message.channel.send(":x: You did not specified a new prefix"));
+            if (args.length < 1) return resolve(await message.channel.send(`:x: You did not specified a new prefix, the current prefix is \`${guildEntry.generalSettings.prefix}\``));
             else if (args[0].length > 8) return resolve(await message.channel.send(`:x: The prefix cant exceed 8 characters !`));
             guildEntry.generalSettings.prefix = args[0];
             client.guildData.set(message.guild.id, guildEntry);

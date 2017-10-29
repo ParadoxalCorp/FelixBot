@@ -1,4 +1,4 @@
-const Discord = require("discord.js");
+const Discord = require("./paradoxal-d.js");
 const client = new Discord.Client({
     disabledEvents: ["TYPING_START"]
 });
@@ -77,6 +77,7 @@ client.guildData = guildData;
 client.tagData = tagData;
 client.clientData = clientData;
 client.talkedRecently = new Set(); //cooldown stuff
+client.ratelimited = new Set();
 client.maintenance = false; //Will be used to ignore users when performing maintenance stuff
 client.Raven = Raven;
 client.upvotes = {
@@ -99,7 +100,7 @@ client.statsUpdate = {
 client.imageTypes = {
     success: {
         name: 'No Data',
-        message: `The weeb's image types didnt got fetched yet`,
+        message: `The weeb's image types didn't got fetched yet`,
         description: function() {
             return `${this.name}: ${this.message}`;
         }
@@ -149,8 +150,9 @@ client.defaultGuildData = function(id) {
             modLog: [],
             prefix: client.database.prefix,
             levelSystem: {
-                enabled: true,
-                public: true,
+                enabled: false,
+                downGrade: true,
+                interval: false,
                 levelUpNotif: false,
                 roles: [],
                 users: []
@@ -190,29 +192,30 @@ client.defaultGuildData = function(id) {
 
 process.on('uncaughtException', (err) => {
     try {
+        Raven.captureException(err);
+    } catch (ravenErr) {
+        console.error(ravenErr)
+    } finally {
         console.error(err);
-    } catch (err) {
-        return;
     }
 });
 process.on("unhandledRejection", err => {
+    if (err.code === 50013) return; //Missing permissions    
     try {
-        console.error(err);
-        if (err.message === "Missing Permissions") {
-            return;
-        }
         Raven.captureException(err);
-    } catch (err) {
-        return;
+    } catch (ravenErr) {
+        console.error(ravenErr)
+    } finally {
+        console.error(err);
     }
 });
 process.on("error", err => {
     try {
+        Raven.captureException(err);
+    } catch (ravenErr) {
+        console.error(ravenErr);
+    } finally {
         console.error(err);
-        client.channels.get(client.errorLog).send("**Error: " + err + err.stack);
-    } catch (err) {
-        console.error(err);
-        return;
     }
 });
 //require node 8 or higher
@@ -259,10 +262,11 @@ process.on("error", err => {
     }
     await eventsLoading();
     client.logger.draft('database', 'create', 'Waiting for the database to be fully loaded...');
-    setTimeout(async function() {
+    setTimeout(async() => {
         client.logger.draft('database', 'edit', 'Database load complete, launching database auto-update')
         let dbUpdate = await client.updateDatabase(client); //Update database
-        client.logger.draft('database', 'end', `Database auto-update complete:\n${dbUpdate.usersUpdate}\n${dbUpdate.guildsUpdate}`, true);
+        client.logger.draft('database', 'end', `Database auto-update complete: ${dbUpdate.usersUpdate} and ${dbUpdate.guildsUpdate}`, true);
+        require('./api/server.js').launch(client, readdir);
     }, 7500);
     client.login(client.config.token);
 }());

@@ -46,7 +46,7 @@ exports.run = async(client, message) => {
             });
             embedFields.push({
                 name: ":wrench: Developer",
-                value: "<:certifieddev:355641883076329473> ParadoxOrigins#5451",
+                value: "ParadoxOrigins#5451",
                 inline: true
             });
             embedFields.push({
@@ -101,7 +101,7 @@ exports.run = async(client, message) => {
 }
 exports.conf = {
     disabled: false,
-    aliases: ['stats'],
+    aliases: ['stats', 'info'],
     guildOnly: true
 }
 exports.help = {

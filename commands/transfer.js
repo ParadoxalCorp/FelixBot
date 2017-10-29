@@ -5,9 +5,7 @@ exports.run = async(client, message) => {
             const userEntry = client.userData.get(message.author.id);
             let args = message.content.split(/\s+/);
             args.shift();
-            let users = await client.getUserResolvable(message, {
-                guildOnly: true
-            });
+            let users = await message.getUserResolvable();
             //Return current points if no args
             if (!args[0]) return resolve(await message.channel.send(`You currently have **${userEntry.generalSettings.points}** points`));
             //Else continue the transfer process

@@ -7,11 +7,9 @@ exports.run = async(client, message) => {
             args.shift();
             let permission = args.filter(c => client.commands.find(cmd => cmd.help.name === c.toLowerCase() && cmd.help.category !== 'admin') || client.commands.find(cmd => cmd.help.category !== 'admin' && cmd.help.category === c.substr(0, c.indexOf('*'))));
             let targets = 'global';
-            if (args.map(a => a.toLowerCase()).includes('-user') || args.map(a => a.toLowerCase()).includes('-u')) targets = await client.getUserResolvable(message, {
-                guildOnly: true
-            });
-            else if (args.map(a => a.toLowerCase()).includes('-channel') || args.map(a => a.toLowerCase()).includes('-c')) targets = await client.getChannelResolvable(message);
-            else if (args.map(a => a.toLowerCase()).includes('-role') || args.map(a => a.toLowerCase()).includes('-r')) targets = await client.getRoleResolvable(message);
+            if (args.find(a => a.search(/\-user|\-u/gim) !== -1)) targets = await message.getUserResolvable();
+            else if (args.find(a => a.search(/\-channel|\-c/gim) !== -1)) targets = await message.getChannelResolvable();
+            else if (args.find(a => a.search(/\-role|\-r/gim) !== -1)) targets = await message.getRoleResolvable();
             //Handle missing args
             if (!permission[0]) return resolve(await message.channel.send(`:x: You did not specified a permission to remove`));
             if (targets !== 'global' && targets.size < 1) return resolve(await message.channel.send(`:x: You did not specified a target`));

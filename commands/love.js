@@ -2,9 +2,7 @@ exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
             var userEntry = client.userData.get(message.author.id);
-            const users = await client.getUserResolvable(message, {
-                guildOnly: true
-            });
+            const users = await message.getUserResolvable()
 
             function convertToTime(timestamp) {
                 return {
