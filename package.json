@@ -17,7 +17,7 @@
     "homepage": "https://github.com/ParadoxalCorp/FelixBot#readme",
     "dependencies": {
         "chalk": "^2.1.0",
-        "discord.js": "^11.2.0",
+        //"discord.js": "^11.2.0",
         "djs-collection-persistent": "^0.1.4",
         "draftlog": "^1.0.12",
         "fs-extra": "^3.0.1",
