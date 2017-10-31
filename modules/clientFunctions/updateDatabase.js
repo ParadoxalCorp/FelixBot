@@ -16,8 +16,16 @@ module.exports = async(client) => {
                         if (typeof user[key] === "object" && defaultUserData[key]) {
                             let userPropertyObject = Object.keys(user[key]),
                                 defaultPropertyObject = Object.keys(defaultUserData[key]);
-                            userPropertyObject.forEach(function(childKey) { //If property is object, which is pretty likely, check as well
-                                if (defaultPropertyObject.includes(childKey)) {
+                            userPropertyObject.forEach(childKey => { //If property is object, which is pretty likely, check as well
+                                if (typeof user[key][childKey] === "object" && defaultUserData[key][childKey]) {
+                                    let deeperObjectKeys = Object.keys(user[key][childKey]),
+                                        deeperDefaultObjectKeys = Object.keys(defaultUserData[key][childKey]);
+                                    deeperObjectKeys.forEach(deeperKey => { //If property is object, which is pretty likely, check as well
+                                        if (deeperDefaultObjectKeys.includes(deeperKey)) {
+                                            defaultUserData[key][childKey][deeperKey] = user[key][childKey][deeperKey];
+                                        }
+                                    });
+                                } else if (defaultPropertyObject.includes(childKey)) {
                                     defaultUserData[key][childKey] = user[key][childKey];
                                 }
                             });
@@ -41,7 +49,7 @@ module.exports = async(client) => {
                         if (typeof guild[key] === "object" && defaultGuildData[key]) {
                             let guildPropertyObject = Object.keys(guild[key]),
                                 defaultPropertyObject = Object.keys(defaultGuildData[key]);
-                            guildPropertyObject.forEach(function(childKey) { //If property is object, which is pretty likely, check as well
+                            guildPropertyObject.forEach(childKey => { //If property is object, which is pretty likely, check as well
                                 if (defaultPropertyObject.includes(childKey)) {
                                     defaultGuildData[key][childKey] = guild[key][childKey];
                                 }

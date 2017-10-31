@@ -271,12 +271,17 @@ process.on("error", err => {
     }, 7500);
 
     const coreData = await fs.readFile('./config/core-data.json');
-    if (!coreData.exists) {
+    try {
+        client.coreData = JSON.parse(coreData);
+    } catch (err) {
         client.logger.draft('coreDataCorrupted', 'create', `Core data seems to be corrupted, attempting to restore from the backup...`);
         if (!client.clientData.has('exists')) client.logger.draft('coreDataCorrupted', 'end', `Core data (config/core-data.json) seems to be corrupted but no backup was found to restore it`);
         else {
             client.loadBackup()
-                .then(client.logger.draft('coreDataCorrupted', 'end', 'Succeed to restore core-data from the backup', true))
+                .then(() => {
+                    client.coreData = JSON.parse(coreData);
+                    client.logger.draft('coreDataCorrupted', 'end', 'Succeed to restore core-data from the backup', true);
+                })
                 .catch(err => client.logger.draft('coreDataCorrupted', 'end', err, false));
         }
     }

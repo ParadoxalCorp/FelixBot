@@ -448,10 +448,10 @@ class Message {
             let potentialUserResolvables = this.content.split(/\s+/gim).filter(c => c.length >= (options.charLimit || 3));
             const usersResolved = new Collection();
             let range = options.guildOnly ? this.guild.members : this.client.users;
-            if (range.size >= 250 && this.guild) message.guild.members = await this.guild.fetchMembers();
+            if (range.size >= 250 && this.guild) this.guild.members = await this.guild.fetchMembers();
             for (let i = 0; i < potentialUserResolvables.length; i++) {
                 //------------------Resolve by ID--------------------
-                if (!isNaN(potentialUserResolvables[i]) && range.get(potentialUserResolvables[i])) usersResolved.set(range.get(potentialUserResolvables[i]).id, range.first().guild ? potentialUserResolvables[i].user : potentialUserResolvables[i]);
+                if (!isNaN(potentialUserResolvables[i]) && range.get(potentialUserResolvables[i])) usersResolved.set(potentialUserResolvables[i], range.first().guild ? range.get(potentialUserResolvables[i]).user : range.get(potentialUserResolvables[i]));
                 //------------------Resolve by whole name--------------
                 let filterByWholeName = range.filter(u => u.username === potentialUserResolvables[i]);
                 if (filterByWholeName.size === 1) usersResolved.set(filterByWholeName.first().id, filterByWholeName.first().guild ? filterByWholeName.first().user : filterByWholeName.first());

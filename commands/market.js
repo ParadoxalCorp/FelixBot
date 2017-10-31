@@ -2,21 +2,26 @@ exports.run = async(client, message) => {
     return new Promise(async(resolve, reject) => {
         try {
             const userEntry = client.userData.get(message.author.id);
-            let marketItems = [
-                [{
-                    name: ':pencil2: Name',
-                    value: ':gift_heart: Love point',
+            let marketItems = [];
+            client.coreData.marketItems.value.filter(item => (item.buyableOnce && !userEntry.generalSettings.perks[item.perk].find(object => object === item.object)) || !item.buyableOnce).forEach(item => {
+                marketItems.push([{
+                    name: `:pencil2: Item name`,
+                    value: item.name,
                     inline: true
                 }, {
-                    name: ':notepad_spiral: Description',
-                    value: 'Gives you another love point that you can use every 12h',
+                    name: `:notepad_spiral: Description`,
+                    value: item.description,
                     inline: true
                 }, {
                     name: ':ribbon: Price',
-                    value: `${10000 * userEntry.generalSettings.perks.love.length} Points`,
+                    value: `${typeof item.price === "number" ? item.price : (item.price.base * userEntry.generalSettings.perks[item.perk].length * item.price.multiplier)} points`,
                     inline: true
-                }]
-            ];
+                }, {
+                    name: `:shopping_cart: Combinable ?`,
+                    value: item.buyableOnce ? `:x:` : `:white_check_mark:`,
+                    inline: true
+                }])
+            });
             const mainObject = function(page, embedFields) {
                 return {
                     embed: {
@@ -60,30 +65,26 @@ exports.run = async(client, message) => {
                         await interactiveMessage.edit(mainObject(page, marketItems));
                     }
                 } else if (r.emoji.name === pageReactions[4]) { //Buy an item
-                    let splitPrice = marketItems[page][2].value.split(/\s+/);
-                    if (splitPrice[0] > userEntry.generalSettings.points) {
-                        let notEnoughPoints = await message.channel.send({
+                    let splitPrice = Number(marketItems[page][2].value.split(/\s+/)[0]);
+                    if (splitPrice > userEntry.generalSettings.points) {
+                        message.channel.send({
                             embed: {
-                                description: `:x: You need ${splitPrice[0] - userEntry.generalSettings.points} more to buy this item`
+                                description: `:x: You need ${splitPrice - userEntry.generalSettings.points} more to buy this item`
                             }
-                        });
-                        notEnoughPoints.delete(5000);
+                        }).then(m => m.delete(5000));
                     } else {
-                        if (marketItems[page][0].value === ':gift_heart: Love point') {
-                            userEntry.generalSettings.perks.love.push({
-                                type: 'Paid',
-                                cooldown: 0
-                            });
-                            userEntry.generalSettings.points = userEntry.generalSettings.points - splitPrice[0];
-                            marketItems[page][2].value = `${10000 * userEntry.generalSettings.perks.love.length} Points`;
-                            let itemBought = await message.channel.send({
-                                embed: {
-                                    description: `:white_check_mark: You bought a love point for **${splitPrice[0]}** points, you have **${userEntry.generalSettings.points}** points remaining`
-                                }
-                            });
-                            await interactiveMessage.edit(mainObject(page, marketItems));
-                            itemBought.delete(10000);
-                        }
+                        let marketItem = client.coreData.marketItems.value.find(item => item.name === marketItems[page][0].value);
+                        userEntry.generalSettings.perks[marketItem.perk].push(marketItem.object);
+                        userEntry.generalSettings.points = userEntry.generalSettings.points - splitPrice;
+                        marketItems[page][2].value = `${typeof marketItem.price === "number" ? marketItem.price : (marketItem.price.base * userEntry.generalSettings.perks[marketItem.perk].length * marketItem.price.multiplier)} Points`;
+                        message.channel.send({
+                            embed: {
+                                description: `:white_check_mark: You bought a ${marketItems[page][0].value} for **${splitPrice}** points, you have **${userEntry.generalSettings.points}** points remaining`
+                            }
+                        }).then(m => m.delete(5000));
+                        if (marketItem.buyableOnce) marketItems.splice(page, 1);
+                        page = page === 0 ? 0 : page - 1;
+                        await interactiveMessage.edit(mainObject(page, marketItems));
                     }
                 } else if (r.emoji.name === pageReactions[5]) { //Abort the command
                     collector.stop("aborted"); //End the collector

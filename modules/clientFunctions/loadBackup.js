@@ -7,8 +7,11 @@ module.exports = async(client) => {
     async function loadBackup() {
         return new Promise(async(resolve, reject) => {
             let jsonData = await fs.readFile(`./config/core-data.json`).catch(err => { return reject(err) });
-            console.log(typeof jsonData);
-            jsonData = jsonData.exists ? JSON.parse(jsonData) : {};
+            try {
+                jsonData = JSON.parse(jsonData);
+            } catch (err) {
+                jsonData = {};
+            }
             client.clientData.forEach(c => { jsonData[c.key] = c });
             fs.writeFile(`./config/core-data.json`, JSON.stringify(jsonData), (err) => {
                 if (err) return reject(err);
