@@ -43,3 +43,8 @@ Well yes but no, we(well only me use these data) log guilds(servers) joined and 
 A new entry in the database is created when you first use a command, which means you won't be considered as a "user" and therefore won't be in the database as long as you don't use Felix.
 
 However, there is a special case, in which in order to prevent crash Felix create a database entry when a user specify you in a command. You can always reset your data with the `account` command and join the support server to request a full deletion of your data(but you will still be stored again once you use a command)
+
+### Credits
+* `Aetheryx#2222` Original author of the `logger` module, also helped to shorten quite a few parts of the code
+* `Wolke#5985` For his awesome Rem bot on which Felix is inspired
+* `Karen#3938` The better for the end, basically Felix wouldn't even be alive without him ^
