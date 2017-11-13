@@ -3,6 +3,3 @@ config/config.json
 node_modules
 data
 config/config.example.json
-package.json
-LICENSE
-package-lock.json
