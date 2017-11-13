@@ -1,15 +1,15 @@
 module.exports = async(client, message) => {
     //Ignore users during maintenance
-    if (client.maintenance && message.author.id !== client.config.ownerId) return;
+    if (client.maintenance && message.author.id !== client.config.ownerID) return;
     //Ignore bots
     if (message.author.bot) return;
     //Ignore blacklisted users
-    if (client.userData.get(message.author.id) && client.userData.get(message.author.id).generalSettings.blackListed && message.author.id !== client.config.ownerId) return;
+    if (client.userData.get(message.author.id) && client.userData.get(message.author.id).generalSettings.blackListed && message.author.id !== client.config.ownerID) return;
     //AFK feature
     const mentionned = message.mentions.users.filter(u => client.userData.has(u.id) && client.userData.get(u.id).generalSettings.afk);
     if (mentionned.size < 3) { //(Don't send AFK messages if more than 2 mentionned users are AFK to avoid spam)
         mentionned.forEach(m => {
-            message.channel.send({
+            client.createMessage(message.channel.id, {
                 embed: ({
                     color: 3447003,
                     author: {

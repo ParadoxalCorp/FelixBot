@@ -21,7 +21,7 @@ class MessageMentions {
             } else {
                 this.users = new Collection();
                 for (const mention of users) {
-                    let user = message.client.users.get(mention.id);
+                    let user = message._client.users.get(mention.id);
                     if (!user) user = message.client.dataManager.newUser(mention);
                     this.users.set(user.id, user);
                 }
@@ -60,14 +60,14 @@ class MessageMentions {
          * @type {Client}
          * @private
          */
-        this._client = message.client;
+        this._client = message._client;
 
         /**
          * The guild the message is in
          * @type {?Guild}
          * @private
          */
-        this._guild = message.channel.guild;
+        this._guild = message.guild;
 
         /**
          * Cached members for {@MessageMention#members}

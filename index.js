@@ -5,6 +5,9 @@ const config = JSON.parse(fs.readFileSync(`./config/config.json`));
 const sleep = require(`./util/modules/sleep.js`);
 const logger = require("./util/modules/logger.js");
 
+if (!config.token || config.token.length < 20) return logger.log(`No token found in config/config.json, aborted launch`, `error`);
+
+//Overwrite Eris with enhanced classes
 (async function() {
     logger.draft(`overwrite`, `create`, `Overwriting Eris...`);
     let extendedClasses = await fs.readdir(`./util/extendedClasses`);
@@ -49,6 +52,11 @@ class Client extends Eris {
         this.backups = new Enmap({
             provider: new PersistentCollection({
                 name: 'backups'
+            })
+        });
+        this.clientData = new Enmap({
+            provider: new PersistentCollection({
+                name: 'clientData'
             })
         });
         this.maintenance = false; //If true, bot will be locked to owner only
@@ -180,9 +188,17 @@ const Felix = new Client(config.token, {
 
 (async function() {
     let errors = [];
+    //Load the database
     logger.draft(`loadingDatabase`, `create`, `Loading the database...`);
     await Felix.userData.defer;
-    logger.draft(`loadingDatabase`, `end`, `Fully loaded the database`, true);
+    await Felix.guildData.defer;
+    //Launch database auto-update
+    logger.draft(`loadingDatabase`, `edit`, `Fully loaded the database, launching database auto-update...`);
+    await sleep(5000); //defer isn't accurate so we wait a bit more   
+    const DatabaseUpdater = require(`./util/helpers/DatabaseUpdater.js`);
+    const dbUpdate = await DatabaseUpdater.updateDatabase(Felix);
+    logger.draft(`loadingDatabase`, `end`, `${dbUpdate.usersUpdate.entriesUpdated || dbUpdate.usersUpdate.entriesUpdated === 0 ? "Updated " + dbUpdate.usersUpdate.entriesUpdated + " user entries in " + dbUpdate.usersUpdate.time  + "ms" : "Failed to update user database: " + dbUpdate.usersUpdate}, ${dbUpdate.guildsUpdate.entriesUpdated || dbUpdate.guildsUpdate.entriesUpdated === 0 ? "and updated " + dbUpdate.guildsUpdate.entriesUpdated + " guild entries in " + dbUpdate.guildsUpdate.time + "ms": "Failed to update guild database: " + dbUpdate.guildsUpdate}`, dbUpdate.guildsUpdate.entriesUpdated && dbUpdate.usersUpdate.entriesUpdated ? true : false);
+    //Load commands
     logger.draft(`loadingCommands`, `create`, `Loading commands...`);
     const commands = await fs.readdir(`./commands`);
     commands.forEach(c => {
@@ -199,6 +215,7 @@ const Felix = new Client(config.token, {
         }
     });
     logger.draft(`loadingCommands`, `end`, `Loaded ${Felix.commands.size}/${commands.length} commands`, true);
+    //Load events
     logger.draft(`loadingEvents`, `create`, `Loading events...`);
     const events = await fs.readdir(`./events`);
     let loadedEvents = 0;
@@ -218,11 +235,73 @@ const Felix = new Client(config.token, {
     await sleep(1500);
     errors.forEach(e => console.error(e));
 
-    process.on(`unhandledRejection`, err => Felix.emit('fail', err));
-    process.on(`uncaughtException`, err => Felix.emit('fail', err));
-    process.on(`error`, err => Felix.emit('fail', err));
+    process.on(`unhandledRejection`, err => Felix.emit('error', err));
+    process.on(`uncaughtException`, err => Felix.emit('error', err));
+    process.on(`error`, err => Felix.emit('error', err));
 
-    if (!config.raven) console.log(`No raven link found in the config, errors will be logged to the console`);
+    //This is where Felix checks for API keys and disable features if missing keys
+    if (!config.raven) logger.log(`No raven link found in the config, errors will be logged to the console`, "warn");
+    if (!config.discordBotList) {
+        let requireDiscordBotList = client.commands.filter(c => c.conf.require && c.conf.require.includes("discordBotList"));
+        requireDiscordBotList.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`discordBotList\` API key which is missing`);
+        logger.log(`No discord bot list API key found in the config, disabled ${requireDiscordBotList.size > 0 ? requireDiscordBotList.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
+    }
+    if (!config.wolkeImageKey) {
+        let requirewolkeImageKey = client.commands.filter(c => c.conf.require && c.conf.require.includes("wolkeImageKey"));
+        requirewolkeImageKey.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`wolkeImageKey\` API key which is missing`);
+        logger.log(`No weeb.sh API key found in the config, disabled ${requirewolkeImageKey.map(c => c.help.name).join(", ")}`, `warn`);
+    }
+    if (!config.mashapeKey) {
+        let requiremashapeKey = client.commands.filter(c => c.conf.require && c.conf.require.includes("mashapeKey"));
+        requiremashapeKey.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`mashapeKey\` API key which is missing`);
+        logger.log(`No mashape key API key found in the config, disabled ${requiremashapeKey.map(c => c.help.name).join(", ")}`, `warn`);
+    }
+    if (!config.malCredentials || !config.malCredentials.password || !config.malCredentials.name) {
+        let requiremalCredentials = client.commands.filter(c => c.conf.require && c.conf.require.includes("malCredentials"));
+        requiremalCredentials.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`malCredentials\` name and password fields which are missing`);
+        logger.log(`No MyAnimeList credentials found in the config, disabled ${requiremalCredentials.map(c => c.help.name).join(", ")}`, `warn`);
+    }
+    if (!config.rapidApiKey) {
+        let requirerapidApiKey = client.commands.filter(c => c.conf.require && c.conf.require.includes("rapidApiKey"));
+        requirerapidApiKey.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`rapidApiKey\` API key which is missing`);
+        logger.log(`No rapid API API (yes, they're named rapidAPI so i have to write two times API, don't hurt me pls) key found in the config, disabled ${requirerapidApiKey.size > 0 ? requirerapidApiKey.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
+    }
+    if (!config.steamApiKey) {
+        let requiresteamApiKey = client.commands.filter(c => c.conf.require && c.conf.require.includes("steamApiKey"));
+        requiresteamApiKey.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`steamApiKey\` API key which is missing`);
+        logger.log(`No Steam API key found in the config, disabled ${requiresteamApiKey.size > 0 ? requiresteamApiKey.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
+    }
+
+
+    const backupManager = require(`./util/helpers/backupManager.js`);
+
+    const coreData = await fs.readFile('./config/core-data.json');
+    try {
+        Felix.coreData = JSON.parse(coreData);
+        logger.draft(`backupCore`, 'create', `Creating a backup of config/core-data.json...`);
+        backupManager.createBackup(Felix, `./config/core-data.json`)
+            .then(() => logger.draft(`backupCore`, `end`, `Successfully created a backup of config/core-data.json`, true))
+            .catch(err => logger.draft(`backupCore`, `end`, `Failed to create a backup of core-data.json: ${err}`, false));
+    } catch (err) {
+        logger.draft('coreDataCorrupted', 'create', `Core data seems to be corrupted, attempting to restore from the backup...`);
+        if (!Felix.backups.has('core-data')) logger.draft('coreDataCorrupted', 'end', `Core data (config/core-data.json) seems to be corrupted but no backup was found to restore it`);
+        else {
+            backupManager.loadBackup(Felix, `./config/core-data.json`)
+                .then(() => {
+                    Felix.coreData = JSON.parse(coreData);
+                    logger.draft('coreDataCorrupted', 'end', 'Succeed to restore core-data from the backup', true);
+                })
+                .catch(err => logger.draft('coreDataCorrupted', 'end', `Failed to restore config/core-data from the backup: ${err}`, false));
+        }
+    }
+
+    //Server and endpoints launch
+    logger.draft(`serverLaunch`, `create`, `Launching server and initializing endpoints...`);
+    let server = require(`./api/server.js`);
+    const serverLaunch = await server.launch(Felix);
+    Felix.server = serverLaunch;
+    logger.draft('serverLaunch', 'end', `Server endpoints launched ${!Felix.server ? '' : 'at ' + Felix.server.info.uri}`, !Felix.server ? false : true);
 
     Felix.connect();
+
 }());

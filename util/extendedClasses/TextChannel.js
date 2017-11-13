@@ -48,26 +48,6 @@ class TextChannel extends GuildChannel {
         return this.guild.shard.client.getChannelInvites.call(this.guild.shard.client, this.id);
     }
 
-    send(content, file) {
-        if (content !== undefined) {
-            if (typeof content !== "object" || content === null) {
-                content = {
-                    content: "" + content
-                };
-            } else if (content.content !== undefined && typeof content.content !== "string") {
-                content.content = "" + content.content;
-            } else if (content.content === undefined && !content.embed && !file) {
-                return Promise.reject(new Error("No content, file, or embed"));
-            }
-            if (content.content && (content.disableEveryone !== undefined ? content.disableEveryone : this.options.disableEveryone)) {
-                content.content = content.content.replace(/@everyone/g, "@\u200beveryone").replace(/@here/g, "@\u200bhere");
-            }
-        } else if (!file) {
-            return Promise.reject(new Error("No content, file, or embed"));
-        }
-        return this.requestHandler.request("POST", Endpoints.CHANNEL_MESSAGES(channelID), true, content, file).then((message) => new Message(message, this));
-    }
-
     /**
      * Creates a Message Collector.
      * @param {CollectorFilter} filter The filter to create the collector with
