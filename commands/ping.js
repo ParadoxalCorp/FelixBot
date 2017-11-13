@@ -1,25 +1,28 @@
-exports.run = async(client, message) => {
-    return new Promise(async(resolve, reject) => {
-        try {
-            startTime = Date.now();
-            let messageSent = await message.channel.send("Writting so fast that you wont even notice...")
-            endTime = Date.now();
-            resolve(await messageSent.edit("Pong ! | `" + Math.round(endTime - startTime) + "`ms"));
-        } catch (err) {
-            reject(client.emit('commandFail', message, err));
+class Ping {
+    constructor() {
+        this.help = {
+            name: 'ping',
+            category: 'generic',
+            usage: 'ping',
+            description: `Pong ! Display Felix's ping (do people even use this ?)`,
         }
-    });
-};
+        this.conf = {
+            disabled: false,
+            guildOnly: false,
+            aliases: ["pong"]
+        }
+    }
 
-exports.conf = {
-    guildOnly: false,
-    aliases: [],
-    disabled: false,
-};
+    run(client, message) {
+        return new Promise(async(resolve, reject) => {
+            try {
+                let startTime = Date.now();
+                resolve(client.createMessage(message.channel.id, `Pinging so fast that you won't even notice...`).then(m => m.edit(`Pong ! \`${Date.now() - startTime}\`ms`)));
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+}
 
-exports.help = {
-    name: 'ping',
-    description: 'Pong ! Display Felix\'s ping.',
-    usage: 'ping',
-    category: 'generic'
-};
+module.exports = new Ping();

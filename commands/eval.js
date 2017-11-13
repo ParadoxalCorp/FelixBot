@@ -1,40 +1,44 @@
-const unirest = require("unirest"),
-    moment = require("moment");
-exports.run = async(client, message) => {
-    return new Promise(async(resolve, reject) => {
-        const allowedUsers = ['140149699486154753', '162325985079984129', '242408724923154435'];
-        if (allowedUsers.includes(message.author.id)) {
-            var args = message.content.split(/\s+/gim);
-            args.shift();
-            if (args.length === 0) {
-                return resolve(await message.channel.send(":x: I need something in order to evaluate it"));
-            }
+class Eval {
+    constructor() {
+        this.help = {
+            name: 'eval',
+            category: 'admin',
+            usage: 'eval some js here',
+            description: 'Quickly eval some js so paradox can catch errors since he is a baka'
+        };
+        this.conf = {
+            disabled: false,
+            guildOnly: false,
+        }
+    }
+
+    run(client, message, args) {
+        return new Promise(async(resolve, reject) => {
             try {
-                const evaluated = eval(args.join(" "));
-                throw "Success: " + evaluated;
-            } catch (err) {
-                resolve(await message.channel.send({
+                //Missing arguments handling
+                if (!args[0]) return resolve(await client.createMessage(message.channel.id, {
                     embed: {
                         title: ":gear: Eval results",
-                        description: "**Input:**\n```js\n" + args.join(" ") + "```\n**Output:**\n```js\n" + err + "```"
+                        description: "**Input:**\n```js\nvoid\n```\n**Output:**\n```js\nbaguette```" //Quality error message tbh
                     }
                 }));
+                //Actual eval
+                try {
+                    let evaluated = eval(args.join(' '));
+                    throw evaluated;
+                } catch (err) {
+                    resolve(await client.createMessage(message.channel.id, {
+                        embed: {
+                            title: ":gear: Eval results",
+                            description: "**Input:**\n```js\n" + args.join(" ") + "```\n**Output:**\n```js\n" + err + "```"
+                        }
+                    }));
+                }
+            } catch (err) {
+                reject(err);
             }
-        } else {
-            resolve(await message.channel.send("Nyahahahahahhaha, no."));
-        }
-    });
-};
+        });
+    }
+}
 
-exports.conf = {
-    guildOnly: false,
-    aliases: [],
-    disabled: false
-};
-
-exports.help = {
-    name: 'eval',
-    description: 'Evaluates arbitrary javascript.',
-    usage: 'eval some code',
-    category: 'admin'
-};
+module.exports = new Eval();
