@@ -42,7 +42,7 @@ Before diving into how it works, here's some rules that you should know:
 
 -If a user has two roles with custom permissions, the highest role will be used
 
--`false` prevail on `true`, we'll see the exact meaning of this below
+-Commands prevail on categories, we'll see the exact meaning of this below
 
 ## Setting a new custom permission
 > I want a user to be able to use the `announce` command, how do i do this?
@@ -75,6 +75,7 @@ Again, works like the two other commands but with only the three parameters `-us
 
 ## Using commands category
 > What if i want to allow user to use a whole category? Do i have to set every commands one by one?
+
 Of course no, you can use the fancy thing `[category]*` instead of the command, so for example to set a permission:
 
 `f!setpermission moderation* true -user [user_resolvable(s)]`
@@ -83,7 +84,7 @@ With that, the specified user(s) will be able to use all moderation commands
 
 > Nice ! But what if i want a user to be able to use all moderation commands but not the `clear` command for example?
 
-We said before that `false` prevail on `true`, so if we follow the precedent example, we can do this:
+We said before that commands prevail on categories, so if we follow the precedent example, we can do this:
 
 `f!setpermission clear false -user [user_resolvable(s)]` 
 
@@ -92,4 +93,12 @@ So even while the user has a granted access to the whole `moderation` category, 
 If you have any questions, feel free to ask on the support server ^
 
 ----
+
+## Self-hosting v3
+(Currently not much to selfhost tho)
+
+The only required fields in the config.json file are the `ownerID` and the `token` fields, features will automatically be disabled if the needed api keys are missing
+
+### First run notice
+The first time you run Felix(and everytime you will run him), Felix overwrites some of Eris(the API wrapper Felix uses) files, once the overwrite is done (status is logged to the console) you'll have to stop Felix and restart him for the right files to get loaded
 
