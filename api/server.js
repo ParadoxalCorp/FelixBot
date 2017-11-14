@@ -10,6 +10,9 @@ const fs = require(`fs-extra`);
 exports.launch = async(client) => {
     return new Promise(async(resolve, reject) => {
 
+        let PayloadValidator = require(`../util/helpers/PayloadValidator`);
+        PayloadValidator = new PayloadValidator(client);
+
         const port = process.env.PORT || 8080;
         const server = new Hapi.Server();
 
@@ -26,11 +29,11 @@ exports.launch = async(client) => {
         //Load all endpoints
         const endpoints = await readdir('./api/endpoints');
         endpoints.forEach(e => {
-            require(`./endpoints/${e}`)(client, server);
+            require(`./endpoints/${e}`)(client, server, PayloadValidator);
         });
 
         server.start(async(err) => {
-            await sleep(2000); //Basically to dont break logs
+            await sleep(2000); //Basically not to break logs
             if (err) {
                 reject(err);
                 client.emit("error", err);

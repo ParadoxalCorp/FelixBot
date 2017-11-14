@@ -17,10 +17,10 @@ class TokenGenerator {
     run(client, message, args) {
         return new Promise(async(resolve, reject) => {
             try {
-                const tokens = client.clientData.has("tokens") ? client.clientData.get("tokens") : { public: [], private: [] };
+                const tokens = client.clientData.has("tokens") ? client.clientData.get("tokens") : [];
+                let isPublic = message.content.search(/public/gim) !== -1 ? true : (message.content.search(/private/gim) !== -1 ? false : true);
 
                 if (message.content.search(/new/gim) !== -1) {
-                    let isPublic = message.content.search(/public/gim) ? true : (message.content.search(/private/gim) ? false : true);
                     let id = args.filter(a => !isNaN(a) && a.length >= 17);
                     if (!id[0]) return resolve(await client.createMessage(message.channel.id, `:x: You need to provide a user id !`));
                     //Very cheap token generator
@@ -37,7 +37,7 @@ class TokenGenerator {
                             } else token += Math.floor(Math.random() * (9 + 1));
                         }
                     }
-                    tokens[isPublic ? "public" : "private"].push({ token: token, user: id });
+                    tokens.push({ token: token, user: id, public: isPublic, requests: [] });
                     client.clientData.set("tokens", tokens);
                     resolve(await client.createMessage(message.channel.id, {
                         embed: {
@@ -45,8 +45,7 @@ class TokenGenerator {
                         }
                     }));
                 } else if (message.content.search(/list/gim) !== -1) {
-                    let isPublic = message.content.search(/public/gim) ? true : (message.content.search(/private/gim) ? false : true);
-                    let tokenList = isPublic ? tokens.public.map(t => `${t.user}: ${t.token}`).join("\n") : tokens.private.map(t => `${t.user}: ${t.token}`).join("\n");
+                    let tokenList = tokens.map(t => `${t.user}(${t.public}): ${t.token}`).join("\n");
                     resolve(await client.createMessage(message.channel.id, {
                         embed: {
                             description: "```" + tokenList + "```"
@@ -57,17 +56,15 @@ class TokenGenerator {
                     let token = args.filter(a => a.length === 156);
                     if (!id[0] && !token[0]) return resolve(await client.createMessage(message.channel.id, `:x: You need to specify a token or a user id to revoke`));
                     if (token[0]) {
-                        let isPublic = tokens.private.find(t => t.token === token[0]) ? false : true;
-                        let tokenPos = tokens.private.findIndex(t => t.token === token[0]) ? tokens.private.findIndex(t => t.token === token[0]) : tokens.public.findIndex(t => t.token === token[0]);
-                        if (!tokenPos) return resolve(await client.createMessage(message.channel.id, `:x: That token does not exist`));
-                        tokens[isPublic ? "public" : "private"].splice(tokenPos, 1);
+                        let tokenPos = tokens.findIndex(t => t.token === token[0]);
+                        if (tokenPos !== -1) return resolve(await client.createMessage(message.channel.id, `:x: That token does not exist`));
+                        tokens.splice(tokenPos, 1);
                         client.clientData.set("tokens", tokens);
                         resolve(await client.createMessage(message.channel.id, `:white_check_mark: Successfully revoked the token \`${token[0]}\``))
                     } else if (id[0]) {
                         if (!tokens.private.find(t => t.user === id[0]) && !tokens.public.find(t => t.user === id[0])) return resolve(await client.createMessage(message.channel.id, `:x: There is no token assigned to this user id`));
-                        for (let i = 0; i < tokens.private.length + tokens.public.length; i++) {
-                            let where = i < tokens.private.length ? "private" : "public";
-                            if (tokens[where][i].user === id[0]) tokens[where].splice(i, 1);
+                        for (let i = 0; i < tokens.length; i++) {
+                            if (tokens[i].user === id[0]) tokens.splice(i, 1);
                         }
                         client.clientData.set("tokens", tokens);
                         resolve(await client.createMessage(message.channel.id, `:white_check_mark: Successfully revoked all of the tokens of the specified user`));

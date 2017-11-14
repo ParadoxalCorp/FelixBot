@@ -20,13 +20,17 @@ class DatabaseUpdater extends EventEmitter {
                             let userPropertyObject = Object.keys(user[key]),
                                 defaultPropertyObject = Object.keys(defaultUserData[key]);
                             userPropertyObject.forEach(function(childKey) { //If property is object, which is pretty likely, check as well
-                                if (defaultPropertyObject.includes(childKey)) {
-                                    defaultUserData[key][childKey] = user[key][childKey];
-                                }
+                                if (typeof user[key][childKey] === "object" && defaultUserData[key][childKey]) {
+                                    let deeperObjectKeys = Object.keys(user[key][childKey]),
+                                        deeperDefaultObjectKeys = Object.keys(defaultUserData[key][childKey]);
+                                    deeperObjectKeys.forEach(deeperKey => { //If property is object, which is pretty likely, check as well
+                                        if (deeperDefaultObjectKeys.includes(deeperKey)) {
+                                            defaultUserData[key][childKey][deeperKey] = user[key][childKey][deeperKey];
+                                        }
+                                    });
+                                } else if (defaultPropertyObject.includes(childKey)) defaultUserData[key][childKey] = user[key][childKey];
                             });
-                        } else if (defaultKeys.includes(key)) {
-                            defaultUserData[key] = user[key];
-                        }
+                        } else if (defaultKeys.includes(key)) defaultUserData[key] = user[key];
                     });
                     client.userData.set(user.id, defaultUserData);
                     usersUpdated++;
@@ -57,14 +61,18 @@ class DatabaseUpdater extends EventEmitter {
                         if (typeof guild[key] === "object" && defaultGuildData[key]) {
                             let guildPropertyObject = Object.keys(guild[key]),
                                 defaultPropertyObject = Object.keys(defaultGuildData[key]);
-                            guildPropertyObject.forEach(function(childKey) { //If property is object, which is pretty likely, check as well
-                                if (defaultPropertyObject.includes(childKey)) {
-                                    defaultGuildData[key][childKey] = guild[key][childKey];
-                                }
+                            guildPropertyObject.forEach(childKey => { //If property is object, which is pretty likely, check as well
+                                if (typeof guild[key][childKey] === "object" && defaultGuildData[key][childKey]) {
+                                    let deeperObjectKeys = Object.keys(guild[key][childKey]),
+                                        deeperDefaultObjectKeys = Object.keys(defaultGuildData[key][childKey]);
+                                    deeperObjectKeys.forEach(deeperKey => { //If property is object, which is pretty likely, check as well
+                                        if (deeperDefaultObjectKeys.includes(deeperKey)) {
+                                            defaultGuildData[key][childKey][deeperKey] = guild[key][childKey][deeperKey];
+                                        }
+                                    });
+                                } else if (defaultPropertyObject.includes(childKey)) defaultGuildData[key][childKey] = guild[key][childKey];
                             });
-                        } else if (defaultKeys.includes(key)) {
-                            defaultGuildData[key] = guild[key];
-                        }
+                        } else if (defaultKeys.includes(key)) defaultGuildData[key] = guild[key];
                     });
                     client.guildData.set(guild.id, defaultGuildData);
                     guildsUpdated++;
