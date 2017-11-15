@@ -1,3 +1,5 @@
+let sleep = require("../modules/sleep");
+
 module.exports = async(client, message) => {
     //Return if the message does not start with the prefix nor Felix's mention
     if (!message.content.startsWith(message.guild ? client.guildData.get(message.guild.id).generalSettings.prefix : client.config.prefix) && !message.content.startsWith(`<@${client.user.id}>`) && !message.content.startsWith(`<@!${client.user.id}>`)) return;
@@ -57,8 +59,8 @@ module.exports = async(client, message) => {
                 for (let i = 0; i < multipleCmds.length && i < 2; i++) {
                     let newMessage = message;
                     newMessage.content = multipleCmds[i].trim();
-                    client.emit('message', newMessage);
-                    await client.sleep(1000);
+                    client.emit('messageCreate', newMessage);
+                    await sleep(1000);
                 }
                 //Ratelimit
                 client.ratelimited.add(message.author.id);
