@@ -12,11 +12,11 @@
 
 ### GET `/api`
 
->> Returns a 200 status code if the api is up
+> Returns a 200 status code if the api is up
 
-### [GET|POST|PUT] `/userData/{userID?}`
+### [GET|POST|PUT] `api/userData/{userID?}`
 
-##### GET `/userData/{userID}?`*
+##### GET `api/userData/{userID}?`*
 
 UserID can be: {
 
@@ -28,17 +28,17 @@ UserID can be: {
 
 }
 
-##### [POST|PUT] `/userData`**
+##### [POST|PUT] `api/userData`**
 
 You have to POST or PUT a valid user object, all of the keys must be of the same type of all the user objects
 
 The User object must be: A stringified(JSON) User object
 
->> Returns true if the operation is a success or return an array of all the invalid keys found when validating the object
+> Returns true if the operation is a success or return an array of all the invalid keys found when validating the object
 
-### [GET|POST|PUT] `/guildData/{guildID?}`
+### [GET|POST|PUT] `api/guildData/{guildID?}`
 
-##### GET `/guildData/{guildID}?`*
+##### GET `api/guildData/{guildID}?`*
 
 UserID can be: {
     
@@ -50,10 +50,10 @@ UserID can be: {
 
 }
 
-##### [POST|PUT] `/guildData`**
+##### [POST|PUT] `api/guildData`**
 
 You have to POST or PUT a valid guild object, all of the keys must be of the same type of all the guild objects
 
 The Guild object must be: A stringified(JSON) Guild object
 
->> Returns true if the operation is a success or return an array of all the invalid keys found when validating the object
+> Returns true if the operation is a success or return an array of all the invalid keys found when validating the object
