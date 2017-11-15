@@ -14,7 +14,7 @@ module.exports = async(client, message) => {
         //Check if the command can be used in dm and if the user has the permissions to use it
         if (command.conf.guildOnly || (command.help.category === 'admin' && !client.config.admins.includes(message.author.id))) return await client.createMessage(message.channel.id, ":x: This command can only be used in a guild or you don't have the permission to use it");
         //Check if the command is disabled
-        if (command.conf.disabled !== false) return await client.createMessage(message.channel.id, ":x: Sorry but this command is disabled for now\n**Reason:** " + command.conf.disabled);
+        if (command.conf.disabled) return await client.createMessage(message.channel.id, ":x: Sorry but this command is disabled for now\n**Reason:** " + command.conf.disabled);
         try {
             await command.run(client, message, args);
         } catch (err) {

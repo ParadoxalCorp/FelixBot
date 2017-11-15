@@ -29,7 +29,7 @@ class Help {
                 const arg = args[0].toLowerCase(); //remove case sensitivity
                 const commandHelp = client.commands.get(arg) || client.commands.get(client.aliases.get(arg));
                 if (!commandHelp) return resolve();
-                let aliases = 1 <= commandHelp.conf.aliases.length ? commandHelp.conf.aliases.join(', ') : "None";
+                let aliases = 1 <= commandHelp.conf.aliases ? commandHelp.conf.aliases.join(', ') : "None";
                 let detailedUsage = commandHelp.help.detailedUsage ? commandHelp.help.detailedUsage.replace(/\{prefix\}/gim, `${prefix}`) : "There is no detailed usage for this command";
                 let parameters = commandHelp.help.parameters ? commandHelp.help.parameters : "None";
                 let shortcuts = "None";

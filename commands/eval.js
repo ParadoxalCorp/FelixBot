@@ -4,7 +4,8 @@ class Eval {
             name: 'eval',
             category: 'admin',
             usage: 'eval some js here',
-            description: 'Quickly eval some js so paradox can catch errors since he is a baka'
+            description: 'Quickly eval some js so paradox can catch errors since he is a baka',
+            parameters: '--await(note: must always be after the js to eval)'
         };
         this.conf = {
             disabled: false,
@@ -24,7 +25,7 @@ class Eval {
                 }));
                 //Actual eval
                 try {
-                    let evaluated = eval(args.join(' '));
+                    let evaluated = new RegExp(/--await/gim).test(message.content) ? await eval(args.join(" ").split("--await")[0]) : eval(args.join(" "));
                     throw evaluated;
                 } catch (err) {
                     resolve(await client.createMessage(message.channel.id, {

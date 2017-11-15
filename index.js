@@ -205,8 +205,14 @@ const Felix = new Client(config.token, {
         try {
             let command = require(`./commands/${c}`);
             c.uses = 0;
+            //Set default conf if no conf provided
+            if (!command.conf) command.conf = { guildOnly: false, disabled: false, aliases: false }
+            command.conf.guildOnly = command.conf.guildOnly ? command.conf.guildOnly : false;
+            command.conf.aliases = command.conf.aliases ? command.conf.aliases : false;
+            command.conf.disabled = command.conf.disabled ? command.conf.disabled : false;
+            //Add the command to the collection
             Felix.commands.set(command.help.name, command);
-            if (!command.conf.aliases) return;
+            if (!command.conf || !command.conf.aliases) return;
             command.conf.aliases.forEach(alias => {
                 Felix.aliases.set(alias, command.help.name);
             });

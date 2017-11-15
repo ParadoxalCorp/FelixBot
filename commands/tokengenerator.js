@@ -18,10 +18,10 @@ class TokenGenerator {
         return new Promise(async(resolve, reject) => {
             try {
                 const tokens = client.clientData.has("tokens") ? client.clientData.get("tokens") : [];
-                let isPublic = message.content.search(/public/gim) !== -1 ? true : (message.content.search(/private/gim) !== -1 ? false : true);
+                let isPublic = new RegExp(/private/gim).test(message.content) ? false : true;
 
-                if (message.content.search(/new/gim) !== -1) {
-                    let id = args.filter(a => !isNaN(a) && a.length >= 17);
+                if (new RegExp(/new/gim).test(message.content)) {
+                    let id = args.filter(a => !isNaN(a) && a.length >= 17)[0];
                     if (!id[0]) return resolve(await client.createMessage(message.channel.id, `:x: You need to provide a user id !`));
                     //Very cheap token generator
                     let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', '_', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', '$', 'u', 'r', 's', 't', 'u', 'v', '-', 'w', 'x', 'y', 'z'];
@@ -44,15 +44,15 @@ class TokenGenerator {
                             description: `Generated and stored the following token: \`\`\`js\n"${token}"\`\`\``
                         }
                     }));
-                } else if (message.content.search(/list/gim) !== -1) {
+                } else if (new RegExp(/list/gim).test(message.content)) {
                     let tokenList = tokens.map(t => `${t.user}(${t.public}): ${t.token}`).join("\n");
                     resolve(await client.createMessage(message.channel.id, {
                         embed: {
                             description: "```" + tokenList + "```"
                         }
                     }));
-                } else if (message.content.search(/revoke/gim) !== -1) {
-                    let id = args.filter(a => !isNaN(a) && a.length >= 17);
+                } else if (new RegExp(/revoke/gim).test(message.content)) {
+                    let id = args.filter(a => !isNaN(a) && a.length >= 17)[0];
                     let token = args.filter(a => a.length === 156);
                     if (!id[0] && !token[0]) return resolve(await client.createMessage(message.channel.id, `:x: You need to specify a token or a user id to revoke`));
                     if (token[0]) {

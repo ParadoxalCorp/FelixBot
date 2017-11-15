@@ -52,8 +52,14 @@ class Logger {
                 }
             case 'edit':
                 {
+                    //Stop the old draft
+                    this.drafts.get(name).spinning = false;
+                    await this.sleep(50);
+                    //Update the draft 
                     this.drafts.get(name).draft(this.log(`${frames[0]} ${string}`, 'info', true));
                     let index = 0;
+                    //Re-enable the spinning
+                    this.drafts.get(name).spinning = true;
                     while (this.drafts.get(name).spinning) {
                         await this.sleep(50);
                         this.drafts.get(name).draft(this.log(`${frames[index % frames.length]} ${string}`, 'info', true));

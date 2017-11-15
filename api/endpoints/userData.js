@@ -15,17 +15,16 @@ module.exports = async(client, server, PayloadValidator) => {
                 if (req.method === 'get') {
                     //Return the whole database if no specific user id provided
                     if (!req.params.userID) return reply(Array.from(client.userData.values()));
-                    //Else if an array is provided return an array of the specified ids
-                    else if (Array.isArray(typeof req.params.userID)) return reply(Array.from(client.userData.filter(g => req.params.userID.has(g.id))));
+                    //Else if an array is provided return an array of the specified ids (with a cheap way to transform the string to an array)
+                    if (new RegExp(/\[|\]/gim).test(req.params.userID)) req.params.userID = req.params.userID.substr(1, req.params.userID.length - 2).split(req.params.userID.includes(" ") ? ", " : ",");
+                    if (Array.isArray(req.params.userID)) return reply(Array.from(client.userData.filter(u => req.params.userID.includes(u.id)).values()));
                     //Finally return the specified id's user object
                     reply(client.userData.get(req.params.userID))
                 } else {
                     if (token.public) return reply("Forbidden: Public tokens can only access to GET endpoints").code(403);
                     if (!req.payload || typeof req.payload !== 'object') return reply(`No new user object was provided`);
                     let isValidObject = await PayloadValidator.validateUser(req.payload);
-                    console.log(isValidObject);
                     if (!isValidObject.valid) return reply(isValidObject.invalidKeys);
-                    if (!req.payload || typeof req.payload !== 'object' || !req.payload.id) return reply(`No new user object was provided or the object is invalid`);
                     client.userData.set(req.payload.id, req.payload);
                     reply(true);
                 }
