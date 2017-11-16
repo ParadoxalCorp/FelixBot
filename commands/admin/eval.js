@@ -17,7 +17,7 @@ class Eval {
         return new Promise(async(resolve, reject) => {
             try {
                 //Missing arguments handling
-                if (!args[0]) return resolve(await client.createMessage(message.channel.id, {
+                if (!args[0]) return resolve(await message.channel.createMessage({
                     embed: {
                         title: ":gear: Eval results",
                         description: "**Input:**\n```js\nvoid\n```\n**Output:**\n```js\nbaguette```" //Quality error message tbh
@@ -28,7 +28,7 @@ class Eval {
                     let evaluated = new RegExp(/--await/gim).test(message.content) ? await eval(args.join(" ").split("--await")[0]) : eval(args.join(" "));
                     throw evaluated;
                 } catch (err) {
-                    resolve(await client.createMessage(message.channel.id, {
+                    resolve(await message.channel.createMessage({
                         embed: {
                             title: ":gear: Eval results",
                             description: "**Input:**\n```js\n" + args.join(" ") + "```\n**Output:**\n```js\n" + err + "```"

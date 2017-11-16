@@ -33,7 +33,7 @@ class MessageCollector extends Collector {
          */
         this.received = 0;
 
-        this.client.on('message', this.listener);
+        this.channel.client.on('message', this.listener);
 
         // For backwards compatibility (remove in v12)
         if (this.options.max) this.options.maxProcessed = this.options.max;
@@ -91,7 +91,7 @@ class MessageCollector extends Collector {
      */
     cleanup() {
         this.removeListener('collect', this._reEmitter);
-        this.client.removeListener('message', this.listener);
+        this.channel.client.removeListener('message', this.listener);
     }
 }
 

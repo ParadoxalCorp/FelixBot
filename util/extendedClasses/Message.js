@@ -180,6 +180,17 @@ class Message extends Base {
     }
 
     /**
+     * Whether the message is deletable by the client user
+     * @type {boolean}
+     * @readonly
+     */
+    get deletable() {
+        return this.author.id === this._client.user.id || (this.guild &&
+            this.channel.permissionsOf(this._client.user.id).has("manageMessages")
+        );
+    }
+
+    /**
      * Edit the message
      * @arg {String | Array | Object} content A string, array of strings, or object. If an object is passed:
      * @arg {String} content.content A content string
@@ -247,12 +258,11 @@ class Message extends Base {
      * @param {Channel} [options.channel=this] The channel in which a reply should be awaited, default is the channel in which the message has been sent 
      * @returns {Promise<Message>}
      */
-    awaitReply(options) {
+    awaitReply(options = {}) {
         return new Promise(async(resolve, reject) => {
-            if (!options) options = Object.create(null);
             let channel = options.channel || this.channel;
             let query;
-            if (options.message) query = await channel.send(options.message).catch(err => { return reject(err) });
+            if (options.message) query = await channel.createMessage(options.message).catch(err => { return reject(err) });
             let reply;
             try {
                 const collected = await channel.awaitMessages(m => m.author.id === this.author.id, {
@@ -284,13 +294,12 @@ class Message extends Base {
      *   .then(collection => console.log(`Resolved ${collection.size} users`))
      *   .catch(console.error);
      */
-    getUserResolvable(options) {
+    getUserResolvable(options = { guildOnly: true }) {
         return new Promise(async(resolve, reject) => {
-            if (!options) options = { guildOnly: true };
             let potentialUserResolvables = this.content.split(/\s+/gim).filter(c => c.length >= (options.charLimit || 3));
             const usersResolved = new Collection();
             let range = options.guildOnly ? this.guild.members : this._client.users;
-            if (range.size >= 250 && this.guild) this.guild.members = await this.guild.fetchMembers();
+            if (range.size >= 250 && this.guild) this.guild.members = await this.guild.fetchAllMembers();
             for (let i = 0; i < potentialUserResolvables.length; i++) {
                 //------------------Resolve by ID--------------------
                 if (!isNaN(potentialUserResolvables[i]) && range.get(potentialUserResolvables[i])) usersResolved.set(potentialUserResolvables[i], range.first().guild ? range.get(potentialUserResolvables[i]).user : range.get(potentialUserResolvables[i]));

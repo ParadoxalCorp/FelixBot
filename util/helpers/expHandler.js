@@ -46,7 +46,7 @@ module.exports = async(client, message) => {
                 }
                 if (message.guild.members.get(client.user.id).hasPermission("sendMessages") && guildEntry.generalSettings.levelSystem.levelUpNotif) {
                     try {
-                        if (guildEntry.generalSettings.levelSystem.levelUpNotif === "channel") await client.createMessage(message.channel.id, `:tada: Congratulations **${message.author.username}**, you leveled up to level **${guildEntry.generalSettings.levelSystem.users[userPos].level}** ${wonRoles}`);
+                        if (guildEntry.generalSettings.levelSystem.levelUpNotif === "channel") await message.channel.createMessage(`:tada: Congratulations **${message.author.username}**, you leveled up to level **${guildEntry.generalSettings.levelSystem.users[userPos].level}** ${wonRoles}`);
                         else await message.author.send(`:tada: Congratulations **${message.author.username}**, you leveled up to level **${guildEntry.generalSettings.levelSystem.users[userPos].level}** ${wonRoles}`);
                     } catch (err) {
                         console.error('An error occurred while trying to notif a user for their level up', err);

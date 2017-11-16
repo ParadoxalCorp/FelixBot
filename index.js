@@ -200,27 +200,37 @@ const Felix = new Client(config.token, {
     logger.draft(`loadingDatabase`, `end`, `${dbUpdate.usersUpdate.entriesUpdated || dbUpdate.usersUpdate.entriesUpdated === 0 ? "Updated " + dbUpdate.usersUpdate.entriesUpdated + " user entries in " + dbUpdate.usersUpdate.time  + "ms" : "Failed to update user database: " + dbUpdate.usersUpdate}, ${dbUpdate.guildsUpdate.entriesUpdated || dbUpdate.guildsUpdate.entriesUpdated === 0 ? "and updated " + dbUpdate.guildsUpdate.entriesUpdated + " guild entries in " + dbUpdate.guildsUpdate.time + "ms": "Failed to update guild database: " + dbUpdate.guildsUpdate}`, dbUpdate.guildsUpdate.entriesUpdated && dbUpdate.usersUpdate.entriesUpdated ? true : false);
     //Load commands
     logger.draft(`loadingCommands`, `create`, `Loading commands...`);
-    const commands = await fs.readdir(`./commands`);
-    commands.forEach(c => {
-        try {
-            let command = require(`./commands/${c}`);
-            c.uses = 0;
-            //Set default conf if no conf provided
-            if (!command.conf) command.conf = { guildOnly: false, disabled: false, aliases: false }
-            command.conf.guildOnly = command.conf.guildOnly ? command.conf.guildOnly : false;
-            command.conf.aliases = command.conf.aliases ? command.conf.aliases : false;
-            command.conf.disabled = command.conf.disabled ? command.conf.disabled : false;
-            //Add the command to the collection
-            Felix.commands.set(command.help.name, command);
-            if (!command.conf || !command.conf.aliases) return;
-            command.conf.aliases.forEach(alias => {
-                Felix.aliases.set(alias, command.help.name);
-            });
-        } catch (err) {
-            errors.push((`Failed to load command ${c}: ${err}`));
-        }
-    });
-    logger.draft(`loadingCommands`, `end`, `Loaded ${Felix.commands.size}/${commands.length} commands`, true);
+    const categories = await fs.readdir(`./commands`);
+    if (!Felix.clientData.has('commandsStats')) Felix.clientData.set('commandsStats', {});
+    let commandsStats = Felix.clientData.get('commandsStats');
+    let totalCommands = 0;
+    for (let i = 0; i < categories.length; i++) {
+        let thisCommands = await fs.readdir(`./commands/${categories[i]}`);
+        totalCommands = totalCommands + thisCommands.length;
+        thisCommands.forEach(c => {
+            try {
+                let command = require(`./commands/${categories[i]}/${c}`);
+                command.uses = 0;
+                //Set default conf if no conf provided
+                if (!command.conf) command.conf = { guildOnly: false, disabled: false, aliases: false }
+                command.conf.guildOnly = command.conf.guildOnly ? command.conf.guildOnly : false;
+                command.conf.aliases = command.conf.aliases ? command.conf.aliases : false;
+                command.conf.disabled = command.conf.disabled ? command.conf.disabled : false;
+                if (!command.help.category) command.help.category = categories[i];
+                //Add the command to the collection
+                Felix.commands.set(command.help.name, command);
+                if (!commandsStats[command.help.name]) commandsStats[command.help.name] = 0;
+                if (!command.conf || !command.conf.aliases) return;
+                command.conf.aliases.forEach(alias => {
+                    Felix.aliases.set(alias, command.help.name);
+                });
+            } catch (err) {
+                errors.push((`Failed to load command ${c}: ${err}`));
+            }
+        });
+    }
+    Felix.clientData.set('commandsStats', commandsStats);
+    logger.draft(`loadingCommands`, `end`, `Loaded ${Felix.commands.size}/${totalCommands} commands`, true);
     //Load events
     logger.draft(`loadingEvents`, `create`, `Loading events...`);
     const events = await fs.readdir(`./events`);
@@ -278,6 +288,7 @@ const Felix = new Client(config.token, {
         logger.log(`No Steam API key found in the config, disabled ${requiresteamApiKey.size > 0 ? requiresteamApiKey.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
     }
 
+    //And this is where Felix manage the /config/core-data.json backup
 
     const backupManager = require(`./util/helpers/backupManager.js`);
 

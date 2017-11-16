@@ -1,6 +1,7 @@
 let sleep = require("../modules/sleep");
 
 module.exports = async(client, message) => {
+    let commandsStats = client.clientData.get("commandsStats");
     //Return if the message does not start with the prefix nor Felix's mention
     if (!message.content.startsWith(message.guild ? client.guildData.get(message.guild.id).generalSettings.prefix : client.config.prefix) && !message.content.startsWith(`<@${client.user.id}>`) && !message.content.startsWith(`<@!${client.user.id}>`)) return;
     //Get the args and isolate the command
@@ -12,11 +13,14 @@ module.exports = async(client, message) => {
     //Once the command is confirmed, store the user in the database if they are not already in
     if (!client.userData.has(message.author.id)) client.userData.set(message.author.id, client.defaultUserData(message.author.id));
 
+    commandsStats[command.help.name]++;
+    client.clientData.set("commandsStats", commandsStats);
+
     if (!message.guild) {
         //Check if the command can be used in dm and if the user has the permissions to use it
-        if (command.conf.guildOnly || (command.help.category === 'admin' && !client.config.admins.includes(message.author.id))) return await client.createMessage(message.channel.id, ":x: This command can only be used in a guild or you don't have the permission to use it");
+        if (command.conf.guildOnly || (command.help.category === 'admin' && !client.config.admins.includes(message.author.id))) return await message.channel.createMessage(":x: This command can only be used in a guild or you don't have the permission to use it");
         //Check if the command is disabled
-        if (command.conf.disabled) return await client.createMessage(message.channel.id, ":x: Sorry but this command is disabled for now\n**Reason:** " + command.conf.disabled);
+        if (command.conf.disabled) return await message.channel.createMessage(":x: Sorry but this command is disabled for now\n**Reason:** " + command.conf.disabled);
         try {
             await command.run(client, message, args);
         } catch (err) {
@@ -28,12 +32,12 @@ module.exports = async(client, message) => {
     } else {
         const guildEntry = client.guildData.get(message.guild.id);
         //Ratelimit check
-        if (client.ratelimited.has(message.author.id)) return await client.createMessage(message.channel.id, `:x: Chill a bit, there, a 20 seconds cooldown for ya :heart:`);
+        if (client.ratelimited.has(message.author.id)) return await message.channel.createMessage(`:x: Chill a bit, there, a 20 seconds cooldown for ya :heart:`);
         //Disabled check
-        if (command.conf.disabled) return await client.createMessage(message.channel.id, ":x: Sorry but this command is disabled for now\n**Reason:** " + command.conf.disabled);
+        if (command.conf.disabled) return await message.channel.createMessage(":x: Sorry but this command is disabled for now\n**Reason:** " + command.conf.disabled);
         //Permissions check
         const allowed = await require(`./permissionsChecker.js`)(client, message, command);
-        if (!allowed) return await client.createMessage(message.channel.id, ":x: You don't have the permission to use this command !");
+        if (!allowed) return await message.channel.createMessage(":x: You don't have the permission to use this command !");
 
         if (message.content.startsWith('<')) {
             message.content = message.content.substr(args[0].length).trim();
@@ -47,7 +51,7 @@ module.exports = async(client, message) => {
             if (command.shortcut && args.filter(a => command.shortcut.triggers.has(a.toLowerCase())).length > 0) {
                 let trigger = args.filter(a => command.shortcut.triggers.has(a.toLowerCase()))[0];
                 //Handle missing argument here to save a line in every shortcut script
-                if (command.shortcut.triggers.get(trigger).args && (args.length - 1) < command.shortcut.triggers.get(trigger).args) return await client.createMessage(message.channel.id, `:x: You didn't specified any or not enough arguments`);
+                if (command.shortcut.triggers.get(trigger).args && (args.length - 1) < command.shortcut.triggers.get(trigger).args) return await message.channel.createMessage(`:x: You didn't specified any or not enough arguments`);
                 await require(`../util/shortcuts/${command.help.name}/${command.shortcut.triggers.get(trigger).script}`)(client, message, args);
             }
             //Default command 

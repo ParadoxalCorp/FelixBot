@@ -9,7 +9,7 @@ module.exports = async(client, message) => {
     const mentionned = message.mentions.users.filter(u => client.userData.has(u.id) && client.userData.get(u.id).generalSettings.afk);
     if (mentionned.size < 3) { //(Don't send AFK messages if more than 2 mentionned users are AFK to avoid spam)
         mentionned.forEach(m => {
-            client.createMessage(message.channel.id, {
+            message.channel.createMessage({
                 embed: ({
                     color: 3447003,
                     author: {

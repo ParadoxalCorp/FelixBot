@@ -22,7 +22,7 @@ class TokenGenerator {
 
                 if (new RegExp(/new/gim).test(message.content)) {
                     let id = args.filter(a => !isNaN(a) && a.length >= 17)[0];
-                    if (!id[0]) return resolve(await client.createMessage(message.channel.id, `:x: You need to provide a user id !`));
+                    if (!id[0]) return resolve(await message.channel.createMessage(`:x: You need to provide a user id !`));
                     //Very cheap token generator
                     let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', '_', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', '$', 'u', 'r', 's', 't', 'u', 'v', '-', 'w', 'x', 'y', 'z'];
                     let token = new String();
@@ -39,14 +39,14 @@ class TokenGenerator {
                     }
                     tokens.push({ token: token, user: id, public: isPublic, requests: [] });
                     client.clientData.set("tokens", tokens);
-                    resolve(await client.createMessage(message.channel.id, {
+                    resolve(await message.channel.createMessage({
                         embed: {
                             description: `Generated and stored the following token: \`\`\`js\n"${token}"\`\`\``
                         }
                     }));
                 } else if (new RegExp(/list/gim).test(message.content)) {
                     let tokenList = tokens.map(t => `${t.user}(${t.public}): ${t.token}`).join("\n");
-                    resolve(await client.createMessage(message.channel.id, {
+                    resolve(await message.channel.createMessage({
                         embed: {
                             description: "```" + tokenList + "```"
                         }
@@ -54,20 +54,20 @@ class TokenGenerator {
                 } else if (new RegExp(/revoke/gim).test(message.content)) {
                     let id = args.filter(a => !isNaN(a) && a.length >= 17)[0];
                     let token = args.filter(a => a.length === 156);
-                    if (!id[0] && !token[0]) return resolve(await client.createMessage(message.channel.id, `:x: You need to specify a token or a user id to revoke`));
+                    if (!id[0] && !token[0]) return resolve(await message.channel.createMessage(`:x: You need to specify a token or a user id to revoke`));
                     if (token[0]) {
                         let tokenPos = tokens.findIndex(t => t.token === token[0]);
-                        if (tokenPos !== -1) return resolve(await client.createMessage(message.channel.id, `:x: That token does not exist`));
+                        if (tokenPos !== -1) return resolve(await message.channel.createMessage(`:x: That token does not exist`));
                         tokens.splice(tokenPos, 1);
                         client.clientData.set("tokens", tokens);
-                        resolve(await client.createMessage(message.channel.id, `:white_check_mark: Successfully revoked the token \`${token[0]}\``))
+                        resolve(await message.channel.createMessage(`:white_check_mark: Successfully revoked the token \`${token[0]}\``))
                     } else if (id[0]) {
-                        if (!tokens.private.find(t => t.user === id[0]) && !tokens.public.find(t => t.user === id[0])) return resolve(await client.createMessage(message.channel.id, `:x: There is no token assigned to this user id`));
+                        if (!tokens.private.find(t => t.user === id[0]) && !tokens.public.find(t => t.user === id[0])) return resolve(await message.channel.createMessage(`:x: There is no token assigned to this user id`));
                         for (let i = 0; i < tokens.length; i++) {
                             if (tokens[i].user === id[0]) tokens.splice(i, 1);
                         }
                         client.clientData.set("tokens", tokens);
-                        resolve(await client.createMessage(message.channel.id, `:white_check_mark: Successfully revoked all of the tokens of the specified user`));
+                        resolve(await message.channel.createMessage(`:white_check_mark: Successfully revoked all of the tokens of the specified user`));
                     }
                 }
             } catch (err) {

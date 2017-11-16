@@ -5,7 +5,7 @@ module.exports = async(client, member) => {
         //---------------------------------------Replace all instances of %USER%, %USERNAME% and %GUILD%--------------------------------------
         if (typeof message === "string") message = message.replace(/\%USER\%/gim, `<@${member.user.id}>`).replace(/\%USERNAME\%/gim, `${member.user.username}`).replace(/\%USERTAG%/gim, `${member.user.tag}`).replace(/\%GUILD\%/gim, `${member.guild.name}`);
         else {
-            for (key in message) {
+            for (var key in message) {
                 if (typeof message[key] === "string") message[key] = message[key].replace(/\%USER\%/gim, `<@${member.user.id}>`).replace(/\%USERNAME\%/gim, `${member.user.username}`).replace(/\%USERTAG%/gim, `${member.user.tag}`).replace(/\%GUILD\%/gim, `${member.guild.name}`);
             }
         }; //---------------------------------------------------------Greets------------------------------------------------------------

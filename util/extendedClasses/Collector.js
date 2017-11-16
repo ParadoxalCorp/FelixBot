@@ -69,7 +69,7 @@ class Collector extends EventEmitter {
          * @private
          */
         this.listener = this._handle.bind(this);
-        if (options.time) this._timeout = this.client.setTimeout(() => this.stop('time'), options.time);
+        if (options.time) this._timeout = setTimeout(() => this.stop('time'), options.time);
     }
 
     /**

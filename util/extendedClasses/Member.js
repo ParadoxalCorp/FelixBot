@@ -62,6 +62,7 @@ class Member extends Base {
         }
 
         this.nick = data.nick !== undefined ? data.nick : this.nick || null;
+        this.nickname = this.nick;
         if (data.roles !== undefined) {
             this.roles = data.roles;
         }

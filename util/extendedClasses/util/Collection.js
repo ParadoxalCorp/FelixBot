@@ -94,11 +94,28 @@ class Collection extends Map {
     }
 
     /**
+     * Identical to
+     * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
+     * but returns a Collection instead of an Array.
+     * @param {Function} fn Function used to test (should return a boolean)
+     * @param {Object} [thisArg] Value to use as `this` when executing function
+     * @returns {Collection}
+     */
+    filter(fn, thisArg) {
+        if (thisArg) fn = fn.bind(thisArg);
+        const results = new Collection();
+        for (const [key, val] of this) {
+            if (fn(val, key, this)) results.set(key, val);
+        }
+        return results;
+    }
+
+    /**
      * Return all the objects that make the function evaluate true
      * @arg {function} func A function that takes an object and returns true if it matches
      * @returns {Array<Class>} An array containing all the objects that matched
      */
-    filter(func) {
+    filterArray(func) {
         var arr = [];
         for (var item of this.values()) {
             if (func(item)) {

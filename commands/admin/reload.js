@@ -6,18 +6,19 @@ class Reload {
             name: 'reload',
             category: 'admin',
             usage: 'reload [file_path]',
-            description: 'Reload (aka delete the cache and require) the file at the specified path. Note: If a command, only the command name or an alias is needed instead of the path'
+            description: 'Reload (aka delete the cache and require) the file at the specified path. Note: If a command, dont forget that the path will be something like ../category/command_name'
         };
     }
 
     run(client, message, args) {
         return new Promise(async(resolve, reject) => {
             try {
-                if (!args[0]) return resolve(client.createMessage(message.channel.id, `:x: Welp if you don't tell me what to reload i can't reload anything`));
-                let path = new RegExp(/\/|\\/gim).test(message.content) ? args[0] : `./${args[0]}`;
+                if (!args[0]) return resolve(message.channel.createMessage(`:x: Welp if you don't tell me what to reload i can't reload anything`));
+                let commandsStats = client.clientData.get("commandsStats");
+                let path = args[0];
                 let command = client.commands.get(args[0]) || client.commands.get(client.aliases.get(args[0]));
-                if (command || fs.existsSync(`./${args[0]}`)) {
-                    if (command) path = `./${command.help.name}`;
+                if (command || fs.existsSync(`../${path}`)) {
+                    if (command) path = `../${command.help.category}/${command.help.name}`;
                     let thisUses = command ? command.uses : 0;
                     try {
                         await delete require.cache[require.resolve(path)];
@@ -27,11 +28,14 @@ class Reload {
                             if (cmd === command.help.name) client.aliases.delete(alias);
                         });
                         newCommand.uses = thisUses;
+                        if (!commandsStats[newCommand.help.name]) commandsStats[newCommand.help.name] = 0;
+                        client.clientData.set("commandsStats", commandsStats);
                         //Set default conf if no conf provided
                         if (!newCommand.conf) newCommand.conf = { guildOnly: false, disabled: false, aliases: false }
                         newCommand.conf.guildOnly = newCommand.conf.guildOnly ? newCommand.conf.guildOnly : false;
                         newCommand.conf.aliases = newCommand.conf.aliases ? newCommand.conf.aliases : false;
                         newCommand.conf.disabled = newCommand.conf.disabled ? newCommand.conf.disabled : false;
+                        if (!newCommand.help.category) newCommand.help.category = path.split(/\\|\//gim)[1];
                         //Add the command to the collection
                         client.commands.set(newCommand.help.name, newCommand);
                         if (newCommand.conf && newCommand.conf.aliases) newCommand.conf.aliases.forEach(alias => {
@@ -49,9 +53,9 @@ class Reload {
                             });
                             shortcutsReloaded = `and ${i} shortcuts have been reloaded out of ${cmdShortcuts.length}`;
                         }
-                        resolve(await client.createMessage(message.channel.id, `:white_check_mark: The command \`${newCommand.help.name}\` has successfully been ${command ? "reloaded" : "added"} ${shortcutsReloaded}`));
+                        resolve(await message.channel.createMessage(`:white_check_mark: The command \`${newCommand.help.name}\` has successfully been ${command ? "reloaded" : "added"} ${shortcutsReloaded}`));
                     } catch (err) {
-                        resolve(client.createMessage(message.channel.id, {
+                        resolve(message.channel.createMessage({
                             embed: {
                                 description: `:x: Something went wrong: \`\`\`js\n${err}\`\`\``
                             }
@@ -59,11 +63,21 @@ class Reload {
                     }
                 } else {
                     try {
+                        //Specific reload for events since it needs to be bind and the listener has to be removed
                         await delete require.cache[require.resolve(path)];
-                        require(path);
-                        resolve(await client.createMessage(message.channel.id, `:white_check_mark: The file \`${path}\` has successfully been reloaded/added`));
+                        if (path.includes("events")) {
+                            let newEvent = require(path);
+                            let event = path.split(`/`);
+                            event = event[event.length - 1].split(".")[0];
+                            client.removeAllListeners(event);
+                            client.on(event, newEvent.bind(null, client));
+                            resolve(await message.channel.createMessage(`:white_check_mark: The event \`${event}\` has successfully been reloaded/added`));
+                        } else {
+                            require(path);
+                            resolve(await message.channel.createMessage(`:white_check_mark: The file \`${path}\` has successfully been reloaded/added`));
+                        }
                     } catch (err) {
-                        resolve(client.createMessage(message.channel.id, {
+                        resolve(message.channel.createMessage({
                             embed: {
                                 description: `:x: Something went wrong: \`\`\`js\n${err}\`\`\``
                             }

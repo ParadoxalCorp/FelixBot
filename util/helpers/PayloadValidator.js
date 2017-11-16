@@ -16,7 +16,8 @@ class PayloadValidator {
             error: ['boolean', 'string'],
             message: ['boolean', 'string'],
             channel: ['boolean', 'string'],
-            method: ['boolean', 'string']
+            method: ['boolean', 'string'],
+            levelUpNotif: ['boolean', 'string']
         };
         guildKeys.forEach(key => {
             if (typeof defaultGuildData[key] === "undefined") return;

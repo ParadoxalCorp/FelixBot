@@ -32,6 +32,8 @@ class TextChannel extends GuildChannel {
         this.lastMessageID = data.last_message_id || null;
         this.lastPinTimestamp = data.last_pin_timestamp ? Date.parse(data.last_pin_timestamp) : null;
         this.update(data);
+        this.send = this.createMessage;
+        this.client = guild.client;
     }
 
     update(data) {
@@ -46,6 +48,17 @@ class TextChannel extends GuildChannel {
      */
     getInvites() {
         return this.guild.shard.client.getChannelInvites.call(this.guild.shard.client, this.id);
+    }
+
+    /**
+     * Creates a Message Collector
+     * @param {CollectorFilter} filter The filter to create the collector with
+     * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
+     * @returns {MessageCollector}
+     * @deprecated
+     */
+    createCollector(filter, options) {
+        return this.createMessageCollector(filter, options);
     }
 
     /**
