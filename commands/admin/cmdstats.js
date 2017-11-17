@@ -60,7 +60,7 @@ class CommandsStats {
                     }));
                 }
             } catch (err) {
-                reject(err);
+                reject(err, message);
             }
         });
     }

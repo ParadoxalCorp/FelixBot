@@ -313,7 +313,7 @@ class Message extends Base {
                         message: {
                             embed: {
                                 title: ':mag: User search',
-                                description: "Multiple users found, select one by typing a number ```\n" + filterByWholeName.map(u => `[${i++}] ${u.tag}`).join("\n")
+                                description: "Multiple users found, select one by typing a number ```\n" + filterByWholeName.map(u => `[${i++}] ${u.tag}`).join("\n") + "```"
                             }
                         }
                     });
@@ -321,7 +321,9 @@ class Message extends Base {
                     if (selectedUser.reply && !isNaN(selectedUser.reply.content) && selectedUser.reply.content >= 1 && Math.round(Number(selectedUser.reply.content)) <= filterByWholeName.length) usersResolved.set(filterByWholeName[Math.round(Number(selectedUser.reply.content)) - 1].id, range.first().guild ? filterByWholeName[Math.round(Number(selectedUser.reply.content)) - 1].user : filterByWholeName[Math.round(Number(selectedUser.reply.content)) - 1]);
                     if (selectedUser.reply && selectedUser.reply.deletable) selectedUser.reply.delete();
                 } else { //-----------------Resolve by case-insensitive name or nickname-----------------------------------
-                    let filterUsers = range.filter(u => u.username.toLowerCase() === potentialUserResolvables[i].toLowerCase() || (u.nickname && u.nickname.toLowerCase() === potentialUserResolvables[i].toLowerCase()));
+                    let filterUsers = range.filter(u =>
+                        u.username.toLowerCase() === potentialUserResolvables[i].toLowerCase() ||
+                        (u.nickname && u.nickname.toLowerCase() === potentialUserResolvables[i].toLowerCase()));
                     if (filterUsers.size > 1) {
                         let i = 1;
                         filterUsers = Array.from(filterUsers.values());
@@ -340,7 +342,12 @@ class Message extends Base {
                     else {
                         //----------------Resolve by partial case-insensitive name or nickname-------------------------
                         //Note: Here we don't match if the "partial" thing is less than 30% (or 60% if not limited to guild) of the full username, because matching 3 letters out of a 32 letters username is kinda wew
-                        let filterByPartial = range.filter(u => (u.username.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) && (Math.floor((potentialUserResolvables[i].length / u.username.length) * 100) >= (options.guildOnly ? 30 : 60))) || (u.nickname && u.nickname.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) && (Math.floor((potentialUserResolvables[i].length / u.nickname.length) * 100)) >= 30)).filter(m => !usersResolved.has(m.id));
+                        let filterByPartial = range.filter(u =>
+                                (u.username.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) &&
+                                    (Math.floor((potentialUserResolvables[i].length / u.username.length) * 100) >= (options.guildOnly ? 30 : 60))) ||
+                                (u.nickname && u.nickname.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) &&
+                                    (Math.floor((potentialUserResolvables[i].length / u.nickname.length) * 100)) >= 30))
+                            .filter(m => !usersResolved.has(m.id));
                         if (filterByPartial.size === 1) usersResolved.set(filterByPartial.first().id, filterByPartial.first().guild ? filterByPartial.first().user : filterByPartial.first());
                         else if (filterByPartial.size > 1) {
                             filterByPartial = Array.from(filterByPartial.values());
@@ -382,7 +389,7 @@ class Message extends Base {
             if (!options) options = Object.create(null);
             let potentialChannelsResolvables = this.content.split(/\s+/gim).filter(c => c.length >= (options.charLimit || 3));
             const channelsResolved = new Collection();
-            let channels = this.guild.channels.filter(c => c.type === 'text');
+            let channels = this.guild.channels.filter(c => c.type === 0);
             for (let i = 0; i < potentialChannelsResolvables.length; i++) {
                 //------------------Resolve by ID--------------------
                 if (!isNaN(potentialChannelsResolvables[i]) && channels.get(potentialChannelsResolvables[i])) channelsResolved.set(channels.get(potentialChannelsResolvables[i]).id, channels.get(potentialChannelsResolvables[i]));

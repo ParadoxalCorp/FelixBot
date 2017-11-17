@@ -66,33 +66,6 @@ class Client extends Eris {
         this.aliases = new Eris.Collection();
         this.config = config;
         this.commandsUsed = 0;
-        this.upvotes = {
-            users: false,
-            latestUpdate: Date.now(),
-            count: function() {
-                return this.users.length
-            }
-        }
-        this.statsUpdate = {
-            success: {
-                name: 'No Data',
-                message: 'Server count hasn\'t been sent yet',
-                description: function() {
-                    return `${this.name}: ${this.message}`;
-                }
-            },
-            latestUpdate: false
-        }
-        this.imageTypes = {
-            success: {
-                name: 'No Data',
-                message: `The weeb's image types didn't got fetched yet`,
-                description: function() {
-                    return `${this.name}: ${this.message}`;
-                }
-            },
-            latestUpdate: Date.now()
-        }
 
         this.defaultUserData = function(id) {
             return {
@@ -255,39 +228,6 @@ const Felix = new Client(config.token, {
     process.on(`uncaughtException`, err => Felix.emit('error', err));
     process.on(`error`, err => Felix.emit('error', err));
 
-    //This is where Felix checks for API keys and disable features if missing keys
-    if (!config.raven) logger.log(`No raven link found in the config, errors will be logged to the console`, "warn");
-    if (!config.discordBotList) {
-        let requireDiscordBotList = client.commands.filter(c => c.conf.require && c.conf.require.includes("discordBotList"));
-        requireDiscordBotList.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`discordBotList\` API key which is missing`);
-        logger.log(`No discord bot list API key found in the config, disabled ${requireDiscordBotList.size > 0 ? requireDiscordBotList.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
-    }
-    if (!config.wolkeImageKey) {
-        let requirewolkeImageKey = client.commands.filter(c => c.conf.require && c.conf.require.includes("wolkeImageKey"));
-        requirewolkeImageKey.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`wolkeImageKey\` API key which is missing`);
-        logger.log(`No weeb.sh API key found in the config, disabled ${requirewolkeImageKey.map(c => c.help.name).join(", ")}`, `warn`);
-    }
-    if (!config.mashapeKey) {
-        let requiremashapeKey = client.commands.filter(c => c.conf.require && c.conf.require.includes("mashapeKey"));
-        requiremashapeKey.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`mashapeKey\` API key which is missing`);
-        logger.log(`No mashape key API key found in the config, disabled ${requiremashapeKey.map(c => c.help.name).join(", ")}`, `warn`);
-    }
-    if (!config.malCredentials || !config.malCredentials.password || !config.malCredentials.name) {
-        let requiremalCredentials = client.commands.filter(c => c.conf.require && c.conf.require.includes("malCredentials"));
-        requiremalCredentials.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`malCredentials\` name and password fields which are missing`);
-        logger.log(`No MyAnimeList credentials found in the config, disabled ${requiremalCredentials.map(c => c.help.name).join(", ")}`, `warn`);
-    }
-    if (!config.rapidApiKey) {
-        let requirerapidApiKey = client.commands.filter(c => c.conf.require && c.conf.require.includes("rapidApiKey"));
-        requirerapidApiKey.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`rapidApiKey\` API key which is missing`);
-        logger.log(`No rapid API API (yes, they're named rapidAPI so i have to write two times API, don't hurt me pls) key found in the config, disabled ${requirerapidApiKey.size > 0 ? requirerapidApiKey.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
-    }
-    if (!config.steamApiKey) {
-        let requiresteamApiKey = client.commands.filter(c => c.conf.require && c.conf.require.includes("steamApiKey"));
-        requiresteamApiKey.forEach(c => client.commands.get(c.help.name).disabled = `This command requires the \`steamApiKey\` API key which is missing`);
-        logger.log(`No Steam API key found in the config, disabled ${requiresteamApiKey.size > 0 ? requiresteamApiKey.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
-    }
-
     //And this is where Felix manage the /config/core-data.json backup
 
     const backupManager = require(`./util/helpers/backupManager.js`);
@@ -320,5 +260,38 @@ const Felix = new Client(config.token, {
     logger.draft('serverLaunch', 'end', `Server endpoints launched ${!Felix.server ? '' : 'at ' + Felix.server.info.uri}`, !Felix.server ? false : true);
 
     Felix.connect();
+
+    //This is where Felix checks for API keys and disable features if missing keys
+    if (!config.raven) logger.log(`No raven link found in the config, errors will be logged to the console`, "warn");
+    if (!config.discordBotList) {
+        let requireDiscordBotList = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("discordBotList"));
+        requireDiscordBotList.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`discordBotList\` API key which is missing`);
+        logger.log(`No discord bot list API key found in the config, disabled ${requireDiscordBotList.size > 0 ? requireDiscordBotList.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
+    }
+    if (!config.wolkeImageKey) {
+        let requirewolkeImageKey = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("wolkeImageKey"));
+        requirewolkeImageKey.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`wolkeImageKey\` API key which is missing`);
+        logger.log(`No weeb.sh API key found in the config, disabled: ${requirewolkeImageKey.map(c => c.help.name).join(", ")}`, `warn`);
+    }
+    if (!config.mashapeKey) {
+        let requiremashapeKey = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("mashapeKey"));
+        requiremashapeKey.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`mashapeKey\` API key which is missing`);
+        logger.log(`No mashape key API key found in the config, disabled ${requiremashapeKey.map(c => c.help.name).join(", ")}`, `warn`);
+    }
+    if (!config.malCredentials || !config.malCredentials.password || !config.malCredentials.name) {
+        let requiremalCredentials = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("malCredentials"));
+        requiremalCredentials.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`malCredentials\` name and password fields which are missing`);
+        logger.log(`No MyAnimeList credentials found in the config, disabled ${requiremalCredentials.map(c => c.help.name).join(", ")}`, `warn`);
+    }
+    if (!config.rapidApiKey) {
+        let requirerapidApiKey = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("rapidApiKey"));
+        requirerapidApiKey.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`rapidApiKey\` API key which is missing`);
+        logger.log(`No rapid API API (yes, they're named rapidAPI so i have to write two times API, don't hurt me pls) key found in the config, disabled ${requirerapidApiKey.size > 0 ? requirerapidApiKey.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
+    }
+    if (!config.steamApiKey) {
+        let requiresteamApiKey = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("steamApiKey"));
+        requiresteamApiKey.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`steamApiKey\` API key which is missing`);
+        logger.log(`No Steam API key found in the config, disabled ${requiresteamApiKey.size > 0 ? requiresteamApiKey.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
+    }
 
 }());

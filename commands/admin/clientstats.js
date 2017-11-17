@@ -4,7 +4,7 @@ class ClientStats {
             name: 'clientstats',
             category: 'admin',
             usage: 'clientstats',
-            description: 'how detailled stats, much wow'
+            description: 'how detailed stats, much wow'
         }
     }
 
@@ -39,7 +39,7 @@ class ClientStats {
                     }
                 }))
             } catch (err) {
-                reject(err);
+                reject(err, message);
             }
         });
     }

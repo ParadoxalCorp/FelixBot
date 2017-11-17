@@ -36,7 +36,7 @@ class Eval {
                     }));
                 }
             } catch (err) {
-                reject(err);
+                reject(err, message);
             }
         });
     }

@@ -25,7 +25,7 @@ class Blacklist {
                 });
                 resolve(await message.channel.createMessage(`Whitelisted user(s): ${whiteListed.map(u => u.tag).join(", ")}\nBlacklisted user(s): ${blackListed.map(u => u.tag).join(", ")}`));
             } catch (err) {
-                reject(err);
+                reject(err, message);
             }
         });
     }

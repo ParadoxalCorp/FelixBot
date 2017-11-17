@@ -33,7 +33,7 @@ class MessageCollector extends Collector {
          */
         this.received = 0;
 
-        this.channel.client.on('message', this.listener);
+        this.channel.client.on('messageCreate', this.listener);
 
         // For backwards compatibility (remove in v12)
         if (this.options.max) this.options.maxProcessed = this.options.max;
@@ -52,7 +52,7 @@ class MessageCollector extends Collector {
 
     // Remove in v12
     on(eventName, listener) {
-        if (eventName === 'message') {
+        if (eventName === 'messageCreate') {
             listener = util.deprecate(listener, 'MessageCollector will soon no longer emit "message", use "collect" instead');
         }
         super.on(eventName, listener);
@@ -91,7 +91,7 @@ class MessageCollector extends Collector {
      */
     cleanup() {
         this.removeListener('collect', this._reEmitter);
-        this.channel.client.removeListener('message', this.listener);
+        this.channel.client.removeListener('messageCreate', this.listener);
     }
 }
 

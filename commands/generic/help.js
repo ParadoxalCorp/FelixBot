@@ -31,15 +31,14 @@ class Help {
                 if (!commandHelp) return resolve();
                 let aliases = 1 <= commandHelp.conf.aliases ? commandHelp.conf.aliases.join(', ') : "None";
                 let detailedUsage = commandHelp.help.detailedUsage ? commandHelp.help.detailedUsage.replace(/\{prefix\}/gim, `${prefix}`) : "There is no detailed usage for this command";
-                let parameters = commandHelp.help.parameters ? commandHelp.help.parameters : "None";
                 let shortcuts = "None";
                 if (commandHelp.shortcut) {
                     let keys = Array.from(commandHelp.shortcut.triggers.keys());
                     shortcuts = keys.map(k => `\`${k}\` ${commandHelp.shortcut.triggers.get(k).help}`).join('\n');
                 }
-                resolve(await message.channel.createMessage(`${commandHelp.help.description}\n**Parameters:** ${parameters}\n**Usage Example:**\n\`${prefix + commandHelp.help.usage}\`\n**Category:** \`${commandHelp.help.category}\`\n**Aliases:** \`${aliases}\`\n**Detailed usage:**\n${detailedUsage}\n**Shortcuts:**\n${shortcuts}`));
+                resolve(await message.channel.createMessage(`${commandHelp.help.description}\n**Usage Example:**\n\`${prefix + commandHelp.help.usage}\`\n**Category:** \`${commandHelp.help.category}\`\n**Aliases:** \`${aliases}\`\n**Detailed usage:**\n${detailedUsage}\n**Shortcuts:**\n${shortcuts}`));
             } catch (err) {
-                reject(err);
+                reject(err, message);
             }
         });
     }

@@ -136,7 +136,7 @@ class Collector extends EventEmitter {
     stop(reason = 'user') {
         if (this.ended) return;
 
-        if (this._timeout) this.client.clearTimeout(this._timeout);
+        if (this._timeout) clearTimeout(this._timeout);
         this.ended = true;
         this.cleanup();
 

@@ -19,7 +19,7 @@ class Ping {
                 let startTime = Date.now();
                 resolve(message.channel.createMessage(`Pinging so fast that you won't even notice...`).then(m => m.edit(`Pong ! \`${Date.now() - startTime}\`ms`)));
             } catch (err) {
-                reject(err);
+                reject(err, message);
             }
         });
     }

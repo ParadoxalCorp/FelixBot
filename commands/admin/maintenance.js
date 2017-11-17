@@ -18,7 +18,7 @@ class Maintenance {
                 client.maintenance = client.maintenance ? false : true;
                 resolve(await message.channel.createMessage(`:white_check_mark: Maintenance status has been set to ${client.maintenance ? "on" : "off"}`));
             } catch (err) {
-                reject(err);
+                reject(err, message);
             }
         });
     }

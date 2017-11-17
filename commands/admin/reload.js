@@ -13,20 +13,33 @@ class Reload {
     run(client, message, args) {
         return new Promise(async(resolve, reject) => {
             try {
-                if (!args[0]) return resolve(message.channel.createMessage(`:x: Welp if you don't tell me what to reload i can't reload anything`));
+                if (!args[0]) return resolve(await message.channel.createMessage(`:x: Welp if you don't tell me what to reload i can't reload anything`));
                 let commandsStats = client.clientData.get("commandsStats");
                 let path = args[0];
                 let command = client.commands.get(args[0]) || client.commands.get(client.aliases.get(args[0]));
-                if (command || fs.existsSync(`../${path}`)) {
+                //Tbh fuck fs
+                function exists(path) {
+                    try {
+                        require.resolve(path);
+                        return true;
+                    } catch (err) {
+                        return false;
+                    }
+                }
+
+                if (command || (exists(path) && require(path).help)) {
+                    if (command && command.subcommand) return resolve(await message.channel.send(`:x: \`${command.help.name}\` is a subcommand and therefore cannot be reloaded`));
                     if (command) path = `../${command.help.category}/${command.help.name}`;
                     let thisUses = command ? command.uses : 0;
                     try {
                         await delete require.cache[require.resolve(path)];
                         let newCommand = require(path);
-                        client.commands.delete(command.help.name);
-                        client.aliases.forEach((cmd, alias) => {
-                            if (cmd === command.help.name) client.aliases.delete(alias);
-                        });
+                        if (command) {
+                            client.commands.delete(command.help.name);
+                            client.aliases.forEach((cmd, alias) => {
+                                if (cmd === command.help.name) client.aliases.delete(alias);
+                            });
+                        }
                         newCommand.uses = thisUses;
                         if (!commandsStats[newCommand.help.name]) commandsStats[newCommand.help.name] = 0;
                         client.clientData.set("commandsStats", commandsStats);
@@ -57,7 +70,7 @@ class Reload {
                     } catch (err) {
                         resolve(message.channel.createMessage({
                             embed: {
-                                description: `:x: Something went wrong: \`\`\`js\n${err}\`\`\``
+                                description: `:x: Something went wrong: \`\`\`js\n${err.stack}\`\`\``
                             }
                         }));
                     }
@@ -85,7 +98,7 @@ class Reload {
                     }
                 }
             } catch (err) {
-                reject(err);
+                reject(err, message);
             }
         });
     }

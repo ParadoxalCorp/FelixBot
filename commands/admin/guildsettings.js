@@ -35,7 +35,7 @@ class GuildSettings {
                     resolve(await message.channel.createMessage(`:white_check_mark: The data of the guild \`${guild.first().name}\` has been reset`));
                 }
             } catch (err) {
-                reject(err);
+                reject(err, message);
             }
         });
     }
