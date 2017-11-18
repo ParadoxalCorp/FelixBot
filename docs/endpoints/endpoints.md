@@ -28,6 +28,8 @@ UserID can be: {
 
 }
 
+If a private token is used, an additional `mutualGuilds` property containing Eris guild objects will be added to the user object
+
 ##### [POST|PUT] `api/userData`**
 
 You have to POST or PUT a valid user object, all of the keys must be of the same type of all the user objects
@@ -57,3 +59,7 @@ You have to POST or PUT a valid guild object, all of the keys must be of the sam
 The Guild object must be: A stringified(JSON) Guild object
 
 > Returns true if the operation is a success or return an array of all the invalid keys found when validating the object
+
+### GET `api/clientData/{clientValue}`**
+
+Fetch a specific client value like the guilds or users
