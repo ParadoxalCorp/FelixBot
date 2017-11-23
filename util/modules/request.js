@@ -8,10 +8,11 @@ class Request {
      * @param {string} header.header The header
      * @param {string} header.value The header value
      */
-    get(url, header) {
+    get(url, header, timeout = 3000) {
         return new Promise(async(resolve, reject) => {
             unirest.get(url)
                 .header(`${header ? header.header : null}`, `${header ? header.value : null}`)
+                .timeout(timeout)
                 .end(response => resolve(response));
         });
     }
@@ -24,11 +25,12 @@ class Request {
      * @param {string} header.header The header
      * @param {string} header.value The header value
      */
-    put(url, data, header) {
+    put(url, data, header, timeout = 3000) {
         return new Promise(async(resolve, reject) => {
             unirest.put(url)
                 .header(`${header ? header.header : null}`, `${header ? header.value : null}`)
                 .send(data)
+                .timeout(timeout)
                 .end(response => resolve(response));
         });
     }
@@ -41,11 +43,12 @@ class Request {
      * @param {string} header.header The header
      * @param {string} header.value The header value
      */
-    post(url, data, header) {
+    post(url, data, header, timeout = 3000) {
         return new Promise(async(resolve, reject) => {
             unirest.put(url)
                 .header(`${header ? header.header : null}`, `${header ? header.value : null}`)
                 .send(data)
+                .timeout(timeout)
                 .end(response => resolve(response));
         });
     }

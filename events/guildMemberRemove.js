@@ -1,4 +1,5 @@
-module.exports = async(client, member) => {
+module.exports = async(client, guild, member) => {
+    if (member.bot) return;
     const guildEntry = client.guildData.get(member.guild.id) || client.defaultGuildData(member.guild.id);
     if (guildEntry.onEvent.guildMemberRemove.farewell.enabled && guildEntry.onEvent.guildMemberRemove.farewell.message) {
         let message = guildEntry.onEvent.guildMemberRemove.farewell.message;

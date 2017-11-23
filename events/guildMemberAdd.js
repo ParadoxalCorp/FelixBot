@@ -1,4 +1,5 @@
-module.exports = async(client, member) => {
+module.exports = async(client, guild, member) => {
+    if (member.bot) return;
     const guildEntry = client.guildData.get(member.guild.id) || client.defaultGuildData(member.guild.id);
     if (guildEntry.onEvent.guildMemberAdd.onJoinRole.length > 0 && member.guild.members.get(client.user.id).hasPermission('manageRoles')) { //----------------------------Add roles-----------------------
         let existingRoles = guildEntry.onEvent.guildMemberAdd.onJoinRole.filter(r => member.guild.roles.has(r)); //Filter roles which doesnt exist anymore

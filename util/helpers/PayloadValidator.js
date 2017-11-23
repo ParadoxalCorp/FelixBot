@@ -20,7 +20,7 @@ class PayloadValidator {
             levelUpNotif: ['boolean', 'string']
         };
         guildKeys.forEach(key => {
-            if (typeof defaultGuildData[key] === "undefined") return;
+            if (typeof defaultGuildData[key] === "undefined") return delete guild[key];
             if ((typeof guild[key] !== typeof defaultGuildData[key]) && (multiTypes[key] ? multiTypes[key].includes(typeof guild[key]) : true)) return invalidKeys.push(`Guild.${key} must be the following type: ${typeof defaultGuildData[key]}`);
             if (typeof guild[key] === "object") {
                 let guildPropertyObject = Object.keys(guild[key]),
@@ -58,7 +58,7 @@ class PayloadValidator {
             afk: ['boolean', 'string']
         };
         userKeys.forEach(key => {
-            if (typeof defaultUserData[key] === "undefined") return;
+            if (typeof defaultUserData[key] === "undefined") return delete user[key];
             if ((typeof user[key] !== typeof defaultUserData[key]) && (multiTypes[key] ? multiTypes[key].includes(typeof user[key]) : true)) return invalidKeys.push(`User.${key} must be the following type: ${typeof defaultUserData[key]}`);
             if (typeof user[key] === "object") {
                 let userPropertyObject = Object.keys(user[key]),

@@ -3,10 +3,9 @@ class TokenGenerator {
         this.help = {
             name: 'tokengenerator',
             category: 'admin',
-            usage: 'tokengenerator',
-            parameters: `[new] [Public||Private?=Public] [User_ID]] || [list [Public||Private?=Public]] || [revoke [User_ID || token]]`,
+            usage: 'tokengenerator [new] [Public||Private?=Public] [User_ID]] || [list [Public||Private?=Public]] || [revoke [User_ID || token]]',
             description: `[Owner only] Generate API tokens`,
-            detailledUsage: "`{prefix}tokengenerator new public 140149699486154753` Will generate and save a public token for the specified user id(user is just to retrieve tokens)"
+            detailedUsage: "`{prefix}tokengenerator new public 140149699486154753` Will generate and save a public token for the specified user id(user is just to retrieve tokens)"
         };
         this.conf = {
             aliases: ['token', `generatetoken`],
@@ -26,7 +25,7 @@ class TokenGenerator {
                     //Very cheap token generator
                     let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', '_', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', '$', 'u', 'r', 's', 't', 'u', 'v', '-', 'w', 'x', 'y', 'z'];
                     let token = new String();
-                    for (let i = 0; i < 156; i++) {
+                    for (let i = 0; i < 260; i++) {
                         if (i % 25 === 0 && i !== 0) token += ".";
                         else {
                             let random = Math.random();
@@ -37,7 +36,7 @@ class TokenGenerator {
                             } else token += Math.floor(Math.random() * (9 + 1));
                         }
                     }
-                    tokens.push({ token: token, user: id, public: isPublic, requests: [] });
+                    tokens.push({ token: `${token}`, user: id, public: isPublic, requests: [] });
                     client.clientData.set("tokens", tokens);
                     resolve(await message.channel.createMessage({
                         embed: {
@@ -45,26 +44,26 @@ class TokenGenerator {
                         }
                     }));
                 } else if (new RegExp(/list/gim).test(message.content)) {
-                    let tokenList = tokens.map(t => `${t.user}(${t.public}): ${t.token}`).join("\n");
+                    let tokenList = tokens.map(t => `${t.user}(private: ${t.public}): "${t.token}"`).join("\n");
                     resolve(await message.channel.createMessage({
                         embed: {
-                            description: "```" + tokenList + "```"
+                            description: "```js\n" + tokenList + "```"
                         }
                     }));
                 } else if (new RegExp(/revoke/gim).test(message.content)) {
                     let id = args.filter(a => !isNaN(a) && a.length >= 17)[0];
-                    let token = args.filter(a => a.length === 156);
-                    if (!id[0] && !token[0]) return resolve(await message.channel.createMessage(`:x: You need to specify a token or a user id to revoke`));
-                    if (token[0]) {
-                        let tokenPos = tokens.findIndex(t => t.token === token[0]);
+                    let token = args.filter(a => a.length === 260)[0];
+                    if (!id && !token) return resolve(await message.channel.createMessage(`:x: You need to specify a token or a user id to revoke`));
+                    if (token) {
+                        let tokenPos = tokens.findIndex(t => t.token === token);
                         if (tokenPos !== -1) return resolve(await message.channel.createMessage(`:x: That token does not exist`));
                         tokens.splice(tokenPos, 1);
                         client.clientData.set("tokens", tokens);
-                        resolve(await message.channel.createMessage(`:white_check_mark: Successfully revoked the token \`${token[0]}\``))
-                    } else if (id[0]) {
-                        if (!tokens.private.find(t => t.user === id[0]) && !tokens.public.find(t => t.user === id[0])) return resolve(await message.channel.createMessage(`:x: There is no token assigned to this user id`));
+                        resolve(await message.channel.createMessage(`:white_check_mark: Successfully revoked the token \`${token}\``))
+                    } else if (id) {
+                        if (!tokens.find(t => t.user === id)) return resolve(await message.channel.createMessage(`:x: There is no token assigned to this user id`));
                         for (let i = 0; i < tokens.length; i++) {
-                            if (tokens[i].user === id[0]) tokens.splice(i, 1);
+                            if (tokens[i].user === id) tokens.splice(i, 1);
                         }
                         client.clientData.set("tokens", tokens);
                         resolve(await message.channel.createMessage(`:white_check_mark: Successfully revoked all of the tokens of the specified user`));

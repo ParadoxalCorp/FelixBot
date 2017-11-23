@@ -111,18 +111,48 @@ class Collection extends Map {
     }
 
     /**
-     * Return all the objects that make the function evaluate true
-     * @arg {function} func A function that takes an object and returns true if it matches
-     * @returns {Array<Class>} An array containing all the objects that matched
+     * Return all the items that make the function evaluate true but in an array
+     * @param {Function} fn Function used to test (should return a boolean)
+     * @param {Object} [thisArg] Value to use as `this` when executing function
      */
-    filterArray(func) {
-        var arr = [];
-        for (var item of this.values()) {
+    filterArray(func, thisArg) {
+        if (thisArg) func = func.bind(thisArg);
+        let arr = [];
+        for (const item of this.values()) {
             if (func(item)) {
                 arr.push(item);
             }
         }
         return arr;
+    }
+
+    /**
+     * Return all the items that make the function evaluate true but in a map
+     * @param {Function} fn Function used to test (should return a boolean)
+     * @param {Object} [thisArg] Value to use as `this` when executing function
+     * @returns {Collection}
+     */
+    filterMap(func, thisArg) {
+        if (thisArg) func = func.bind(thisArg);
+        const results = new Map();
+        for (const [key, val] of this) {
+            if (func(val, key, this)) results.set(key, val);
+        }
+        return results;
+    }
+
+    /**
+     * Convert a collection to a map
+     * @param {Object} [thisArg] Value to use as `this` when executing function
+     * @returns {Map}
+     */
+    toMap(thisArg) {
+        if (thisArg) func = func.bind(thisArg);
+        const results = new Map();
+        for (const [key, val] of this) {
+            results.set(key, val);
+        }
+        return results;
     }
 
     /**
