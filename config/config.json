@@ -1,7 +1,7 @@
 {
     "admins": ["trustablePeopleID-1", "trustablePeopleID-2", "oh and add your id too because most of the admin stuff check for admins and not owner"],
     "prefix": "uwu.",
-    "ownerId": "YOUR_ID",
+    "ownerID": "YOUR_ID",
     "discordBotList": false, 
     "wolkeImageKey": false,
     "mashapeKey": false,
