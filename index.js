@@ -34,7 +34,7 @@ if (!config.token || config.token.length < 20) return logger.log(`No token found
     logger.draft(`overwrite`, `end`, `Overwrite completed: Overwrote ${overwroteFiles} classes out of the ${extendedClasses.length} needed`, overwroteFiles === extendedClasses.length ? true : false);
 }());
 
-const Eris = require("Eris");
+const Eris = require("eris");
 
 class Client extends Eris {
     constructor(token, options) {
