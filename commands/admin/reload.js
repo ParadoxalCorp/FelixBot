@@ -44,10 +44,11 @@ class Reload {
                         if (!commandsStats[newCommand.help.name]) commandsStats[newCommand.help.name] = 0;
                         client.clientData.set("commandsStats", commandsStats);
                         //Set default conf if no conf provided
-                        if (!newCommand.conf) newCommand.conf = { guildOnly: false, disabled: false, aliases: false }
+                        if (!newCommand.conf) newCommand.conf = { guildOnly: false, disabled: false, aliases: false, cooldownWeight: 5 };
                         newCommand.conf.guildOnly = newCommand.conf.guildOnly ? newCommand.conf.guildOnly : false;
                         newCommand.conf.aliases = newCommand.conf.aliases ? newCommand.conf.aliases : false;
                         newCommand.conf.disabled = newCommand.conf.disabled ? newCommand.conf.disabled : false;
+                        if (!newCommand.conf.cooldownWeight) newCommand.conf.cooldownWeight = 5;
                         if (!newCommand.help.category) newCommand.help.category = path.split(/\\|\//gim)[1];
                         //Add the command to the collection
                         client.commands.set(newCommand.help.name, newCommand);
@@ -60,8 +61,8 @@ class Reload {
                             const readdir = require("fs-extra").readdir;
                             let cmdShortcuts = await fs.readdir(`./util/shortcuts/${newCommand.help.name}`);
                             cmdShortcuts.forEach(async(s) => {
-                                delete require.cache[require.resolve(`../util/shortcuts/${newCommand.help.name}/${s}`)];
-                                let shortcut = require(`../modules/util/${newCommand.help.name}/${s}`);
+                                delete require.cache[require.resolve(`../../util/shortcuts/${newCommand.help.name}/${s}`)];
+                                let shortcut = require(`../../util/shortcuts/${newCommand.help.name}/${s}`);
                                 i++;
                             });
                             shortcutsReloaded = `and ${i} shortcuts have been reloaded out of ${cmdShortcuts.length}`;

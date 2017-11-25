@@ -78,10 +78,22 @@ class Collector extends EventEmitter {
      * @private
      */
     _handle(...args) {
-        const collect = this.handle(...args);
-        if (!collect || !this.filter(...args, this.collected)) return;
+        let value = {};
+        let i = 0;
+        if (args[0] ? !args[0].content : false) {
+            for (props in args) {
+                if (i === 0) value.message = args[props];
+                else if (i === 1) value.emoji = args[props];
+                else if (i === 2) value.user = this.client.users.get(args[props]);
+                i++;
+            }
+        } else {
+            value = args[0];
+        }
+        const collect = this.handle(value);
+        if (!collect || !this.filter(value, this.collected)) return;
 
-        this.collected.set(collect.key, collect.value);
+        this.collected.set(collect.key, value);
 
         /**
          * Emitted whenever an element is collected.
@@ -89,9 +101,9 @@ class Collector extends EventEmitter {
          * @param {*} element The element that got collected
          * @param {Collector} collector The collector
          */
-        this.emit('collect', collect.value, this);
+        this.emit('collect', value, this);
 
-        const post = this.postCheck(...args);
+        const post = this.postCheck(value);
         if (post) this.stop(post);
     }
 

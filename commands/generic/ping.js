@@ -7,9 +7,8 @@ class Ping {
             description: `Pong ! Display Felix's ping (do people even use this ?)`,
         }
         this.conf = {
-            disabled: false,
-            guildOnly: false,
-            aliases: ["pong"]
+            aliases: ["pong"],
+            cooldownWeight: 4
         }
     }
 

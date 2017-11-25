@@ -32,7 +32,7 @@ module.exports = async(client, message) => {
     } else {
         const guildEntry = client.guildData.get(message.guild.id);
         //Ratelimit check
-        if (client.ratelimited.has(message.author.id)) return await message.channel.createMessage(`:x: Chill a bit, there, a 20 seconds cooldown for ya :heart:`);
+        if (client.ratelimited.has(message.author.id) && client.ratelimited.get(message.author.id) >= 15) return await message.channel.createMessage(`:x: Chill a bit, there, a 20 seconds cooldown for ya :heart:`);
         //Disabled check
         if (command.conf.disabled) return await message.channel.createMessage(":x: Sorry but this command is disabled for now\n**Reason:** " + command.conf.disabled);
         //Permissions check
@@ -52,10 +52,16 @@ module.exports = async(client, message) => {
                 let trigger = args.filter(a => command.shortcut.triggers.has(a.toLowerCase()))[0];
                 //Handle missing argument here to save a line in every shortcut script
                 if (command.shortcut.triggers.get(trigger).args && (args.length - 1) < command.shortcut.triggers.get(trigger).args) return await message.channel.createMessage(`:x: You didn't specified any or not enough arguments`);
-                await require(`../util/shortcuts/${command.help.name}/${command.shortcut.triggers.get(trigger).script}`)(client, message, args);
+                await require(`../shortcuts/${command.help.name}/${command.shortcut.triggers.get(trigger).script}`)(client, message, args);
             }
             //Default command 
             else await command.run(client, message, args);
+            //Ratelimit
+            client.ratelimited.set(message.author.id, client.ratelimited.get(message.author.id) ? (client.ratelimited.get(message.author.id) + command.conf.cooldownWeight) : command.conf.cooldownWeight);
+            setTimeout(() => {
+                if (client.ratelimited.get(message.author.id) > command.conf.cooldownWeight) client.ratelimited.set(message.author.id, client.ratelimited.get(message.author.id) - command.conf.cooldownWeight)
+                else client.ratelimited.delete(message.author.id);
+            }, 25000);
             //Command confirmed, check for multiple commands
             multipleCmds.shift();
             if (multipleCmds[0]) {
@@ -66,11 +72,6 @@ module.exports = async(client, message) => {
                     client.emit('messageCreate', newMessage);
                     await sleep(1000);
                 }
-                //Ratelimit
-                client.ratelimited.add(message.author.id);
-                setTimeout(() => {
-                    client.ratelimited.delete(message.author.id);
-                }, 20000);
             }
         } catch (err) {
             client.emit('error', err, message);

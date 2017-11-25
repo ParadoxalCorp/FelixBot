@@ -1,7 +1,7 @@
 const Enmap = require("enmap");
 const PersistentCollection = require('enmap-level');
 const fs = require(`fs-extra`);
-const config = JSON.parse(fs.readFileSync(`./config/config.json`));
+const config = require(`./config/config.js`);
 const sleep = require(`./util/modules/sleep.js`);
 const logger = require("./util/modules/logger.js");
 
@@ -31,7 +31,7 @@ if (!config.token || config.token.length < 20) return logger.log(`No token found
             console.error(`Failed to overwrite ${f}: ${err}`);
         }
     });
-    logger.draft(`overwrite`, `end`, `Overwrite completed: Overwrote ${overwroteFiles} classes out of the ${extendedClasses.length} needed`, overwroteFiles === extendedClasses.length ? true : false);
+    logger.draft(`overwrite`, `end`, `Overwrite completed: Overwrote ${overwroteFiles} classes out of the ${extendedClasses.length + extendedUtil.length - 1} needed`, overwroteFiles === (extendedClasses.length + extendedUtil.length - 1) ? true : false);
 }());
 
 const Eris = require("eris");
@@ -61,7 +61,7 @@ class Client extends Eris {
         });
         this.maintenance = false; //If true, bot will be locked to owner only
         this.talkedRecently = new Set(); //Cooldown stuff kek
-        this.ratelimited = new Set();
+        this.ratelimited = new Map();
         this.commands = new Eris.Collection();
         this.aliases = new Eris.Collection();
         this.config = config;
@@ -185,10 +185,11 @@ const Felix = new Client(config.token, {
                 let command = require(`./commands/${categories[i]}/${c}`);
                 command.uses = 0;
                 //Set default conf if no conf provided
-                if (!command.conf) command.conf = { guildOnly: false, disabled: false, aliases: false }
+                if (!command.conf) command.conf = { guildOnly: false, disabled: false, aliases: false, cooldownWeight: 5 };
                 command.conf.guildOnly = command.conf.guildOnly ? command.conf.guildOnly : false;
                 command.conf.aliases = command.conf.aliases ? command.conf.aliases : false;
                 command.conf.disabled = command.conf.disabled ? command.conf.disabled : false;
+                if (!command.conf.cooldownWeight) command.conf.cooldownWeight = 5;
                 if (!command.help.category) command.help.category = categories[i];
                 //Add the command to the collection
                 Felix.commands.set(command.help.name, command);

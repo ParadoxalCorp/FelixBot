@@ -5,6 +5,8 @@ const Call = require("./Call");
 const SystemJoinMessages = require("../Constants").SystemJoinMessages;
 const Mentions = require(`./MessageMentions`);
 const Collection = require(`../util/Collection`);
+const MessageReaction = require('./MessageReaction');
+const ReactionCollector = require('./ReactionCollector');
 const User = require("./User");
 
 /**
@@ -118,12 +120,17 @@ class Message extends Base {
         this.embeds = data.embeds !== undefined ? data.embeds : this.embeds;
 
         if (data.reactions) {
-            data.reactions.forEach((reaction) => {
-                this.reactions[reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name] = {
-                    count: reaction.count,
-                    me: reaction.me
-                };
-            });
+            /**
+             * A collection of reactions to this message, mapped by the reaction ID
+             * @type {Collection<Snowflake, MessageReaction>}
+             */
+            this.reactions = new Collection();
+            if (data.reactions && data.reactions.length > 0) {
+                for (const reaction of data.reactions) {
+                    const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
+                    this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
+                }
+            }
         }
     }
 
@@ -341,12 +348,12 @@ class Message extends Base {
                     } else if (filterUsers.size === 1) usersResolved.set(filterUsers.first().id, filterUsers.first().guild ? filterUsers.first().user : filterUsers.first());
                     else {
                         //----------------Resolve by partial case-insensitive name or nickname-------------------------
-                        //Note: Here we don't match if the "partial" thing is less than 30% (or 60% if not limited to guild) of the full username, because matching 3 letters out of a 32 letters username is kinda wew
+                        //Note: Here we don't match if the "partial" thing is less than 50% (or 70% if not limited to guild) of the full username, because matching 3 letters out of a 32 letters username is kinda wew
                         let filterByPartial = range.filter(u =>
                                 (u.username.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) &&
-                                    (Math.floor((potentialUserResolvables[i].length / u.username.length) * 100) >= (options.guildOnly ? 30 : 60))) ||
+                                    (Math.floor((potentialUserResolvables[i].length / u.username.length) * 100) >= (options.guildOnly ? 50 : 70))) ||
                                 (u.nickname && u.nickname.toLowerCase().includes(potentialUserResolvables[i].toLowerCase()) &&
-                                    (Math.floor((potentialUserResolvables[i].length / u.nickname.length) * 100)) >= 30))
+                                    (Math.floor((potentialUserResolvables[i].length / u.nickname.length) * 100)) >= 50))
                             .filter(m => !usersResolved.has(m.id));
                         if (filterByPartial.size === 1) usersResolved.set(filterByPartial.first().id, filterByPartial.first().guild ? filterByPartial.first().user : filterByPartial.first());
                         else if (filterByPartial.size > 1) {
@@ -629,12 +636,89 @@ class Message extends Base {
     }
 
     /**
+     * Creates a reaction collector.
+     * @param {CollectorFilter} filter The filter to apply
+     * @param {ReactionCollectorOptions} [options={}] Options to send to the collector
+     * @returns {ReactionCollector}
+     * @example
+     * // Create a reaction collector
+     * const collector = message.createReactionCollector(
+     *   (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
+     *   { time: 15000 }
+     * );
+     * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
+     * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+     */
+    createReactionCollector(filter, options = {}) {
+        return new ReactionCollector(this, filter, options);
+    }
+
+    /**
+     * An object containing the same properties as CollectorOptions, but a few more:
+     * @typedef {ReactionCollectorOptions} AwaitReactionsOptions
+     * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
+     */
+
+    /**
+     * Similar to createMessageCollector but in promise form.
+     * Resolves with a collection of reactions that pass the specified filter.
+     * @param {CollectorFilter} filter The filter function to use
+     * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
+     * @returns {Promise<Collection<string, MessageReaction>>}
+     */
+    awaitReactions(filter, options = {}) {
+        return new Promise((resolve, reject) => {
+            const collector = this.createReactionCollector(filter, options);
+            collector.once('end', (reactions, reason) => {
+                if (options.errors && options.errors.includes(reason)) reject(reactions);
+                else resolve(reactions);
+            });
+        });
+    }
+
+    /**
      * Delete the message
      * @arg {String} [reason] The reason to be displayed in audit logs
      * @returns {Promise}
      */
     delete(reason) {
         return this._client.deleteMessage.call(this._client, this.channel.id, this.id, reason);
+    }
+
+    _addReaction(emoji, user) {
+        const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
+        let reaction;
+        if (this.reactions.has(emojiID)) {
+            reaction = this.reactions.get(emojiID);
+            if (!reaction.me) reaction.me = user.id === this.client.user.id;
+        } else {
+            reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
+            this.reactions.set(emojiID, reaction);
+        }
+        if (!reaction.users.has(user.id)) {
+            reaction.users.set(user.id, user);
+            reaction.count++;
+        }
+        return reaction;
+    }
+
+    _removeReaction(emoji, user) {
+        const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
+        if (this.reactions.has(emojiID)) {
+            const reaction = this.reactions.get(emojiID);
+            if (reaction.users.has(user.id)) {
+                reaction.users.delete(user.id);
+                reaction.count--;
+                if (user.id === this.client.user.id) reaction.me = false;
+                if (reaction.count <= 0) this.reactions.delete(emojiID);
+                return reaction;
+            }
+        }
+        return null;
+    }
+
+    _clearReactions() {
+        this.reactions.clear();
     }
 
     toJSON() {

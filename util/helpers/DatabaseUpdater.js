@@ -16,11 +16,11 @@ class DatabaseUpdater extends EventEmitter {
                     let userKeys = Object.keys(user),
                         defaultKeys = Object.keys(defaultUserData);
                     userKeys.forEach(key => {
-                        if (typeof user[key] === "object" && defaultUserData[key]) {
+                        if (typeof user[key] === "object" && defaultUserData[key] && !Array.isArray(defaultUserData[key])) {
                             let userPropertyObject = Object.keys(user[key]),
                                 defaultPropertyObject = Object.keys(defaultUserData[key]);
                             userPropertyObject.forEach(function(childKey) { //If property is object, which is pretty likely, check as well
-                                if (typeof user[key][childKey] === "object" && defaultUserData[key][childKey]) {
+                                if (typeof user[key][childKey] === "object" && defaultUserData[key][childKey] && !Array.isArray(defaultUserData[key][childKey])) {
                                     let deeperObjectKeys = Object.keys(user[key][childKey]),
                                         deeperDefaultObjectKeys = Object.keys(defaultUserData[key][childKey]);
                                     deeperObjectKeys.forEach(deeperKey => { //If property is object, which is pretty likely, check as well
@@ -58,11 +58,11 @@ class DatabaseUpdater extends EventEmitter {
                     let guildKeys = Object.keys(guild),
                         defaultKeys = Object.keys(defaultGuildData);
                     guildKeys.forEach(key => {
-                        if (typeof guild[key] === "object" && defaultGuildData[key]) {
+                        if (typeof guild[key] === "object" && defaultGuildData[key] && !Array.isArray(defaultGuildData[key])) {
                             let guildPropertyObject = Object.keys(guild[key]),
                                 defaultPropertyObject = Object.keys(defaultGuildData[key]);
                             guildPropertyObject.forEach(childKey => { //If property is object, which is pretty likely, check as well
-                                if (typeof guild[key][childKey] === "object" && defaultGuildData[key][childKey]) {
+                                if (typeof guild[key][childKey] === "object" && defaultGuildData[key][childKey] && !Array.isArray(defaultGuildData[key][childKey])) {
                                     let deeperObjectKeys = Object.keys(guild[key][childKey]),
                                         deeperDefaultObjectKeys = Object.keys(defaultGuildData[key][childKey]);
                                     deeperObjectKeys.forEach(deeperKey => { //If property is object, which is pretty likely, check as well
