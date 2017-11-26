@@ -36,7 +36,7 @@ class Iamnot {
                         }
                     }
                     const sentListMessage = await message.channel.createMessage(listMessage(page));
-                    const reactions = ["⬅", "➡", "❌"];
+                    const reactions = ["◀", "▶", "❌"];
                     for (let i = 0; i < reactions.length; i++) await sentListMessage.addReaction(reactions[i]);
                     const collector = await sentListMessage.createReactionCollector((r) => r.user.id === message.author.id);
                     client.on("messageDelete", m => { if (m.id === sentListMessage.id) return resolve(true) });
@@ -46,10 +46,10 @@ class Iamnot {
                     collector.on("collect", async(r) => {
                         sentListMessage.removeReaction(r.emoji.name, r.user.id);
                         clearTimeout(timeout);
-                        if (r.emoji.name === "⬅") {
+                        if (r.emoji.name === "◀") {
                             if (page !== 0) page--;
                             sentListMessage.edit(listMessage(page));
-                        } else if (r.emoji.name === "➡") {
+                        } else if (r.emoji.name === "▶") {
                             if (page !== (roleList.length - 1)) page++;
                             sentListMessage.edit(listMessage(page));
                         } else if (r.emoji.name === "❌") {

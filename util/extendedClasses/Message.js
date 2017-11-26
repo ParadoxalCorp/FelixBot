@@ -292,8 +292,9 @@ class Message extends Base {
     /**
      * Get the users resolvable of a message.
      * @param {Object} [options] The options to provide
-     * @param {number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
-     * @param {boolean} [options.guildOnly=true] Whether or not the resolve attempt should be limited to the guild members, default is true
+     * @param {Number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @param {Boolean} [options.guildOnly=true] Whether or not the resolve attempt should be limited to the guild members, default is true
+     * @param {Number} [options.max=infinity] Max users to resolve
      * @returns {Promise<Collection<id, User>>}
      * @example
      * // Get the users of a message
@@ -308,6 +309,7 @@ class Message extends Base {
             let range = options.guildOnly ? this.guild.members : this._client.users;
             if (range.size >= 250 && this.guild) this.guild.members = await this.guild.fetchAllMembers();
             for (let i = 0; i < potentialUserResolvables.length; i++) {
+                if (options.max === usersResolved.size) return resolve(usersResolved);
                 //------------------Resolve by ID--------------------
                 if (!isNaN(potentialUserResolvables[i]) && range.get(potentialUserResolvables[i])) usersResolved.set(potentialUserResolvables[i], range.first().guild ? range.get(potentialUserResolvables[i]).user : range.get(potentialUserResolvables[i]));
                 //------------------Resolve by whole name--------------
@@ -384,6 +386,7 @@ class Message extends Base {
      * Get the channels resolvable of a message.
      * @param {Object} [options] The options to provide
      * @param {number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @param {Number} [options.max=infinity] Max channels to resolve
      * @returns {Promise<Collection<id, Channel>>}
      * @example
      * // Get the channels of a message
@@ -391,13 +394,13 @@ class Message extends Base {
      *   .then(collection => console.log(`Resolved ${collection.size} channels`))
      *   .catch(console.error);
      */
-    getChannelResolvable(options) {
+    getChannelResolvable(options = {}) {
         return new Promise(async(resolve, reject) => {
-            if (!options) options = Object.create(null);
             let potentialChannelsResolvables = this.content.split(/\s+/gim).filter(c => c.length >= (options.charLimit || 3));
             const channelsResolved = new Collection();
             let channels = this.guild.channels.filter(c => c.type === 0);
             for (let i = 0; i < potentialChannelsResolvables.length; i++) {
+                if (options.max === channelsResolved.size) return resolve(channelsResolved);
                 //------------------Resolve by ID--------------------
                 if (!isNaN(potentialChannelsResolvables[i]) && channels.get(potentialChannelsResolvables[i])) channelsResolved.set(channels.get(potentialChannelsResolvables[i]).id, channels.get(potentialChannelsResolvables[i]));
                 //------------------Resolve by whole name--------------
@@ -467,6 +470,7 @@ class Message extends Base {
      * Get the Roles resolvable of a message.
      * @param {Object} [options] The options to provide
      * @param {number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @param {Number} [options.max=infinity] Max roles to resolve
      * @returns {Promise<Collection<id, Role>>}
      * @example
      * // Get the Roles of a message
@@ -474,13 +478,13 @@ class Message extends Base {
      *   .then(collection => console.log(`Resolved ${collection.size} Roles`))
      *   .catch(console.error);
      */
-    getRoleResolvable(options) {
+    getRoleResolvable(options = {}) {
         return new Promise(async(resolve, reject) => {
-            if (!options) options = Object.create(null);
             let potentialRolesResolvables = this.content.split(/\s+/gim).filter(r => r.length >= (options.charLimit || 3));
             const RolesResolved = new Collection();
             let roles = this.guild.roles;
             for (let i = 0; i < potentialRolesResolvables.length; i++) {
+                if (options.max === RolesResolved.size) return resolve(RolesResolved);
                 //------------------Resolve by ID--------------------
                 if (!isNaN(potentialRolesResolvables[i]) && roles.get(potentialRolesResolvables[i])) RolesResolved.set(roles.get(potentialRolesResolvables[i]).id, roles.get(potentialRolesResolvables[i]));
                 //------------------Resolve by whole name--------------
@@ -549,7 +553,8 @@ class Message extends Base {
     /**
      * Get the guilds resolvable of a message.
      * @param {Object} [options] The options to provide
-     * @param {number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @param {Number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @param {Number} [options.max=infinity] Max guilds to resolve
      * @returns {Promise<Collection<id, Guild>>}
      * @example
      * // Get the guilds of a message
@@ -557,13 +562,13 @@ class Message extends Base {
      *   .then(collection => console.log(`Resolved ${collection.size} guilds`))
      *   .catch(console.error);
      */
-    getGuildResolvable(options) {
+    getGuildResolvable(options = {}) {
         return new Promise(async(resolve, reject) => {
-            if (!options) options = Object.create(null);
             let potentialGuildsResolvables = this.content.split(/\s+/gim).filter(g => g.length >= (options.charLimit || 3));
             const guildsResolved = new Collection();
             let guilds = this._client.guilds;
             for (let i = 0; i < potentialGuildsResolvables.length; i++) {
+                if (options.max >= guildsResolved.size) return resolve(guildsResolved);
                 //------------------Resolve by ID--------------------
                 if (!isNaN(potentialGuildsResolvables[i]) && guilds.get(potentialGuildsResolvables[i])) guildsResolved.set(guilds.get(potentialGuildsResolvables[i]).id, guilds.get(potentialGuildsResolvables[i]));
                 //------------------Resolve by whole name--------------

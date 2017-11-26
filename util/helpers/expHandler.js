@@ -4,7 +4,8 @@ module.exports = async(client, message) => {
     //Activity level system
     if (client.userData.get(message.author.id) && guildEntry.generalSettings.levelSystem.enabled) {
         if (!client.talkedRecently.has(message.author.id)) {
-            let expGain = message.attachments.first() ? Math.round((Number(message.attachments.map(f => f.filesize).join((`+`)))) / 10000) : Math.round(1 * message.content.length / 4);
+
+            let expGain = message.attachments[0] ? Math.round((Number(message.attachments.map(f => f.filesize).join((`+`)))) / 10000) : Math.round(1 * message.content.length / 4);
             if (expGain > 75) expGain = 75; //no 500 points messages kthx
             const userEntry = client.userData.get(message.author.id);
             const getCurrentLevel = function(level, exp) { //--------Get level function-----------------
@@ -30,19 +31,17 @@ module.exports = async(client, message) => {
                 client.guildData.set(message.guild.id, guildEntry);
             }
             const userPos = guildEntry.generalSettings.levelSystem.users.findIndex(u => u.id === message.author.id);
+            guildEntry.generalSettings.levelSystem.users[userPos].messages++;
             const curLevel = getCurrentLevel(guildEntry.generalSettings.levelSystem.users[userPos].level, guildEntry.generalSettings.levelSystem.users[userPos].expCount + expGain);
-            if (curLevel > guildEntry.generalSettings.levelSystem.users[userPos].level) {
+            const roles = guildEntry.generalSettings.levelSystem.roles.filter(r => (r.method === "experience" && r.at === curLevel) || (r.method === "message" && guildEntry.generalSettings.levelSystem.users[userPos].messages === r.at)).filter(r => message.guild.roles.has(r.id) && !message.guild.members.get(message.author.id).roles.find(r => r === r.id));
+            if (curLevel > guildEntry.generalSettings.levelSystem.users[userPos].level || guildEntry.generalSettings.levelSystem.roles.find(r => r.at === guildEntry.generalSettings.levelSystem.users[userPos].messages)) {
                 guildEntry.generalSettings.levelSystem.users[userPos].level = curLevel;
-                client.guildData.set(message.guild.id, guildEntry);
                 let wonRoles = "";
-                if (guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel) && message.guild.member(client.user).hasPermission("MANAGE_ROLES")) {
-                    //Filter deleted roles and roles the user have from the list of roles to add
-                    const roles = guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel).filter(r => message.guild.roles.has(r.id) && !message.guild.member(message.author).roles.has(r.id));
-                    if (roles.length !== 0) {
-                        let roleIds = [];
-                        roles.forEach(role => { message.member.addRole(role.id) }, `Reached the required experience level`);
-                        wonRoles += "and won the role(s) " + guildEntry.generalSettings.levelSystem.roles.filter(r => r.atLevel === curLevel).map(r => `\`${message.guild.roles.get(r.id).name}\``).join(", ");
-                    }
+                if (roles.length && message.guild.members.get(client.user.id).hasPermission("manageRoles")) {
+                    try {
+                        roles.forEach(role => { message.member.addRole(role.id) }, `Reached the required experience level/messages count`);
+                    } catch (err) {}
+                    wonRoles += "and won the role(s) " + roles.map(r => `\`${message.guild.roles.get(r.id).name}\``).join(", ");
                 }
                 if (message.guild.members.get(client.user.id).hasPermission("sendMessages") && guildEntry.generalSettings.levelSystem.levelUpNotif) {
                     try {
@@ -54,7 +53,6 @@ module.exports = async(client, message) => {
                 }
             }
             guildEntry.generalSettings.levelSystem.users[userPos].expCount = guildEntry.generalSettings.levelSystem.users[userPos].expCount + expGain;
-            guildEntry.generalSettings.levelSystem.users[userPos].messages++;
             client.guildData.set(message.guild.id, guildEntry);
         }
     }

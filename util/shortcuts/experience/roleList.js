@@ -1,8 +1,6 @@
-const paginateResult = require("../../modules/paginateResults");
-
 module.exports = async(client, message, args) => {
     /**
-     * Shortcut to get the list of self-assignable roles
+     * Shortcut to display the list
      * @param {Client} client The bot instance
      * @param {Object} message The message which triggered this shortcut
      * @param {Array} args The splitted arguments
@@ -10,18 +8,41 @@ module.exports = async(client, message, args) => {
     return new Promise(async(resolve, reject) => {
         try {
             const guildEntry = client.guildData.get(message.guild.id);
-            guildEntry.generalSettings.autoAssignablesRoles = guildEntry.generalSettings.autoAssignablesRoles.filter(r => message.guild.roles.get(r)); //Filter deleted roles
-            if (guildEntry.generalSettings.autoAssignablesRoles.length < 1) return resolve(await message.channel.createMessage(":x: There is no self-assignable role set on this server"));
-            let roleList = guildEntry.generalSettings.autoAssignablesRoles.filter(r => message.guild.roles.has(r)).map(r => message.guild.roles.get(r).name);
-            roleList = paginateResult(roleList, 5);
+            if (guildEntry.generalSettings.levelSystem.roles.length === 0) return resolve(await message.channel.createMessage(`:x: There is not role set to be given at a specific point`));
             let page = 0;
-            let listMessage = function(page) {
+            let rolesFields = [];
+            guildEntry.generalSettings.levelSystem.roles.forEach(role => { //Build roles fields
+                let guildRole = message.guild.roles.get(role.id);
+                rolesFields.push([{
+                    name: 'Name',
+                    value: `${guildRole.name}`,
+                    inline: true
+                }, {
+                    name: 'HEX Color',
+                    value: `#${guildRole.color}`,
+                    inline: true
+                }, {
+                    name: `Hoisted`,
+                    value: `${guildRole.hoist ? ":white_check_mark:" : ":x:"}`,
+                    inline: true
+                }, {
+                    name: 'Mentionable',
+                    value: `${guildRole.mentionable ? ":white_check_mark:" : ":x:"}`,
+                    inline: true
+                }, {
+                    name: 'At',
+                    value: role.method === "message" ? `\`${role.at}\` messages` : `level \`${role.at}\``,
+                    inline: true
+                }]);
+            });
+            const listMessage = function(page) {
                 return {
                     embed: {
-                        title: "Self-assignable roles list",
-                        description: `Here's the list of the self-assignable role, you can assign one to yourself with \`${guildEntry.generalSettings.prefix}iam [role_name]\` \`\`\`\n${roleList[page].join('\n')}\`\`\``,
+                        title: ':notepad_spiral: Experience roles list',
+                        description: `Use the arrows to navigate through the roles list`,
+                        fields: rolesFields[page],
                         footer: {
-                            text: `Showing page ${page + 1}/${roleList.length} | Time limit: 60 seconds`
+                            text: `Showing page ${page + 1}/${guildEntry.generalSettings.levelSystem.roles.length} | Time limit: 120 seconds`
                         }
                     }
                 }
@@ -41,7 +62,7 @@ module.exports = async(client, message, args) => {
                     if (page !== 0) page--;
                     sentListMessage.edit(listMessage(page));
                 } else if (r.emoji.name === "▶") {
-                    if (page !== (roleList.length - 1)) page++;
+                    if (page !== (rolesFields.length - 1)) page++;
                     sentListMessage.edit(listMessage(page));
                 } else if (r.emoji.name === "❌") {
                     collector.stop("aborted");

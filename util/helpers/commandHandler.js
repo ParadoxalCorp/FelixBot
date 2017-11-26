@@ -36,7 +36,7 @@ module.exports = async(client, message) => {
         //Disabled check
         if (command.conf.disabled) return await message.channel.createMessage(":x: Sorry but this command is disabled for now\n**Reason:** " + command.conf.disabled);
         //Permissions check
-        const allowed = await require(`./permissionsChecker.js`)(client, message, command);
+        const allowed = require(`./permissionsChecker.js`)(client, message, command);
         if (!allowed) return await message.channel.createMessage(":x: You don't have the permission to use this command !");
 
         if (message.content.startsWith('<')) {

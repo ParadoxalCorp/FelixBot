@@ -80,6 +80,7 @@ class Collector extends EventEmitter {
     _handle(...args) {
         let value = {};
         let i = 0;
+        if (!args[0]) return;
         if (args[0] ? !args[0].content : false) {
             for (props in args) {
                 if (i === 0) value.message = args[props];
