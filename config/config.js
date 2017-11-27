@@ -5,8 +5,10 @@ module.exports = {
     prefix: "uwu.",
     //Your ID
     ownerID: "YOUR_ID",
-    //API key for Discord Bot list, in a selfhost case, leave that false
+    //API key for different bot lists, in a selfhost case, leave that false
     discordBotList: false,
+    discordBotFr: false,
+    terminalBotList: false,
     //API key for weeb.sh, in a selfhost case you won't be able to get one and therefore most of the image commands will be disabled
     wolkeImageKey: false,
     //Mashape marketplace API key
