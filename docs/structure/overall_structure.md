@@ -18,7 +18,7 @@ An extended class of the eris client with the following properties:
 
 ### Launching process
 
-Most of the steps described here are logged in the console when launching, just more details ^ (also its in the order)
+The steps described here are basically the ones which aren't obvious
 
 ##### Eris overwrite
 
@@ -40,21 +40,11 @@ In the update `2.5.0`, this "extended library" concept was already here, but it 
 
 However this overwrite just change what's needed within the original, so if a library update is out, all other components than the overwritten ones can be updated automatically
 
-##### Database loading
-
-Synchronously with the overwrite, the database is being loaded, once that is done, the database auto-update is launched. This can take over 10 seconds if the database is very big but usually takes less
-
-* Database auto-update ?
+##### Database auto-update
 
 Basically a process which updates all users and guilds database entry automatically to the most recent format while preserving the said users and guilds data
 
-##### Commands loading
-
-At this step Felix load and register commands
-
-##### Events loading
- 
-And there Felix loads the event listeners or put simpler the scripts to be executed when something happen like when a new member join a server or when a message is posted
+(Most recent format are returned by `client.defaultUserData()` and `client.defaultGuildData()`)
 
 ##### Core-data backup management
 
@@ -84,25 +74,7 @@ And the final step in the main script is this one, here Felix checks which API k
 
 For example, if the `wolkeImageKey` API key is missing, Felix will disable most of the image commands since it uses Wolke's `weeb.sh` API for 95% of the image commands
 
-More stuff happen at the launch, here was described only what the main process (`index.js`) was doing, refer to the events processing for more
-
-### Events processing
-
-If you don't know what events are you will be a bit lost here, Discord emit "events" for a lot of stuff so let's do a quick explanation:
-
-For example, when a new member join a server, Discord emit the event `guildMemberAdd`, Felix, to greet the user and other features, listen to this event. What i mean by listen is that there is a specific Felix script which will be run when the event is emitted. You would usually call these scripts "events listeners".
-
-All of the events Felix listen to and their script are located in the `./events` folder
-
-To make another example, when you use a command here's what happen:
-
-=> A message is posted(your command), Discord emit the event `messageCreate` (note: That is handled by the library before being sent to Felix)
-
-=> The `messageCreate` listener script is triggered and from there Felix will process your command
-
-What each event listener do is described in the "On: [Insert_event_name_here]" sections
-
-##### On: messageCreate
+##### On: messageCreate (commands processing)
 
 > path: ./events/messageCreate.js
 
