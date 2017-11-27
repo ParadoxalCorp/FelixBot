@@ -34,6 +34,8 @@ The conf object is entirely optional and may contain this command "configuration
 
 `conf.ownerOnly*` {Boolean} Whether the command is locked to the owner of the bot, default is `false`
 
+`conf.cooldownWeight*` {Number} The "weight" of the command, basically the bigger the command output is, the higher this number should be. Users will be ratelimited if they reach 15, default is 5
+
 #### shortcut object*
 
 May be deprecated in a soon future, the shortcuts to be associated with the command, these will be run instead of the command if the trigger is detected by the command handler 
