@@ -23,7 +23,7 @@ module.exports = async(client, server, PayloadValidator) => {
                 //Else return the specified id's user object
                 let userEntry = client.userData.get(req.params.userID) || client.defaultUserData(req.params.userID);
                 if (!token.public) {
-                    let mutualGuilds = client.guilds.filterArray(g => g.members.has(req.params.userID));
+                    let mutualGuilds = client.guilds.filterArray(g => g.members.has(userEntry.id));
                     mutualGuilds = _.map(mutualGuilds, _.clone);
                     mutualGuilds.forEach(g => {
                         let guildPos = mutualGuilds.findIndex(guild => guild.id === g.id);
