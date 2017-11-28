@@ -4,7 +4,6 @@ class Reload {
     constructor() {
         this.help = {
             name: 'reload',
-            category: 'admin',
             usage: 'reload [file_path]',
             description: 'Reload (aka delete the cache and require) the file at the specified path. Note: If a command, dont forget that the path will be something like ../category/command_name'
         };

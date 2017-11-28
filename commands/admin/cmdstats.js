@@ -2,7 +2,6 @@ class CommandsStats {
     constructor() {
         this.help = {
             name: 'cmdstats',
-            category: 'admin',
             usage: 'cmdstats [category?=all]',
             description: 'Print some fancy stats about commands, wait, what? Nobody cares you say? I DO (╯°□°）╯︵ ┻━┻'
         }

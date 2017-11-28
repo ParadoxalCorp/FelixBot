@@ -4,7 +4,6 @@ class Slots {
             name: 'slots',
             description: 'Gamble your points on your luck, and if you dont have any luck, well, good luck',
             usage: 'slots',
-            category: 'fun',
             detailedUsage: 'Use `{prefix}slots [points]` to gamble your points, so for example `{prefix}slots 5` will gamble 5 of your points'
         }
         this.conf = {

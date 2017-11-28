@@ -97,6 +97,18 @@ class User extends Base {
     }
 
     /**
+     * Send a message to the user
+     * @returns {Promise<Message>}
+     */
+    createMessage(content, file) {
+        return new Promise(async(resolve, reject) => {
+            let channel = await this._client.getDMChannel.call(this._client, this.id);
+            let messageSent = await (this._client || this.guild.shard.client).createMessage.call((this._client || this.guild.shard.client), channel.id, content, file);
+            resolve(messageSent);
+        });
+    }
+
+    /**
      * Create a relationship with the user (user accounts only)
      * @arg {Boolean} [block=false] If true, block the user. Otherwise, add the user as a friend
      * @returns {Promise}

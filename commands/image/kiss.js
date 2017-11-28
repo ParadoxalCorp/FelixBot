@@ -3,8 +3,7 @@ class Kiss {
         this.help = {
             name: 'kiss',
             description: 'kiss someone',
-            usage: 'kiss [user_resolvable]',
-            category: 'image'
+            usage: 'kiss [user_resolvable]'
         };
         this.conf = {
             guildOnly: true,

@@ -2,7 +2,6 @@ class Blacklist {
     constructor() {
         this.help = {
             name: 'blacklist',
-            category: 'admin',
             usage: 'blacklist [user_resolvable]',
             description: `Blacklist or whitelist a user if they were blacklisted from Felix, a blacklisted user will be entirely ignored by Felix`
         }

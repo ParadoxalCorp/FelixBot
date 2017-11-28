@@ -3,8 +3,7 @@ class Cuddle {
         this.help = {
             name: 'cuddle',
             description: 'cuddle someone',
-            usage: 'cuddle [user_resolvable]',
-            category: 'image'
+            usage: 'cuddle [user_resolvable]'
         };
         this.conf = {
             guildOnly: true,

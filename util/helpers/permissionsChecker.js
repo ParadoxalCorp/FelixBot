@@ -28,6 +28,6 @@ module.exports = (client, message, command) => {
     if (guildEntry.permissions.users.find(u => u.id === message.author.id) && guildEntry.permissions.users.find(u => u.id === message.author.id).restrictedCommands.includes(`${command.help.category}*`)) allowed = false;
     if (guildEntry.permissions.users.find(u => u.id === message.author.id) && (guildEntry.permissions.users.find(u => u.id === message.author.id).allowedCommands.includes(command.help.name))) allowed = true;
     if (guildEntry.permissions.users.find(u => u.id === message.author.id) && (guildEntry.permissions.users.find(u => u.id === message.author.id).restrictedCommands.includes(command.help.name))) allowed = false;
-    if (message.guild.members.get(message.author.id).hasPermission('ADMINISTRATOR')) allowed = true;
+    if (message.guild.members.get(message.author.id).hasPermission('administrator')) allowed = true;
     return allowed;
 }

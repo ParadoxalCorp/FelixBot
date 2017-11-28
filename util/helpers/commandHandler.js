@@ -1,4 +1,4 @@
-let sleep = require("../modules/sleep");
+const sleep = require("../modules/sleep");
 
 module.exports = async(client, message) => {
     let commandsStats = client.clientData.get("commandsStats");
@@ -10,6 +10,13 @@ module.exports = async(client, message) => {
     //Just return if the command is not found
     if ((!client.commands.has(supposedCommand)) && (!client.aliases.has(supposedCommand))) return;
     const command = client.commands.get(supposedCommand) ? client.commands.get(supposedCommand) : client.commands.get(client.aliases.get(supposedCommand));
+    //Return if the command/category is disabled
+    if (message.guild &&
+        (client.guildData.get(message.guild.id).generalSettings.disabledModules.includes(`${command.help.category}*`) ||
+            client.guildData.get(message.guild.id).generalSettings.disabledModules.includes(command.help.name)) &&
+        !message.guild.members.get(message.author.id).hasPermission("administrator")) {
+        return;
+    }
     //Once the command is confirmed, store the user in the database if they are not already in
     if (!client.userData.has(message.author.id)) client.userData.set(message.author.id, client.defaultUserData(message.author.id));
 
@@ -32,7 +39,7 @@ module.exports = async(client, message) => {
     } else {
         const guildEntry = client.guildData.get(message.guild.id);
         //Ratelimit check
-        if (client.ratelimited.has(message.author.id) && client.ratelimited.get(message.author.id) >= 15) return await message.channel.createMessage(`:x: Chill a bit, there, a 20 seconds cooldown for ya :heart:`);
+        if (client.ratelimited.has(message.author.id) && client.ratelimited.get(message.author.id) >= 20) return await message.channel.createMessage(`:x: Chill a bit, there, a 20 seconds cooldown for ya :heart:`);
         //Disabled check
         if (command.conf.disabled) return await message.channel.createMessage(":x: Sorry but this command is disabled for now\n**Reason:** " + command.conf.disabled);
         //Permissions check

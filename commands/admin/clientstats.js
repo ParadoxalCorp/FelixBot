@@ -2,7 +2,6 @@ class ClientStats {
     constructor() {
         this.help = {
             name: 'clientstats',
-            category: 'admin',
             usage: 'clientstats',
             description: 'how detailed stats, much wow'
         }

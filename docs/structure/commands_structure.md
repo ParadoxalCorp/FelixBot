@@ -18,7 +18,7 @@ The help object is needed for commands to be registered and referenced in the he
 
 `help.description` {String} A quick description of what the command does *shrug*
 
-`help.detailledUsage*` {String} A long description about how to use the command, every instance of `{prefix}` will be replaced with the prefix when the help gets triggered
+`help.detailedUsage*` {String} A long description about how to use the command, every instance of `{prefix}` will be replaced with the prefix when the help gets triggered
 
 `help.parameters*` {String} [Deprecated] 
 
@@ -34,7 +34,7 @@ The conf object is entirely optional and may contain this command "configuration
 
 `conf.ownerOnly*` {Boolean} Whether the command is locked to the owner of the bot, default is `false`
 
-`conf.cooldownWeight*` {Number} The "weight" of the command, basically the bigger the command output is, the higher this number should be. Users will be ratelimited if they reach 15, default is 5
+`conf.cooldownWeight*` {Number} The "weight" of the command, basically the bigger the command output is, the higher this number should be. Users will be ratelimited if they reach 20, default is 5
 
 #### shortcut object*
 

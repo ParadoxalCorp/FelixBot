@@ -2,7 +2,6 @@ class Maintenance {
     constructor() {
         this.help = {
             name: `maintenance`,
-            category: `admin`,
             usage: `maintenance`,
             description: `[Owner only] Set the maintenance status, which when on disable felix outputs to all other users than the owner`
         };

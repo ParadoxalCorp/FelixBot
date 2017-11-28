@@ -3,8 +3,7 @@ class Choose {
         this.help = {
             name: 'choose',
             description: 'Make felix choose between some stuff',
-            usage: 'choose owo ; uwu ; owo + uwu?',
-            category: 'fun'
+            usage: 'choose owo ; uwu ; owo + uwu?'
         }
     }
 

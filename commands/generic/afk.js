@@ -2,7 +2,6 @@ class Afk {
     constructor() {
         this.help = {
             name: 'afk',
-            category: 'generic',
             usage: 'afk im out',
             description: 'Enable/disable your afk status, if enabled, Felix will display it every time someone mention you',
             detailedUsage: "`{prefix}afk im out` Will set/update your afk status `im out`\n`{prefix}afk` Will enable/disable your afk status"

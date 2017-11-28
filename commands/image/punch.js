@@ -3,8 +3,7 @@ class Punch {
         this.help = {
             name: 'punch',
             description: 'punch someone',
-            usage: 'punch [user_resolvable]',
-            category: 'image'
+            usage: 'punch [user_resolvable]'
         };
         this.conf = {
             guildOnly: true

@@ -3,8 +3,7 @@ class Invite {
         this.help = {
             name: 'invite',
             description: 'Get Felix\'s invite link',
-            usage: 'invite',
-            category: 'generic',
+            usage: 'invite'
         }
     }
 

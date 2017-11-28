@@ -3,8 +3,7 @@ class Pat {
         this.help = {
             name: 'pat',
             description: 'pat someone',
-            usage: 'pat [user_resolvable]',
-            category: 'image'
+            usage: 'pat [user_resolvable]'
         };
         this.conf = {
             guildOnly: true,

@@ -4,7 +4,6 @@ class Iam {
             name: 'iam',
             description: 'Add to yourself a self-assignable role',
             usage: 'iam [role_name]',
-            category: 'misc',
             detailedUsage: '`{prefix}iam` Will return the list of the self-assignables roles set on this server\n`{prefix}iam Neko` Will give you the self-assignable role `Neko`'
         }
         this.conf = {

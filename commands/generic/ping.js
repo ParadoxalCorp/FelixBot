@@ -2,7 +2,6 @@ class Ping {
     constructor() {
         this.help = {
             name: 'ping',
-            category: 'generic',
             usage: 'ping',
             description: `Pong ! Display Felix's ping (do people even use this ?)`,
         }

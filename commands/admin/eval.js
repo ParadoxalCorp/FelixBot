@@ -2,7 +2,6 @@ class Eval {
     constructor() {
         this.help = {
             name: 'eval',
-            category: 'admin',
             usage: 'eval some js here',
             description: 'Quickly eval some js so paradox can catch errors since he is a baka',
             parameters: '--await(note: must always be after the js to eval)'

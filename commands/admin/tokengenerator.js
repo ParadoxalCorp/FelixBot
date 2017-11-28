@@ -2,7 +2,6 @@ class TokenGenerator {
     constructor() {
         this.help = {
             name: 'tokengenerator',
-            category: 'admin',
             usage: 'tokengenerator [new] [Public||Private?=Public] [User_ID]] || [list [Public||Private?=Public]] || [revoke [User_ID || token]]',
             description: `[Owner only] Generate API tokens`,
             detailedUsage: "`{prefix}tokengenerator new public 140149699486154753` Will generate and save a public token for the specified user id(user is just to retrieve tokens)"

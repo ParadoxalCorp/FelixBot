@@ -3,8 +3,7 @@ class Hug {
         this.help = {
             name: 'hug',
             description: 'hug someone',
-            usage: 'hug [user_resolvable]',
-            category: 'image'
+            usage: 'hug [user_resolvable]'
         };
         this.conf = {
             guildOnly: true,

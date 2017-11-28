@@ -3,8 +3,7 @@ class Dummy {
         this.help = {
             name: 'dummy',
             description: 'i said dummy',
-            usage: 'dummy',
-            category: 'admin'
+            usage: 'dummy'
         }
     }
 

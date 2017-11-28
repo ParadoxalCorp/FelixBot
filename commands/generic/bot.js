@@ -3,8 +3,7 @@ class Bot {
         this.help = {
             name: 'bot',
             description: 'Display some ~~useless~~ info about Felix',
-            usage: 'bot',
-            category: 'generic'
+            usage: 'bot'
         }
         this.conf = {
             guildOnly: true,

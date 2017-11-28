@@ -3,8 +3,7 @@ class Daily {
         this.help = {
             name: 'daily',
             description: 'Get your 500 daily points',
-            usage: 'daily',
-            category: 'fun',
+            usage: 'daily'
         }
     }
 

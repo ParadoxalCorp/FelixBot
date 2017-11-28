@@ -4,7 +4,6 @@ class Experience {
                 name: 'experience',
                 usage: 'experience',
                 description: 'Enter the activity experience system settings of this server, this allow you to do stuff like disable level up notifications for example',
-                category: 'settings',
                 detailedUsage: '`{prefix}experience rolelist` Will return a list of all roles sets to be given on level up in which you can add and remove some'
             },
             this.conf = {

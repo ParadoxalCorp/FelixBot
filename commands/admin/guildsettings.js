@@ -2,7 +2,6 @@ class GuildSettings {
     constructor() {
         this.help = {
             name: 'guildsettings',
-            category: 'admin',
             usage: 'guildsettings [guild_resolvable] ["reset_permissions"|"reset_prefix"|"reset_everything"]',
             description: `Basically allow admins to do some quick actions on a guild in the case this guild is running into some trouble`
         }

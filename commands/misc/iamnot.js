@@ -4,7 +4,6 @@ class Iamnot {
             name: 'iamnot',
             description: 'Remove from yourself a self-assignable role',
             usage: 'iamnot [role_name]',
-            category: 'misc',
             detailedUsage: '`{prefix}iamnot` Will return the list of the self-assignables roles set on this server\n`{prefix}iamnot Neko` Will remove from you the self-assignable role `Neko`'
         }
         this.conf = {

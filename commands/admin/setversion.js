@@ -2,7 +2,6 @@ class Setversion {
     constructor() {
         this.help = {
             name: 'setversion',
-            category: 'admin',
             usage: 'setversion 6.6.6',
             description: 'Set the version of Felix, which will be displayed'
         }

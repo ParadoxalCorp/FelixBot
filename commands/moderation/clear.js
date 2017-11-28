@@ -4,7 +4,6 @@ class Clear {
                 name: 'clear',
                 description: 'Clear some messages from the current channel',
                 usage: 'clear 50',
-                category: 'moderation',
                 detailedUsage: '`{prefix}clear 50` Will clear 50 messages from the current channel\n`{prefix}clear 50 -b` Will clear all bots messages from the 50 last messages\n`{prefix}clear 50 -u [user resolvable]` Will clear all the messages of the specified users from the 50 last messages\n`{prefix}clear 50 -c` Will clear all Felix\'s commands\n`{prefix}clear 50 -bcu [user resolvable]` You can combine filters, this will do the same thing that the two above examples combined\n**Notes:** Felix cannot delete messages older than 2 weeks nor more than 100 messages, also, you can specify multiple users'
             },
             this.conf = {

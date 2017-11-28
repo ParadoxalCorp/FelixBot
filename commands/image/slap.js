@@ -3,8 +3,7 @@ class Slap {
         this.help = {
             name: 'slap',
             description: 'slap someone',
-            usage: 'slap [user_resolvable]',
-            category: 'image'
+            usage: 'slap [user_resolvable]'
         };
         this.conf = {
             guildOnly: true,

@@ -107,6 +107,7 @@ class Client extends Eris {
                 id: id,
                 generalSettings: {
                     autoAssignablesRoles: [],
+                    disabledModules: [],
                     modLog: [],
                     prefix: config.prefix,
                     levelSystem: {
