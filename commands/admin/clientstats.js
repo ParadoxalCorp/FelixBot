@@ -17,7 +17,7 @@ class ClientStats {
                 client.guilds.forEach(g => { averageMembers = averageMembers + g.members.size });
                 let averageBots = 0;
                 client.guilds.forEach(g => { averageBots = averageBots + g.members.filter(m => m.user.bot).size });
-                resolve(await client.editMessage(message.channel.id, messageNotice.id, {
+                await client.editMessage(message.channel.id, messageNotice.id, {
                     embed: {
                         fields: [{
                             name: 'Users (cached)',
@@ -37,7 +37,12 @@ class ClientStats {
                             inline: true
                         }]
                     }
-                }))
+                });
+                resolve(await message.channel.createMessage({
+                    embed: {
+                        description: "```\n" + client.shards.map(s => `Shard ${s.id} | ${s.status} | ${s.latency}ms`).join("\n") + "```"
+                    }
+                }));
             } catch (err) {
                 reject(err, message);
             }
