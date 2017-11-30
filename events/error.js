@@ -1,7 +1,6 @@
 const logger = require(`../util/modules/logger.js`);
 
 module.exports = async(client, err, message) => {
-    if ((err && err.code && err.code == 10008) || err.includes("404 NOT FOUND")) return; //Unknown messages error code, honestly fuck these errors
     if (client.config.raven) {
         let Raven = require("raven");
         Raven.config(client.config.raven).install();
