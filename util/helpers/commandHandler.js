@@ -51,7 +51,6 @@ module.exports = async(client, message) => {
             args.splice(0, 2);
         };
         try {
-            if (message.guild.members.size >= 250) message.guild.members = await message.guild.fetchAllMembers();
             let multipleCmds = message.content.split('&&');
             if (multipleCmds.length > 1) message.content = multipleCmds[0];
             //Shortcuts
