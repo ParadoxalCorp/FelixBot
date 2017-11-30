@@ -15,8 +15,8 @@ module.exports = {
     mashapeKey: false,
     //Account credentials on MyAnimeList, this will be used for anime commands
     malCredentials: {
-        name: "USERNAME",
-        password: "PASSWORD"
+        name: false, //"should be "USERNAME"
+        password: false //"should be "PASSWORD"
     },
     //RapidAPI API key
     rapidApiKey: false,
