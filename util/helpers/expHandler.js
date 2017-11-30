@@ -1,13 +1,13 @@
 module.exports = async(client, message) => {
     const guildEntry = client.guildData.get(message.guild.id);
-
+    const userInDatabase = client.userData.get(message.author.id);
     //Activity level system
-    if (client.userData.get(message.author.id) && guildEntry.generalSettings.levelSystem.enabled) {
+    if (guildEntry.generalSettings.levelSystem.enabled) {
         if (!client.talkedRecently.has(message.author.id)) {
 
             let expGain = message.attachments[0] ? Math.round((Number(message.attachments.map(f => f.filesize).join((`+`)))) / 10000) : Math.round(1 * message.content.length / 4);
             if (expGain > 75) expGain = 75; //no 500 points messages kthx
-            const userEntry = client.userData.get(message.author.id);
+            const userEntry = client.userData.get(message.author.id) || client.defaultUserData(message.author.id);
             const getCurrentLevel = function(level, exp) { //--------Get level function-----------------
                 const exponent = 2;
                 const baseXP = 100;
@@ -17,8 +17,8 @@ module.exports = async(client, message) => {
             }
             userEntry.experience.expCount = userEntry.experience.expCount + expGain;
             userEntry.experience.level = getCurrentLevel(userEntry.experience.level, userEntry.experience.expCount + expGain);
-            client.userData.set(message.author.id, userEntry);
-            if (!guildEntry.generalSettings.levelSystem.users.find(u => u.id == message.author.id)) {
+            if (userInDatabase) client.userData.set(message.author.id, userEntry);
+            if (!guildEntry.generalSettings.levelSystem.users.find(u => u.id === message.author.id)) {
                 guildEntry.generalSettings.levelSystem.users.push({
                     id: message.author.id,
                     expCount: 0,
