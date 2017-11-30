@@ -65,7 +65,7 @@ class MessageCollector extends Collector {
      * @private
      */
     handle(message) {
-        if (message.channel.id !== this.channel.id) return null;
+        if (message.channel && message.channel.id !== this.channel.id) return null;
         this.received++;
         return {
             key: message.id,
