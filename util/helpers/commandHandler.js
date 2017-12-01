@@ -55,7 +55,7 @@ module.exports = async(client, message) => {
             if (multipleCmds.length > 1) message.content = multipleCmds[0];
             //Shortcuts
             if (command.shortcut && args.filter(a => command.shortcut.triggers.has(a.toLowerCase())).length > 0) {
-                let trigger = args.filter(a => command.shortcut.triggers.has(a.toLowerCase()))[0];
+                let trigger = args.filter(a => command.shortcut.triggers.has(a.toLowerCase()))[0].toLowerCase();
                 //Handle missing argument here to save a line in every shortcut script
                 if (command.shortcut.triggers.get(trigger).args && (args.length - 1) < command.shortcut.triggers.get(trigger).args) return await message.channel.createMessage(`:x: You didn't specified any or not enough arguments`);
                 await require(`../shortcuts/${command.help.name}/${command.shortcut.triggers.get(trigger).script}`)(client, message, args);

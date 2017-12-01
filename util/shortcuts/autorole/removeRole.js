@@ -10,7 +10,7 @@ module.exports = async(client, message, args) => {
         let role = await message.getRoleResolvable({ charLimit: 1 });
         if (!role.first()) return resolve(await message.channel.createMessage(`:x: I couldn't find the role you specified`));
         if (!guildEntry.generalSettings.autoAssignablesRoles.includes(role.first().id)) return resolve(await message.channel.createMessage(`:x: The role \`${role.first().name}\` is not a self-assignable role`));
-        guildEntry.generalSettings.autoAssignablesRoles.splice(guildEntry.generalSettings.autoAssignablesRoles.indexOf(role.first().id, 1));
+        guildEntry.generalSettings.autoAssignablesRoles.splice(guildEntry.generalSettings.autoAssignablesRoles.indexOf(role.first().id), 1);
         client.guildData.set(message.guild.id, guildEntry);
         resolve(await message.channel.createMessage(`:white_check_mark: The role \`${role.first().name}\` is not self-assignable anymore`));
     });

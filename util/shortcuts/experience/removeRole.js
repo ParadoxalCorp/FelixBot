@@ -11,7 +11,7 @@ module.exports = async(client, message, args) => {
             const role = await message.getRoleResolvable({ max: 1 });
             if (!role.first()) return resolve(await message.channel.createMessage(`:x: I couldn't find the specified role`));
             if (!guildEntry.generalSettings.levelSystem.roles.find(r => r.id === role.first().id)) return resolve(await message.channel.createMessage(`:x: That role isn't set to be given at any point`));
-            guildEntry.generalSettings.levelSystem.roles.splice(guildEntry.generalSettings.levelSystem.roles.findIndex(r => r.id === role.first().id, 1));
+            guildEntry.generalSettings.levelSystem.roles.splice(guildEntry.generalSettings.levelSystem.roles.findIndex(r => r.id === role.first().id), 1);
             client.guildData.set(message.guild.id, guildEntry);
             resolve(await message.channel.createMessage(`:white_check_mark: The role \`${role.first().name}\` has successfully been removed`));
         } catch (err) {
