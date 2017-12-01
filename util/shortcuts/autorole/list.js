@@ -22,7 +22,8 @@ module.exports = async(client, message, args) => {
                         description: `Here's the list of the self-assignable role, you can assign one to yourself with \`${guildEntry.generalSettings.prefix}iam [role_name]\` \`\`\`\n${roleList[page].join('\n')}\`\`\``,
                         footer: {
                             text: `Showing page ${page + 1}/${roleList.length} | Time limit: 60 seconds`
-                        }
+                        },
+                        color: parseInt(message.guild.roles.get(guildEntry.generalSettings.autoAssignablesRoles[page]).color)
                     }
                 }
             }

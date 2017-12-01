@@ -32,6 +32,7 @@ if (!config.token || config.token.length < 20) return logger.log(`No token found
         }
     });
     logger.draft(`overwrite`, `end`, `Overwrite completed: Overwrote ${overwroteFiles} classes out of the ${extendedClasses.length + extendedUtil.length - 1} needed`, overwroteFiles === (extendedClasses.length + extendedUtil.length - 1) ? true : false);
+    return logger.log(`If its your first run, please relaunch Felix for the overwrite to take effect`, `warn`);
 }());
 
 const Eris = require("eris");

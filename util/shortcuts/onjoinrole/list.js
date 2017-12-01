@@ -1,18 +1,14 @@
-module.exports = async(client, message, args) => {
-    /**
-     * Shortcut to display the list
-     * @param {Client} client The bot instance
-     * @param {Object} message The message which triggered this shortcut
-     * @param {Array} args The splitted arguments
-     */
+module.exports = (client, message, args) => {
     return new Promise(async(resolve, reject) => {
         try {
             const guildEntry = client.guildData.get(message.guild.id);
-            if (guildEntry.generalSettings.levelSystem.roles.length === 0) return resolve(await message.channel.createMessage(`:x: There is not role set to be given at a specific point`));
-            let page = 0;
+            guildEntry.onEvent.guildMemberAdd.onJoinRole = guildEntry.onEvent.guildMemberAdd.onJoinRole.filter(r => message.guild.roles.get(r)); //Filter deleted roles
+            if (!guildEntry.onEvent.guildMemberAdd.onJoinRole[0]) return resolve(message.channel.createMessage(`:x: There is not any role set to be given to new members yet`));
             let rolesFields = [];
-            guildEntry.generalSettings.levelSystem.roles.forEach(role => { //Build roles fields
-                let guildRole = message.guild.roles.get(role.id);
+            guildEntry.onEvent.guildMemberAdd.onJoinRole.forEach(role => { //Build roles fields
+                let guildRole = message.guild.roles.get(role);
+                let mentionable = guildRole.mentionable ? `:white_check_mark:` : `:x:`
+                hoisted = guildRole.hoist ? `:white_check_mark:` : `:x:`;
                 rolesFields.push([{
                     name: 'Name',
                     value: `${guildRole.name}`,
@@ -23,28 +19,25 @@ module.exports = async(client, message, args) => {
                     inline: true
                 }, {
                     name: `Hoisted`,
-                    value: `${guildRole.hoist ? ":white_check_mark:" : ":x:"}`,
+                    value: `${hoisted}`,
                     inline: true
                 }, {
                     name: 'Mentionable',
-                    value: `${guildRole.mentionable ? ":white_check_mark:" : ":x:"}`,
-                    inline: true
-                }, {
-                    name: 'At',
-                    value: role.method === "message" ? `\`${role.at}\` messages` : `level \`${role.at}\``,
+                    value: `${mentionable}`,
                     inline: true
                 }]);
             });
+            let page = 0;
             const listMessage = function(page) {
                 return {
                     embed: {
-                        title: ':notepad_spiral: Experience roles list',
+                        title: ':gear: List of roles added to new members ',
                         description: `Use the arrows to navigate through the roles list`,
                         fields: rolesFields[page],
                         footer: {
-                            text: `Showing page ${page + 1}/${guildEntry.generalSettings.levelSystem.roles.length} | Time limit: 120 seconds`
+                            text: `Showing page ${page + 1}/${rolesFields.length} | Time limit: 120 seconds`
                         },
-                        color: parseInt(message.guild.roles.get(guildEntry.generalSettings.levelSystem.roles[page].id).color)
+                        color: parseInt(message.guild.roles.get(guildEntry.onEvent.guildMemberAdd.onJoinRole[page]).color)
                     }
                 }
             }

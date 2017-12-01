@@ -7,7 +7,7 @@ class Bot {
         }
         this.conf = {
             guildOnly: true,
-            aliases: ["sys", "info"]
+            aliases: ["sys", "info", "stats"]
         }
     }
 
@@ -17,7 +17,7 @@ class Bot {
             try {
                 let embedFields = [];
                 embedFields.push({
-                    name: ":desktop: Servers",
+                    name: ":desktop: Servers/Guilds",
                     value: client.guilds.size,
                     inline: true
                 });
