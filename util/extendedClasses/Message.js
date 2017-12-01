@@ -307,7 +307,6 @@ class Message extends Base {
             let potentialUserResolvables = this.content.split(/\s+/gim).filter(c => c.length >= (options.charLimit || 3));
             const usersResolved = new Collection();
             let range = options.guildOnly ? this.guild.members : this._client.users;
-            if (range.size >= 250 && this.guild) this.guild.members = await this.guild.fetchAllMembers();
             for (let i = 0; i < potentialUserResolvables.length; i++) {
                 if (options.max === usersResolved.size) return resolve(usersResolved);
                 //------------------Resolve by ID--------------------
