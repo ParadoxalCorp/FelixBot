@@ -1,3 +1,5 @@
+const paginateResult = require("../../modules/paginateResults");
+
 module.exports = async(client, message, args) => {
     /**
      * Shortcut to display the list
@@ -8,7 +10,10 @@ module.exports = async(client, message, args) => {
     return new Promise(async(resolve, reject) => {
         try {
             const guildEntry = client.guildData.get(message.guild.id);
+            guildEntry.generalSettings.levelSystem.roles = guildEntry.generalSettings.levelSystem.roles.filter(r => message.guild.roles.get(r.id));
             if (guildEntry.generalSettings.levelSystem.roles.length === 0) return resolve(await message.channel.createMessage(`:x: There is not role set to be given at a specific point`));
+            let roleList = guildEntry.generalSettings.levelSystem.roles.map(r => `${message.guild.roles.get(r.id).name} | At ${r.method === "message" ? r.at + " messages" : "level " + r.at}`);
+            roleList = paginateResult(roleList, 5);
             let page = 0;
             let rolesFields = [];
             guildEntry.generalSettings.levelSystem.roles.forEach(role => { //Build roles fields
@@ -35,21 +40,22 @@ module.exports = async(client, message, args) => {
                     inline: true
                 }]);
             });
-            const listMessage = function(page) {
+            let listMessage = function(page, raw) {
                 return {
                     embed: {
-                        title: ':notepad_spiral: Experience roles list',
-                        description: `Use the arrows to navigate through the roles list`,
-                        fields: rolesFields[page],
+                        title: "Experience system role list",
+                        description: "Here's the list of the roles given at specific activity level (e.g: 100 messages, experience leve 10...)\n" + (raw ? "```\n" + roleList[page][0].join(`\n`) + "```" : ""),
                         footer: {
-                            text: `Showing page ${page + 1}/${guildEntry.generalSettings.levelSystem.roles.length} | Time limit: 120 seconds`
+                            text: `Showing page ${page + 1}/${raw ? roleList.length : rolesFields.length} | Time limit: 60 seconds`
                         },
-                        color: parseInt(message.guild.roles.get(guildEntry.generalSettings.levelSystem.roles[page].id).color)
+                        fields: raw ? undefined : rolesFields[page],
+                        color: raw ? 0x000 : parseInt(message.guild.roles.get(guildEntry.generalSettings.levelSystem.roles[page].id).color)
                     }
                 }
             }
+            let raw = false;
             const sentListMessage = await message.channel.createMessage(listMessage(page));
-            const reactions = ["◀", "▶", "❌"];
+            const reactions = ["◀", "▶", "🗒", "❌"];
             for (let i = 0; i < reactions.length; i++) await sentListMessage.addReaction(reactions[i]);
             const collector = await sentListMessage.createReactionCollector((r) => r.user.id === message.author.id);
             client.on("messageDelete", m => { if (m.id === sentListMessage.id) return resolve(true) });
@@ -60,11 +66,15 @@ module.exports = async(client, message, args) => {
                 sentListMessage.removeReaction(r.emoji.name, r.user.id);
                 clearTimeout(timeout);
                 if (r.emoji.name === "◀") {
-                    if (page !== 0) page--;
-                    sentListMessage.edit(listMessage(page));
+                    page = page === 0 ? (raw ? roleList.length - 1 : rolesFields.length - 1) : page - 1;
+                    sentListMessage.edit(listMessage(page, raw));
                 } else if (r.emoji.name === "▶") {
-                    if (page !== (rolesFields.length - 1)) page++;
-                    sentListMessage.edit(listMessage(page));
+                    page = page !== (raw ? roleList.length - 1 : rolesFields.length - 1) ? page + 1 : 0;
+                    sentListMessage.edit(listMessage(page, raw));
+                } else if (r.emoji.name === "🗒") {
+                    raw = raw ? false : true;
+                    page = 0;
+                    sentListMessage.edit(listMessage(page, raw))
                 } else if (r.emoji.name === "❌") {
                     collector.stop("aborted");
                 }
