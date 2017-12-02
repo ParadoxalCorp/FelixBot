@@ -42,6 +42,14 @@ class Experience {
                     script: 'changeNotif.js',
                     help: "Change the way Felix notify users when they level up, either `dm`, `channel` or `disabled` (dm stands for direct message)",
                     args: 1
+                }],
+                ['settings', {
+                    script: 'settings.js',
+                    help: 'Display all the parameters set until now(enabled, level up notifications...)'
+                }],
+                ['custom_message', {
+                    script: 'customMessage.js',
+                    help: 'Set a custom level-up message, the following flags can be used: \n`%USER%` Mention the user who levelled up, like `@Bobby`\n`%USERTAG%` The tag (username#discriminator) of the user, like `Bobby#0000`\n`%USERNAME%` The username of the user, like `Bobby`\n`%LEVEL%` The level the user just reached, like `42`'
                 }]
             ])
         }

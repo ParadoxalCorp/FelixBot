@@ -10,7 +10,7 @@ module.exports = async(client, guild, member) => {
                 if (typeof message[key] === "string") message[key] = message[key].replace(/\%USER\%/gim, `<@${member.user.id}>`).replace(/\%USERNAME\%/gim, `${member.user.username}`).replace(/\%USERTAG%/gim, `${member.user.tag}`).replace(/\%GUILD\%/gim, `${member.guild.name}`);
             }
         }; //---------------------------------------------------------Greets------------------------------------------------------------
-        if (!member.guild.channels.has(guildEntry.onEvent.guildMemberAdd.greetings.channel)) {
+        if (!member.guild.channels.has(guildEntry.onEvent.guildMemberRemove.farewell.channel)) {
             guildEntry.onEvent.guildMemberRemove.farewell.error = "Unknown Channel";
             return client.guildData.set(member.guild.id, guildEntry); //If getting the channel return undefined
         }

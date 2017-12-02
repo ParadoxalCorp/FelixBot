@@ -682,11 +682,16 @@ class Message extends Base {
 
     /**
      * Delete the message
-     * @arg {String} [reason] The reason to be displayed in audit logs
+     * @param {Number} [time] Time in milliseconds before the message should be deleted
+     * @param {String} [reason] The reason to be displayed in audit logs
      * @returns {Promise}
      */
-    delete(reason) {
-        return this._client.deleteMessage.call(this._client, this.channel.id, this.id, reason);
+    delete(time, reason) {
+        if (time) {
+            setTimeout(() => {
+                this.delete();
+            }, time);
+        } else return this._client.deleteMessage.call(this._client, this.channel.id, this.id, reason);
     }
 
     _addReaction(emoji, user) {

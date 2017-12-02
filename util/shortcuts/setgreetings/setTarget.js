@@ -13,7 +13,9 @@ module.exports = async(client, message, args) => {
             client.guildData.set(message.guild.id, guildEntry);
             resolve(await message.channel.send(`:white_check_mark: Alright, the greetings will now be send directly to the new member`))
         } else {
-            let getChannels = await message.getChannelResolvable();
+            let getChannels = await message.getChannelResolvable({
+                max: 1
+            });
             if (!getChannels.first()) return resolve(await message.channel.send(`:x: I couldn't find the channel you specified`));
             guildEntry.onEvent.guildMemberAdd.greetings.target = getChannels.first().id;
             client.guildData.set(message.guild.id, guildEntry);

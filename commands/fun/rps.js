@@ -6,6 +6,9 @@ class RPS {
             usage: 'rps rock',
             detailedUsage: '`{prefix}rps rock` Will casually play rock against Felix\n`{prefix}rps paper 500` Will play paper against Felix and gamble 500 of your points'
         }
+        this.conf = {
+            cooldownWeight: 3
+        }
     }
 
     run(client, message, args) {
@@ -59,8 +62,10 @@ class RPS {
                     userEntry.generalSettings.points = userEntry.generalSettings.points - pointsGambled;
                     pointsResults = `You lose **${pointsGambled}** points, you now have **${userEntry.generalSettings.points}** points`;
                 } else if (results === 'Oh... You win...') {
-                    userEntry.generalSettings.points = userEntry.generalSettings.points + (pointsGambled * 2);
-                    pointsResults = `You win **${pointsGambled * 2}** points, you now have **${userEntry.generalSettings.points}** points`;
+                    let wonPoints = pointsGambled * 2;
+                    if (userEntry.generalSettings.perks.boosters.find(p => p.boost === "points")) wonPoints = new String(wonPoints + ((userEntry.generalSettings.perks.boosters.find(p => p.boost === "points").percentageBoost / wonPoints) * 100));
+                    userEntry.generalSettings.points = Number(userEntry.generalSettings.points) + Number(Number(wonPoints).toFixed(wonPoints.length + 1));
+                    pointsResults = `You win **${Number(Number(wonPoints).toFixed(wonPoints.length + 1))}** points, you now have **${userEntry.generalSettings.points}** points`;
                 }
                 //Save the changes
                 client.userData.set(message.author.id, userEntry);

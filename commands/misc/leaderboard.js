@@ -132,8 +132,17 @@ class Leaderboard {
                 }, 120000);
                 let page = 'exp';
                 let global = true;
+                let lastClicked;
                 collector.on('collect', async(r) => {
                     clearTimeout(timeout); //reset the timeout
+                    if (!lastClicked === r.emoji.name) {
+                        await interactiveMessage.edit({
+                            embed: {
+                                description: ''
+                            }
+                        });
+                    }
+                    lastClicked = r.emoji.name;
                     if (r.emoji.name === "⭐") { //Get exp leaderboard
                         if (page !== 'exp') { //Dont edit for nothing
                             if (!global) {
