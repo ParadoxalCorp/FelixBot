@@ -19,9 +19,9 @@ class SetPermission {
                 let permission = args.filter(c => client.commands.find(cmd => cmd.help.name === c.toLowerCase() && cmd.help.category !== 'admin') || client.commands.find(cmd => cmd.help.category !== 'admin' && cmd.help.category === c.substr(0, c.indexOf('*'))));
                 let action = args.filter(c => c.toLowerCase() === 'true' || c.toLowerCase() === 'false');
                 let targets = 'global';
-                if (args.find(a => a.search(/\-user|-u/gim) !== -1)) targets = await message.getUserResolvable();
-                else if (args.find(a => a.search(/\-channel|-c/gim) !== -1)) targets = await message.getChannelResolvable();
-                else if (args.find(a => a.search(/\-role|-r/gim) !== -1)) targets = await message.getRoleResolvable();
+                if (new RegExp(/\-user|-u/gim).test(message.content)) targets = await message.getUserResolvable();
+                else if (new RegExp(/\-channel|-c/gim).test(message.content)) targets = await message.getChannelResolvable();
+                else if (new RegExp(/\-role|-r/gim).test(message.content)) targets = await message.getRoleResolvable();
                 //Handle missing args
                 if (!permission[0]) return resolve(await message.channel.createMessage(`:x: You did not specified a permission to set`));
                 if (targets !== 'global' && targets.size < 1) return resolve(await message.channel.createMessage(`:x: You did not specified a target`));
@@ -66,7 +66,7 @@ class SetPermission {
                     resolve(await message.channel.createMessage(`:white_check_mark: Alright, \`${permission[0]}\` has been set to \`${action[0]}\` for the user(s) **${targets.map(u => u.tag).join(', ')}**`));
                 }
                 //Set channels permissions
-                else if (targets.first().type) { //(If the collection contains channels objects)
+                else if (typeof targets.first().type !== "undefined") { //(If the collection contains channels objects)
                     targets.forEach(gc => {
                         if (!guildEntry.permissions.channels.find(c => c.id === gc.id)) guildEntry.permissions.channels.push({
                             id: gc.id,
@@ -88,7 +88,7 @@ class SetPermission {
                     resolve(await message.channel.createMessage(`:white_check_mark: Alright, \`${permission[0]}\` has been set to \`${action[0]}\` for the channel(s) **${targets.map(c => c.name).join(', ')}**`));
                 }
                 //Set roles permissions
-                else if (targets.first().hoist) { //(If the collection contains roles objects)
+                else if (typeof targets.first().hoist !== "undefined") { //(If the collection contains roles objects)
                     targets.forEach(gr => {
                         if (!guildEntry.permissions.roles.find(r => r.id === gr.id)) guildEntry.permissions.roles.push({
                             id: gr.id,

@@ -46,7 +46,7 @@ class RemovePermission {
                     resolve(await message.channel.createMessage(`:white_check_mark: Alright, \`${permission[0]}\` has been removed from the user(s) **${targets.map(u => u.tag).join(', ')}**`));
                 }
                 //Remove channels permissions
-                else if (targets.first().type) { //(If the collection contains channels objects)
+                else if (typeof targets.first().type !== "undefined") { //(If the collection contains channels objects)
                     targets.forEach(gc => {
                         if (!guildEntry.permissions.channels.find(c => c.id === gc.id)) return
                         let channelPos = guildEntry.permissions.channels.findIndex(c => c.id === gc.id);
@@ -58,7 +58,7 @@ class RemovePermission {
                     resolve(await message.channel.createMessage(`:white_check_mark: Alright, \`${permission[0]}\` has been removed from the channel(s) **${targets.map(c => c.name).join(', ')}**`));
                 }
                 //Remove roles permissions
-                else if (targets.first().hoist) { //(If the collection contains roles objects)
+                else if (typeof targets.first().hoist !== "undefined") { //(If the collection contains roles objects)
                     targets.forEach(gr => {
                         if (!guildEntry.permissions.roles.find(r => r.id === gr.id)) return;
                         let rolePos = guildEntry.permissions.roles.findIndex(r => r.id === gr.id);

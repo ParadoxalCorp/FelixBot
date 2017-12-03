@@ -81,7 +81,7 @@ class Uinfo {
                 if (message.guild.members.get(target.id).nickname) {
                     embedFields.push({
                         name: ":busts_in_silhouette: Nickname",
-                        value: message.guild.member(target).nickname,
+                        value: message.guild.members.get(target.id).nickname,
                         inline: true
                     });
                 }

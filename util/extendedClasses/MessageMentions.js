@@ -110,7 +110,7 @@ class MessageMentions {
         this._channels = new Collection();
         let matches;
         while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
-            const chan = this._client.channels.get(matches[1]);
+            const chan = this._client.guilds.filter(g => g.channels.get(matches[1])).first().channels.get(matches[1]);
             if (chan) this._channels.set(chan.id, chan);
         }
         return this._channels;

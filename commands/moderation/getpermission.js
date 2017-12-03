@@ -36,7 +36,7 @@ class GetPermission {
                     }));
                 }
                 //Output channels permissions
-                else if (targets.first().type) {
+                else if (typeof targets.first().type !== "undefined") {
                     if (targets.filter(t => guildEntry.permissions.channels.find(c => c.id === t.id)).size === 0) return resolve(await message.channel.createMessage(`:x: There's no permissions set for the channel(s) **${targets.map(t => '#' + t.name).join(", ")}**`));
                     let perms = [];
                     targets.filter(t => guildEntry.permissions.channels.find(c => c.id === t.id)).forEach(t => { perms = perms.concat(guildEntry.permissions.channels.find(c => c.id === t.id).allowedCommands.map(ac => `${ac} | Allowed | #${t.name}`).concat(guildEntry.permissions.channels.find(c => c.id === t.id).restrictedCommands.map(rc => `${rc} | Restricted | #${t.name}`))) });
@@ -48,7 +48,7 @@ class GetPermission {
                     }));
                 }
                 //Output roles permissions
-                else if (targets.first().hoist) {
+                else if (typeof targets.first().hoist !== "undefined") {
                     if (targets.filter(t => guildEntry.permissions.roles.find(r => r.id === t.id)).size === 0) return resolve(await message.channel.createMessage(`:x: There's no permissions set for the role(s) **${targets.map(t => t.name).join(', ')}**`));
                     let perms = [];
                     targets.filter(t => guildEntry.permissions.roles.find(r => r.id === t.id)).forEach(t => { perms = perms.concat(guildEntry.permissions.roles.find(r => r.id === t.id).allowedCommands.map(ac => `${ac} | Allowed | ${t.name}`).concat(guildEntry.permissions.roles.find(r => r.id === t.id).restrictedCommands.map(rc => `${rc} | Restricted | ${t.name}`))) });
