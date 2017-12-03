@@ -27,7 +27,7 @@ class Uinfo {
                 let avatar = target.avatar ? (target.avatar.startsWith('a_') ? `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.gif` : `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.webp`) : target.defaultAvatarURL;
                 avatar = avatar.replace(/[^a-zA-Z0-9_\-./:]/, '');
                 avatar += '?size=1024';
-                if (target.avatar.startsWith('a_')) {
+                if (target.avatar && target.avatar.startsWith('a_')) {
                     avatar += '&f=.gif';
                 }
                 const getMonth = function(monthNumber) {
