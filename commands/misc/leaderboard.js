@@ -122,7 +122,7 @@ class Leaderboard {
                         }
                     }
                 }
-                const interactiveMessage = await message.channel.send(globalExpLeaderboard);
+                const interactiveMessage = await message.channel.send(guildEntry.generalSettings.levelSystem.enabled ? localExpLeaderboard : globalExpLeaderboard);
                 const collector = interactiveMessage.createReactionCollector(reaction => reaction.user.id === message.author.id);
                 let pageReactions = ["⭐", "❤", "🎀", "✉", "🌐", "❌"];
                 if (localExpLeaderboard.length > 0 && guildEntry.generalSettings.levelSystem.enabled) pageReactions.unshift();
@@ -131,7 +131,7 @@ class Leaderboard {
                     collector.stop("timeout");
                 }, 120000);
                 let page = 'exp';
-                let global = true;
+                let global = guildEntry.generalSettings.levelSystem.enabled ? false : true;
                 let lastClicked;
                 collector.on('collect', async(r) => {
                     clearTimeout(timeout); //reset the timeout
