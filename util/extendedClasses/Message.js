@@ -480,8 +480,47 @@ class Message extends Base {
     getRoleResolvable(options = {}) {
         return new Promise(async(resolve, reject) => {
             let potentialRolesResolvables = this.content.split(/\s+/gim).filter(r => r.length >= (options.charLimit || 3));
+            let args = this.content.split(/\s+/gim);
             const RolesResolved = new Collection();
             let roles = this.guild.roles;
+            let conflictedRoles = [];
+            const supposedCommand = !this.content.startsWith('<') ? args.shift().slice(this.guild ? this._client.guildData.get(this.guild.id).generalSettings.prefix.length : this._client.config.prefix.length).toLowerCase() : (args[1] ? args[1].toLowerCase() : false);
+            let parsedContent = this.content.substr(this.content.toLowerCase().indexOf(supposedCommand.toLowerCase()) + supposedCommand.length).toLowerCase().trim();
+            roles.forEach(r => {
+                if (options.max === RolesResolved.size) return;
+                if (roles.filter(role => role.name.toLowerCase() === r.name.toLowerCase() && parsedContent.includes(role.name.toLowerCase())).size > 1) {
+                    roles.filter(role => role.name.toLowerCase() === r.name.toLowerCase() && parsedContent.includes(role.name.toLowerCase())).forEach(role => {
+                        if (!conflictedRoles.find(cRole => cRole.id === role.id)) conflictedRoles.push(role)
+                    });
+                }
+                if (parsedContent.includes(r.name.toLowerCase())) {
+                    RolesResolved.set(r.id, r);
+                }
+            });
+            let currentConflict;
+            for (let i = 0; i < conflictedRoles.length; i++) {
+                currentConflict = conflictedRoles[i].name;
+                let a = 1;
+                let currentlyConflicted = conflictedRoles.filter(r => r.name.toLowerCase() === currentConflict.toLowerCase());
+                let selectedRole = await this.awaitReply({
+                    message: {
+                        embed: {
+                            title: ':mag: Role search',
+                            description: "Multiple Roles found, select one by typing a number ```\n" + currentlyConflicted.map(r => `[${a++}] ${r.name}`).join("\n") + "```"
+                        }
+                    }
+                });
+                selectedRole.query.delete();
+                let choice;
+                if (selectedRole.reply && !isNaN(selectedRole.reply.content) && selectedRole.reply.content >= 1 && Math.round(Number(selectedRole.reply.content)) <= currentlyConflicted.length) choice = currentlyConflicted[Math.round(Number(selectedRole.reply.content)) - 1];
+                if (selectedRole.reply && selectedRole.reply.deletable) selectedRole.reply.delete();
+                RolesResolved.forEach(r => {
+                    if (r.name.toLowerCase() === currentConflict.toLowerCase() && r.id !== choice.id) RolesResolved.delete(r.id);
+                });
+                conflictedRoles = conflictedRoles.filter(r => r.name.toLowerCase() !== currentConflict.toLowerCase());
+                potentialRolesResolvables = potentialRolesResolvables.filter(a => RolesResolved.filter(r => r.name.toLowerCase().includes(a.toLowerCase())).size < 1);
+            }
+            potentialRolesResolvables = potentialRolesResolvables.filter(a => RolesResolved.filter(r => r.name.toLowerCase().includes(a.toLowerCase())).size < 1);
             for (let i = 0; i < potentialRolesResolvables.length; i++) {
                 if (options.max === RolesResolved.size) return resolve(RolesResolved);
                 //------------------Resolve by ID--------------------

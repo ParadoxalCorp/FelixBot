@@ -1,3 +1,5 @@
+const sleep = require(`../../util/modules/sleep.js`);
+
 class Leaderboard {
     constructor() {
         this.help = {
@@ -33,7 +35,7 @@ class Leaderboard {
                 }
                 let localExpLeaderboard = {
                     embed: {
-                        title: `${message.guild.name}'s experience leaderboard`,
+                        title: `${message.guild.name}'s experience leaderboard]`,
                         color: 3447003,
                         description: leaderboard.slice(0, 10).map(u => `#${position(u.id, leaderboard)} - **${message.guild.members.get(u.id).user.tag}**\nLevel: ${u.level} | Exp: ${Math.round(u.expCount)}`).join("\n\n"),
                         footer: {
@@ -135,7 +137,7 @@ class Leaderboard {
                 let lastClicked;
                 collector.on('collect', async(r) => {
                     clearTimeout(timeout); //reset the timeout
-                    if (!lastClicked === r.emoji.name) {
+                    if (lastClicked && lastClicked !== r.emoji.name) {
                         await interactiveMessage.edit({
                             embed: {
                                 description: ''
@@ -144,22 +146,8 @@ class Leaderboard {
                     }
                     lastClicked = r.emoji.name;
                     if (r.emoji.name === "⭐") { //Get exp leaderboard
-                        if (page !== 'exp') { //Dont edit for nothing
-                            if (!global) {
-                                if (leaderboard.length < 1 || !guildEntry.generalSettings.levelSystem.enabled) {
-                                    await interactiveMessage.edit({
-                                        embed: {
-                                            description: ':x: There is nobody in the leaderboard yet or the experience system is disabled on this server'
-                                        }
-                                    });
-                                } else {
-                                    await interactiveMessage.edit(localExpLeaderboard)
-                                };
-                            } else {
-                                await interactiveMessage.edit(globalExpLeaderboard)
-                            };
-                            page = 'exp';
-                        }
+                        if (page !== 'exp') await interactiveMessage.edit(global ? globalExpLeaderboard : localExpLeaderboard);
+                        page = 'exp';
                     } else if (r.emoji.name === "❤") { //Get love leaderboard
                         if (page !== 'love') { //Dont edit for nothing
                             if (!global) await interactiveMessage.edit(localLoveLeaderboard);

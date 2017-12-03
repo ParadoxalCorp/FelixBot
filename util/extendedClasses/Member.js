@@ -131,6 +131,10 @@ class Member extends Base {
         return `<@!${this.id}>`;
     }
 
+    get tag() {
+        return `${this.user.username}#${this.user.discriminator}`
+    }
+
     /**
      * Edit the guild member
      * @arg {Object} options The properties to edit
