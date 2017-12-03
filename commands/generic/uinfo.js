@@ -130,7 +130,7 @@ class Uinfo {
                 });
                 embedFields.push({
                     name: ":notepad_spiral: Roles",
-                    value: message.guild.members.get(target.id).roles.length - 1, //Dont count the everyone role
+                    value: message.guild.members.get(target.id).roles.length, //Dont count the everyone role
                     inline: true
                 });
                 if (message.guild.members.get(target.id).displayHexColor) {
@@ -157,6 +157,10 @@ class Uinfo {
                 resolve(await message.channel.createMessage({
                     embed: {
                         title: ':bust_in_silhouette: User info',
+                        author: {
+                            name: message.guild.members.get(target.id).username,
+                            icon_url: avatar
+                        },
                         fields: embedFields,
                         timestamp: new Date(),
                         image: {
