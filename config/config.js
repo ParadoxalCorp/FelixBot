@@ -22,6 +22,8 @@ module.exports = {
     rapidApiKey: false,
     //Steam API key
     steamApiKey: false,
+	//Raven error tracker url
+	raven: false,
     //Whatanime.ga API key (still not implemented)
     whatAnimeKey: false,
     //Actually needed: The token of the bot, won't work without it
