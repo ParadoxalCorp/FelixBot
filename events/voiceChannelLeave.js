@@ -1,5 +1,5 @@
 module.exports = async(client, member, channel) => {
-    const guildEntry = client.guildData.get(member.guild.id) || client.defaultUserData(member.guild.id);
+    const guildEntry = client.guildData.get(member.guild.id) || client.defaultGuildData(member.guild.id);
     if (!guildEntry.generalSettings.levelSystem.users.find(u => u.id == member.id)) {
         guildEntry.generalSettings.levelSystem.users.push({
             id: member.id,
