@@ -61,12 +61,12 @@ class Bot {
                 });
                 embedFields.push({
                     name: ":calendar: Created",
-                    value: moment().to(client.user.createdAt),
+                    value: `${TimeConverter.toHumanDate(client.user.createdAt)} (${moment().to(client.user.createdAt)})`,
                     inline: true
                 });
                 embedFields.push({
                     name: ":calendar: Joined",
-                    value: moment().to(message.guild.joinedAt),
+                    value: `${TimeConverter.toHumanDate(message.guild.joinedAt)} (${moment().to(message.guild.joinedAt)})`,
                     inline: true
                 });
                 embedFields.push({

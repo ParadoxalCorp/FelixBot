@@ -63,7 +63,7 @@ class TimeConverter {
             return month;
         }
         let date = new Date(timestamp);
-        return formatted ? `${date.getDate()} ${getMonth(date.getMonth())} ${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` : {
+        return formatted ? `${date.getDate()} ${getMonth(date.getMonth())} ${date.getFullYear()}, ${new String(date.getHours()).length < 2 ? "0" + date.getHours() : date.getHours()}:${new String(date.getMinutes()).length < 2 ? "0" + date.getMinutes() : date.getMinutes()}:${new String(date.getSeconds()).length < 2 ? "0" + date.getSeconds() : date.getSeconds()}` : {
             seconds: date.getSeconds(),
             minutes: date.getMinutes(),
             hours: date.getHours(),
