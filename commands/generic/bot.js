@@ -1,3 +1,5 @@
+const TimeConverter = require(`../../util/modules/timeConverter.js`);
+
 class Bot {
     constructor() {
         this.help = {
@@ -15,14 +17,6 @@ class Bot {
         const moment = require("moment");
         return new Promise(async(resolve, reject) => {
             try {
-                function convertToTime(timestamp) {
-                    return {
-                        days: Math.floor((timestamp / (60 * 60 * 24 * 1000))),
-                        hours: Math.floor((timestamp % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-                        minutes: Math.floor((timestamp % (1000 * 60 * 60)) / (1000 * 60)),
-                        seconds: Math.floor((timestamp % (1000 * 60)) / 1000)
-                    }
-                }
                 let embedFields = [];
                 embedFields.push({
                     name: ":desktop: Servers/Guilds",
@@ -54,7 +48,7 @@ class Bot {
                     value: client.users.size,
                     inline: true
                 });
-                let uptime = convertToTime(client.uptime);
+                let uptime = TimeConverter.toElapsedTime(client.uptime);
                 embedFields.push({
                     name: ":date: Uptime",
                     value: `${uptime.days}d ${uptime.hours}h ${uptime.minutes}m ${uptime.seconds}s`,

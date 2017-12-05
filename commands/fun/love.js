@@ -1,3 +1,5 @@
+const TimeConverter = require(`../../util/modules/timeConverter.js`);
+
 class Love {
     constructor() {
         this.help = {
@@ -17,14 +19,6 @@ class Love {
             try {
                 var userEntry = client.userData.get(message.author.id);
                 const users = await message.getUserResolvable()
-
-                function convertToTime(timestamp) {
-                    return {
-                        hours: Math.floor((timestamp % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-                        minutes: Math.floor((timestamp % (1000 * 60 * 60)) / (1000 * 60)),
-                        seconds: Math.floor((timestamp % (1000 * 60)) / 1000)
-                    }
-                }
 
                 function getRemainingLps() {
                     let remainingLps = 0;
@@ -51,7 +45,7 @@ class Love {
                 if (!users.size) { //--------------------------------------------Get remaining lps/time til refill------------------------------------
                     let remainingLps = getRemainingLps();
                     if (!remainingLps) {
-                        let remainingTime = convertToTime(getNearestCooldown() - Date.now());
+                        let remainingTime = TimeConverter.toElapsedTime(getNearestCooldown() - Date.now());
                         return resolve(await message.channel.createMessage(`:x: You already used all your love points, time remaining: ${remainingTime.hours}h ${remainingTime.minutes}m ${remainingTime.seconds}s`));
                     } else return resolve(await message.channel.createMessage(`You have **${remainingLps}** love point(s) available`));
                 } else if (users.size > 1 && users.size > getRemainingLps()) {
@@ -62,7 +56,7 @@ class Love {
                     if (lpCount.length === 0) lpCount = 1;
                     let remainingLps = getRemainingLps();
                     if (!remainingLps) {
-                        let remainingTime = convertToTime(getNearestCooldown() - Date.now());
+                        let remainingTime = TimeConverter.toElapsedTime(getNearestCooldown() - Date.now());
                         return resolve(await message.channel.createMessage(`:x: You already used all your love points, time remaining: ${remainingTime.hours}h ${remainingTime.minutes}m ${remainingTime.seconds}s`));
                     }
                     if (Math.round(lpCount) > remainingLps) lpCount = remainingLps; //If the count of lps is superior to the remaining, give everything remaining

@@ -1,5 +1,6 @@
 const getLevelDetails = require('../../util/helpers/getLevelDetails')
 const moment = require("moment");
+const TimeConverter = require(`../../util/modules/timeConverter.js`);
 
 class Uinfo {
     constructor() {
@@ -29,53 +30,6 @@ class Uinfo {
                 avatar += '?size=1024';
                 if (target.avatar && target.avatar.startsWith('a_')) {
                     avatar += '&f=.gif';
-                }
-                const getMonth = function(monthNumber) {
-                    let month = '';
-                    switch (monthNumber) {
-                        case 0:
-                            month = "January";
-                            break;
-                        case 1:
-                            month = "February";
-                            break;
-                        case 2:
-                            month = "March";
-                            break;
-                        case 3:
-                            month = "April";
-                            break;
-                        case 4:
-                            month = "May";
-                            break;
-                        case 5:
-                            month = 'June';
-                            break;
-                        case 6:
-                            month = "July";
-                            break;
-                        case 7:
-                            month = "August";
-                            break;
-                        case 8:
-                            month = 'September';
-                            break;
-                        case 9:
-                            month = "October";
-                            break;
-                        case 10:
-                            month = "November";
-                            break;
-                        case 11:
-                            month = 'December';
-                            break;
-                    }
-                    return month;
-                }
-
-                function humanifyDate(timestamp) {
-                    let date = new Date(timestamp);
-                    return `${date.getDate()} ${getMonth(date.getMonth())} ${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
                 }
                 //----------------------------------------------------------------------------------
                 if (message.guild.members.get(target.id).nickname) {
@@ -120,12 +74,12 @@ class Uinfo {
                 }
                 embedFields.push({
                     name: ":date: Created",
-                    value: humanifyDate(target.createdAt),
+                    value: TimeConverter.toHumanDate(target.createdAt),
                     inline: true
                 });
                 embedFields.push({
                     name: ":date: Joined",
-                    value: humanifyDate(message.guild.members.get(target.id).joinedAt),
+                    value: TimeConverter.toHumanDate(message.guild.members.get(target.id).joinedAt),
                     inline: true
                 });
                 embedFields.push({
