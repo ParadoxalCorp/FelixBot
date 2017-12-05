@@ -15,6 +15,14 @@ class Bot {
         const moment = require("moment");
         return new Promise(async(resolve, reject) => {
             try {
+                function convertToTime(timestamp) {
+                    return {
+                        days: Math.floor((timestamp / (60 * 60 * 24 * 1000))),
+                        hours: Math.floor((timestamp % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                        minutes: Math.floor((timestamp % (1000 * 60 * 60)) / (1000 * 60)),
+                        seconds: Math.floor((timestamp % (1000 * 60)) / 1000)
+                    }
+                }
                 let embedFields = [];
                 embedFields.push({
                     name: ":desktop: Servers/Guilds",
@@ -46,9 +54,10 @@ class Bot {
                     value: client.users.size,
                     inline: true
                 });
+                let uptime = convertToTime(client.uptime);
                 embedFields.push({
-                    name: ":date: Up since",
-                    value: moment().to(client.readyAt),
+                    name: ":date: Uptime",
+                    value: `${uptime.days}d ${uptime.hours}h ${uptime.minutes}m ${uptime.seconds}s`,
                     inline: true
                 });
                 embedFields.push({
@@ -74,6 +83,11 @@ class Bot {
                 embedFields.push({
                     name: ":incoming_envelope: Invite link",
                     value: `[Felix invite link](https://discordapp.com/oauth2/authorize?&client_id=${client.user.id}&scope=bot&permissions=2146950271)`,
+                    inline: true
+                });
+                embedFields.push({
+                    name: `:gear: Shard`,
+                    value: `${message.guild.shard.id}/${client.shards.size}`,
                     inline: true
                 });
                 if (client.upvoters) {
