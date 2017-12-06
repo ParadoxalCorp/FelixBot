@@ -135,8 +135,7 @@ class Client extends Eris {
                         greetings: {
                             enabled: false,
                             message: false,
-                            method: false,
-                            channel: false,
+                            target: false,
                             error: false //Will be used for missing permissions case
                         }
                     },
@@ -158,7 +157,7 @@ const Felix = new Client(config.token, {
     disableEvents: {
         TYPING_START: true
     },
-    maxShards: 2
+    maxShards: 'auto'
 });
 
 (async function() {
