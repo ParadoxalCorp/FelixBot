@@ -17,7 +17,8 @@ class SetPrefix {
             try {
                 const guildEntry = client.guildData.get(message.guild.id);
                 if (args.length < 1) return resolve(await message.channel.createMessage(`:x: You did not specified a new prefix, the current prefix is \`${guildEntry.generalSettings.prefix}\``));
-                else if (args[0].length > 8) return resolve(await message.channel.createMessage(`:x: The prefix cant exceed 8 characters !`));
+                if (args[0].length > 8) return resolve(await message.channel.createMessage(`:x: The prefix cant exceed 8 characters !`));
+                if (args[0].startsWith("<")) return resolve(await message.channel.createMessage(`:x: Sadly the prefix can't start nor be \`<\``));
                 guildEntry.generalSettings.prefix = args[0];
                 client.guildData.set(message.guild.id, guildEntry);
                 resolve(await message.channel.createMessage(`:white_check_mark: The prefix is now \`${args[0]}\`, from now on commands will look like \`${args[0]}ping\``));
