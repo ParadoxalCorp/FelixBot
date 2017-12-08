@@ -1,5 +1,5 @@
 #
-# systemd(1) configuration file for FelixBot 
+# systemd(1) configuration file for FelixBot
 #
 # >>> This is a "dist-file" and thus expects to be modified. <<<
 #
@@ -11,25 +11,25 @@
 # - Make sure that your "config.js" is complete (see config/config.js)
 #
 # - Modify all values in this file that are commented.
-# 	They control important (and possibly security-relevant) settings that are server-specific.
+#   They control important (and possibly security-relevant) settings that are server-specific.
 #
 # - Copy this file to "/lib/systemd/system"
 # - Execute "systemctl enable felix.service"
-# 	- This links the file to "/etc/systemd/system/multi-user.target.wants/"
+#   - This links the file to "/etc/systemd/system/multi-user.target.wants/"
 #
 # - Double-Check that all values below are correct
 #
 # - Done! You can now use the usual control commands:
 #   - journalctl -u felixbot
-# 	- systemctl start felixbot
-# 	- systemctl stop felixbot
-# 	- systemctl restart felixbot
+#   - systemctl start felixbot
+#   - systemctl stop felixbot
+#   - systemctl restart felixbot
 #
 # To uninstall this service just disable it ("systemctl disable felixbot").
 # Delete "/lib/systemd/system/felix.service" afterwards if you want.
 #
 # If you need more help or have no idea what's going on, try one of these:
-#	- "man 1 systemd"
+#   - "man 1 systemd"
 #   - "man 1 systemctl"
 #   - "man 5 systemd.unit"
 #   - "man 7 bootup"
