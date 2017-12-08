@@ -50,6 +50,14 @@ class Experience {
                 ['custom_message', {
                     script: 'customMessage.js',
                     help: 'Set a custom level-up message, the following flags can be used: \n`%USER%` Mention the user who levelled up, like `@Bobby`\n`%USERTAG%` The tag (username#discriminator) of the user, like `Bobby#0000`\n`%USERNAME%` The username of the user, like `Bobby`\n`%LEVEL%` The level the user just reached, like `42`'
+                }],
+                ['enable_auto_removal', {
+                    script: 'enableAutoRemove.js',
+                    help: 'Whether or not when a user level up and win a role, the role assigned before should be removed'
+                }],
+                ['disable_auto_removal', {
+                    script: 'disableAutoRemove.js',
+                    help: 'Whether or not when a user level up and win a role, the role assigned before should be removed'
                 }]
             ])
         }

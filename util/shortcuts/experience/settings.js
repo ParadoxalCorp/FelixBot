@@ -15,7 +15,12 @@ module.exports = (client, message, args) => {
                         inline: true
                     }, {
                         name: `Custom level-up message`,
-                        value: guildEntry.generalSettings.levelSystem.customNotif ? "```" + guildEntry.generalSettings.levelSystem.customNotif + "```" : ":x:"
+                        value: guildEntry.generalSettings.levelSystem.customNotif ? "```" + guildEntry.generalSettings.levelSystem.customNotif + "```" : ":x:",
+                        inline: true
+                    }, {
+                        name: 'Automatic removal',
+                        value: guildEntry.generalSettings.levelSystem.autoRemove ? ":white_check_mark:" : ":x:",
+                        inline: true
                     }]
                 }
             }))

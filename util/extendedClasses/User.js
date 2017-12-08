@@ -143,7 +143,7 @@ class User extends Base {
     }
 
     send(content, file) {
-        return this._client.getDMChannel(this.id).then(c => c.send(content, file));
+        return this._client.getDMChannel(this.id).then(c => this._client.createMessage(c.id, content, file));
     }
 
     /**

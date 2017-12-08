@@ -5,6 +5,7 @@ module.exports = async(client, message, args) => {
          * @param {Object} message The message which triggered this shortcut
          * @param {Array} args The splitted arguments
          */
+
         return new Promise(async(resolve, reject) => {
                     try {
                         const guildEntry = client.guildData.get(message.guild.id);
@@ -16,6 +17,7 @@ module.exports = async(client, message, args) => {
                         if (!role.first()) return resolve(await message.channel.createMessage(`:x: I couldn't find the specified role`));
                         if (isNaN(count)) return resolve(await message.channel.createMessage(`:x: Invalid exp/messages count`));
                         if (guildEntry.generalSettings.levelSystem.roles.find(r => r.id === role.first().id)) return resolve(await message.channel.createMessage(`:x: The role \`${role.first().name}\` is already set to be given at some point`));
+                        if (guildEntry.generalSettings.levelSystem.roles.filter(r => r.method === counter.trim() && r.at === count).length === 3) return resolve(await message.channel.createMessage(`:x: I can't give more than 3 roles at the same point`));
                         guildEntry.generalSettings.levelSystem.roles.push({
                             id: role.first().id,
                             at: count,

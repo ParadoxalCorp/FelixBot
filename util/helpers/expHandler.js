@@ -29,7 +29,8 @@ module.exports = async(client, message) => {
                 messages: 0,
                 joinedVc: 0,
                 leftVc: 0,
-                totalVcTime: 0
+                totalVcTime: 0,
+                givenRoles: []
             });
         }
         const userPos = guildEntry.generalSettings.levelSystem.users.findIndex(u => u.id === message.author.id);
@@ -40,9 +41,22 @@ module.exports = async(client, message) => {
         if (curLevel > guildEntry.generalSettings.levelSystem.users[userPos].level || guildEntry.generalSettings.levelSystem.roles.find(r => r.at === guildEntry.generalSettings.levelSystem.users[userPos].messages)) {
             let wonRoles = "";
             if (roles.length && message.guild.members.get(client.user.id).hasPermission("manageRoles")) {
-                try {
-                    roles.forEach(role => { message.member.addRole(role.id) }, `Reached the required experience level/messages count`);
-                } catch (err) {}
+                if (guildEntry.generalSettings.levelSystem.autoRemove) {
+                    let oldRoles = message.member.roles.filter(r => guildEntry.generalSettings.levelSystem.roles.find(role => role.id === r) &&
+                        guildEntry.generalSettings.levelSystem.users[userPos].givenRoles && guildEntry.generalSettings.levelSystem.users[userPos].givenRoles.find(role => role === r));
+                    oldRoles.forEach(role => {
+                        try {
+                            message.member.removeRole(role, `Reached a higher experience level/messages count requirement and auto-removal is enabled`);
+                        } catch (err) {}
+                    });
+                }
+                roles.forEach(role => {
+                    try {
+                        if (!guildEntry.generalSettings.levelSystem.users[userPos].givenRoles) guildEntry.generalSettings.levelSystem.users[userPos].givenRoles = [];
+                        guildEntry.generalSettings.levelSystem.users[userPos].givenRoles.push(role.id);
+                        message.member.addRole(role.id, `Reached the required experience level/messages count`)
+                    } catch (err) {}
+                });
                 wonRoles += "and won the role(s) " + roles.map(r => `\`${message.guild.roles.get(r.id).name}\``).join(", ");
             }
             if (message.guild.members.get(client.user.id).hasPermission("sendMessages") && guildEntry.generalSettings.levelSystem.levelUpNotif && guildEntry.generalSettings.levelSystem.users[userPos].level !== curLevel) {

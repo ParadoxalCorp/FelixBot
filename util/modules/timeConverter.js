@@ -4,9 +4,10 @@ class TimeConverter {
     /**
      * Calculate and return how many elapsed seconds, minutes, hours and days the given milliseconds represent
      * @param {Number} ms The milliseconds to calculate
+     * @param {Boolean} [formatted=false] Whether or not the elapsed time should be returned already in a readable string format
      */
-    toElapsedTime(ms) {
-        return {
+    toElapsedTime(ms, formatted = false) {
+        return formatted ? `${Math.floor((ms / (60 * 60 * 24 * 1000)))}d ${Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))}h ${Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60))}m ${Math.floor((ms % (1000 * 60)) / 1000)}s` : {
             days: Math.floor((ms / (60 * 60 * 24 * 1000))),
             hours: Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
             minutes: Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60)),
@@ -17,7 +18,7 @@ class TimeConverter {
     /**
      * Convert a UNIX timestamp(in ms) to human date
      * @param {Number} timestamp The UNIX timestamp in ms to convert
-     * @param {Boolean} [formatted=true] Whether the date should be returned in an object or already in a string format
+     * @param {Boolean} [formatted=true] Whether or not the date should be returned already in a readable string format
      */
     toHumanDate(timestamp, formatted = true) {
         const getMonth = function(monthNumber) {

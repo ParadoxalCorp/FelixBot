@@ -35,7 +35,7 @@ class Leaderboard {
                 }
                 let localExpLeaderboard = {
                     embed: {
-                        title: `${message.guild.name}'s experience leaderboard]`,
+                        title: `${message.guild.name}'s experience leaderboard`,
                         color: 3447003,
                         description: leaderboard.slice(0, 10).map(u => `#${position(u.id, leaderboard)} - **${message.guild.members.get(u.id).user.tag}**\nLevel: ${u.level} | Exp: ${Math.round(u.expCount)}`).join("\n\n"),
                         footer: {
