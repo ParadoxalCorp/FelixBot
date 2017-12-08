@@ -1,0 +1,75 @@
+#
+# systemd(1) configuration file for FelixBot 
+#
+# >>> This is a "dist-file" and thus expects to be modified. <<<
+#
+# Take a look at the commented entries below.
+# These are the ones you'll probably want to change.
+#
+# In case you need a tutorial:
+# - Make sure that you ran "npm install"
+# - Make sure that your "config.js" is complete (see config/config.js)
+#
+# - Modify all values in this file that are commented.
+# 	They control important (and possibly security-relevant) settings that are server-specific.
+#
+# - Copy this file to "/lib/systemd/system"
+# - Execute "systemctl enable felix.service"
+# 	- This links the file to "/etc/systemd/system/multi-user.target.wants/"
+#
+# - Double-Check that all values below are correct
+#
+# - Done! You can now use the usual control commands:
+#   - journalctl -u felixbot
+# 	- systemctl start felixbot
+# 	- systemctl stop felixbot
+# 	- systemctl restart felixbot
+#
+# To uninstall this service just disable it ("systemctl disable felixbot").
+# Delete "/lib/systemd/system/felix.service" afterwards if you want.
+#
+# If you need more help or have no idea what's going on, try one of these:
+#	- "man 1 systemd"
+#   - "man 1 systemctl"
+#   - "man 5 systemd.unit"
+#   - "man 7 bootup"
+#   - google
+#
+
+[Unit]
+Description=The Felix Discord-Bot
+Documentation=https://github.com/ParadoxalCorp/FelixBot/wiki
+After=network.target syslog.target
+
+[Install]
+Alias=felix felix-bot felixbot
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=felix-bot
+
+# The user that will run Felix.
+# You can comment this out but remember that systemd will run your app as root if you do that.
+# Don't believe anyone who says that always running userland apps with sudo/root is a good idea.
+User=felix
+
+# The path to your felix installation.
+# Double-Check that the user you specified above has permission to read/write in this path.
+WorkingDirectory=/home/ParadoxalCorp/FelixBot
+
+# The command to launch Felix.
+# You can probably leave this as-is since index.js is always relative to your working dir.
+ExecStart=/usr/bin/node index.js
+
+# If Felix crashes give him 2 seconds of rest and reboot.
+Restart=on-failure
+RestartSec=2
+
+# Have some ratelimiting. (b1nzy would be proud of this part).
+# Limit Felix to crashing at most 3 times per 10 seconds.
+# If you ever feel like raising this limit you should probably tell paradox to fix his bot.
+StartLimitInterval=10
+StartLimitBurst=3
