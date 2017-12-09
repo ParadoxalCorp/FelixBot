@@ -272,7 +272,7 @@ class Message extends Base {
             if (options.message) query = await channel.createMessage(options.message).catch(err => { return reject(err) });
             let reply;
             try {
-                const collected = await channel.awaitMessages(m => m.author.id === this.author.id, {
+                const collected = await channel.awaitMessages(m => m.author && m.author.id === this.author.id, {
                     max: 1,
                     time: options.timeout || 60000,
                     errors: ['time']
