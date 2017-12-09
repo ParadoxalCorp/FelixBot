@@ -42,11 +42,13 @@ class Request {
      * @param {Object} header An object containing the header and the header value
      * @param {string} header.header The header
      * @param {string} header.value The header value
+     * @param {Boolean} [json] Whether or not this should be sent with a application/json header
      */
-    post(url, data, header, timeout = 3000) {
+    post(url, data, header, timeout = 3000, json) {
         return new Promise(async(resolve, reject) => {
-            unirest.put(url)
+            unirest.post(url)
                 .header(`${header ? header.header : null}`, `${header ? header.value : null}`)
+                .header(`${json ? "Content-Type" : null}`, `${json ? "application/json" : null}`)
                 .send(data)
                 .timeout(timeout)
                 .end(response => resolve(response));

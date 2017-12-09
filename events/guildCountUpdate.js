@@ -7,11 +7,11 @@ module.exports = async(client) => {
         if (!updateDbl.body || !updateDbl.body.length) client.emit('error', `Failed to update guild count on Discord Bot List: ${updateDbl.body}`);
     }
     if (client.config.discordBotFr) {
-        const updateDbf = await request.post(`https://discordbot.takohell.com/api/v1/bots/${client.user.id}`, { server_count: client.guilds.size }, { header: `Authorization`, value: client.config.discordBotFr });
-        if (!updateDbf.body) client.emit('error', `Failed to update guild count on Discord Bot List: ${updateDbf.body}`);
+        const updateDbf = await request.post(`https://discordbot.takohell.com/api/v1/bots/${client.user.id}`, { server_count: client.guilds.size, shard_count: client.shards.size }, { header: `Authorization`, value: client.config.discordBotFr }, null, true);
+        if (!updateDbf.body || updateDbf.statusCode !== 200) client.emit('error', `Failed to update guild count on Discord Bot List fr: ${JSON.stringify(updateDbf.raw_body)}`);
     }
     if (client.config.terminalBotList) {
         const updateTerminal = await request.post(`https://ls.terminal.ink/api/v1/bots/${client.user.id}`, { server_count: client.guilds.size }, { header: `Authorization`, value: client.config.terminalBotList });
-        if (!updateTerminal.body) client.emit('error', `Failed to update guild count on Discord Bot List: ${updateTerminal.body}`);
+        if (!updateTerminal.body) client.emit('error', `Failed to update guild count on terminal: ${updateTerminal.body}`);
     }
 }
