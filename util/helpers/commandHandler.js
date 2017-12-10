@@ -71,13 +71,9 @@ module.exports = async(client, message) => {
             //Command confirmed, check for multiple commands
             multipleCmds.shift();
             if (multipleCmds[0]) {
-                //Emit a new message for all supposed commands, limit to 3 commands max once tho because nu spam
-                for (let i = 0; i < multipleCmds.length && i < 2; i++) {
-                    let newMessage = message;
-                    newMessage.content = multipleCmds[i].trim();
-                    client.emit('messageCreate', newMessage);
-                    await sleep(1000);
-                }
+                let newMessage = message;
+                newMessage.content = multipleCmds[0].trim();
+                client.emit('messageCreate', newMessage);
             }
         } catch (err) {
             client.emit('error', err, message);

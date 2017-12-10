@@ -84,13 +84,6 @@ class Bot {
                     value: `${message.guild.shard.id}/${client.shards.size}`,
                     inline: true
                 });
-                if (client.upvoters) {
-                    embedFields.push({
-                        name: ':+1: Upvotes',
-                        value: client.upvoters.length,
-                        inline: true
-                    });
-                }
                 return resolve(await message.channel.send({
                     embed: {
                         thumbnail: {
