@@ -36,7 +36,9 @@ About Felix's source usage, note that Felix is under APACHE 2.0 license, more in
 
 ## Self-hosting v3
 
-The only required fields in the config.json file are the `ownerID`(well probably the `admins` one as well) and the `token` fields, features will automatically be disabled if the needed api keys are missing
+The only required fields in the config.js file are the `ownerID`(well probably the `admins` one as well) and the `token` fields, features will automatically be disabled if the needed api keys are missing
+
+There is some customizable options in the config file like the cooldowns, but market items are in the core-data.json file
 
 ### First run notice
 The first time you run Felix(and everytime you will run him), Felix overwrites some of Eris(the API wrapper Felix uses) files, once the overwrite is done (status is logged to the console) you'll have to stop Felix and restart him for the right files to get loaded
