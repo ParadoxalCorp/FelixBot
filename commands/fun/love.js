@@ -65,7 +65,7 @@ class Love {
                     let cooldownsSet = 0;
                     for (let i = 0; i < userEntry.generalSettings.perks.love.length; i++) { //Add the cooldowns
                         if (userEntry.generalSettings.perks.love[i].cooldown < Date.now() && cooldownsSet < Math.round(lpCount)) {
-                            userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
+                            userEntry.generalSettings.perks.love[i].cooldown = Date.now() + client.config.options.loveCooldown;
                             cooldownsSet++;
                         }
                     }
@@ -82,7 +82,7 @@ class Love {
                     let cooldownsSet = 0;
                     for (let i = 0; i < userEntry.generalSettings.perks.love.length; i++) {
                         if (userEntry.generalSettings.perks.love[i].cooldown < Date.now() && cooldownsSet < users.size) {
-                            userEntry.generalSettings.perks.love[i].cooldown = Date.now() + 43200000;
+                            userEntry.generalSettings.perks.love[i].cooldown = Date.now() + client.config.options.loveCooldown;
                             cooldownsSet++;
                         }
                     }

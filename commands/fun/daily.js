@@ -2,7 +2,7 @@ class Daily {
     constructor() {
         this.help = {
             name: 'daily',
-            description: 'Get your 500 daily points',
+            description: 'Get your daily points',
             usage: 'daily'
         }
     }
@@ -22,10 +22,10 @@ class Daily {
                     let distance = convertToTime((userEntry.cooldowns.dailyCooldown - Date.now()));
                     return resolve(await message.channel.createMessage(`:x: You can only use this command once, time remaining: ${distance.hours}h ${distance.minutes}m ${distance.seconds}s`));
                 }
-                userEntry.generalSettings.points = userEntry.generalSettings.points + 500;
-                userEntry.cooldowns.dailyCooldown = Date.now() + 86400000;
+                userEntry.generalSettings.points = userEntry.generalSettings.points + client.config.options.dailyPoints;
+                userEntry.cooldowns.dailyCooldown = Date.now() + client.config.options.dailyCooldown;
                 client.userData.set(message.author.id, userEntry);
-                resolve(await message.channel.createMessage("You received your **500** daily points"));
+                resolve(await message.channel.createMessage(`You received your **${client.config.options.dailyPoints}** daily points`));
             } catch (err) {
                 reject(err);
             }

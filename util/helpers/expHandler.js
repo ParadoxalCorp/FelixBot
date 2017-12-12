@@ -15,6 +15,7 @@ class ExperienceHandler {
     }
 
     async run(client, message) {
+        if (client.talkedRecently.has(message.author.id)) return Promise.resolve(false);
         this.guildEntry = client.guildData.get(message.guild.id);
         this.userEntry = client.userData.get(message.author.id) || client.defaultUserData(message.author.id);
         this.memberEntry = this.guildEntry.generalSettings.levelSystem.users.find(u => u.id === message.author.id) || this.defaultMemberEntry(message.author.id);
@@ -29,6 +30,7 @@ class ExperienceHandler {
             this._notifyUser(updatedRoles ? updatedRoles.addedRoles : false);
         }
         this._saveData();
+        Promise.resolve(true);
     }
 
     getCurrentLevel(level, exp) {
@@ -107,6 +109,10 @@ class ExperienceHandler {
     }
 
     _saveData() {
+        this.client.talkedRecently.add(this.message.author.id);
+        setTimeout(() => {
+            this.client.talkedRecently.delete(this.message.author.id);
+        }, this.client.config.options.activityCooldown);
         this.guildEntry.generalSettings.levelSystem.users[this.guildEntry.generalSettings.levelSystem.users.findIndex(u => u.id === this.message.author.id)] = this.memberEntry;
         if (this.client.userData.get(this.message.author.id)) this.client.userData.set(this.message.author.id, this.userEntry);
         this.client.guildData.set(this.message.guild.id, this.guildEntry);

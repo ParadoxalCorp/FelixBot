@@ -27,5 +27,16 @@ module.exports = {
     //Whatanime.ga API key (still not implemented)
     whatAnimeKey: false,
     //Actually needed: The token of the bot, won't work without it
-    token: "TOKEN"
+    token: "TOKEN",
+	 //Some customizable options 
+    options: {
+        //The activity countdown (time before a user may win experience with a message again, in milliseconds)
+        activityCooldown: 30000,
+        //The love cooldown (time before a user love point may refill, in milliseconds)
+        loveCooldown: 43200000,
+        //The daily cooldown (time before a user can use daily again, in milliseconds)
+        dailyCooldown: 86400000,
+        //The amount of points given when using the daily command
+        dailyPoints: 500
+    }
 }
