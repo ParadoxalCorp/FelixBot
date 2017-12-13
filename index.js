@@ -114,11 +114,16 @@ class Client extends Eris {
                     levelSystem: {
                         enabled: false,
                         downGrade: true,
+                        autoRemove: false,
                         interval: false,
                         levelUpNotif: false,
                         roles: [],
                         users: []
                     },
+                },
+                starboard: {
+                    channel: false,
+                    messages: []
                 },
                 permissions: {
                     users: [],
@@ -265,11 +270,6 @@ const Felix = new Client(config.token, {
 
     //This is where Felix checks for API keys and disable features if missing keys
     if (!config.raven) logger.log(`No raven link found in the config, errors will be logged to the console`, "warn");
-    if (!config.discordBotList) {
-        let requireDiscordBotList = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("discordBotList"));
-        requireDiscordBotList.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`discordBotList\` API key which is missing`);
-        logger.log(`No discord bot list API key found in the config, disabled ${requireDiscordBotList.size > 0 ? requireDiscordBotList.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
-    }
     if (!config.wolkeImageKey) {
         let requirewolkeImageKey = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("wolkeImageKey"));
         requirewolkeImageKey.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`wolkeImageKey\` API key which is missing`);
@@ -296,4 +296,7 @@ const Felix = new Client(config.token, {
         logger.log(`No Steam API key found in the config, disabled ${requiresteamApiKey.size > 0 ? requiresteamApiKey.map(c => c.help.name).join(", ") : "nothing"}`, `warn`);
     }
 
+    //Initialize starboard manager
+    const StarboardManager = require("./util/helpers/StarboardManager.js");
+    new StarboardManager(Felix).init();
 }());
