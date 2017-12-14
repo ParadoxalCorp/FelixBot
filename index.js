@@ -123,6 +123,7 @@ class Client extends Eris {
                 },
                 starboard: {
                     channel: false,
+                    minimum: 1,
                     messages: []
                 },
                 permissions: {

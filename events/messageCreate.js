@@ -6,6 +6,7 @@ module.exports = async(client, message) => {
     //Ignore blacklisted users
     if (client.userData.get(message.author.id) && client.userData.get(message.author.id).generalSettings.blackListed && message.author.id !== client.config.ownerID) return;
     //AFK feature
+    if (client.users.get(message.author.id)) client.users.get(message.author.id).lastMessageID = message.id;
     const mentionned = message.mentions.users ? message.mentions.users.filter(u => client.userData.has(u.id) && client.userData.get(u.id).generalSettings.afk !== false) : {};
     if (mentionned.size < 3) { //(Don't send AFK messages if more than 2 mentionned users are AFK to avoid spam)
         mentionned.forEach(m => {
