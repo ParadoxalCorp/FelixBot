@@ -21,7 +21,7 @@ class Leaderboard {
                 const guildEntry = client.guildData.get(message.guild.id);
                 let leaderboard = guildEntry.generalSettings.levelSystem.users.filter(m => message.guild.members.has(m.id)).sort((a, b) => b.expCount - a.expCount);
                 let loveLeaderboard = client.userData.filterArray(u => message.guild.members.has(u.id)).sort((a, b) => b.generalSettings.lovePoints - a.generalSettings.lovePoints);
-                let pointsLeaderboard = client.userData.filterArray(u => message.guild.members.has(u.id) && !message.guild.members.get(u.id).bot).sort((a, b) => b.experience.points - a.experience.points)
+                let pointsLeaderboard = client.userData.filterArray(u => message.guild.members.has(u.id) && !message.guild.members.get(u.id).bot).sort((a, b) => b.generalSettings.points - a.generalSettings.points)
                 let glbLeaderboard = client.userData.filterArray(u => u.dataPrivacy.publicLevel && client.users.has(u.id)).sort((a, b) => b.experience.expCount - a.experience.expCount);
                 let glbLoveLeaderboard = client.userData.filterArray(u => u.dataPrivacy.publicLove && client.users.has(u.id)).sort((a, b) => b.generalSettings.lovePoints - a.generalSettings.lovePoints);
                 let messageLeaderboard = guildEntry.generalSettings.levelSystem.users.filter(m => message.guild.members.has(m.id)).sort((a, b) => b.messages - a.messages);
