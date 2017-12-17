@@ -30,8 +30,8 @@ class Clear {
                         //Filter specified users messages
                         if (args[i].toLowerCase().includes('u')) {
                             const users = await message.getUserResolvable();
-                            if (users.size < 1) filtered = filtered.concat(fetchedMessages.filter(m => m.author.id === message.author.id)); //If no users found then filter author messages
-                            else filtered = filtered.concat(fetchedMessages.filter(m => users.has(m.author.id)));
+                            filtered = users.size < 1 ? filtered.concat(fetchedMessages.filter(m => m.author.id === message.author.id)) :
+                                filtered.concat(fetchedMessages.filter(m => users.has(m.author.id))); //If no users found then filter author messages
                         }
                         //Filter Felix's commands
                         if (args[i].toLowerCase().includes('c')) {
@@ -40,11 +40,15 @@ class Clear {
                     }
                 }
                 if (!filters) filtered = fetchedMessages;
-                if (filtered.size < 2) return resolve(await message.channel.createMessage(':x: Not enough messages have been matched with the filter'));
-                const deletedMessages = await message.channel.deleteMessages(filtered.map(m => m.id));
-                message.channel.createMessage(`:white_check_mark: Deleted **${filtered.length}** messages`).then(m => {
+                let uniqueMessages = [];
+                filtered.forEach(m => {
+                    if (!uniqueMessages.find(uniqueMessage => uniqueMessage === m)) uniqueMessages.push(m);
+                });
+                if (uniqueMessages.length < 2) return resolve(await message.channel.createMessage(':x: Not enough messages have been matched with the filter'));
+                const deletedMessages = await message.channel.deleteMessages(uniqueMessages.map(m => m.id));
+                message.channel.createMessage(`:white_check_mark: Deleted **${uniqueMessages.length}** messages`).then(m => {
                     setTimeout(() => {
-                        m.delete();
+                        resolve(m.delete());
                     }, 3000)
                 });
             } catch (err) {
