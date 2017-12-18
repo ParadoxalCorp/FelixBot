@@ -76,7 +76,7 @@ class Leaderboard {
                     embed: {
                         title: `${message.guild.name}'s points leaderboard`,
                         color: 3447003,
-                        description: pointsLeaderboard.slice(0, 10).map(u => `#${position(u.id, pointsLeaderboard)} - **${message.guild.members.get(u.id).user.tag}**\nPoints: ${u.generalSettings.points}`).join("\n\n"),
+                        description: pointsLeaderboard.slice(0, 10).map(u => `#${position(u.id, pointsLeaderboard)} - **${message.guild.members.get(u.id).user.tag}**\nPoints: ${Math.round(u.generalSettings.points)}`).join("\n\n"),
                         footer: {
                             text: `Your position: #${pointsLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${pointsLeaderboard.length}`
                         },
@@ -115,7 +115,7 @@ class Leaderboard {
                     embed: {
                         title: `Global points leaderboard`,
                         color: 3447003,
-                        description: glbPointsLeaderboard.slice(0, 10).map(u => `#${position(u.id, glbPointsLeaderboard)} - **${client.users.get(u.id).tag}**\nPoints: ${u.generalSettings.points}`).join("\n\n"),
+                        description: glbPointsLeaderboard.slice(0, 10).map(u => `#${position(u.id, glbPointsLeaderboard)} - **${client.users.get(u.id).tag}**\nPoints: ${Math.round(u.generalSettings.points)}`).join("\n\n"),
                         footer: {
                             text: `Your position: #${glbPointsLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${glbPointsLeaderboard.length}`
                         },

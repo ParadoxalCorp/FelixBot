@@ -84,13 +84,13 @@ class Slots {
                     if (gambledPoints * multiplier < 0) {
                         userEntry.generalSettings.points = userEntry.generalSettings.points + gambledPoints * multiplier;
                         client.userData.set(message.author.id, userEntry);
-                        return resolve(sendResults(`You **lose**, **${Math.abs(gambledPoints * multiplier)}** points has been debited from your account. You now have **${userEntry.generalSettings.points}**`));
+                        return resolve(sendResults(`You **lose**, **${Math.abs(gambledPoints * multiplier)}** points has been debited from your account. You now have **${Math.round(userEntry.generalSettings.points)}**`));
                     } else {
                         let wonPoints = gambledPoints * multiplier;
                         if (userEntry.generalSettings.perks.boosters.find(p => p.boost === "points")) wonPoints = new String(wonPoints + ((userEntry.generalSettings.perks.boosters.find(p => p.boost === "points").percentageBoost / wonPoints) * 100));
                         userEntry.generalSettings.points = Number(userEntry.generalSettings.points) + Number(Number(wonPoints).toFixed(wonPoints.length + 1));
                         client.userData.set(message.author.id, userEntry);
-                        return resolve(sendResults(`You **win**, **${Number(Number(wonPoints).toFixed(wonPoints.length + 1))}** points has been credited to your account. You now have **${userEntry.generalSettings.points}** points`));
+                        return resolve(sendResults(`You **win**, **${Math.round(Number(Number(wonPoints).toFixed(wonPoints.length + 1)))}** points has been credited to your account. You now have **${Math.round(userEntry.generalSettings.points)}** points`));
                     }
                 }
             } catch (err) {

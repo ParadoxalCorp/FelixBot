@@ -60,12 +60,12 @@ class RPS {
                 let pointsResults = `You keep your **${pointsGambled}** points`;
                 if (results === "I win !") {
                     userEntry.generalSettings.points = userEntry.generalSettings.points - pointsGambled;
-                    pointsResults = `You lose **${pointsGambled}** points, you now have **${userEntry.generalSettings.points}** points`;
+                    pointsResults = `You lose **${pointsGambled}** points, you now have **${Math.round(userEntry.generalSettings.points)}** points`;
                 } else if (results === 'Oh... You win...') {
                     let wonPoints = pointsGambled * 2;
                     if (userEntry.generalSettings.perks.boosters.find(p => p.boost === "points")) wonPoints = new String(wonPoints + ((userEntry.generalSettings.perks.boosters.find(p => p.boost === "points").percentageBoost / wonPoints) * 100));
                     userEntry.generalSettings.points = Number(userEntry.generalSettings.points) + Number(Number(wonPoints).toFixed(wonPoints.length + 1));
-                    pointsResults = `You win **${Number(Number(wonPoints).toFixed(wonPoints.length + 1))}** points, you now have **${userEntry.generalSettings.points}** points`;
+                    pointsResults = `You win **${Math.round(Number(Number(wonPoints).toFixed(wonPoints.length + 1)))}** points, you now have **${Math.round(userEntry.generalSettings.points)}** points`;
                 }
                 //Save the changes
                 client.userData.set(message.author.id, userEntry);

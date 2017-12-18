@@ -97,7 +97,7 @@ class Uinfo {
                 if (userEntry.dataPrivacy.publicPoints || userEntry.id === message.author.id) {
                     embedFields.push({
                         name: ":ribbon: Points",
-                        value: new String(userEntry.generalSettings.points),
+                        value: new String(Math.round(userEntry.generalSettings.points)),
                         inline: true
                     });
                 }
