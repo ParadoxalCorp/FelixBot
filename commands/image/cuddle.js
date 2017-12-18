@@ -6,7 +6,6 @@ class Cuddle {
             usage: 'cuddle [user_resolvable]'
         };
         this.conf = {
-            guildOnly: true,
             require: "wolkeImageKey"
         }
     }
@@ -16,11 +15,11 @@ class Cuddle {
             const request = require("../../util/modules/request.js");
             try {
                 let result = await request.get("https://api.weeb.sh/images/random?type=cuddle&filetype=gif", { header: 'Authorization', value: `Bearer ${client.config.wolkeImageKey}` });
-                let users = await message.getUserResolvable();
-                if (!result.body || !result.body.url) return resolve(await message.channel.send(":x: An error occurred :v"));
-                resolve(await message.channel.send({
+                let users = message.guild ? await message.getUserResolvable() : {};
+                if (!result.body || !result.body.url) return resolve(await message.channel.createMessage(":x: An error occurred :v"));
+                resolve(await message.channel.createMessage({
                     embed: {
-                        description: users.first() ? `Hey ${users.map(u => '**' + u.tag + '**').join(", ")}, you've just been cuddled by **${message.author.tag}**` : "",
+                        description: users.first && users.first() ? `Hey ${users.map(u => '**' + u.tag + '**').join(", ")}, you've just been cuddled by **${message.author.tag}**` : "",
                         image: {
                             url: result.body.url
                         },
