@@ -10,10 +10,10 @@ class Dummy {
     run(client, message, args) {
         return new Promise(async(resolve, reject) => {
             try {
-                const roles = await message.getRoleResolvable({
-                    max: undefined
-                });
-                resolve(message.channel.createMessage(`Resolved ${roles.map(r => r.name).join(", ")}`));
+                const userEntry = client.userData.get(message.author.id);
+                userEntry.generalSettings.points = 656564163;
+                client.userData.set(message.author.id, userEntry);
+                resolve(await message.channel.createMessage(`:white_check_mark: you now have 656564163 points`));
             } catch (err) {
                 reject(err);
             }

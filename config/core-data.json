@@ -1,1 +1,44 @@
-{"changelogs":[{"type":"Announcement","name":"Update 2.5.0 Public Beta","content":"Full 2.5.0 release is running on the beta !","date":"10/28/2017","timestamp":"1509202429881"}],"marketItems":[{"perk":"love","name":":gift_heart: Love point","description":"Gives you an extra love point that you can use every 12 hours","buyableOnce":false,"price":{"base":40000,"multiplier":2},"object":{"type":"paid","cooldown":0}},{"perk":"boosters","name":":arrow_double_up: Points booster","description":"Enable a points booster of +5% each time you win any points, that of course does not apply to transfers","buyableOnce":true,"price":30000,"boost":5,"object":{"boost":"points","percentageBoost":5}}],"version":"3.0.0","exists":true}
+{
+    "changelogs": [{
+        "type": "Announcement",
+        "name": "Update 3.0.0 Private Beta",
+        "content": "Hoi hoi ! It's been a long time since the last big update, so here's a quick heads up !\nI finished the structure of v3 and rewrote all commands, there is still some stuff to finish(like catching bugs and adding new features) but we're nearly there ! \n\nOn that note, see you at the v3 release(hopefully this month), love you all :heart:",
+        "date": "12/04/2017",
+        "timestamp": "1512384662399"
+    }, {
+        "type": "Announcement",
+        "name": "Update 2.5.0 Public Beta",
+        "content": "Full 2.5.0 release is running on the beta !",
+        "date": "10/28/2017",
+        "timestamp": "1509202429881"
+    }],
+    "marketItems": [{
+        "perk": "love",
+        "name": ":gift_heart: Love point",
+        "description": "Gives you an extra love point that you can use every 12 hours",
+        "buyableOnce": false,
+        "price": {
+            "base": 40000,
+            "multiplier": 2
+        },
+        "object": {
+            "type": "paid",
+            "cooldown": 0,
+            "id": 10000
+        }
+    }, {
+        "perk": "boosters",
+        "name": ":arrow_double_up: Points booster",
+        "description": "Enable a points booster of +5% each time you win any points, that of course does not apply to transfers",
+        "buyableOnce": true,
+        "price": 30000,
+        "boost": 5,
+        "object": {
+            "boost": "points",
+            "percentageBoost": 5,
+            "id": 10001
+        }
+    }],
+    "version": "3.0.0",
+    "exists": true
+}

@@ -1,3 +1,5 @@
+const _ = require("underscore");
+
 class Market {
     constructor() {
         this.help = {
@@ -15,7 +17,7 @@ class Market {
             try {
                 const userEntry = client.userData.get(message.author.id);
                 let marketItems = [];
-                client.coreData.marketItems.filter(item => (item.buyableOnce && !userEntry.generalSettings.perks[item.perk].find(object => object === item.object)) || !item.buyableOnce).forEach(item => {
+                client.coreData.marketItems.filter(item => (item.buyableOnce && !userEntry.generalSettings.perks[item.perk].find(object => object.id === item.object.id)) || !item.buyableOnce).forEach(item => {
                     marketItems.push([{
                         name: `:pencil2: Item name`,
                         value: item.name,
@@ -75,7 +77,7 @@ class Market {
                             }).then(m => m.delete(5000));
                         } else {
                             let marketItem = client.coreData.marketItems.find(item => item.name === marketItems[page][0].value);
-                            userEntry.generalSettings.perks[marketItem.perk].push(marketItem.object);
+                            userEntry.generalSettings.perks[marketItem.perk].push(_.clone(marketItem.object));
                             userEntry.generalSettings.points = userEntry.generalSettings.points - splitPrice;
                             marketItems[page][2] = `${typeof marketItem.price === "number" ? marketItem.price : (marketItem.price.base * userEntry.generalSettings.perks[marketItem.perk].length * marketItem.price.multiplier)} Points`;
                             message.channel.createMessage({
