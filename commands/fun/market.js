@@ -79,7 +79,7 @@ class Market {
                             let marketItem = client.coreData.marketItems.find(item => item.name === marketItems[page][0].value);
                             userEntry.generalSettings.perks[marketItem.perk].push(_.clone(marketItem.object));
                             userEntry.generalSettings.points = userEntry.generalSettings.points - splitPrice;
-                            marketItems[page][2] = `${typeof marketItem.price === "number" ? marketItem.price : (marketItem.price.base * userEntry.generalSettings.perks[marketItem.perk].length * marketItem.price.multiplier)} Points`;
+                            marketItems[page][2].value = `${typeof marketItem.price === "number" ? marketItem.price : (marketItem.price.base * userEntry.generalSettings.perks[marketItem.perk].length * marketItem.price.multiplier)} Points`;
                             message.channel.createMessage({
                                 embed: {
                                     description: `:white_check_mark: You bought a ${marketItems[page][0].value} for **${splitPrice}** points, you have **${userEntry.generalSettings.points}** points remaining`
