@@ -16,7 +16,6 @@
     },
     "homepage": "https://github.com/ParadoxalCorp/FelixBot#readme",
     "dependencies": {
-        "canvas": "^1.6.8",
         "chalk": "^2.1.0",
         "draftlog": "^1.0.12",
         "enmap": "^0.4.2",
