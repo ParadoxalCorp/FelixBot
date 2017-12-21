@@ -22,10 +22,9 @@ module.exports = async(client) => {
                 },
                 run: async function(client, message, args) {
                     return new Promise(async(resolve, reject) => {
-                        const thisType = !message.content.startsWith('<') ? args.shift().slice(message.guild ? client.guildData.get(message.guild.id).generalSettings.prefix.length : client.config.prefix.length).toLowerCase() : (args[1] ? args[1].toLowerCase() : false);
                         const request = require(`../modules/request.js`);
                         try {
-                            let result = await request.get(`https://api.weeb.sh/images/random?type=${thisType}`, { header: 'Authorization', value: `Bearer ${client.config.wolkeImageKey}` });
+                            let result = await request.get(`https://api.weeb.sh/images/random?type=${type}`, { header: 'Authorization', value: `Bearer ${client.config.wolkeImageKey}` });
                             if (!result.body || !result.body.url) return resolve(await message.channel.createMessage(`:x: An error occured`));
                             resolve(await message.channel.createMessage({
                                 embed: {
