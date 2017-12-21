@@ -28,7 +28,7 @@ class Ban {
                 if (!message.guild.members.get(memberToBan.first().id).bannable) return resolve(await message.channel.createMessage(`:x: I can't ban this member :v`));
                 //This will be used to avoid triggering two times the case register
                 client.guilds.get(message.guild.id).lastBanned = memberToBan.first().id;
-                await message.guild.members.get(memberToBan.first().id).ban(daysAmount, reason);
+                await message.guild.members.get(memberToBan.first().id).ban(daysAmount, `Banned by ${message.author.tag}: ${reason ? reason : "No reason specified"}`);
                 if (guildEntry.generalSettings.modLogChannel) {
                     await registerCase(client, {
                         user: memberToBan.first(),

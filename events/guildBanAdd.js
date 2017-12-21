@@ -7,7 +7,7 @@ module.exports = async(client, guild, user) => {
         return;
     }
     if (guildEntry.generalSettings.modLogChannel) {
-        let auditCase = await guild.getAuditLogs(1, null, 22).catch(err => false);
+        let auditCase = await guild.getAuditLogs(1).catch(err => false);
         registerCase(client, {
             guild: guild,
             user: user,

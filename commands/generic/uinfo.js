@@ -68,7 +68,7 @@ class Uinfo {
                 if (message.guild.members.get(target.id).highestRole) {
                     embedFields.push({
                         name: ":arrow_up_small: Highest Role",
-                        value: message.guild.members.get(target.id).highestRole.name,
+                        value: message.guild.roles.get(message.guild.members.get(target.id).highestRole).name,
                         inline: true
                     });
                 }
@@ -112,7 +112,7 @@ class Uinfo {
                     embed: {
                         title: ':bust_in_silhouette: User info',
                         author: {
-                            name: message.guild.members.get(target.id).username,
+                            name: `${message.guild.members.get(target.id).tag}`,
                             icon_url: avatar
                         },
                         fields: embedFields,

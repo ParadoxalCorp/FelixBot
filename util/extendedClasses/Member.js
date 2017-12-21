@@ -151,7 +151,7 @@ class Member extends Base {
      */
     get kickable() {
         if (this.id === this.guild.ownerID) return false;
-        if (this.id === this.client.user.id) return false;
+        if (this.id === this.guild.shard.client.user.id) return false;
         const clientMember = this.guild.members.get(this.guild.shard.client.user.id);
         if (!clientMember.hasPermission('kickMembers')) return false;
         return this.guild.roles.get(clientMember.highestRole).position > this.guild.roles.get(this.highestRole).position;

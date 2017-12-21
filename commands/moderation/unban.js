@@ -25,7 +25,7 @@ class Unban {
                 if (!userToUnban) return resolve(await message.channel.createMessage(`:x: I couldn't find any banned user corresponding to this id`));
                 //This will be used to avoid triggering two times the case register
                 client.guilds.get(message.guild.id).lastUnbanned = userToUnban.id;
-                await message.guild.unbanMember(userToUnban.id, reason);
+                await message.guild.unbanMember(userToUnban.id, `Unbanned by ${message.author.tag}: ${reason ? reason : "No reason specified"}`);
                 if (guildEntry.generalSettings.modLogChannel) {
                     await registerCase(client, {
                         user: userToUnban,

@@ -33,9 +33,13 @@ module.exports = async(client, guild, member) => {
     } catch (err) {}
 
     if (guildEntry.generalSettings.modLogChannel) {
-        let auditCase = await guild.getAuditLogs(1, null, 20).catch(err => false);
+        let auditCase = await guild.getAuditLogs(1).catch(err => false);
+        if (client.guilds.get(guild.id).lastKicked === member.id) {
+            client.guilds.get(guild.id).lastKicked = undefined;
+            return;
+        }
         //If we can't ensure that its a kick, ignore it (since yeah kicks are with the same event than a casual leaving member, why you ask? idk, blame discord)
-        if (!auditCase || !auditCase.entries[0] || auditCase.entries[0].targetID !== member.id) return;
+        if (!auditCase || !auditCase.entries[0] || auditCase.entries[0].targetID !== member.id || auditCase.entries[0].actionType !== 20) return;
         registerCase(client, {
             guild: guild,
             user: member.user,

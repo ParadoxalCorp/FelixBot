@@ -43,6 +43,7 @@ function registerCase(client, newCase) {
                 color: modCase.color,
                 action: newCase.action,
                 performedAction: modCase.action,
+                customPerformedAction: newCase.performedAction,
                 moderator: newCase.moderator ? {
                     id: newCase.moderator.id,
                     username: newCase.moderator.username,
