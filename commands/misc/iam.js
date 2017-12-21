@@ -8,7 +8,8 @@ class Iam {
         }
         this.conf = {
             guildOnly: true,
-            cooldownWeight: 4
+            cooldownWeight: 4,
+            requirePerms: ['manageRoles']
         }
     }
 

@@ -6,7 +6,8 @@ class Announce {
             usage: 'announce'
         }
         this.conf = {
-            guildOnly: true
+            guildOnly: true,
+            requirePerms: ['manageMessages']
         }
     }
 

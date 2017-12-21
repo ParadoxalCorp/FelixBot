@@ -13,6 +13,7 @@ module.exports = async(client, server, PayloadValidator) => {
                 if (!token || token.public) return reply("Forbidden").code(403);
                 tokens[tokens.findIndex(t => t.token === req.headers.authorization)].requests.push({ timestamp: Date.now(), type: req.method });
                 client.clientData.set("tokens", tokens);
+                if (req.params.clientValue === "token") return reply('baguette tbh');
                 return reply(client[req.params.clientValue].first ? Array.from(client[req.params.clientValue].values()) : client[req.params.clientValue]);
             } catch (err) {
                 console.error(err);

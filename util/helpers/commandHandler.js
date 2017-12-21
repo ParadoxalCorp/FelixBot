@@ -45,6 +45,7 @@ module.exports = async(client, message) => {
         //Permissions check
         const allowed = require(`./permissionsChecker.js`)(client, message, command);
         if (!allowed) return await message.channel.createMessage(":x: You don't have the permission to use this command !");
+        else if (Array.isArray(allowed)) return await message.channel.createMessage(`:x: I miss the following permissions to run this command properly: \`${allowed.join(', ')}\``);
 
         if (message.content.startsWith('<')) {
             message.content = message.content.substr(args[0].length).trim();

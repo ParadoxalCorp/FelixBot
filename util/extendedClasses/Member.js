@@ -136,6 +136,41 @@ class Member extends Base {
     }
 
     /**
+     * The role of the member with the highest position
+     * @type {Role}
+     * @readonly
+     */
+    get highestRole() {
+        return this.roles.reduce((prev, role) => !prev || this.guild.roles.get(role).position >= this.guild.roles.get(prev).position ? role : prev);
+    }
+
+    /**
+     * Whether the member is kickable by the client user
+     * @type {boolean}
+     * @readonly
+     */
+    get kickable() {
+        if (this.id === this.guild.ownerID) return false;
+        if (this.id === this.client.user.id) return false;
+        const clientMember = this.guild.members.get(this.guild.shard.client.user.id);
+        if (!clientMember.hasPermission('kickMembers')) return false;
+        return this.guild.roles.get(clientMember.highestRole).position > this.guild.roles.get(this.highestRole).position;
+    }
+
+    /**
+     * Whether the member is bannable by the client user
+     * @type {boolean}
+     * @readonly
+     */
+    get bannable() {
+        if (this.user.id === this.guild.ownerID) return false;
+        if (this.user.id === this.guild.shard.client.user.id) return false;
+        const clientMember = this.guild.members.get(this.guild.shard.client.user.id);
+        if (!clientMember.hasPermission('banMembers')) return false;
+        return this.guild.roles.get(clientMember.highestRole).position > this.guild.roles.get(this.highestRole).position;
+    }
+
+    /**
      * Edit the guild member
      * @arg {Object} options The properties to edit
      * @arg {String[]} [options.roles] The array of role IDs the user should have

@@ -384,8 +384,9 @@ class Message extends Base {
     /**
      * Get the channels resolvable of a message.
      * @param {Object} [options] The options to provide
-     * @param {number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @param {Number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
      * @param {Number} [options.max=infinity] Max channels to resolve
+     * @param {Boolean} [options.type=text] The type of channels that has to be search, can be "text", "voice" or "all"
      * @returns {Promise<Collection<id, Channel>>}
      * @example
      * // Get the channels of a message
@@ -395,9 +396,10 @@ class Message extends Base {
      */
     getChannelResolvable(options = {}) {
         return new Promise(async(resolve, reject) => {
+            let type = options.type ? options.type : "text";
             let potentialChannelsResolvables = this.content.split(/\s+/gim).filter(c => c.length >= (options.charLimit || 3));
             const channelsResolved = new Collection();
-            let channels = this.guild.channels.filter(c => c.type === 0);
+            let channels = type === "all" ? this.guild.channels : this.guild.channels.filter(c => c.type === (type === "text" ? 0 : 2));
             for (let i = 0; i < potentialChannelsResolvables.length; i++) {
                 if (options.max === channelsResolved.size) return resolve(channelsResolved);
                 //------------------Resolve by ID--------------------

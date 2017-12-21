@@ -17,7 +17,8 @@ class PayloadValidator {
             message: ['boolean', 'string'],
             channel: ['boolean', 'string'],
             method: ['boolean', 'string'],
-            levelUpNotif: ['boolean', 'string']
+            levelUpNotif: ['boolean', 'string'],
+            modLogChannel: ['boolean', 'string']
         };
         guildKeys.forEach(key => {
             if (typeof defaultGuildData[key] === "undefined") return delete guild[key];

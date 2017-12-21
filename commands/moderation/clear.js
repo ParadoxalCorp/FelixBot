@@ -8,7 +8,8 @@ class Clear {
             },
             this.conf = {
                 guildOnly: true,
-                aliases: ['nuke', 'purge', 'clean']
+                aliases: ['nuke', 'purge', 'clean'],
+                requirePerms: ['manageMessages']
             }
     }
 
