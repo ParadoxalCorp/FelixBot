@@ -12,10 +12,12 @@ class Modlog {
             triggers: new Map([
                 ['set_channel', {
                     script: 'setChannel.js',
+                    help: 'Set the mod-log channel',
                     args: 1
                 }],
                 ['disable', {
-                    script: 'disable.js'
+                    script: 'disable.js',
+                    help: 'Remove the mod-log channel'
                 }]
             ])
         }
