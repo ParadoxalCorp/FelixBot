@@ -45,7 +45,7 @@ class MessageReaction {
         if (this._emoji instanceof Emoji) return this._emoji;
         // Check to see if the emoji has become known to the client
         if (this._emoji.id) {
-            const emojis = this.message.client.emojis;
+            const emojis = this.message._client.emojis;
             if (emojis.has(this._emoji.id)) {
                 const emoji = emojis.get(this._emoji.id);
                 this._emoji = emoji;
@@ -57,14 +57,14 @@ class MessageReaction {
 
     /**
      * Removes a user from this reaction.
-     * @param {UserResolvable} [user=this.message.client.user] The user to remove the reaction of
+     * @param {UserResolvable} [user=this.message._client.user] The user to remove the reaction of
      * @returns {Promise<MessageReaction>}
      */
-    remove(user = this.message.client.user) {
+    remove(user = this.message._client.user) {
         const message = this.message;
-        const userID = this.message.client.resolver.resolveUserID(user);
+        const userID = this.message._client.resolver.resolveUserID(user);
         if (!userID) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
-        return message.client.rest.methods.removeMessageReaction(
+        return message._client.rest.methods.removeMessageReaction(
             message, this.emoji.identifier, userID
         );
     }
@@ -76,12 +76,12 @@ class MessageReaction {
      */
     fetchUsers(limit = 100) {
         const message = this.message;
-        return message.client.rest.methods.getMessageReactionUsers(
+        return message._client.rest.methods.getMessageReactionUsers(
             message, this.emoji.identifier, limit
         ).then(users => {
             this.users = new Collection();
             for (const rawUser of users) {
-                const user = this.message.client.dataManager.newUser(rawUser);
+                const user = this.message._client.dataManager.newUser(rawUser);
                 this.users.set(user.id, user);
             }
             this.count = this.users.size;
