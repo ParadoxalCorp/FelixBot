@@ -80,6 +80,11 @@ class Bot {
                     inline: true
                 });
                 embedFields.push({
+                    name: 'Source',
+                    value: `[GitHub repository](https://github.com/ParadoxalCorp/FelixBot)`,
+                    inline: true
+                });
+                embedFields.push({
                     name: `:gear: Shard`,
                     value: `${message.guild.shard.id}/${client.shards.size}`,
                     inline: true

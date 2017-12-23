@@ -19,7 +19,8 @@ class Softban {
                 const guildEntry = client.guildData.get(message.guild.id);
                 if (!args[0]) return resolve(await message.channel.createMessage(`:x: Well you might want to specify a user to softban, i can't just softban randomly`));
                 let memberToBan = await message.getUserResolvable({
-                    max: 1
+                    max: 1,
+                    guildOnly: true
                 });
                 let reason = new RegExp(/\-r/gim).test(args.join(" ")) ? args.join(" ").split(/\-r/gim)[1].trim() : undefined;
                 let daysAmount = args.filter(a => a.length < 2).filter(a => !isNaN(a))[0] ? (Math.round(args.filter(a => !isNaN(a))[0]) > 7 ? 7 : parseInt(Math.round(args.filter(a => !isNaN(a))[0]))) : 0;

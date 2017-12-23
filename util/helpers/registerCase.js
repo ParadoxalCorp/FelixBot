@@ -30,6 +30,10 @@ function registerCase(client, newCase) {
                 unban: {
                     color: 0x00ff00,
                     action: "unbanned"
+                },
+                unmute: {
+                    color: 0x00ff00,
+                    action: "unmuted"
                 }
             }
             let modCase = cases[newCase.action];
