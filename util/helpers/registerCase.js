@@ -34,15 +34,19 @@ function registerCase(client, newCase) {
                 unmute: {
                     color: 0x00ff00,
                     action: "unmuted"
+                },
+                hackban: {
+                    color: 0xff0000,
+                    action: 'hack-banned'
                 }
             }
             let modCase = cases[newCase.action];
             guildEntry.generalSettings.modLog.push({
                 user: {
-                    id: newCase.user.id,
-                    username: newCase.user.username,
-                    tag: newCase.user.tag,
-                    discriminator: newCase.user.discriminator
+                    id: newCase.user ? newCase.user.id : newCase.id,
+                    username: newCase.user ? newCase.user.username : newCase.username,
+                    tag: newCase.user ? newCase.user.tag || `${newCase.user.username}#${newCase.user.discriminator}` : newCase.tag || `${newCase.username}#${newCase.discriminator}`,
+                    discriminator: newCase.user ? newCase.user.discriminator : newCase.discriminator
                 },
                 color: modCase.color,
                 action: newCase.action,

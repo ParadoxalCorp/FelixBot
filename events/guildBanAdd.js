@@ -7,12 +7,13 @@ module.exports = async(client, guild, user) => {
         return;
     }
     if (guildEntry.generalSettings.modLogChannel) {
+        let lastHackbanned = client.guilds.get(guild.id).lastHackbanned;
         let auditCase = await guild.getAuditLogs(1).catch(err => false);
         registerCase(client, {
             guild: guild,
             user: user,
-            moderator: auditCase && auditCase.entries[0] ? auditCase.entries[0].user : false,
-            action: "ban",
+            moderator: lastHackbanned && lastHackbanned.moderator ? lastHackbanned.moderator : (auditCase && auditCase.entries[0] ? auditCase.entries[0].user : false),
+            action: lastHackbanned && lastHackbanned.user === user.id ? "hackban" : "ban",
             reason: auditCase && auditCase.entries[0] ? auditCase.entries[0].reason : false
         });
     }
