@@ -49,6 +49,7 @@ class Anime {
                     reply.query.delete();
                 }
                 const anime = await malScraper.getInfoFromName(selectedAnime.title);
+                console.dir(anime);
                 if (anime.genres.length > 0) {
                     embedFields.push({
                         name: ':open_file_folder: Genres',
@@ -114,13 +115,14 @@ class Anime {
                 return resolve(await message.channel.createMessage({
                     embed: {
                         title: selectedAnime.title,
-                        url: anime.detailsLink || 'https://myanimelist.net/',
+                        url: anime.url || 'https://myanimelist.net/',
                         image: {
                             url: selectedAnime.image
                         },
                         fields: embedFields,
                         footer: {
-                            text: "Notes count: " + (anime.statistics.score.count || 'None') + " Popularity: " + (anime.statistics.popularity || 'None') + " Members: " + (anime.statistics.members || 'None') + " Ranking: " + (anime.statistics.ranking || 'None')
+                            text: (anime.scoreStats || "") +
+                                " | Popularity: " + (anime.popularity || 'None') + " | Members: " + (anime.members || 'None') + " | Ranking: " + (anime.ranked || 'None') + " | Rating: " + (anime.rating || 'None')
                         }
                     }
                 }));
