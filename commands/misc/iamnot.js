@@ -27,8 +27,6 @@ class Iamnot {
                     let rolesFields = [];
                     guildEntry.generalSettings.autoAssignablesRoles.forEach(role => { //Build roles fields
                         let guildRole = message.guild.roles.get(role);
-                        let mentionable = guildRole.mentionable ? `:white_check_mark:` : `:x:`
-                        hoisted = guildRole.hoist ? `:white_check_mark:` : `:x:`;
                         rolesFields.push([{
                             name: 'Name',
                             value: `${guildRole.name}`,
@@ -39,11 +37,11 @@ class Iamnot {
                             inline: true
                         }, {
                             name: `Hoisted`,
-                            value: `${hoisted}`,
+                            value: guildRole.hoist ? `:white_check_mark:` : `:x:`,
                             inline: true
                         }, {
                             name: 'Mentionable',
-                            value: `${mentionable}`,
+                            value: guildRole.mentionable ? `:white_check_mark:` : `:x:`,
                             inline: true
                         }]);
                     });
