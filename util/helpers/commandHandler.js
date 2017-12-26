@@ -52,8 +52,6 @@ module.exports = async(client, message) => {
             args.splice(0, 2);
         };
         try {
-            let multipleCmds = message.content.split('&&');
-            if (multipleCmds.length > 1) message.content = multipleCmds[0];
             //Shortcuts
             if (command.shortcut && args.filter(a => command.shortcut.triggers.has(a.toLowerCase())).length > 0) {
                 let trigger = args.filter(a => command.shortcut.triggers.has(a.toLowerCase()))[0].toLowerCase();
@@ -69,13 +67,6 @@ module.exports = async(client, message) => {
                 if (client.ratelimited.get(message.author.id) > command.conf.cooldownWeight) client.ratelimited.set(message.author.id, client.ratelimited.get(message.author.id) - command.conf.cooldownWeight)
                 else client.ratelimited.delete(message.author.id);
             }, 25000);
-            //Command confirmed, check for multiple commands
-            multipleCmds.shift();
-            if (multipleCmds[0]) {
-                let newMessage = message;
-                newMessage.content = multipleCmds[0].trim();
-                client.emit('messageCreate', newMessage);
-            }
         } catch (err) {
             client.emit('error', err, message);
         } finally {

@@ -7,7 +7,7 @@ class Slots {
             detailedUsage: 'Use `{prefix}slots [points]` to gamble your points, so for example `{prefix}slots 5` will gamble 5 of your points'
         }
         this.conf = {
-            cooldownWeight: 3
+            cooldownWeight: 0
         }
     }
 
@@ -17,7 +17,7 @@ class Slots {
                 const userEntry = client.userData.get(message.author.id);
                 var args = message.content.split(/\s+/);
                 args.shift();
-                if (args.length === 0) { //--------------------------------------Current balance--------------------------------------------------
+                if (args.length === 0 || isNaN(args[0])) { //--------------------------------------Current balance--------------------------------------------------
                     return resolve(await message.channel.createMessage("You currently have **" + userEntry.generalSettings.points + "** points"));
                 } else { //----------------------------------------------------Slots stuff-------------------------------------------------
                     const getRandomNumber = function(max, min) {

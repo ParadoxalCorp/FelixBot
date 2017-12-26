@@ -47,7 +47,7 @@ class Reload {
                         newCommand.conf.guildOnly = newCommand.conf.guildOnly ? newCommand.conf.guildOnly : false;
                         newCommand.conf.aliases = newCommand.conf.aliases ? newCommand.conf.aliases : false;
                         newCommand.conf.disabled = newCommand.conf.disabled ? newCommand.conf.disabled : false;
-                        if (!newCommand.conf.cooldownWeight) newCommand.conf.cooldownWeight = 5;
+                        if (!newCommand.conf.cooldownWeight && command.conf.cooldownWeight !== 0) newCommand.conf.cooldownWeight = 5;
                         if (!newCommand.help.category) newCommand.help.category = path.split(/\\|\//gim)[1];
                         //Add the command to the collection
                         client.commands.set(newCommand.help.name, newCommand);

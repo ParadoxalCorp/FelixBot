@@ -116,7 +116,6 @@ class Client extends Eris {
                         enabled: false,
                         downGrade: true,
                         autoRemove: false,
-                        interval: false,
                         levelUpNotif: false,
                         roles: [],
                         users: []
@@ -197,7 +196,7 @@ const Felix = new Client(config.token, {
                 command.conf.guildOnly = command.conf.guildOnly ? command.conf.guildOnly : false;
                 command.conf.aliases = command.conf.aliases ? command.conf.aliases : false;
                 command.conf.disabled = command.conf.disabled ? command.conf.disabled : false;
-                if (!command.conf.cooldownWeight) command.conf.cooldownWeight = 5;
+                if (!command.conf.cooldownWeight && command.conf.cooldownWeight !== 0) command.conf.cooldownWeight = 5;
                 if (!command.help.category) command.help.category = categories[i];
                 //Add the command to the collection
                 Felix.commands.set(command.help.name, command);
