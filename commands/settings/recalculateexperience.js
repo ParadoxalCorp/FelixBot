@@ -41,7 +41,7 @@ class RecalculateExperience {
                     if (rolesToRemove[0]) {
                         for (let o = 0; o < rolesToRemove.length; o++) {
                             try {
-                                await member.removeRole(rolesToRemove[o].id);
+                                await member.removeRole(rolesToRemove[o].id, `Doesn't meet the requirements anymore (experience recalculation process triggered by ${message.author.tag})`);
                                 await sleep(1000);
                             } catch (err) {
                                 console.error(err);
@@ -55,13 +55,14 @@ class RecalculateExperience {
                         }
                         for (let o = 0; o < rolesToAdd.length; o++) {
                             try {
-                                await member.addRole(rolesToAdd[o].id);
+                                await member.addRole(rolesToAdd[o].id, `Now meets the requirements (experience recalculation process triggered by ${message.author.tag})`);
                                 await sleep(1000);
                             } catch (err) {
                                 console.error(err);
                             }
                         }
                     }
+                    console.log(guildEntry.generalSettings.levelSystem.users[i].id);
                     if ((i + 1) === guildEntry.generalSettings.levelSystem.users.length) {
                         resolve(message.author.createMessage(`:white_check_mark: The recalculating and re-adjusting has been completed, it took \`${timeConverter.toElapsedTime(Date.now() - startDate, true)}\``).catch(err => err));
                     }

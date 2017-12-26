@@ -7,7 +7,7 @@ class Slots {
             detailedUsage: 'Use `{prefix}slots [points]` to gamble your points, so for example `{prefix}slots 5` will gamble 5 of your points'
         }
         this.conf = {
-            cooldownWeight: 0
+            cooldownWeight: 3
         }
     }
 

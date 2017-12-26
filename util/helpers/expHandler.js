@@ -48,7 +48,7 @@ class ExperienceHandler {
     _checkRequirement(currentLevel) {
         return this.guildEntry.generalSettings.levelSystem.roles.filter(r => (r.method === "experience" && r.at === currentLevel) ||
                 (r.method === "message" && this.memberEntry.messages === r.at))
-            .filter(r => this.message.guild.roles.has(r.id) && !this.message.guild.members.get(this.message.author.id).roles.find(r => r === r.id));
+            .filter(r => this.message.guild.roles.has(r.id) && !this.message.guild.members.get(this.message.author.id).roles.find(mr => mr === r.id));
     }
 
     _updateUserRoles(roles) {
