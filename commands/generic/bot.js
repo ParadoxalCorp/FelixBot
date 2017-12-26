@@ -50,7 +50,7 @@ class Bot {
                 });
                 let uptime = TimeConverter.toElapsedTime(client.uptime);
                 embedFields.push({
-                    name: ":date: Uptime",
+                    name: ":timer: Uptime",
                     value: `${uptime.days}d ${uptime.hours}h ${uptime.minutes}m ${uptime.seconds}s`,
                     inline: true
                 });
