@@ -141,7 +141,7 @@ class Member extends Base {
      * @readonly
      */
     get highestRole() {
-        return this.roles.reduce((prev, role) => !prev || this.guild.roles.get(role).position >= this.guild.roles.get(prev).position ? role : prev);
+        return this.roles[0] ? this.roles.reduce((prev, role) => !prev || this.guild.roles.get(role).position >= this.guild.roles.get(prev).position ? role : prev) : false;
     }
 
     /**
@@ -154,7 +154,7 @@ class Member extends Base {
         if (this.id === this.guild.shard.client.user.id) return false;
         const clientMember = this.guild.members.get(this.guild.shard.client.user.id);
         if (!clientMember.hasPermission('kickMembers')) return false;
-        return this.guild.roles.get(clientMember.highestRole).position > this.guild.roles.get(this.highestRole).position;
+        return (clientMember.highestRole ? this.guild.roles.get(clientMember.highestRole).position : 0) > (this.highestRole ? this.guild.roles.get(this.highestRole).position : 0);
     }
 
     /**
@@ -167,7 +167,7 @@ class Member extends Base {
         if (this.user.id === this.guild.shard.client.user.id) return false;
         const clientMember = this.guild.members.get(this.guild.shard.client.user.id);
         if (!clientMember.hasPermission('banMembers')) return false;
-        return this.guild.roles.get(clientMember.highestRole).position > this.guild.roles.get(this.highestRole).position;
+        return (clientMember.highestRole ? this.guild.roles.get(clientMember.highestRole).position : 0) > (this.highestRole ? this.guild.roles.get(this.highestRole).position : 0);
     }
 
     /**

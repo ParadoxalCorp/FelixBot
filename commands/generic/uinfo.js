@@ -22,7 +22,7 @@ class Uinfo {
                 let target = users.size > 0 ? users.first() : message.author;
                 const userEntry = client.userData.get(target.id) || client.defaultUserData(target.id);
                 const guildEntry = client.guildData.get(message.guild.id);
-                if (target.id !== message.author.id && !userEntry.dataPrivacy.publicProfile) return resolve(await message.channel.send(":x: Sorry but the profile of this user is private :v"));
+                if (target.id !== message.author.id && !userEntry.dataPrivacy.publicProfile) return resolve(await message.channel.createMessage(":x: Sorry but the profile of this user is private :v"));
                 let embedFields = [];
                 //Awesome code from Rem to make gifs great again
                 let avatar = target.avatar ? (target.avatar.startsWith('a_') ? `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.gif` : `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.webp`) : target.defaultAvatarURL;

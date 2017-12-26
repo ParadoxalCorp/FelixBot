@@ -28,7 +28,7 @@ class Mute {
                 let reason = new RegExp(/\-r/gim).test(args.join(" ")) ? args.join(" ").split(/\-r/gim)[1].trim() : undefined;
                 if (!memberToMute) return resolve(await message.channel.createMessage(`:x: I couldn't find the user you specified`));
                 if (memberToMute.roles.find(r => r === mutedRole.id)) return resolve(await message.channel.createMessage(`:x: The user \`${message.author.tag}\` is already muted`));
-                if (mutedRole.position >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
+                if (message.guild.mebers.get(client.user.id).highestRole && mutedRole.position >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
                     return resolve(await message.channel.createMessage(`:x: The \`muted\` role seems to be higher than my highest role, therefore i can't mute :v`));
                 }
                 await message.guild.members.get(memberToMute.id).addRole(mutedRole.id, `Muted by ${message.author.tag}: ${reason ? reason : "No reason specified"}`);

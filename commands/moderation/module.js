@@ -18,7 +18,7 @@ class Module {
             try {
                 if (!message.guild.members.get(message.author.id).hasPermission("administrator")) return resolve(await message.channel.createMessage(`:x: You need to have administrator permissions to do that`));
                 const guildEntry = client.guildData.get(message.guild.id);
-                if (args[0].toLowerCase() === "-list") {
+                if (args[0] && args[0].toLowerCase() === "-list") {
                     if (!guildEntry.generalSettings.disabledModules[0]) return resolve(await message.channel.createMessage(`:x: There is no disabled modules`));
                     const paginated = paginate(guildEntry.generalSettings.disabledModules, 10);
                     let page = 0;

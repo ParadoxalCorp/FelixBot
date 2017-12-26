@@ -18,12 +18,12 @@ module.exports = async(client, message, args) => {
             });
             confirmation.query.delete();
             if (!confirmation.reply || confirmation.reply.content.toLowerCase() !== 'yes') {
-                message.channel.send(`:x: Reset process aborted`).then(m => m.delete(5000));
+                message.channel.createMessage(`:x: Reset process aborted`).then(m => m.delete(5000));
             }
             const userData = client.userData.get(message.author.id);
             userData.experience = client.defaultUserData(message.author.id).experience;
             client.userData.set(message.author.id, client.defaultUserData(message.author.id))
-            resolve(await message.channel.send(`:white_check_mark: Alright, your global level/experience has been reset`));
+            resolve(await message.channel.createMessage(`:white_check_mark: Alright, your global level/experience has been reset`));
         } catch (err) {
             reject(err);
         }

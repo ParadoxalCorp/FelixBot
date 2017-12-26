@@ -15,11 +15,11 @@ class Afk {
                 if (!args.length) {
                     userEntry.generalSettings.afk = userEntry.generalSettings.afk === false ? "" : false;
                     client.userData.set(message.author.id, userEntry);
-                    resolve(await message.channel.send(`:white_check_mark: Alright, i ${userEntry.generalSettings.afk === false ? "disabled" : "enabled"} your afk status`));
+                    resolve(await message.channel.createMessage(`:white_check_mark: Alright, i ${userEntry.generalSettings.afk === false ? "disabled" : "enabled"} your afk status`));
                 } else {
                     userEntry.generalSettings.afk = args.join(" ");
                     client.userData.set(message.author.id, userEntry);
-                    resolve(await message.channel.send(`:white_check_mark: Alright, i updated your afk status`));
+                    resolve(await message.channel.createMessage(`:white_check_mark: Alright, i updated your afk status`));
                 }
             } catch (err) {
                 reject(err);

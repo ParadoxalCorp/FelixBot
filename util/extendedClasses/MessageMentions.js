@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+const User = require('./User');
 
 /**
  * Keeps track of mentions in a {@link Message}.
@@ -22,7 +23,9 @@ class MessageMentions {
                 this.users = new Collection();
                 for (const mention of users) {
                     let user = message._client.users.get(mention.id);
-                    if (!user) user = message._client.dataManager.newUser(mention);
+                    if (!user) {
+                        user = message._client.users.set(mention.id, new User(mention, message._client));
+                    };
                     this.users.set(user.id, user);
                 }
             }

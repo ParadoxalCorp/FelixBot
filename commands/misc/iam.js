@@ -20,7 +20,7 @@ class Iam {
                 const guildEntry = client.guildData.get(message.guild.id);
                 guildEntry.generalSettings.autoAssignablesRoles = guildEntry.generalSettings.autoAssignablesRoles.filter(r => message.guild.roles.get(r)); //Filter deleted roles
                 if (args.length < 1) {
-                    if (guildEntry.generalSettings.autoAssignablesRoles.length < 1) return resolve(await message.channel.send(":x: There is no self-assignable role set on this server"));
+                    if (guildEntry.generalSettings.autoAssignablesRoles.length < 1) return resolve(await message.channel.createMessage(":x: There is no self-assignable role set on this server"));
                     let roleList = guildEntry.generalSettings.autoAssignablesRoles.map(r => message.guild.roles.get(r).name);
                     roleList = paginateResult(roleList, 5);
                     let page = 0;
@@ -94,15 +94,15 @@ class Iam {
                         resolve(true);
                     });
                 } else {
-                    if (!message.guild.members.get(client.user.id).hasPermission("manageRoles")) return resolve(await message.channel.send(":x: I don't have the permission to do that"));
+                    if (!message.guild.members.get(client.user.id).hasPermission("manageRoles")) return resolve(await message.channel.createMessage(":x: I don't have the permission to do that"));
                     let guildRole = await message.getRoleResolvable({
                         charLimit: 1,
                         max: 1
                     });
-                    if (!guildRole.first() || !guildEntry.generalSettings.autoAssignablesRoles.includes(guildRole.first().id)) return resolve(await message.channel.send(":x: The specified role does not exist or it is not a self-assignable role"));
-                    if (message.guild.members.get(message.author.id).roles.find(r => r === guildRole.first().id)) return resolve(await message.channel.send(':x: You already have this role'));
+                    if (!guildRole.first() || !guildEntry.generalSettings.autoAssignablesRoles.includes(guildRole.first().id)) return resolve(await message.channel.createMessage(":x: The specified role does not exist or it is not a self-assignable role"));
+                    if (message.guild.members.get(message.author.id).roles.find(r => r === guildRole.first().id)) return resolve(await message.channel.createMessage(':x: You already have this role'));
                     await message.guild.members.get(message.author.id).addRole(guildRole.first().id);
-                    resolve(await message.channel.send(":white_check_mark: Alright, i gave you the role `" + guildRole.first().name + "`"));
+                    resolve(await message.channel.createMessage(":white_check_mark: Alright, i gave you the role `" + guildRole.first().name + "`"));
                 }
             } catch (err) {
                 reject(err);

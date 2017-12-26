@@ -18,9 +18,9 @@ module.exports = async(client, message, args) => {
             });
             confirmation.query.delete();
             if (!confirmation.reply || confirmation.reply.content.toLowerCase() !== 'yes') {
-                message.channel.send(`:x: Reset process aborted`).then(m => m.delete(5000));
+                message.channel.createMessage(`:x: Reset process aborted`).then(m => m.delete(5000));
             } else client.userData.set(message.author.id, client.defaultUserData(message.author.id))
-            resolve(await message.channel.send(`:white_check_mark: Alright, all your data are back to default`));
+            resolve(await message.channel.createMessage(`:white_check_mark: Alright, all your data are back to default`));
         } catch (err) {
             reject(err);
         }

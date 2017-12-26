@@ -11,7 +11,7 @@ class Setversion {
         const fs = require('fs-extra');
         return new Promise(async(resolve, reject) => {
             try {
-                if (!args[0]) return resolve(message.channel.send(`:x: You little scrub thought you could set the version to nothing, eh? eh?`));
+                if (!args[0]) return resolve(message.channel.createMessage(`:x: You little scrub thought you could set the version to nothing, eh? eh?`));
                 const backup = client.backups.get("core-data");
                 backup.version = args[0];
                 let file = await fs.readFile(`./config/core-data.json`);
@@ -19,10 +19,10 @@ class Setversion {
                 file.version = args[0];
                 await fs.writeFile(`./config/core-data.json`, JSON.stringify(file), (err) => {
                     if (err) {
-                        resolve(message.channel.send(`:x: An error occurred: ${err}`));
+                        resolve(message.channel.createMessage(`:x: An error occurred: ${err}`));
                     }
                 });
-                resolve(message.channel.send(`:white_check_mark: The version has successfully been set to \`${args[0]}\``));
+                resolve(message.channel.createMessage(`:white_check_mark: The version has successfully been set to \`${args[0]}\``));
             } catch (err) {
                 reject(err);
             }

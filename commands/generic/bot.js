@@ -89,7 +89,7 @@ class Bot {
                     value: `${message.guild.shard.id}/${client.shards.size}`,
                     inline: true
                 });
-                return resolve(await message.channel.send({
+                return resolve(await message.channel.createMessage({
                     embed: {
                         thumbnail: {
                             url: client.user.avatarURL

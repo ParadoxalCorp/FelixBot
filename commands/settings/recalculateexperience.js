@@ -18,7 +18,7 @@ class RecalculateExperience {
         return new Promise(async(resolve, reject) => {
             try {
                 const guildEntry = client.guildData.get(message.guild.id);
-                message.channel.send(`:white_check_mark: Alright, i just started to recalculate everything, this may take some time depending on how big the server is. I will notify you once im done ^ \n(Note that inactive users might be ignored)`);
+                message.channel.createMessage(`:white_check_mark: Alright, i just started to recalculate everything, this may take some time depending on how big the server is. I will notify you once im done ^ \n(Note that inactive users might be ignored)`);
                 let startDate = Date.now();
                 let guildRoles = [];
                 //Fill guild roles 

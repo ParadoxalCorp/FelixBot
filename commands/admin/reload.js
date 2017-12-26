@@ -27,7 +27,7 @@ class Reload {
                 }
 
                 if (command || (exists(path) && require(path).help)) {
-                    if (command && command.subcommand) return resolve(await message.channel.send(`:x: \`${command.help.name}\` is a subcommand and therefore cannot be reloaded`));
+                    if (command && command.subcommand) return resolve(await message.channel.createMessage(`:x: \`${command.help.name}\` is a subcommand and therefore cannot be reloaded`));
                     if (command) path = `../${command.help.category}/${command.help.name}`;
                     let thisUses = command ? command.uses : 0;
                     try {

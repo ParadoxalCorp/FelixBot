@@ -49,7 +49,7 @@ class Market {
                     }
                 }
                 let page = 0; //current page
-                let interactiveMessage = await message.channel.send(mainObject(page, marketItems));
+                let interactiveMessage = await message.channel.createMessage(mainObject(page, marketItems));
                 const collector = interactiveMessage.createReactionCollector((reaction) => reaction.user.id === message.author.id);
                 let pageReactions = ["◀", "▶", "🛒", "❌"];
                 for (let i = 0; i < pageReactions.length; i++) {
@@ -70,7 +70,7 @@ class Market {
                     } else if (r.emoji.name === "🛒") { //Buy an item
                         let splitPrice = parseInt(marketItems[page][2].value.split(/\s+/)[0]);
                         if (splitPrice > userEntry.generalSettings.points) {
-                            message.channel.send({
+                            message.channel.createMessage({
                                 embed: {
                                     description: `:x: You need ${splitPrice - userEntry.generalSettings.points} more to buy this item`
                                 }

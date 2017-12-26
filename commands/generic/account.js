@@ -47,7 +47,7 @@ class Account {
     run(client, message, args) {
         return new Promise(async(resolve, reject) => {
             try {
-                resolve(message.channel.send("Heads up ! Since update `3.0.0` this command uses the website, but you can still use the shortcuts if you don't want to use the website ^"));
+                resolve(message.channel.createMessage("Heads up ! Since update `3.0.0` this command uses the website, but you can still use the shortcuts if you don't want to use the website ^"));
             } catch (err) {
                 reject(err);
             }

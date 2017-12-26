@@ -124,7 +124,7 @@ class Leaderboard {
                         }
                     }
                 }
-                const interactiveMessage = await message.channel.send(guildEntry.generalSettings.levelSystem.enabled ? localExpLeaderboard : globalExpLeaderboard);
+                const interactiveMessage = await message.channel.createMessage(guildEntry.generalSettings.levelSystem.enabled ? localExpLeaderboard : globalExpLeaderboard);
                 const collector = interactiveMessage.createReactionCollector(reaction => reaction.user.id === message.author.id);
                 let pageReactions = ["⭐", "❤", "🎀", "✉", "🌐", "❌"];
                 if (localExpLeaderboard.length > 0 && guildEntry.generalSettings.levelSystem.enabled) pageReactions.unshift();

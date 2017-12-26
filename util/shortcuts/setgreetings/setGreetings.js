@@ -10,6 +10,6 @@ module.exports = async(client, message, args) => {
         const guildEntry = client.guildData.get(message.guild.id);
         guildEntry.onEvent.guildMemberAdd.greetings.message = args.join(' ');
         client.guildData.set(message.guild.id, guildEntry);
-        resolve(await message.channel.send(`:white_check_mark: Alright, the greetings message has been updated`));
+        resolve(await message.channel.createMessage(`:white_check_mark: Alright, the greetings message has been updated`));
     });
 }

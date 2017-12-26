@@ -11,15 +11,15 @@ module.exports = async(client, message, args) => {
         if (args[1].toLowerCase() === "dm") {
             guildEntry.onEvent.guildMemberAdd.greetings.target = "dm";
             client.guildData.set(message.guild.id, guildEntry);
-            resolve(await message.channel.send(`:white_check_mark: Alright, the greetings will now be send directly to the new member`))
+            resolve(await message.channel.createMessage(`:white_check_mark: Alright, the greetings will now be send directly to the new member`))
         } else {
             let getChannels = await message.getChannelResolvable({
                 max: 1
             });
-            if (!getChannels.first()) return resolve(await message.channel.send(`:x: I couldn't find the channel you specified`));
+            if (!getChannels.first()) return resolve(await message.channel.createMessage(`:x: I couldn't find the channel you specified`));
             guildEntry.onEvent.guildMemberAdd.greetings.target = getChannels.first().id;
             client.guildData.set(message.guild.id, guildEntry);
-            resolve(await message.channel.send(`:white_check_mark: I will now send the greetings in \`#${getChannels.first().name}\``))
+            resolve(await message.channel.createMessage(`:white_check_mark: I will now send the greetings in \`#${getChannels.first().name}\``))
         }
     });
 }

@@ -15,9 +15,9 @@ class MDN {
                 let args = message.content.split(/\s+/);
                 args.shift();
                 var linkToResults = `https://developer.mozilla.org/en-US/search?locale=en-US&q=${args.join('+')}`;
-                if (!args[0]) return resolve(await message.channel.send(":x: You must specify something to search"));
+                if (!args[0]) return resolve(await message.channel.createMessage(":x: You must specify something to search"));
                 let result = await request.get(`https://developer.mozilla.org/en-US/search.json?locale=en-US&q=${args.join('+')}`);
-                if (!result.body.documents || !result.body.documents.length) return resolve(await message.channel.send(":x: Your search did not returned any result"))
+                if (!result.body.documents || !result.body.documents.length) return resolve(await message.channel.createMessage(":x: Your search did not returned any result"))
                 let firstResult = result.body.documents[0];
                 await message.channel.createMessage({
                     embed: {

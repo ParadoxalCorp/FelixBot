@@ -9,11 +9,11 @@ module.exports = async(client, message, args) => {
         try {
             args.shift();
             let privacy = args[0].toLowerCase();
-            if (privacy !== 'public' && privacy !== 'private') return resolve(await message.channel.send(`:x: Invalid privacy, must be one of two following: \`Public\`, \`Private\``));
+            if (privacy !== 'public' && privacy !== 'private') return resolve(await message.channel.createMessage(`:x: Invalid privacy, must be one of two following: \`Public\`, \`Private\``));
             const userEntry = client.userData.get(message.author.id);
             userEntry.dataPrivacy.publicProfile = privacy === 'public' ? true : false;
             client.userData.set(message.author.id, userEntry);
-            resolve(await message.channel.send(`:white_check_mark: The privacy of your profile has been successfully set to \`${privacy}\``));
+            resolve(await message.channel.createMessage(`:white_check_mark: The privacy of your profile has been successfully set to \`${privacy}\``));
         } catch (err) {
             reject(err);
         }
