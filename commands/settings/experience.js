@@ -66,7 +66,7 @@ class Experience {
     run(client, message, args) {
         return new Promise(async(resolve, reject) => {
             try {
-                resolve(message.channel.createMessage(`Heads up ! Since the update \`3.0.0\` this command uses the website for significantly improved ease-to-use, but you can still use the shortcuts if you don't want to use the website ^`))
+                resolve(message.channel.createMessage(`:x: You should specify something for me to do`))
             } catch (err) {
                 reject(err);
             }
