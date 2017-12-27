@@ -11,6 +11,9 @@
         "Karen"
     ],
     "license": "Apache-2.0",
+    "scripts": {
+		"start": "node index.js"
+    },
     "bugs": {
         "url": "https://github.com/ParadoxalCorp/FelixBot/issues"
     },
