@@ -1,31 +1,43 @@
 'use strict';
 
 const Hapi = require('hapi');
+const logger = require('../util/modules/logger');
+const sleep = require('../util/modules/sleep');
+const readdir = require('fs-extra').readdir;
+const fs = require(`fs-extra`);
 
-exports.launch = async(client, readdir) => {
 
-    client.logger.draft('serverStart', 'create', `Initializing server endpoints`);
-    const port = process.env.PORT || 8080;
-    const server = new Hapi.Server();
+exports.launch = async(client) => {
+    return new Promise(async(resolve, reject) => {
 
-    server.connection({ port: port })
+        let PayloadValidator = require(`../util/helpers/PayloadValidator`);
+        PayloadValidator = new PayloadValidator(client);
 
-    server.route({
-        method: 'GET',
-        path: '/api',
-        handler: (req, reply) => {
-            reply(`Felix's API is up`).code(200)
-        }
-    });
-    //Load all endpoints
-    const endpoints = await readdir('./api/endpoints');
-    endpoints.forEach(e => {
-        require(`./endpoints/${e}`)(client, server);
-    });
+        const port = process.env.PORT || 8080;
+        const server = new Hapi.Server();
 
-    server.start(async(err) => {
-        client.logger.draft('serverStart', 'end', `Server endpoints launched ${err ? '' : 'at ' + server.info.uri}`, err ? false : true);
-        await client.sleep(2000); //Basically to dont break logs
-        if (err) console.error(err);
+        server.connection({ port: port })
+
+        server.route({
+            method: 'GET',
+            path: '/api',
+            handler: (req, reply) => {
+                reply(`Felix's API is up`).code(200)
+            }
+        });
+
+        //Load all endpoints
+        const endpoints = await readdir('./api/endpoints');
+        endpoints.forEach(e => {
+            require(`./endpoints/${e}`)(client, server, PayloadValidator);
+        });
+
+        server.start(async(err) => {
+            await sleep(2000); //Basically not to break logs
+            if (err) {
+                reject(err);
+                client.emit("error", err);
+            } else resolve(server);
+        });
     });
 }

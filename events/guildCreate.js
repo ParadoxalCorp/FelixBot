@@ -1,26 +1,8 @@
+const request = require(`../util/modules/request.js`);
+
 module.exports = async(client, guild) => {
-    if (client.guilds.get('328842643746324481')) {
-        try {
-            client.guilds.get('328842643746324481').channels.get('328847359100321792').send({
-                embed: {
-                    title: ':inbox_tray: I joined a guild',
-                    description: `**ID:** ${guild.id}\n**Members:** ${guild.members.filter(m => !m.user.bot).size}\n**Bots:** ${guild.members.filter(m => m.user.bot).size}`,
-                    timestamp: new Date(),
-                    image: {
-                        url: guild.iconURL
-                    }
-                }
-            });
-        } catch (err) {
-            console.error(err);
-            client.Raven.captureException(err);
-        }
-        const updateDbl = await client.updateDbl();
-        client.latestDblUpdate = {
-            date: new Date(),
-            timestamp: Date.now(),
-            success: updateDbl.success
-        }
-    }
-    client.guildData.set(guild.id, client.defaultGuildData(guild.id));
+    //Create a database entry for the new guild if there was not already one
+    if (!client.guildData.has(guild.id)) client.guildData.set(guild.id, client.defaultGuildData(guild.id));
+    //emit the guildCountUpdate event
+    client.emit("guildCountUpdate");
 }
