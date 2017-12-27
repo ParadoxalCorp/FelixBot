@@ -12,6 +12,6 @@ module.exports = async(client) => {
     }
     if (client.config.terminalBotList) {
         const updateTerminal = await request.post(`https://ls.terminal.ink/api/v1/bots/${client.user.id}`, { server_count: client.guilds.size }, { header: `Authorization`, value: client.config.terminalBotList }, null, true);
-        if (updateDbf.statusCode !== 200) client.emit('error', `Failed to update guild count on terminal: ${updateTerminal.body}`);
+        if (updateTerminal.statusCode !== 200) client.emit('error', `Failed to update guild count on terminal: ${updateTerminal.body}`);
     }
 }
