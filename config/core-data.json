@@ -24,7 +24,7 @@
         "description": "Gives you an extra love point that you can use every 12 hours",
         "buyableOnce": false,
         "price": {
-            "base": 40000,
+            "base": 4000000,
             "multiplier": 2
         },
         "object": {
