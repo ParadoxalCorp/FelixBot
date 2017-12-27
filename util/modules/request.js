@@ -37,11 +37,12 @@ class Request {
 
     /**
      * Async POST request
-     * @param {string} url The url of the page where to POST
+     * @param {String} url The url of the page where to POST
      * @param {*} data The data to send
      * @param {Object} header An object containing the header and the header value
-     * @param {string} header.header The header
-     * @param {string} header.value The header value
+     * @param {String} header.header The header
+     * @param {String} header.value The header value
+     * @param {Number} [timeout=3000] Time in milliseconds before aborting
      * @param {Boolean} [json] Whether or not this should be sent with a application/json header
      */
     post(url, data, header, timeout = 3000, json) {
