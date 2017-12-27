@@ -12,12 +12,11 @@
 Felix is here, was first supposed to be a meme but hey, its a thing now ! 
 About Felix's source usage, note that Felix is under APACHE 2.0 license, more informations at the very bottom of this readme.
 # Tables of contents
-* [Features](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#features)
-* [Commands](https://github.com/ParadoxOrigins/FelixBot/wiki/Generic)
-* [Invite link and support server](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#invite-link-and-support-server)
-* [Permissions system](https://github.com/ParadoxalCorp/FelixBot/blob/master/README.md#permissions-system)
-* [FAQ](https://github.com/ParadoxOrigins/FelixBot/wiki/FAQ)
-* [Installation](https://github.com/ParadoxOrigins/FelixBot/wiki/Linux)
+* [Features](https://github.com/ParadoxalCorp/FelixBot/blob/master/README.md#features)
+* [Commands](https://github.com/ParadoxalCorp/FelixBot/wiki/Generic)
+* [Invite link and support server](https://github.com/ParadoxalCorp/FelixBot/blob/master/README.md#invite-link-and-support-server)
+* [FAQ](https://github.com/ParadoxalCorp/FelixBot/wiki/FAQ)
+* [Installation](https://github.com/ParadoxalCorp/FelixBot/wiki/Linux)
 ## Features
 * Simple but powerful permission system
 * Custom prefix
