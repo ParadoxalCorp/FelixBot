@@ -1,6 +1,12 @@
 {
     "changelogs": [{
         "type": "Announcement",
+        "name": "Update 3.0.0 release",
+        "content": "Hey everyone !\n\nIts finally here, the update i 've been working on since 2 month !\n\nThis brings a lot of features(first, a stable bot, because previous update wasn 't able to handle a big amount of guilds) but also a starboard, new moderations features, enhanced experience system...\n\nBut there 's SO MANY changes in this update that you might want to read the [full changelog](https://github.com/ParadoxalCorp/FelixBot/blob/master/changelog.md)\n\nIf you are troubled with a few commandes that don 't have a detailed usage but rather only \"shortcuts\", well this is because something to make them easier to use is coming in future updates, for now is an example of how to use shortcuts:\n`f!<command> <shortcut_name> <argument_if_there_is_one>`\nSo as a live example\n`f!greetings set_target dm`\n\nSome great stuff is incoming folks, if you find any bugs, have any questions or want to request something, don't hesitate to join the[support server](https://discord.gg/Ud49hQJ) !",
+        "date": "12/27/2017",
+        "timestamp": "1514379583008"
+    }, {
+        "type": "Announcement",
         "name": "Update 3.0.0 Private Beta",
         "content": "Hoi hoi ! It's been a long time since the last big update, so here's a quick heads up !\nI finished the structure of v3 and rewrote all commands, there is still some stuff to finish(like catching bugs and adding new features) but we're nearly there ! \n\nOn that note, see you at the v3 release(hopefully this month), love you all :heart:",
         "date": "12/04/2017",
@@ -18,7 +24,7 @@
         "description": "Gives you an extra love point that you can use every 12 hours",
         "buyableOnce": false,
         "price": {
-            "base": 40000,
+            "base": 4000000,
             "multiplier": 2
         },
         "object": {

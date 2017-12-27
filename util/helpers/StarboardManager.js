@@ -20,6 +20,7 @@ class StarboardManager {
         });
         this.client.on("messageReactionUpdate", async(message, emoji, userID) => {
             message = message.channel.messages.get(message.id) || await this.client.getMessage(message.channel.id, message.id).catch(err => { return (err) });
+            if (!message.channel) return;
             message.channel.messages.set(message.id, message);
             const guildEntry = this.client.guildData.get(message.guild.id);
             if (!guildEntry || !guildEntry.starboard.channel) return;
@@ -129,11 +130,12 @@ class StarboardManager {
 
     getStarsCount(message) {
         return new Promise(async(resolve, reject) => {
+            if (!message) return resolve();
             let starOne = await message.getReaction('⭐');
             let starTwo = await message.getReaction('🌟');
             let uniqueUsers = [];
             let merged = starOne.concat(starTwo).map(u => {
-                if (!uniqueUsers.find(user => user.id === u.id)) {
+                if (!uniqueUsers.find(user => user.id === u.id) && !u.bot) {
                     uniqueUsers.push(u);
                 }
             });
