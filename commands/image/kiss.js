@@ -14,7 +14,7 @@ class Kiss {
         return new Promise(async(resolve, reject) => {
             const request = require("../../util/modules/request.js");
             try {
-                let result = await request.get("https://api.weeb.sh/images/random?type=slap&filetype=gif", { header: 'Authorization', value: `Bearer ${client.config.wolkeImageKey}` });
+                let result = await request.get("https://api.weeb.sh/images/random?type=kiss&filetype=gif", { header: 'Authorization', value: `Bearer ${client.config.wolkeImageKey}` });
                 let users = message.guild ? await message.getUserResolvable() : {};
                 if (!result.body || !result.body.url) return resolve(await message.channel.createMessage(":x: An error occurred :v"));
                 resolve(await message.channel.createMessage({
