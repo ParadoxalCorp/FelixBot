@@ -49,7 +49,6 @@ class Anime {
                     reply.query.delete();
                 }
                 const anime = await malScraper.getInfoFromName(selectedAnime.title);
-                console.dir(anime);
                 if (anime.genres.length > 0) {
                     embedFields.push({
                         name: ':open_file_folder: Genres',
