@@ -20,6 +20,7 @@
  -softban
  -kick
 * A lot of small changes, fixes and improvements that i can't list since we're actually at ~400 changed files
+* Also, removed tags. Sorry for all those who liked them, it was not really widely used
 
 ## API & Backend changes
 * Now instead of requiring a local custom version of the api wrapper(now eris), Felix requires the live and then overwrite the needed files
