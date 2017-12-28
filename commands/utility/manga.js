@@ -40,7 +40,7 @@ class Manga {
                         return resolve(await message.channel.createMessage(":x: Timeout: Command aborted"));
                     }
                     if (isNaN(reply.reply.content) || reply.reply.content > res.length || reply.reply.content < 1) {
-                        if (message.guild && message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) await reply.reply.delete();
+                        if (message.guild && message.guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES")) await reply.reply.delete();
                         await reply.query.delete();
                         return resolve(await message.channel.createMessage(":x: You did not enter a whole number or the number you specified is not valid"));
                     }

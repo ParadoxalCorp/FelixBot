@@ -9,7 +9,7 @@ module.exports = async(client, err, message) => {
     } else logger.log(`${err} ${err.stack} | triggerMessage: ${message ? message.content : undefined}`, `error`);
     if (message) {
         try {
-            message.channel.createMessage(`:x: An error occurred`);
+            await message.channel.createMessage(`:x: An error occurred :v \nIf the issue persist, please check if i have enough permissions and don't hesitate to join the support server: <https://discord.gg/Ud49hQJ>`);
         } catch (err) {}
     }
 }
