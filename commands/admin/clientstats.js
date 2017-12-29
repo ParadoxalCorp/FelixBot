@@ -16,7 +16,7 @@ class ClientStats {
                 client.guilds.forEach(g => { averageMembers = averageMembers + g.members.size });
                 let averageBots = 0;
                 client.guilds.forEach(g => { averageBots = averageBots + g.members.filter(m => m.user.bot).size });
-                await client.editMessage(message.channel.id, messageNotice.id, {
+                await messageNotice.edit({
                     embed: {
                         fields: [{
                             name: 'Users (cached)',
@@ -24,18 +24,19 @@ class ClientStats {
                             inline: true
                         }, {
                             name: 'Average members/guilds',
-                            value: `${averageMembers / client.guilds.size}`,
+                            value: `${Math.round(averageMembers / client.guilds.size)}`,
                             inline: true
                         }, {
                             name: 'Average bots/guilds',
-                            value: `${averageBots / client.guilds.size}`,
+                            value: `${Math.round(averageBots / client.guilds.size)}`,
                             inline: true
                         }, {
                             name: 'Felix users',
                             value: `${client.userData.size} out of ${client.users.size} users (${(client.userData.size / client.users.size * 100).toFixed(0)}%)`,
                             inline: true
                         }]
-                    }
+                    },
+                    content: ''
                 });
                 resolve(await message.channel.createMessage({
                     embed: {

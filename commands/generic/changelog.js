@@ -19,7 +19,7 @@ class Changelog {
                 const messageObject = function(page) {
                     return {
                         embed: {
-                            title: `__**${client.coreData.changelogs[page].type}: ${client.coreData.changelogs[page].name}**__ (${client.coreData.changelogs[page].date}`,
+                            title: `__**${client.coreData.changelogs[page].type}: ${client.coreData.changelogs[page].name}**__ (${client.coreData.changelogs[page].date})`,
                             description: `\n${client.coreData.changelogs[page].content}`,
                             footer: {
                                 text: `[Page ${page + 1}/${client.coreData.changelogs.length}] | Latest release: ${client.coreData.version}`

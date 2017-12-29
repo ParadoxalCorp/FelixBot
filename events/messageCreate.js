@@ -24,7 +24,7 @@ module.exports = async(client, message) => {
     }
     if (message.guild) {
         if (!client.guildData.get(message.guild.id)) client.guildData.set(message.guild.id, client.defaultGuildData(message.guild.id));
-        require("../util/helpers/expHandler.js").run(client, message);
+        require("../util/helpers/expHandler.js").handle(client, message);
     }
     //Commands
     require("../util/helpers/commandHandler.js")(client, message);
