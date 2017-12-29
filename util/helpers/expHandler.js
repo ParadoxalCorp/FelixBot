@@ -31,11 +31,11 @@ class ExperienceHandler {
             const userDetails = getLevelDetails(userEntry.experience.level, userEntry.experience.expCount);
 
             let wonRoles = this._checkRequirements(client, guildEntry, memberEntry, message, memberDetails.level);
-            if (wonRoles) {
+            if (wonRoles[0]) {
                 var updatedRoles = await this._updateUserRoles(wonRoles, guildEntry, memberEntry, message, client);
             }
             if (memberDetails.level > memberEntry.level) {
-                this._notifyUser(updatedRoles ? updatedRoles.addedRoles : false, guildEntry, message, memberEntry, client);
+                this._notifyUser(updatedRoles ? updatedRoles.addedRoles : false, guildEntry, message, memberEntry, client, memberDetails);
             }
             //Locally update levels
             memberEntry.level = memberDetails.level;
@@ -108,14 +108,14 @@ class ExperienceHandler {
         });
     }
 
-    _notifyUser(wonRoles, guildEntry, message, memberEntry, client) {
+    _notifyUser(wonRoles, guildEntry, message, memberEntry, client, memberDetails) {
             try {
                 let notifMessage = guildEntry.generalSettings.levelSystem.customNotif ? guildEntry.generalSettings.levelSystem.customNotif
                     .replace(/%USER%/gim, `<@${message.author.id}>`)
                     .replace(/%USERTAG%/gim, message.author.tag)
                     .replace(/%USERNAME%/gim, message.author.username)
-                    .replace(/%LEVEL%/gim, memberEntry.level) :
-                    `:tada: Congratulations **${message.author.username}**, you leveled up to level **${guildEntry.generalSettings.levelSystem.users[guildEntry.generalSettings.levelSystem.users.findIndex(u => u.id === message.author.id)].level}** ${wonRoles ? "and won the roles" + wonRoles.map(r => "`" + r.name + "`").join(", ") : ""}`;
+                    .replace(/%LEVEL%/gim, memberDetails.level) :
+                    `:tada: Congratulations **${message.author.username}**, you leveled up to level **${memberDetails.level}** ${wonRoles ? "and won the roles" + wonRoles.map(r => "`" + r.name + "`").join(", ") : ""}`;
             if (guildEntry.generalSettings.levelSystem.levelUpNotif === "channel") message.channel.createMessage(notifMessage);
             else if (guildEntry.generalSettings.levelSystem.levelUpNotif === "dm") message.author.createMessage(notifMessage);
             else if (message.guild.channels.get(guildEntry.generalSettings.levelSystem.levelUpNotif)) {

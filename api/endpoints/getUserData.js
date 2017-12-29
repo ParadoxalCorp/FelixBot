@@ -2,7 +2,7 @@
 
 const Collection = require("eris").Collection;
 const _ = require("underscore");
-const getLevelDetails = require('./getLevelDetails');
+const getLevelDetails = require('../../util/helpers/getLevelDetails');
 
 module.exports = async(client, server, PayloadValidator) => {
     server.route({

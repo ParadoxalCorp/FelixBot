@@ -116,6 +116,7 @@ class Client extends Eris {
                         enabled: false,
                         downGrade: true,
                         autoRemove: false,
+                        customNotif: false,
                         levelUpNotif: false,
                         roles: [],
                         users: []
