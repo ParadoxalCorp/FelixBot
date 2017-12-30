@@ -11,6 +11,7 @@ getLevelDetails = function(level, exp) {
         levels[i] = levels[i - 1] ? levels[i - 1] * 2 : 100;
     }
     if (exp >= levels[level + 1]) level++;
+    if (exp < 100) level = 0;
     if (exp < levels[level] || exp > levels[level + 1]) {
         for (let key in levels) {
             if (exp >= levels[key] && exp < levels[new String(parseInt(key) + 1)]) level = parseInt(key);
@@ -23,7 +24,7 @@ getLevelDetails = function(level, exp) {
         requiredExp: levels[level + 1],
         levelProgress: `${levels[level] ? exp - levels[level] : exp} / ${levels[level + 1] - (levels[level] || 0)}`,
         nextLevel: level + 1,
-        percentage: level === 0 ? exp : Math.round((exp - levels[level]) / (levels[level + 1] - levels[level]) * 100)
+        percentage: level === 0 ? exp : Math.floor((exp - levels[level]) / (levels[level + 1] - levels[level]) * 100)
     };
 }
 

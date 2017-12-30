@@ -5,7 +5,7 @@ class Hackban {
         this.help = {
             name: "hackban",
             usage: "hackban <user_id> <days_of_messages_to_delete> -r <reason>",
-            description: "Hackban a user who is not currently in the server with their ID"
+            description: "Hackban a user who is not currently in the server with their ID. Screenshot is optional as well, it may be followed by the (single) url of the screenshot or stay blank if the screenshot is attached"
         }
         this.conf = {
             guildOnly: true,
@@ -20,6 +20,9 @@ class Hackban {
                 if (!args[0]) return resolve(await message.channel.createMessage(`:x: Well you might want to specify the id of a user to hackban, i can't just hackban randomly`));
                 let userToBan = args.filter(a => !isNaN(a) && a.length > 10)[0];
                 let reason = new RegExp(/\-r/gim).test(args.join(" ")) ? args.join(" ").split(/\-r/gim)[1].trim() : undefined;
+                let screenshot = message.attachments[0] ? message.attachments[0].url : (new RegExp(/\-s/gim).test(args.join(" ")) ? args.join(" ").split(/\-s/gim)[1].trim() : undefined);
+                if (!new RegExp(/\.jpg|.png|.gif|.jpeg/gim).test(screenshot)) screenshot = undefined;
+                if (new RegExp(/\-s/gim).test(reason)) reason = reason.split(/\-s/gim)[0].trim();
                 let daysAmount = args.filter(a => a.length < 2).filter(a => !isNaN(a))[0] ? (Math.round(args.filter(a => !isNaN(a))[0]) > 7 ? 7 : parseInt(Math.round(args.filter(a => !isNaN(a))[0]))) : 0;
                 if (!userToBan) return resolve(await message.channel.createMessage(`:x: You need to specify a valid ID`));
                 if (userToBan === message.author.id) return resolve(await message.channel.createMessage(`:x: Well no you can't hackban yourself that's not how it works ;-;`));
@@ -34,7 +37,9 @@ class Hackban {
                 //And the banned user isn't returned by discord's api, the guildBanAdd listener will handle the logging since it receives the user
                 client.guilds.get(message.guild.id).lastHackbanned = {
                     user: userToBan,
-                    moderator: message.author
+                    moderator: message.author,
+                    screenshot: screenshot,
+                    reason: reason
                 };
                 const bannedUser = await message.guild.banMember(userToBan, daysAmount, `Hack-banned by ${message.author.tag}: ${reason ? reason : "No reason specified"}`).catch(err => false);
                 if (bannedUser === false) return resolve(await message.channel.createMessage(`:x: I couldn't hackban this user, the user ID is probably invalid`));

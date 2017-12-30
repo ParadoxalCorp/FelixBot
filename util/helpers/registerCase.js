@@ -7,6 +7,7 @@
  * @param {User} case.moderator The moderator who performed the action
  * @param {String} case.action The action performed, e.g "kick", "ban"...
  * @param {String} case.reason The reason of the action
+ * @param {String} [case.screenshot] The url of a screenshot that could be added as thumbnail to the case
  * @param {String} [case.performedAction] The performed action, basically a custom action
  */
 
@@ -52,6 +53,7 @@ function registerCase(client, newCase) {
                 action: newCase.action,
                 performedAction: modCase.action,
                 customPerformedAction: newCase.performedAction,
+                screenshot: newCase.screenshot,
                 moderator: newCase.moderator ? {
                     id: newCase.moderator.id,
                     username: newCase.moderator.username,
@@ -82,7 +84,10 @@ function registerCase(client, newCase) {
                                 name: "Reason",
                                 value: newCase.reason ? newCase.reason : `None specified, responsible moderator, please use \`${guildEntry.generalSettings.prefix}reason ${guildEntry.generalSettings.modLog.length} <reason>\` to add a reason`,
                             }],
-                            timestamp: new Date(Date.now()).toISOString()
+                            timestamp: new Date(Date.now()).toISOString(),
+                            image: newCase.screenshot ? {
+                                url: newCase.screenshot
+                            } : undefined
                         }
                     });
                     guildEntry.generalSettings.modLog[guildEntry.generalSettings.modLog.length - 1].modLogMessage = logMessage.id;
