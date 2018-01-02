@@ -26,6 +26,7 @@ class ExperienceHandler {
             //Locally update exp count
             memberEntry.expCount = memberEntry.expCount + this.calculateExpGain(message);
             userEntry.experience.expCount = userEntry.experience.expCount + this.calculateExpGain(message);
+            memberEntry.messages++;
             //Calculate changes
             const memberDetails = getLevelDetails(memberEntry.level, memberEntry.expCount);
             const userDetails = getLevelDetails(userEntry.experience.level, userEntry.experience.expCount);
