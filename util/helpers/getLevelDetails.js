@@ -8,7 +8,7 @@ getLevelDetails = function(level, exp) {
     const multiplier = 2;
     let levels = {};
     for (let i = 1; i <= (level + 2); i++) {
-        levels[i] = levels[i - 1] ? levels[i - 1] * 2 : 100;
+        levels[i] = levels[i - 1] ? levels[i - 1] * multiplier : 100;
     }
     if (exp >= levels[level + 1]) level++;
     if (exp < 100) level = 0;

@@ -63,8 +63,8 @@ class ExperienceHandler {
 
     calculateExpGain(message) {
         let expGain = message.attachments[0] ? Math.round((Number(message.attachments.map(f => f.filesize).join((`+`)))) / 10000) :
-            Math.round(1 * message.content.length / 4);
-        if (expGain > 50) expGain = 50; //no 500 points messages kthx
+            Math.round(1 * message.content.length / 3);
+        if (expGain > 90) expGain = 90; //no 500 points messages kthx
         return expGain;
     }
 

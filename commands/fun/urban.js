@@ -32,7 +32,7 @@ class Urban {
                             value: urResult.definition.substr(0, 1020)
                         }, {
                             name: `:pencil2: Example`,
-                            value: urResult.example.substr(0, 1020)
+                            value: urResult.example.substr(0, 1020) || "None"
                         }],
                         footer: {
                             text: `Wrote by: ${urResult.author} | 👍 ${urResult.thumbs_up} | 👎 ${urResult.thumbs_down}`
