@@ -3,7 +3,7 @@ class Starboard {
         this.help = {
             name: "starboard",
             description: "Set the starboard",
-            usage: "starboard -set starboard_channel",
+            usage: "starboard -setchannel starboard_channel",
             detailedUsage: "`{prefix}starboard -setchannel starboard` Will set the starboard channel to the channel `starboard`\n`{prefix}starboard -disable` Disable and reset the settings of the starboard(aka the channel)\n`{prefix}starboard -setminimum 2` Will set the minimum star amount required for a message to get into the starboard to 2\n`{prefix}starboard -settings` Will display the current starboard settings on this server"
         }
         this.conf = {
@@ -17,7 +17,7 @@ class Starboard {
                 const guildEntry = client.guildData.get(message.guild.id);
                 const setchannel = new RegExp(/-setchannel/gim).test(args.join(" "));
                 const disable = new RegExp(/-disable/gim).test(args.join(" "));
-                const setMinimum = new RegExp(/-setMinimum/gim).test(args.join(" "));
+                const setMinimum = new RegExp(/-setminimum/gim).test(args.join(" "));
                 const settings = new RegExp(/-settings/gim).test(args.join(" "));
                 if (setchannel) {
                     let channel = await message.getChannelResolvable({
