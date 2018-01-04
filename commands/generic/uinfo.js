@@ -43,7 +43,7 @@ class Uinfo {
                     const levelDetails = getLevelDetails(userEntry.experience.level, userEntry.experience.expCount);
                     embedFields.push({
                         name: ":star: Global experience",
-                        value: "Level " + userEntry.experience.level + "\nExp: " + Math.round(userEntry.experience.expCount) + `\nLevel progress: ${(levelDetails.levelProgress)}`,
+                        value: "Level " + userEntry.experience.level + "\nExp: " + Math.round(userEntry.experience.expCount) + `\nLevel progress: ${(levelDetails.levelProgress)} (${levelDetails.percentage}%)`,
                         inline: true
                     });
                 }
@@ -54,7 +54,7 @@ class Uinfo {
                     const levelDetails = getLevelDetails(guildEntry.generalSettings.levelSystem.users[userPos].level, guildEntry.generalSettings.levelSystem.users[userPos].expCount);
                     embedFields.push({
                         name: ":star: Local experience",
-                        value: "Level " + guildEntry.generalSettings.levelSystem.users[userPos].level + "\nExp: " + Math.round(guildEntry.generalSettings.levelSystem.users[userPos].expCount) + `\nLevel progress: ${(levelDetails.levelProgress)}`,
+                        value: "Level " + guildEntry.generalSettings.levelSystem.users[userPos].level + "\nExp: " + Math.round(guildEntry.generalSettings.levelSystem.users[userPos].expCount) + `\nLevel progress: ${(levelDetails.levelProgress)} (${levelDetails.percentage}%)`,
                         inline: true
                     });
                 }

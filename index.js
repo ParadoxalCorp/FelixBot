@@ -116,6 +116,7 @@ class Client extends Eris {
                         enabled: false,
                         downGrade: true,
                         autoRemove: false,
+                        customNotif: false,
                         levelUpNotif: false,
                         roles: [],
                         users: []
@@ -263,9 +264,9 @@ const Felix = new Client(config.token, {
     //Server and endpoints launch
     logger.draft(`serverLaunch`, `create`, `Launching server and initializing endpoints...`);
     let server = require(`./api/server.js`);
-    const serverLaunch = await server.launch(Felix);
+    const serverLaunch = await server.launch(Felix).catch(err => err);
     Felix.server = serverLaunch;
-    logger.draft('serverLaunch', 'end', `Server endpoints launched ${!Felix.server ? '' : 'at ' + Felix.server.info.uri}`, !Felix.server ? false : true);
+    logger.draft('serverLaunch', 'end', `Server endpoints launched ${Felix.server && Felix.server.info ? 'at ' + Felix.server.info.uri : ''}`, Felix.server ? true : false);
 
     Felix.connect();
 

@@ -2,6 +2,7 @@
 
 const Collection = require("eris").Collection;
 const _ = require("underscore");
+const getLevelDetails = require('../../util/helpers/getLevelDetails');
 
 module.exports = async(client, server, PayloadValidator) => {
     server.route({
@@ -22,6 +23,7 @@ module.exports = async(client, server, PayloadValidator) => {
                 if (Array.isArray(req.params.userID)) return reply(client.userData.filterArray(u => req.params.userID.includes(u.id)));
                 //Else return the specified id's user object
                 let userEntry = client.userData.get(req.params.userID) || client.defaultUserData(req.params.userID);
+                userEntry.levelDetails = getLevelDetails(userEntry.experience.level, userEntry.experience.exp);
                 if (!token.public) {
                     let mutualGuilds = client.guilds.filterArray(g => g.members.has(userEntry.id));
                     mutualGuilds = _.map(mutualGuilds, _.clone);
