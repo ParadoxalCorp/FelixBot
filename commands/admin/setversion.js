@@ -17,9 +17,10 @@ class Setversion {
                 let file = await fs.readFile(`./config/core-data.json`);
                 file = JSON.parse(file);
                 file.version = args[0];
+                client.coreData.version = args[0];
                 await fs.writeFile(`./config/core-data.json`, JSON.stringify(file), (err) => {
                     if (err) {
-                        resolve(message.channel.createMessage(`:x: An error occurred: ${err}`));
+                        resolve(message.channel.createMessage(`:x: An error occurred while writing into core-data: ${err}`));
                     }
                 });
                 resolve(message.channel.createMessage(`:white_check_mark: The version has successfully been set to \`${args[0]}\``));
