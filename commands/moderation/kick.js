@@ -32,7 +32,7 @@ class Kick {
                 if (!message.guild.members.get(memberToKick.first().id).kickable) return resolve(await message.channel.createMessage(`:x: I can't kick this member :v`));
                 //This will be used to avoid triggering two times the case register
                 client.guilds.get(message.guild.id).lastKicked = memberToKick.first().id;
-                await message.guild.members.get(memberToKick.first().id).kick(`Kicked by ${message.author.tag}: ${reason ? reason : "No reason specified"}`);
+                await message.guild.members.get(memberToKick.first().id).kick(`Kicked by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.generalSettings.modLog.length + 1 : reason) : "No reason specified"}`);
                 if (guildEntry.generalSettings.modLogChannel) {
                     await registerCase(client, {
                         user: memberToKick.first(),

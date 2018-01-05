@@ -41,7 +41,7 @@ class Hackban {
                     screenshot: screenshot,
                     reason: reason
                 };
-                const bannedUser = await message.guild.banMember(userToBan, daysAmount, `Hack-banned by ${message.author.tag}: ${reason ? reason : "No reason specified"}`).catch(err => false);
+                const bannedUser = await message.guild.banMember(userToBan, daysAmount, `Hack-banned by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.generalSettings.modLog.length + 1 : reason) : "No reason specified"}`).catch(err => false);
                 if (bannedUser === false) return resolve(await message.channel.createMessage(`:x: I couldn't hackban this user, the user ID is probably invalid`));
                 resolve(await message.channel.createMessage(`:white_check_mark: Successfully hack-banned the user <@${userToBan}>`));
             } catch (err) {
