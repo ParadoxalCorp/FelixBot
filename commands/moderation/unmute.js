@@ -34,7 +34,7 @@ class Unmute {
                 if (message.guild.members.get(client.user.id).highestRole && mutedRole.position >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
                     return resolve(await message.channel.createMessage(`:x: The \`muted\` role seems to be higher than my highest role, therefore i can't unmute :v`));
                 }
-                await message.guild.members.get(memberToUnmute.id).removeRole(mutedRole.id, `Unmuted by ${message.author.tag}: ${reason ? reason : "No reason specified"}`);
+                await message.guild.members.get(memberToUnmute.id).removeRole(mutedRole.id, `Unmuted by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.generalSettings.modLog.length + 1 : reason) : "No reason specified"}`);
                 if (guildEntry.generalSettings.modLogChannel) {
                     await registerCase(client, {
                         user: memberToUnmute.user,
