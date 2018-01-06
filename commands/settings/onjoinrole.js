@@ -3,7 +3,7 @@ class OnJoinRole {
         this.help = {
             name: 'onjoinrole',
             description: 'Set the role(s) that Felix will give to new members',
-            usage: 'onjoinrole'
+            usage: 'onjoinrole add_role <role_name>'
         }
         this.conf = {
             guildOnly: true

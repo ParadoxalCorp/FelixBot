@@ -3,7 +3,7 @@ class SetGreetings {
         this.help = {
             name: 'setgreetings',
             description: 'Set the greetings of the server',
-            usage: 'setgreetings',
+            usage: 'setgreetings enable',
             detailedUsage: '\n**FLAGS**\n`%USER%` The user that joined the server, will look like `@Bobby`\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`'
         }
         this.conf = {

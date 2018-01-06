@@ -3,7 +3,7 @@ class Autorole {
         this.help = {
             name: 'autorole',
             description: 'Set the self-assignables roles',
-            usage: 'autorole'
+            usage: 'autorole add_role <role_name>'
         }
         this.conf = {
             aliases: ["selfrole"],

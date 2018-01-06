@@ -3,7 +3,7 @@ class SetFarewell {
         this.help = {
             name: 'setfarewell',
             description: 'Set the farewell of the server',
-            usage: 'setfarewell',
+            usage: 'setfarewell enable',
             detailedUsage: '**FLAGS**\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`'
         }
         this.conf = {
