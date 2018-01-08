@@ -34,9 +34,9 @@ class Softban {
                 //This will be used to avoid triggering two times the case register
                 client.guilds.get(message.guild.id).lastBanned = memberToBan.first().id;
                 client.guilds.get(message.guild.id).lastUnbanned = memberToBan.first().id;
-                await message.guild.members.get(memberToBan.first().id).ban(daysAmount, `Softbanned by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.generalSettings.modLog.length + 1 : reason) : "No reason specified"}`);
+                await message.guild.members.get(memberToBan.first().id).ban(daysAmount, `Softbanned by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.modLog.cases.length + 1 : reason) : "No reason specified"}`);
                 await message.guild.unbanMember(memberToBan.first().id, `Automatically unbanned: Softban requested by ${message.author.tag}`)
-                if (guildEntry.generalSettings.modLogChannel) {
+                if (guildEntry.modLog.channel) {
                     await registerCase(client, {
                         user: memberToBan.first(),
                         action: "kick",

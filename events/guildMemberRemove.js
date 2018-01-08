@@ -32,7 +32,7 @@ module.exports = async(client, guild, member) => {
         }
     } catch (err) {}
 
-    if (guildEntry.generalSettings.modLogChannel) {
+    if (guildEntry.modLog.channel) {
         let auditCase = await guild.getAuditLogs(1).catch(err => false);
         if (client.guilds.get(guild.id).lastKicked === member.id) {
             client.guilds.get(guild.id).lastKicked = undefined;

@@ -16,9 +16,9 @@ module.exports = async(client, message, args) => {
                         if (!new RegExp(/message|experience/gim).test(params[1])) return resolve(await message.channel.createMessage(`:x: Invalid parameter, must be either \`message\` or \`experience\``));
                         if (!role.first()) return resolve(await message.channel.createMessage(`:x: I couldn't find the specified role`));
                         if (isNaN(count)) return resolve(await message.channel.createMessage(`:x: Invalid exp/messages count`));
-                        if (guildEntry.generalSettings.levelSystem.roles.find(r => r.id === role.first().id)) return resolve(await message.channel.createMessage(`:x: The role \`${role.first().name}\` is already set to be given at some point`));
-                        if (guildEntry.generalSettings.levelSystem.roles.filter(r => r.method === counter.trim() && r.at === count).length === 3) return resolve(await message.channel.createMessage(`:x: I can't give more than 3 roles at the same point`));
-                        guildEntry.generalSettings.levelSystem.roles.push({
+                        if (guildEntry.levelSystem.roles.find(r => r.id === role.first().id)) return resolve(await message.channel.createMessage(`:x: The role \`${role.first().name}\` is already set to be given at some point`));
+                        if (guildEntry.levelSystem.roles.filter(r => r.method === counter.trim() && r.at === count).length === 3) return resolve(await message.channel.createMessage(`:x: I can't give more than 3 roles at the same point`));
+                        guildEntry.levelSystem.roles.push({
                             id: role.first().id,
                             at: count,
                             method: counter.trim()

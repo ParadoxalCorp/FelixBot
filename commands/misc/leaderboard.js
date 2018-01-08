@@ -19,12 +19,12 @@ class Leaderboard {
                 var args = message.content.split(/\s+/gim);
                 args.shift();
                 const guildEntry = client.guildData.get(message.guild.id);
-                let leaderboard = guildEntry.generalSettings.levelSystem.users.filter(m => message.guild.members.has(m.id)).sort((a, b) => b.expCount - a.expCount);
+                let leaderboard = guildEntry.levelSystem.users.filter(m => message.guild.members.has(m.id)).sort((a, b) => b.expCount - a.expCount);
                 let loveLeaderboard = client.userData.filterArray(u => message.guild.members.has(u.id)).sort((a, b) => b.generalSettings.lovePoints - a.generalSettings.lovePoints);
                 let pointsLeaderboard = client.userData.filterArray(u => message.guild.members.has(u.id) && !message.guild.members.get(u.id).bot).sort((a, b) => b.generalSettings.points - a.generalSettings.points)
                 let glbLeaderboard = client.userData.filterArray(u => u.dataPrivacy.publicLevel && client.users.has(u.id)).sort((a, b) => b.experience.expCount - a.experience.expCount);
                 let glbLoveLeaderboard = client.userData.filterArray(u => u.dataPrivacy.publicLove && client.users.has(u.id)).sort((a, b) => b.generalSettings.lovePoints - a.generalSettings.lovePoints);
-                let messageLeaderboard = guildEntry.generalSettings.levelSystem.users.filter(m => message.guild.members.has(m.id)).sort((a, b) => b.messages - a.messages);
+                let messageLeaderboard = guildEntry.levelSystem.users.filter(m => message.guild.members.has(m.id)).sort((a, b) => b.messages - a.messages);
                 let glbPointsLeaderboard = client.userData.filterArray(u => u.dataPrivacy.publicPoints && client.users.has(u.id)).sort((a, b) => b.generalSettings.points - a.generalSettings.points);
                 const position = function(id, target) {
                     let userPosition = target.findIndex(e => e.id === id);
@@ -124,16 +124,16 @@ class Leaderboard {
                         }
                     }
                 }
-                const interactiveMessage = await message.channel.createMessage(guildEntry.generalSettings.levelSystem.enabled ? localExpLeaderboard : globalExpLeaderboard);
+                const interactiveMessage = await message.channel.createMessage(guildEntry.levelSystem.enabled ? localExpLeaderboard : globalExpLeaderboard);
                 const collector = interactiveMessage.createReactionCollector(reaction => reaction.user.id === message.author.id);
                 let pageReactions = ["⭐", "❤", "🎀", "✉", "🌐", "❌"];
-                if (localExpLeaderboard.length > 0 && guildEntry.generalSettings.levelSystem.enabled) pageReactions.unshift();
+                if (localExpLeaderboard.length > 0 && guildEntry.levelSystem.enabled) pageReactions.unshift();
                 for (let i = 0; i < pageReactions.length; i++) await interactiveMessage.addReaction(pageReactions[i]);
                 let timeout = setTimeout(function() {
                     collector.stop("timeout");
                 }, 120000);
                 let page = 'exp';
-                let global = guildEntry.generalSettings.levelSystem.enabled ? false : true;
+                let global = guildEntry.levelSystem.enabled ? false : true;
                 let lastClicked;
                 collector.on('collect', async(r) => {
                     clearTimeout(timeout); //reset the timeout
@@ -173,7 +173,7 @@ class Leaderboard {
                     } else if (r.emoji.name === "🌐") { //Change global
                         if (global) {
                             global = false;
-                            if (page === 'exp' && guildEntry.generalSettings.levelSystem.enabled) await interactiveMessage.edit(localExpLeaderboard);
+                            if (page === 'exp' && guildEntry.levelSystem.enabled) await interactiveMessage.edit(localExpLeaderboard);
                             else await interactiveMessage.edit({
                                 embed: {
                                     description: ':x: There is nobody in the leaderboard yet or the experience system is disabled on this server'

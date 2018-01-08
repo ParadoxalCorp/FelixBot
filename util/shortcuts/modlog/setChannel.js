@@ -6,10 +6,10 @@ module.exports = (client, message, args) => {
                 max: 1
             });
             if (!channel.first()) return resolve(await message.channel.createMessage(`:x: I couldn't find the corresponding channel`));
-            if (channel.first().id === guildEntry.generalSettings.modLogChannel) {
+            if (channel.first().id === guildEntry.modLog.channel) {
                 return resolve(await message.channel.createMessage(`:x: The channel \`#${channel.first().name}\` is already set as the mod-log channel`));
             }
-            guildEntry.generalSettings.modLogChannel = channel.first().id;
+            guildEntry.modLog.channel = channel.first().id;
             client.guildData.set(message.guild.id, guildEntry);
             resolve(await message.channel.createMessage(`:white_check_mark: \`#${channel.first().name}\` has been set as the mod-log channel`));
         } catch (err) {

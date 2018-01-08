@@ -6,7 +6,7 @@ module.exports = async(client, guild, user) => {
         client.guilds.get(guild.id).lastUnbanned = undefined;
         return;
     }
-    if (guildEntry.generalSettings.modLogChannel) {
+    if (guildEntry.modLog.channel) {
         let auditCase = await guild.getAuditLogs(1).catch(err => false);
         registerCase(client, {
             guild: guild,

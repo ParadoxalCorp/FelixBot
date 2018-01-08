@@ -7,19 +7,19 @@ module.exports = (client, message, args) => {
                     title: `Experience settings`,
                     fields: [{
                         name: `Enabled`,
-                        value: guildEntry.generalSettings.levelSystem.enabled ? `:white_check_mark:` : `:x:`,
+                        value: guildEntry.levelSystem.enabled ? `:white_check_mark:` : `:x:`,
                         inline: true
                     }, {
                         name: `Level up notifications`,
-                        value: guildEntry.generalSettings.levelSystem.levelUpNotif ? (message.guild.channels.get(guildEntry.generalSettings.levelSystem.levelUpNotif) ? `#${message.guild.channels.get(guildEntry.generalSettings.levelSystem.levelUpNotif).name}` : (guildEntry.generalSettings.levelSystem.levelUpNotif === "channel" ? "channel" : (guildEntry.generalSettings.levelSystem.levelUpNotif === "dm" ? "dm" : "#deleted-channel"))) : "Disabled",
+                        value: guildEntry.levelSystem.levelUpNotif ? (message.guild.channels.get(guildEntry.levelSystem.levelUpNotif) ? `#${message.guild.channels.get(guildEntry.levelSystem.levelUpNotif).name}` : (guildEntry.levelSystem.levelUpNotif === "channel" ? "channel" : (guildEntry.levelSystem.levelUpNotif === "dm" ? "dm" : "#deleted-channel"))) : "Disabled",
                         inline: true
                     }, {
                         name: `Custom level-up message`,
-                        value: guildEntry.generalSettings.levelSystem.customNotif ? "```" + guildEntry.generalSettings.levelSystem.customNotif + "```" : ":x:",
+                        value: guildEntry.levelSystem.customNotif ? "```" + guildEntry.levelSystem.customNotif + "```" : ":x:",
                         inline: true
                     }, {
                         name: 'Automatic removal',
-                        value: guildEntry.generalSettings.levelSystem.autoRemove ? ":white_check_mark:" : ":x:",
+                        value: guildEntry.levelSystem.autoRemove ? ":white_check_mark:" : ":x:",
                         inline: true
                     }]
                 }
