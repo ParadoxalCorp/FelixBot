@@ -130,7 +130,7 @@ class StarboardManager {
 
     getStarsCount(message) {
         return new Promise(async(resolve, reject) => {
-            if (!message || message.author.id === client.user.id) return resolve();
+            if (!message || message.author.id === this.client.user.id) return resolve();
             let starOne = await message.getReaction('⭐');
             let starTwo = await message.getReaction('🌟');
             let uniqueUsers = [];

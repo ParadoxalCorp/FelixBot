@@ -1,5 +1,6 @@
 <h1 align="center"> FelixBot </h1>
   <p align="center">
+    <a href="https://david-dm.org/ParadoxalCorp/FelixBot" target="_blank"><img src="https://david-dm.org/ParadoxalCorp/FelixBot/status.svg" alt="Dependencies"></a>
     <a href="https://github.com/ParadoxalCorp/FelixBot/blob/master" target="_blank"><img src="https://img.shields.io/github/stars/ParadoxalCorp/FelixBot.svg?style=social&label=Star" alt="Github Stars"></a>
     <a href="https://github.com/ParadoxalCorp/FelixBot/issues" target="_blank"><img src="https://img.shields.io/github/issues/ParadoxalCorp/FelixBot.svg" alt="Github Issues"></a>
   </p>
@@ -12,11 +13,12 @@
 Felix is here, was first supposed to be a meme but hey, its a thing now ! 
 About Felix's source usage, note that Felix is under APACHE 2.0 license, more informations at the very bottom of this readme.
 # Tables of contents
-* [Features](https://github.com/ParadoxalCorp/FelixBot/blob/master/README.md#features)
-* [Commands](https://github.com/ParadoxalCorp/FelixBot/wiki/Generic)
-* [Invite link and support server](https://github.com/ParadoxalCorp/FelixBot/blob/master/README.md#invite-link-and-support-server)
-* [FAQ](https://github.com/ParadoxalCorp/FelixBot/wiki/FAQ)
-* [Installation](https://github.com/ParadoxalCorp/FelixBot/wiki/Linux)
+* [Features](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#features)
+* [Commands](https://github.com/ParadoxOrigins/FelixBot/wiki/Generic)
+* [Invite link and support server](https://github.com/ParadoxOrigins/FelixBot/blob/master/README.md#invite-link-and-support-server)
+* [Permissions system](https://github.com/ParadoxalCorp/FelixBot/blob/master/README.md#permissions-system)
+* [FAQ](https://github.com/ParadoxOrigins/FelixBot/wiki/FAQ)
+* [Installation](https://github.com/ParadoxOrigins/FelixBot/wiki/Linux)
 ## Features
 * Simple but powerful permission system
 * Custom prefix
@@ -50,7 +52,7 @@ Im that kind of guy who likes to know what exactly happen to my data when a appl
 Basically, only your Discord user ID, that allow us to efficiently store and differenciate users, all of the other data we store "about you" are Felix-related(Your points, experience, market items you bought...) 
 
 #### And, is that all?
-Well yes but no, we(well only me use these data) log guilds(servers) joined and left, however since 2.5.0, as pointed out by someone, we do not log guild names and guild owners anymore. We only log: The members count, the bots count and the guild ID in case we need to retrieve the guild someday, these are for statistics purposes and aren't stored anywhere in our database, only in a Discord channel. 
+Well yes `¯\_(ツ)_/¯`
 
 #### Alright but when do you store users? Who are "users" and how can i stop be a "user"?
 A new entry in the database is created when you first use a command, which means you won't be considered as a "user" and therefore won't be in the database as long as you don't use Felix.
