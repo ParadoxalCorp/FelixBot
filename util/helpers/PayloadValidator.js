@@ -18,24 +18,23 @@ class PayloadValidator {
             channel: ['boolean', 'string'],
             method: ['boolean', 'string'],
             levelUpNotif: ['boolean', 'string'],
-            modLogChannel: ['boolean', 'string'],
             customNotif: ['boolean', 'string']
         };
         guildKeys.forEach(key => {
             if (typeof defaultGuildData[key] === "undefined") return delete guild[key];
-            if ((typeof guild[key] !== typeof defaultGuildData[key]) && (multiTypes[key] ? multiTypes[key].includes(typeof guild[key]) : true)) return invalidKeys.push(`Guild.${key} must be the following type: ${typeof defaultGuildData[key]}`);
+            if ((typeof guild[key] !== typeof defaultGuildData[key]) && (multiTypes[key] ? !multiTypes[key].includes(typeof guild[key]) : true)) return invalidKeys.push(`Guild.${key} must be the following type: ${typeof defaultGuildData[key]}`);
             if (typeof guild[key] === "object") {
                 let guildPropertyObject = Object.keys(guild[key]),
                     defaultPropertyObject = Object.keys(defaultGuildData[key]);
                 guildPropertyObject.forEach(childKey => { //If property is object, which is pretty likely, check as well
                     if (typeof defaultGuildData[key][childKey] === "undefined") return;
-                    if ((typeof guild[key][childKey] !== typeof defaultGuildData[key][childKey]) && (multiTypes[childKey] ? multiTypes[childKey].includes(typeof guild[key][childKey]) : true)) return invalidKeys.push(`Guild.${key}.${childKey} must be the following type: ${typeof defaultGuildData[key][childKey]}`);
+                    if ((typeof guild[key][childKey] !== typeof defaultGuildData[key][childKey]) && (multiTypes[childKey] ? !multiTypes[childKey].includes(typeof guild[key][childKey]) : true)) return invalidKeys.push(`Guild.${key}.${childKey} must be the following type: ${typeof defaultGuildData[key][childKey]}`);
                     if (typeof guild[key][childKey] === "object") {
                         let deeperGuildObject = Object.keys(guild[key][childKey]),
                             deeperDefaultGuildObject = Object.keys(guild[key][childKey]);
                         guildPropertyObject.forEach(deeperChildKey => {
                             if (typeof defaultGuildData[key][childKey][deeperChildKey] === "undefined") return;
-                            if ((typeof guild[key][childKey][deeperChildKey] !== typeof defaultGuildData[key][childKey][deeperChildKey]) && (multiTypes[deeperChildKey] ? multiTypes[deeperChildKey].includes(typeof guild[key][childKey][deeperChildKey]) : true)) return invalidKeys.push(`Guild.${key}.${childKey}.${deeperChildKey} must be the following type: ${typeof defaultGuildData[key][childKey][deeperChildKey]}`);
+                            if ((typeof guild[key][childKey][deeperChildKey] !== typeof defaultGuildData[key][childKey][deeperChildKey]) && (multiTypes[deeperChildKey] ? !multiTypes[deeperChildKey].includes(typeof guild[key][childKey][deeperChildKey]) : true)) return invalidKeys.push(`Guild.${key}.${childKey}.${deeperChildKey} must be the following type: ${typeof defaultGuildData[key][childKey][deeperChildKey]}`);
                         });
                     }
                 });
