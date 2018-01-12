@@ -108,7 +108,7 @@ class Anime {
                     if (selectedAnime.synopsis.length > 1024) selectedAnime.synopsis = selectedAnime.synopsis.substr(0, 1021) + '..';
                     embedFields.push({
                         name: ':notepad_spiral: Synopsis',
-                        value: selectedAnime.synopsis.replace(/(&quot;|&mdash;|&rsquo;|&#039;|\[i]|\[\/i])/gim, ""),
+                        value: selectedAnime.synopsis.replace(/(&quot;|&mdash;|&rsquo;|&#039;|\[i]|\[\/i])/gim, "") || "None found :v",
                     });
                 }
                 return resolve(await message.channel.createMessage({
