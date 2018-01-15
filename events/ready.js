@@ -46,15 +46,15 @@ module.exports = async(client) => {
     }
     //Get image types
     if (client.config.wolkeImageKey) {
-        let result = await request.get(`https://api.weeb.sh/images/types`, { header: 'Authorization', value: `Bearer ${client.config.wolkeImageKey}` });
-        if (!result.body || result.body.status !== 200) client.emit(`error`, result.body);
-        else client.imageTypes = result.body.types;
+        let result = await request.get(`https://api.weeb.sh/images/types`, { 'Authorization': `Bearer ${client.config.wolkeImageKey}`, 'User-Agent': 'FelixBot' });
+        if (!result.data || result.data.status !== 200) client.emit(`error`, result.data);
+        else client.imageTypes = result.data.types;
         require(`../util/helpers/generateImageSubcommands.js`)(client);
         //Update image types every 12 hour
         client._imageTypesInterval = setInterval(async() => {
-            let result = await request.get(`https://api.weeb.sh/images/types`, { header: 'Authorization', value: `Bearer ${client.config.wolkeImageKey}` });
-            if (!result.body || result.body.status !== 200) return client.emit(`error`, result.body);
-            client.imageTypes = result.body.types;
+            result = await request.get(`https://api.weeb.sh/images/types`, { 'Authorization': `Bearer ${client.config.wolkeImageKey}`, 'User-Agent': 'FelixBot' });
+            if (!result.data || result.data.status !== 200) return client.emit(`error`, result.data);
+            client.imageTypes = result.data.types;
             require(`../util/helpers/generateImageSubcommands.js`)(client);
         }, 43200000);
     }
