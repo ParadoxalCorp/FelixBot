@@ -11,14 +11,15 @@
         "Karen"
     ],
     "license": "Apache-2.0",
-  	"scripts": {
-		"start": "node index.js"
+    "scripts": {
+        "start": "node index.js"
     },
     "bugs": {
         "url": "https://github.com/ParadoxalCorp/FelixBot/issues"
     },
     "homepage": "https://github.com/ParadoxalCorp/FelixBot#readme",
     "dependencies": {
+        "axios": "^0.17.1",
         "chalk": "^2.1.0",
         "draftlog": "^1.0.12",
         "enmap": "^0.4.2",

@@ -14,14 +14,14 @@ class Kiss {
         return new Promise(async(resolve, reject) => {
             const request = require("../../util/modules/request.js");
             try {
-                let result = await request.get("https://api.weeb.sh/images/random?type=kiss&filetype=gif", { header: 'Authorization', value: `Bearer ${client.config.wolkeImageKey}` });
+                let result = await request.get("https://api.weeb.sh/images/random?type=kiss&filetype=gif", { 'Authorization': `Bearer ${client.config.wolkeImageKey}`, 'User-Agent': 'FelixBot' });
                 let users = message.guild ? await message.getUserResolvable() : {};
-                if (!result.body || !result.body.url) return resolve(await message.channel.createMessage(":x: An error occurred :v"));
+                if (!result.data || !result.data.url) return resolve(await message.channel.createMessage(":x: An error occurred :v"));
                 resolve(await message.channel.createMessage({
                     embed: {
                         description: users.first && users.first() ? `Hey ${users.map(u => '**' + u.tag + '**').join(", ")}, you've just been kissed by **${message.author.tag}**` : "",
                         image: {
-                            url: result.body.url
+                            url: result.data.url
                         },
                         footer: {
                             text: `Powered by https://weeb.sh/`
