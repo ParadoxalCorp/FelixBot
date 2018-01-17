@@ -63,4 +63,4 @@ You can always reset your data with the `account` command and join the support s
 * `Aetheryx#2222` Original author of the `logger` module, also helped to shorten quite a few parts of the code
 * `Wolke#5985` For his awesome Rem bot on which Felix is inspired
 * `FrostyRaiden#7802` Helped me locate most of the v3 bugs during the beta, and if you ever feel like thanking someone for Felix's pretty easy self-hosting, thanks him ^
-* `Karen#3938` The better for the end, basically Felix wouldn't even be alive without him ^
+* `Karen#3938` The best for the end, basically Felix wouldn't even be alive without him ^
