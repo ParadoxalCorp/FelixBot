@@ -7,7 +7,7 @@ module.exports = async(client) => {
         if (updateDbl.status !== 200) client.emit('error', `Failed to update guild count on Discord Bot List: ${updateDbl.data}`);
     }
     if (client.config.discordBotFr) {
-        const updateDbf = await request.post(`https://discordbot.takohell.com/api/v1/bots/${client.user.id}`, { server_count: client.guilds.size, shard_count: client.shards.size }, { 'Authorization': client.config.discordBotFr, 'Content-Type': 'application/json' });
+        const updateDbf = await request.post(`https://discordbot.takohell.com/api/v1/bot/${client.user.id}`, { server_count: client.guilds.size, shard_count: client.shards.size }, { 'Authorization': client.config.discordBotFr, 'Content-Type': 'application/json' });
         if (updateDbf.status !== 200) client.emit('error', `Failed to update guild count on Discord Bot List fr: ${JSON.stringify(updateDbf.data)}`);
     }
     if (client.config.terminalBotList) {
