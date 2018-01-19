@@ -171,7 +171,7 @@ const Felix = new Client(config.token, {
 
 (async function() {
     let errors = [],
-        updateNeeded = false;
+        updateNeeded = true;
     //Load the database
     logger.draft(`loadingDatabase`, `create`, `Loading the database...`);
     await Felix.userData.defer;
