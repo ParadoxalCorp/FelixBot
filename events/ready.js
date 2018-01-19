@@ -19,18 +19,18 @@ module.exports = async(client) => {
     }
     //Get upvoters
     if (client.config.discordBotList) {
-        let result = await request.get(`https://discordbots.org/api/bots/327144735359762432/votes`, { header: 'Authorization', value: client.config.discordBotList });
-        if (!Array.isArray(result.body)) {
-            client.emit('error', result.body);
+        let result = await request.get(`https://discordbots.org/api/bots/${client.user.id}/votes`, { 'Authorization': client.config.discordBotList }).catch(err => client.emit(`error`, err));
+        if (!Array.isArray(result.data)) {
+            client.emit('error', result.data);
         };
-        client.upvoters = result.body;
+        client.upvoters = result.data;
         //Update upvoters every 30 min
         client._upvoteInterval = setInterval(async() => {
-            let result = await request.get(`https://discordbots.org/api/bots/327144735359762432/votes`, { header: 'Authorization', value: client.config.discordBotList });
-            if (!Array.isArray(result.body)) {
-                return client.emit('error', result.body);
+            let result = await request.get(`https://discordbots.org/api/bots/${client.user.id}/votes`, { 'Authorization': client.config.discordBotList }).catch(err => client.emit(`error`, err));
+            if (!Array.isArray(result.data)) {
+                return client.emit('error', result.data);
             };
-            client.upvoters = result.body;
+            client.upvoters = result.data;
         }, 1800000);
         //Launch status change interval
         client._statusInterval = setInterval(async() => {
@@ -46,13 +46,13 @@ module.exports = async(client) => {
     }
     //Get image types
     if (client.config.wolkeImageKey) {
-        let result = await request.get(`https://api.weeb.sh/images/types`, { 'Authorization': `Bearer ${client.config.wolkeImageKey}`, 'User-Agent': 'FelixBot' });
+        let result = await request.get(`https://api.weeb.sh/images/types`, { 'Authorization': `Bearer ${client.config.wolkeImageKey}`, 'User-Agent': 'FelixBot' }).catch(err => client.emit(`error`, err));
         if (!result.data || result.data.status !== 200) client.emit(`error`, result.data);
         else client.imageTypes = result.data.types;
         require(`../util/helpers/generateImageSubcommands.js`)(client);
         //Update image types every 12 hour
         client._imageTypesInterval = setInterval(async() => {
-            result = await request.get(`https://api.weeb.sh/images/types`, { 'Authorization': `Bearer ${client.config.wolkeImageKey}`, 'User-Agent': 'FelixBot' });
+            result = await request.get(`https://api.weeb.sh/images/types`, { 'Authorization': `Bearer ${client.config.wolkeImageKey}`, 'User-Agent': 'FelixBot' }).catch(err => client.emit(`error`, err));
             if (!result.data || result.data.status !== 200) return client.emit(`error`, result.data);
             client.imageTypes = result.data.types;
             require(`../util/helpers/generateImageSubcommands.js`)(client);
