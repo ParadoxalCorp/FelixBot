@@ -17,9 +17,9 @@ class Urban {
         return new Promise(async(resolve, reject) => {
             try {
                 if (!args[0]) return resolve(await message.channel.createMessage(':x: You did not specified a term to search'))
-                let result = await request.get(`https://mashape-community-urban-dictionary.p.mashape.com/define?term=${args[0]}`, { header: 'X-Mashape-Key', value: client.config.mashapeKey });
-                if (!result.body.list || !result.body.list[0]) return resolve(await message.channel.createMessage(":x: I could not find anything"));
-                let urResult = result.body.list[0];
+                let result = await request.get(`https://mashape-community-urban-dictionary.p.mashape.com/define?term=${args[0]}`, { 'X-Mashape-Key': client.config.mashapeKey });
+                if (!result.data.list || !result.data.list[0]) return resolve(await message.channel.createMessage(":x: I could not find anything"));
+                let urResult = result.data.list[0];
                 resolve(await message.channel.createMessage({
                     embed: {
                         author: {

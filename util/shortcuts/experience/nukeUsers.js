@@ -16,7 +16,7 @@ module.exports = async(client, message, args) => {
                     m.delete();
                 }, 5000)
             }));
-            guildEntry.generalSettings.levelSystem.users = [];
+            guildEntry.levelSystem.users = [];
             client.guildData.set(message.guild.id, guildEntry);
             resolve(await message.channel.createMessage(`:white_check_mark: Successfully nuked users activity stats`));
         } catch (err) {

@@ -24,12 +24,12 @@ module.exports = async(client) => {
                     return new Promise(async(resolve, reject) => {
                         const request = require(`../modules/request.js`);
                         try {
-                            let result = await request.get(`https://api.weeb.sh/images/random?type=${type}`, { header: 'Authorization', value: `Bearer ${client.config.wolkeImageKey}` });
-                            if (!result.body || !result.body.url) return resolve(await message.channel.createMessage(`:x: An error occured`));
+                            let result = await request.get(`https://api.weeb.sh/images/random?type=${type}`, { 'Authorization': `Bearer ${client.config.wolkeImageKey}`, 'User-Agent': 'FelixBot' });
+                            if (!result.data || !result.data.url) return resolve(await message.channel.createMessage(`:x: An error occured`));
                             resolve(await message.channel.createMessage({
                                 embed: {
                                     image: {
-                                        url: result.body.url
+                                        url: result.data.url
                                     },
                                     footer: {
                                         text: `Powered by https://weeb.sh/`

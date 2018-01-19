@@ -3,8 +3,8 @@ module.exports = (client, message, args) => {
         try {
             const guildEntry = client.guildData.get(message.guild.id);
 
-            if (!guildEntry.generalSettings.modLogChannel) return resolve(await message.channel.createMessage(`:x: The mod-log is already disabled`));
-            guildEntry.generalSettings.modLogChannel = false
+            if (!guildEntry.modLog.channel) return resolve(await message.channel.createMessage(`:x: The mod-log is already disabled`));
+            guildEntry.modLog.channel = false
             client.guildData.set(message.guild.id, guildEntry);
             resolve(await message.channel.createMessage(`:white_check_mark: The mod-log has successfully been disabled`));
         } catch (err) {

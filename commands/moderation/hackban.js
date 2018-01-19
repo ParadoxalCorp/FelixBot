@@ -29,9 +29,9 @@ class Hackban {
                 if (message.guild.members.get(userToBan)) return resolve(await message.channel.createMessage(`:x: That user is in this server, please use \`ban\` instead`));
                 let bannedUsers = await message.guild.getBans();
                 if (bannedUsers.find(u => u.user.id === userToBan)) {
-                    let modCase = guildEntry.generalSettings.modLog.filter(c => c.user.id === userToBan && (new RegExp(/ban|hackban/gim).test(c.action)));
+                    let modCase = guildEntry.modLog.cases.filter(c => c.user.id === userToBan && (new RegExp(/ban|hackban/gim).test(c.action)));
                     let mostRecentCase = modCase.sort((a, b) => b.timestamp - a.timestamp)[0];
-                    return resolve(await message.channel.createMessage(mostRecentCase ? `:x: That user is already banned (case \`#${guildEntry.generalSettings.modLog.findIndex(c => c.timestamp === mostRecentCase.timestamp) + 1}\`)` : ":x: That user is already banned"));
+                    return resolve(await message.channel.createMessage(mostRecentCase ? `:x: That user is already banned (case \`#${guildEntry.modLog.cases.findIndex(c => c.timestamp === mostRecentCase.timestamp) + 1}\`)` : ":x: That user is already banned"));
                 }
                 //Here we do something slightly different, since for some reasons the audit log entries don't provide the user object
                 //And the banned user isn't returned by discord's api, the guildBanAdd listener will handle the logging since it receives the user
@@ -41,7 +41,7 @@ class Hackban {
                     screenshot: screenshot,
                     reason: reason
                 };
-                const bannedUser = await message.guild.banMember(userToBan, daysAmount, `Hack-banned by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.generalSettings.modLog.length + 1 : reason) : "No reason specified"}`).catch(err => false);
+                const bannedUser = await message.guild.banMember(userToBan, daysAmount, `Hack-banned by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.modLog.cases.length + 1 : reason) : "No reason specified"}`).catch(err => false);
                 if (bannedUser === false) return resolve(await message.channel.createMessage(`:x: I couldn't hackban this user, the user ID is probably invalid`));
                 resolve(await message.channel.createMessage(`:white_check_mark: Successfully hack-banned the user <@${userToBan}>`));
             } catch (err) {

@@ -8,8 +8,8 @@ module.exports = async(client, message, args) => {
     return new Promise(async(resolve, reject) => {
         try {
             const guildEntry = client.guildData.get(message.guild.id);
-            if (!guildEntry.generalSettings.levelSystem.enabled) return resolve(await message.channel.createMessage(`:x: The experience system is already disabled`));
-            guildEntry.generalSettings.levelSystem.enabled = false;
+            if (!guildEntry.levelSystem.enabled) return resolve(await message.channel.createMessage(`:x: The experience system is already disabled`));
+            guildEntry.levelSystem.enabled = false;
             client.guildData.set(message.guild.id, guildEntry);
             resolve(await message.channel.createMessage(`:white_check_mark: The experience system has been disabled`));
         } catch (err) {

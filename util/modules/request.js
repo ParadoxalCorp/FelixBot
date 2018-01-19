@@ -1,19 +1,20 @@
-const unirest = require('unirest');
+const axios = require('axios');
 
 class Request {
     /**
      * Async GET request
      * @param {string} url The url of the page to get
-     * @param {Object} header An object containing the header and the header value
-     * @param {string} header.header The header
-     * @param {string} header.value The header value
+     * @param {Object} [headers] A JSON object containing the headers, by default sends Felix's User-Agent
+     * @param {Number} [timeout=3000] Time in milliseconds before the request should be aborted
      */
-    get(url, header, timeout = 3000) {
+    get(url, headers = { 'User-Agent': 'FelixBot' }, timeout = 3000) {
         return new Promise(async(resolve, reject) => {
-            unirest.get(url)
-                .header(`${header ? header.header : null}`, `${header ? header.value : null}`)
-                .timeout(timeout)
-                .end(response => resolve(response));
+            axios({
+                method: 'get',
+                url: url,
+                headers: headers,
+                timeout: timeout
+            }).then(response => resolve(response)).catch(err => reject(err));
         });
     }
 
@@ -21,17 +22,18 @@ class Request {
      * Async PUT request
      * @param {string} url The url of the page where to PUT
      * @param {*} data The data to send
-     * @param {Object} header An object containing the header and the header value
-     * @param {string} header.header The header
-     * @param {string} header.value The header value
+     * @param {Object} [headers] A JSON object containing the headers, by default sends Felix's User-Agent
+     * @param {Number} [timeout=3000] Time in milliseconds before the request should be aborted
      */
-    put(url, data, header, timeout = 3000) {
+    put(url, data, headers = { 'User-Agent': 'FelixBot' }, timeout = 3000) {
         return new Promise(async(resolve, reject) => {
-            unirest.put(url)
-                .header(`${header ? header.header : null}`, `${header ? header.value : null}`)
-                .send(data)
-                .timeout(timeout)
-                .end(response => resolve(response));
+            axios({
+                method: 'put',
+                url: url,
+                data: data,
+                headers: headers,
+                timeout: timeout
+            }).then(response => resolve(response)).catch(err => reject(err));
         });
     }
 
@@ -39,20 +41,18 @@ class Request {
      * Async POST request
      * @param {String} url The url of the page where to POST
      * @param {*} data The data to send
-     * @param {Object} header An object containing the header and the header value
-     * @param {String} header.header The header
-     * @param {String} header.value The header value
-     * @param {Number} [timeout=3000] Time in milliseconds before aborting
-     * @param {Boolean} [json] Whether or not this should be sent with a application/json header
+     * @param {Object} [headers] A JSON object containing the headers, by default sends Felix's User-Agent
+     * @param {Number} [timeout=3000] Time in milliseconds before the request should be aborted
      */
-    post(url, data, header, timeout = 3000, json) {
+    post(url, data, headers = { 'User-Agent': 'FelixBot' }, timeout = 3000) {
         return new Promise(async(resolve, reject) => {
-            unirest.post(url)
-                .header(`${header ? header.header : null}`, `${header ? header.value : null}`)
-                .header(`${json ? "Content-Type" : null}`, `${json ? "application/json" : null}`)
-                .send(data)
-                .timeout(timeout)
-                .end(response => resolve(response));
+            axios({
+                method: 'post',
+                url: url,
+                data: data,
+                headers: headers,
+                timeout: timeout
+            }).then(response => resolve(response)).catch(err => reject(err));
         });
     }
 }

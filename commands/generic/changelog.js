@@ -7,8 +7,6 @@ class Changelog {
         }
         this.conf = {
             guildOnly: true
-                /*,
-                            disabled: `This command is encountering errors from the gateway and therefore is disabled atm`*/
         }
     }
 

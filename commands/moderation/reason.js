@@ -15,28 +15,28 @@ class Reason {
         return new Promise(async(resolve, reject) => {
             try {
                 const guildEntry = client.guildData.get(message.guild.id);
-                if (!guildEntry.generalSettings.modLogChannel) return resolve(await message.channel.createMessage(`:x: There is no mod-log channel set`));
+                if (!guildEntry.modLog.channel) return resolve(await message.channel.createMessage(`:x: There is no mod-log channel set`));
                 let caseNumber = args.shift() - 1,
                     reason = args.join(" ");
                 let screenshot = message.attachments[0] ? message.attachments[0].url : (new RegExp(/\-s/gim).test(args.join(" ")) ? args.join(" ").split(/\-s/gim)[1].trim() : undefined);
                 if (!new RegExp(/\.jpg|.png|.gif|.jpeg/gim).test(screenshot)) screenshot = undefined;
                 if (new RegExp(/\-s/gim).test(reason)) reason = reason.split(/\-s/gim)[0].trim();
-                if (!guildEntry.generalSettings.modLog[caseNumber]) return resolve(await message.channel.createMessage(`:x: Invalid case number`));
+                if (!guildEntry.modLog.cases[caseNumber]) return resolve(await message.channel.createMessage(`:x: Invalid case number`));
                 if (!reason && !new RegExp(/\-s/gim).test(args.join(" "))) return resolve(await message.channel.createMessage(`:x: The reason can't be blank`));
-                let modCase = guildEntry.generalSettings.modLog[caseNumber];
+                let modCase = guildEntry.modLog.cases[caseNumber];
                 if (modCase.moderator && modCase.moderator.id !== message.author.id) {
                     return resolve(await message.channel.createMessage(`:x: This case is assigned to \`${message.guild.members.has(modCase.moderator.id) 
                         ? message.guild.members.get(modCase.moderator.id).tag : modCase.moderator.tag}\` and therefore only them can edit the reason`));
                 }
-                if (reason) guildEntry.generalSettings.modLog[caseNumber].reason = reason;
-                if (new RegExp(/\-s/gim).test(args.join(" "))) guildEntry.generalSettings.modLog[caseNumber].screenshot = screenshot;
-                guildEntry.generalSettings.modLog[caseNumber].moderator = {
+                if (reason) guildEntry.modLog.cases[caseNumber].reason = reason;
+                if (new RegExp(/\-s/gim).test(args.join(" "))) guildEntry.modLog.cases[caseNumber].screenshot = screenshot;
+                guildEntry.modLog.cases[caseNumber].moderator = {
                     id: message.author.id,
                     username: message.author.username,
                     tag: message.author.tag,
                     discriminator: message.author.discriminator
                 };
-                let logMessageExist = await client.getMessage(guildEntry.generalSettings.modLogChannel, modCase.modLogMessage).catch(err => false);
+                let logMessageExist = await client.getMessage(guildEntry.modLog.channel, modCase.modLogMessage).catch(err => false);
                 let updatedModCase = {
                     embed: {
                         title: `Case #${caseNumber + 1}`,
@@ -63,9 +63,9 @@ class Reason {
                     }
                 }
                 if (logMessageExist) {
-                    await client.editMessage(guildEntry.generalSettings.modLogChannel, modCase.modLogMessage, updatedModCase);
-                } else await client.createMessage(guildEntry.generalSettings.modLogChannel, updatedModCase).then(m => {
-                    guildEntry.generalSettings.modLog[caseNumber].modLogMessage = m.id;
+                    await client.editMessage(guildEntry.modLog.channel, modCase.modLogMessage, updatedModCase);
+                } else await client.createMessage(guildEntry.modLog.channel, updatedModCase).then(m => {
+                    guildEntry.modLog.cases[caseNumber].modLogMessage = m.id;
                 });
                 client.guildData.set(message.guild.id, guildEntry);
                 resolve(await message.channel.createMessage(`:white_check_mark: Successfully updated the reason of case \`#${caseNumber + 1}\``));

@@ -6,7 +6,7 @@ class RecalculateExperience {
         this.help = {
             name: 'recalculateexperience',
             usage: 'recalculateexperience',
-            description: "Useful if you re-adjusted the requirements for a role, this will automatically remove the roles from the user who doesn't fit the requirements anymore and give it to the ones who now fit it"
+            description: "Useful if you re-adjusted the requirements for a role, this will automatically remove the roles from the users who doesn't fit the requirements anymore and give it to the ones who now fit it"
         }
         this.conf = {
             guildOnly: true,
@@ -22,7 +22,7 @@ class RecalculateExperience {
                 let startDate = Date.now();
                 let guildRoles = [];
                 //Fill guild roles 
-                guildEntry.generalSettings.levelSystem.roles.forEach(r => {
+                guildEntry.levelSystem.roles.forEach(r => {
                     if (!message.guild.roles.has(r.id)) return;
                     let guildRole = message.guild.roles.get(r.id);
                     guildRole.at = r.at,
@@ -31,8 +31,8 @@ class RecalculateExperience {
                 });
 
                 //Check members
-                for (let i = 0; i < guildEntry.generalSettings.levelSystem.users.length; i++) {
-                    let u = guildEntry.generalSettings.levelSystem.users[i];
+                for (let i = 0; i < guildEntry.levelSystem.users.length; i++) {
+                    let u = guildEntry.levelSystem.users[i];
                     const member = message.guild.members.get(u.id);
                     if (member) { //JS pls
                         let rolesToRemove = guildRoles.filter(r => parseInt(r.at) > parseInt(u[r.method === "message" ? "messages" : "level"]) && member.roles.find(role => role === r.id));
@@ -50,7 +50,7 @@ class RecalculateExperience {
                         }
                         if (rolesToAdd[0]) {
                             //Add roles with a lower requirement than the user has
-                            if (guildEntry.generalSettings.levelSystem.autoRemove) {
+                            if (guildEntry.levelSystem.autoRemove) {
                                 rolesToAdd = [rolesToAdd.sort((a, b) => b.at - a.at)[0]];
                             }
                             for (let o = 0; o < rolesToAdd.length; o++) {
@@ -63,7 +63,7 @@ class RecalculateExperience {
                             }
                         }
                     }
-                    if ((i + 1) === guildEntry.generalSettings.levelSystem.users.length) {
+                    if ((i + 1) === guildEntry.levelSystem.users.length) {
                         resolve(message.author.createMessage(`:white_check_mark: The recalculating and re-adjusting has been completed, it took \`${timeConverter.toElapsedTime(Date.now() - startDate, true)}\``).catch(err => err));
                     }
                 };

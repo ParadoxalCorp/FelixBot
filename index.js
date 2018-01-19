@@ -107,20 +107,22 @@ class Client extends Eris {
             return {
                 id: id,
                 generalSettings: {
+                    prefix: config.prefix,
                     autoAssignablesRoles: [],
                     disabledModules: [],
-                    modLog: [],
-                    modLogChannel: false,
-                    prefix: config.prefix,
-                    levelSystem: {
-                        enabled: false,
-                        downGrade: true,
-                        autoRemove: false,
-                        customNotif: false,
-                        levelUpNotif: false,
-                        roles: [],
-                        users: []
-                    },
+                },
+                levelSystem: {
+                    enabled: false,
+                    downGrade: true,
+                    autoRemove: false,
+                    customNotif: false,
+                    levelUpNotif: false,
+                    roles: [],
+                    users: []
+                },
+                modLog: {
+                    cases: [],
+                    channel: false
                 },
                 starboard: {
                     channel: false,
@@ -168,17 +170,20 @@ const Felix = new Client(config.token, {
 });
 
 (async function() {
-    let errors = [];
+    let errors = [],
+        updateNeeded = false;
     //Load the database
     logger.draft(`loadingDatabase`, `create`, `Loading the database...`);
     await Felix.userData.defer;
     await Felix.guildData.defer;
     //Launch database auto-update
-    logger.draft(`loadingDatabase`, `edit`, `Fully loaded the database, launching database auto-update...`);
-    await sleep(5000); //defer isn't accurate so we wait a bit more   
-    const DatabaseUpdater = require(`./util/helpers/DatabaseUpdater.js`);
-    const dbUpdate = await DatabaseUpdater.updateDatabase(Felix);
-    logger.draft(`loadingDatabase`, `end`, `${dbUpdate.usersUpdate.entriesUpdated || dbUpdate.usersUpdate.entriesUpdated === 0 ? "Updated " + dbUpdate.usersUpdate.entriesUpdated + " user entries in " + dbUpdate.usersUpdate.time  + "ms" : "Failed to update user database: " + dbUpdate.usersUpdate}, ${dbUpdate.guildsUpdate.entriesUpdated || dbUpdate.guildsUpdate.entriesUpdated === 0 ? "and updated " + dbUpdate.guildsUpdate.entriesUpdated + " guild entries in " + dbUpdate.guildsUpdate.time + "ms": "Failed to update guild database: " + dbUpdate.guildsUpdate}`, dbUpdate.guildsUpdate.entriesUpdated && dbUpdate.usersUpdate.entriesUpdated ? true : false);
+    if (updateNeeded) {
+        logger.draft(`loadingDatabase`, `edit`, `Fully loaded the database, launching database auto-update...`);
+        await sleep(5000); //defer isn't accurate so we wait a bit more   
+        const DatabaseUpdater = require(`./util/helpers/DatabaseUpdater.js`);
+        const dbUpdate = await DatabaseUpdater.updateDatabase(Felix);
+        logger.draft(`loadingDatabase`, `end`, `${dbUpdate.usersUpdate.entriesUpdated || dbUpdate.usersUpdate.entriesUpdated === 0 ? "Updated " + dbUpdate.usersUpdate.entriesUpdated + " user entries in " + dbUpdate.usersUpdate.time  + "ms" : "Failed to update user database: " + dbUpdate.usersUpdate}, ${dbUpdate.guildsUpdate.entriesUpdated || dbUpdate.guildsUpdate.entriesUpdated === 0 ? "and updated " + dbUpdate.guildsUpdate.entriesUpdated + " guild entries in " + dbUpdate.guildsUpdate.time + "ms": "Failed to update guild database: " + dbUpdate.guildsUpdate}`, dbUpdate.guildsUpdate.entriesUpdated && dbUpdate.usersUpdate.entriesUpdated ? true : false);
+    } else logger.draft(`loadingDatabase`, `end`, `Fully loaded the database`, true);
     //Load commands
     logger.draft(`loadingCommands`, `create`, `Loading commands...`);
     const categories = await fs.readdir(`./commands`);

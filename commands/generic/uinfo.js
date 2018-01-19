@@ -47,14 +47,14 @@ class Uinfo {
                         inline: true
                     });
                 }
-                if (guildEntry.generalSettings.levelSystem.enabled && guildEntry.generalSettings.levelSystem.users.filter(u => u.id === target.id).length !== 0) {
-                    const userPos = guildEntry.generalSettings.levelSystem.users.findIndex(function(element) {
+                if (guildEntry.levelSystem.enabled && guildEntry.levelSystem.users.filter(u => u.id === target.id).length !== 0) {
+                    const userPos = guildEntry.levelSystem.users.findIndex(function(element) {
                         return element.id === target.id;
                     });
-                    const levelDetails = getLevelDetails(guildEntry.generalSettings.levelSystem.users[userPos].level, guildEntry.generalSettings.levelSystem.users[userPos].expCount);
+                    const levelDetails = getLevelDetails(guildEntry.levelSystem.users[userPos].level, guildEntry.levelSystem.users[userPos].expCount);
                     embedFields.push({
                         name: ":star: Local experience",
-                        value: "Level " + guildEntry.generalSettings.levelSystem.users[userPos].level + "\nExp: " + Math.round(guildEntry.generalSettings.levelSystem.users[userPos].expCount) + `\nLevel progress: ${(levelDetails.levelProgress)} (${levelDetails.percentage}%)`,
+                        value: "Level " + guildEntry.levelSystem.users[userPos].level + "\nExp: " + Math.round(guildEntry.levelSystem.users[userPos].expCount) + `\nLevel progress: ${(levelDetails.levelProgress)} (${levelDetails.percentage}%)`,
                         inline: true
                     });
                 }

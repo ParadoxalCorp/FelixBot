@@ -10,13 +10,13 @@ module.exports = async(client, message, args) => {
     return new Promise(async(resolve, reject) => {
         try {
             const guildEntry = client.guildData.get(message.guild.id);
-            guildEntry.generalSettings.levelSystem.roles = guildEntry.generalSettings.levelSystem.roles.filter(r => message.guild.roles.get(r.id));
-            if (guildEntry.generalSettings.levelSystem.roles.length === 0) return resolve(await message.channel.createMessage(`:x: There is not role set to be given at a specific point`));
-            let roleList = guildEntry.generalSettings.levelSystem.roles.map(r => `${message.guild.roles.get(r.id).name} | At ${r.method === "message" ? r.at + " messages" : "level " + r.at}`);
+            guildEntry.levelSystem.roles = guildEntry.levelSystem.roles.filter(r => message.guild.roles.get(r.id));
+            if (guildEntry.levelSystem.roles.length === 0) return resolve(await message.channel.createMessage(`:x: There is not role set to be given at a specific point`));
+            let roleList = guildEntry.levelSystem.roles.map(r => `${message.guild.roles.get(r.id).name} | At ${r.method === "message" ? r.at + " messages" : "level " + r.at}`);
             roleList = paginateResult(roleList, 5);
             let page = 0;
             let rolesFields = [];
-            guildEntry.generalSettings.levelSystem.roles.forEach(role => { //Build roles fields
+            guildEntry.levelSystem.roles.forEach(role => { //Build roles fields
                 let guildRole = message.guild.roles.get(role.id);
                 rolesFields.push([{
                     name: 'Name',
@@ -49,7 +49,7 @@ module.exports = async(client, message, args) => {
                             text: `Showing page ${page + 1}/${raw ? roleList.length : rolesFields.length} | Time limit: 60 seconds`
                         },
                         fields: raw ? undefined : rolesFields[page],
-                        color: raw ? 0x000 : parseInt(message.guild.roles.get(guildEntry.generalSettings.levelSystem.roles[page].id).color)
+                        color: raw ? 0x000 : parseInt(message.guild.roles.get(guildEntry.levelSystem.roles[page].id).color)
                     }
                 }
             }

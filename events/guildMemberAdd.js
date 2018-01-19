@@ -9,20 +9,20 @@ module.exports = async(client, guild, member) => {
         guildEntry.onEvent.guildMemberAdd.onJoinRole = existingRoles; //Update the guild entry
         client.guildData.set(member.guild.id, guildEntry);
     }
-    if (guildEntry.generalSettings.modLog.find(c => c.user.id === member.id) && guildEntry.generalSettings.modLog.filter(c => c.user.id === member.id && c.action === "mute").length > 0) {
-        let mutesCases = guildEntry.generalSettings.modLog.filter(c => c.user.id === member.id && (c.action === "mute" || c.action === "unmute"));
+    if (guildEntry.modLog.cases.find(c => c.user.id === member.id) && guildEntry.modLog.cases.filter(c => c.user.id === member.id && c.action === "mute").length > 0) {
+        let mutesCases = guildEntry.modLog.cases.filter(c => c.user.id === member.id && (c.action === "mute" || c.action === "unmute"));
         let mostRecentCase = mutesCases.sort((a, b) => b.timestamp - a.timestamp)[0];
         let mutedRole = guild.roles.find(r => r.name === "muted");
         if (mostRecentCase.action === "mute" && mutedRole) {
             try {
-                await member.addRole(mutedRole.id, `Was muted, see case #${guildEntry.generalSettings.modLog.findIndex(c => c.timestamp === mostRecentCase.timestamp) + 1}`);
+                await member.addRole(mutedRole.id, `Was muted, see case #${guildEntry.modLog.cases.findIndex(c => c.timestamp === mostRecentCase.timestamp) + 1}`);
                 await registerCase(client, {
                     user: member.user,
                     action: "mute",
                     guild: guild,
                     moderator: client.user,
                     performedAction: 'Automatic mute (possible mute escape)',
-                    reason: `Was muted, see case \`#${guildEntry.generalSettings.modLog.findIndex(c => c.timestamp === mostRecentCase.timestamp) + 1}\``
+                    reason: `Was muted, see case \`#${guildEntry.modLog.cases.findIndex(c => c.timestamp === mostRecentCase.timestamp) + 1}\``
                 });
             } catch (err) {
                 console.error(err);

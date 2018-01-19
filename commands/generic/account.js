@@ -2,7 +2,7 @@ class Account {
     constructor() {
         this.help = {
             name: 'account',
-            usage: 'account',
+            usage: 'account upvote_privacy private',
             description: 'Enter your account settings, where you can reset your data or change some of your data privacy (only stuff related to Felix ofc)'
         }
         this.shortcut = {

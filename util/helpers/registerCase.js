@@ -42,7 +42,7 @@ function registerCase(client, newCase) {
                 }
             }
             let modCase = cases[newCase.action];
-            guildEntry.generalSettings.modLog.push({
+            guildEntry.modLog.cases.push({
                 user: {
                     id: newCase.user ? newCase.user.id : newCase.id,
                     username: newCase.user ? newCase.user.username : newCase.username,
@@ -64,10 +64,10 @@ function registerCase(client, newCase) {
                 timestamp: Date.now()
             });
             try {
-                if (guildEntry.generalSettings.modLogChannel) {
-                    let logMessage = await client.createMessage(guildEntry.generalSettings.modLogChannel, {
+                if (guildEntry.modLog.channel) {
+                    let logMessage = await client.createMessage(guildEntry.modLog.channel, {
                         embed: {
-                            title: `Case #${guildEntry.generalSettings.modLog.length}`,
+                            title: `Case #${guildEntry.modLog.cases.length}`,
                             color: modCase.color,
                             fields: [{
                                 name: "User",
@@ -75,14 +75,14 @@ function registerCase(client, newCase) {
                                 inline: true
                             }, {
                                 name: "Moderator",
-                                value: newCase.moderator ? `${newCase.moderator.tag} (<@${newCase.moderator.id}>)` : `Unknown, responsible moderator, please use \`${guildEntry.generalSettings.prefix}assign ${guildEntry.generalSettings.modLog.length}\``,
+                                value: newCase.moderator ? `${newCase.moderator.tag} (<@${newCase.moderator.id}>)` : `Unknown, responsible moderator, please use \`${guildEntry.generalSettings.prefix}assign ${guildEntry.modLog.cases.length}\``,
                                 inline: true
                             }, {
                                 name: "Action",
                                 value: newCase.performedAction ? newCase.performedAction : `Has been ${modCase.action}`
                             }, {
                                 name: "Reason",
-                                value: newCase.reason ? newCase.reason : `None specified, responsible moderator, please use \`${guildEntry.generalSettings.prefix}reason ${guildEntry.generalSettings.modLog.length} <reason>\` to add a reason`,
+                                value: newCase.reason ? newCase.reason : `None specified, responsible moderator, please use \`${guildEntry.generalSettings.prefix}reason ${guildEntry.modLog.cases.length} <reason>\` to add a reason`,
                             }],
                             timestamp: new Date(Date.now()).toISOString(),
                             image: newCase.screenshot ? {
@@ -90,7 +90,7 @@ function registerCase(client, newCase) {
                             } : undefined
                         }
                     });
-                    guildEntry.generalSettings.modLog[guildEntry.generalSettings.modLog.length - 1].modLogMessage = logMessage.id;
+                    guildEntry.modLog.cases[guildEntry.modLog.cases.length - 1].modLogMessage = logMessage.id;
                 }
             } catch (err) {
                 console.error(err);

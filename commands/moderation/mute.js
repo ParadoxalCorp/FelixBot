@@ -34,7 +34,7 @@ class Mute {
                 if (message.guild.members.get(client.user.id).highestRole && mutedRole.position >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
                     return resolve(await message.channel.createMessage(`:x: The \`muted\` role seems to be higher than my highest role, therefore i can't mute :v`));
                 }
-                await message.guild.members.get(memberToMute.id).addRole(mutedRole.id, `Muted by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.generalSettings.modLog.length + 1 : reason) : "No reason specified"}`);
+                await message.guild.members.get(memberToMute.id).addRole(mutedRole.id, `Muted by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.modLog.cases.length + 1 : reason) : "No reason specified"}`);
                 const textChannels = Array.from(message.guild.channels.filter(c => c.type === 0).values());
                 for (let i = 0; i < textChannels.length; i++) {
                     if (!textChannels[i].permissionOverwrites.get(mutedRole.id) || textChannels[i].permissionOverwrites.get(mutedRole.id).deny !== 2048) {
@@ -45,7 +45,7 @@ class Mute {
                         }
                     }
                 }
-                if (guildEntry.generalSettings.modLogChannel) {
+                if (guildEntry.modLog.channel) {
                     await registerCase(client, {
                         user: memberToMute.user,
                         action: "mute",
