@@ -7,7 +7,7 @@ class Request {
      * @param {Object} [headers] A JSON object containing the headers, by default sends Felix's User-Agent
      * @param {Number} [timeout=3000] Time in milliseconds before the request should be aborted
      */
-    get(url, headers = { 'User-Agent': 'FelixBot' }, timeout = 3000) {
+    get(url, headers = { 'User-Agent': 'FelixBot' }, timeout = 6000) {
         return new Promise(async(resolve, reject) => {
             axios({
                 method: 'get',
@@ -25,7 +25,7 @@ class Request {
      * @param {Object} [headers] A JSON object containing the headers, by default sends Felix's User-Agent
      * @param {Number} [timeout=3000] Time in milliseconds before the request should be aborted
      */
-    put(url, data, headers = { 'User-Agent': 'FelixBot' }, timeout = 3000) {
+    put(url, data, headers = { 'User-Agent': 'FelixBot' }, timeout = 6000) {
         return new Promise(async(resolve, reject) => {
             axios({
                 method: 'put',
@@ -44,7 +44,7 @@ class Request {
      * @param {Object} [headers] A JSON object containing the headers, by default sends Felix's User-Agent
      * @param {Number} [timeout=3000] Time in milliseconds before the request should be aborted
      */
-    post(url, data, headers = { 'User-Agent': 'FelixBot' }, timeout = 3000) {
+    post(url, data, headers = { 'User-Agent': 'FelixBot' }, timeout = 6000) {
         return new Promise(async(resolve, reject) => {
             axios({
                 method: 'post',
