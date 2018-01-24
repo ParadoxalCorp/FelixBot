@@ -129,6 +129,13 @@ class Client extends Eris {
                     minimum: 1,
                     messages: []
                 },
+                moderation: {
+                    inviteFiltering: {
+                        enabled: false,
+                        whitelistedGuilds: [],
+                        actions: []
+                    }
+                },
                 permissions: {
                     users: [],
                     channels: [],
