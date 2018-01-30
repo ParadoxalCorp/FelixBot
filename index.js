@@ -130,11 +130,32 @@ class Client extends Eris {
                     messages: []
                 },
                 moderation: {
+                    users: [],
                     inviteFiltering: {
                         enabled: false,
                         whitelistedGuilds: [],
+                        warn: false,
+                        warnMessage: `Hoi hoi, seems like you tried to advertize some servers however it isn't allowed here and you've therefore been warned. You now have %WARNCOUNT% warns.`,
                         actions: []
-                    }
+                    },
+                    warns: {
+                        actions: {
+                            3: {
+                                action: 'mute',
+                                message: `Hoi hoi, you just reached %WARNCOUNT% warns and therefore you've been muted.`,
+                                customMuteRole: false
+                            },
+                            4: {
+                                action: 'kick',
+                                message: "Hoi hoi, you just reached %WARNCOUNT% warns in the server `%GUILD%` and therefore you've been kicked from there."
+                            },
+                            5: {
+                                action: 'ban',
+                                message: "Hoi hoi, you just reached %WARNCOUNT% warns in the server `%GUILD%` and therefore you've been banned from there."
+                            }
+                        }
+                    },
+                    mutedRoles: []
                 },
                 permissions: {
                     users: [],
@@ -219,7 +240,7 @@ const Felix = new Client(config.token, {
                     Felix.aliases.set(alias, command.help.name);
                 });
             } catch (err) {
-                errors.push((`Failed to load command ${c}: ${err}`));
+                errors.push((`Failed to load command ${c}: ${err}`, err.stack));
             }
         });
     }
@@ -237,13 +258,13 @@ const Felix = new Client(config.token, {
             Felix.on(eventName, event.bind(null, Felix));
             delete require.cache[require.resolve(`./events/${e}`)];
         } catch (err) {
-            errors.push(console.error(`Failed to load event ${e}: ${err}`));
+            errors.push(`Failed to load event ${e}: ${err}`, err.stack);
         }
     });
     logger.draft(`loadingEvents`, `end`, `Loaded ${loadedEvents}/${events.length} events`, true);
 
     await sleep(1500);
-    errors.forEach(e => console.error(e));
+    errors.forEach(e => console.log(e));
 
     process.on(`unhandledRejection`, err => Felix.emit('error', err));
     process.on(`uncaughtException`, err => Felix.emit('error', err));

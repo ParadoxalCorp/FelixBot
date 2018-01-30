@@ -1,4 +1,4 @@
-const registerCase = require("../../util/helpers/registerCase.js");
+const registerCase = require("../../util/helpers/moderationHandler.js").registerCase;
 
 class Mute {
     constructor() {
@@ -17,8 +17,11 @@ class Mute {
         return new Promise(async(resolve, reject) => {
             try {
                 const guildEntry = client.guildData.get(message.guild.id);
+                guildEntry.moderation.mutedRoles = guildEntry.moderation.mutedRoles.filter(r => message.guild.roles.get(r.id));
                 const mutedRole = message.guild.roles.find(r => r.name === "muted");
-                if (!mutedRole) return resolve(await message.channel.createMessage(`:x: There is no \`muted\` role on this server`));
+                if (!mutedRole && guildEntry.moderation.mutedRoles.length < 1) {
+                    return resolve(await message.channel.createMessage(`:x: There is no \`muted\` role on this server nor any custom muted roles`));
+                }
                 if (!args[0]) return resolve(await message.channel.createMessage(`:x: Well you might want to specify a user to mute, i can't just mute randomly`));
                 let memberToMute = await message.getUserResolvable({
                     max: 1,
@@ -30,29 +33,48 @@ class Mute {
                 if (!new RegExp(/\.jpg|.png|.gif|.jpeg/gim).test(screenshot)) screenshot = undefined;
                 if (new RegExp(/\-s/gim).test(reason)) reason = reason.split(/\-s/gim)[0].trim();
                 if (!memberToMute) return resolve(await message.channel.createMessage(`:x: I couldn't find the user you specified`));
-                if (memberToMute.roles.find(r => r === mutedRole.id)) return resolve(await message.channel.createMessage(`:x: The user \`${message.author.tag}\` is already muted`));
-                if (message.guild.members.get(client.user.id).highestRole && mutedRole.position >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
-                    return resolve(await message.channel.createMessage(`:x: The \`muted\` role seems to be higher than my highest role, therefore i can't mute :v`));
+                if (memberToMute.roles.find(r => r === mutedRole.id) && memberToMute.roles.filter(r => guildEntry.moderation.mutedRoles.find(mr => mr.id === r))[0]) {
+                    return resolve(await message.channel.createMessage(`:x: The user \`${message.author.tag}\` is already muted`));
                 }
-                await message.guild.members.get(memberToMute.id).addRole(mutedRole.id, `Muted by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.modLog.cases.length + 1 : reason) : "No reason specified"}`);
-                const textChannels = Array.from(message.guild.channels.filter(c => c.type === 0).values());
-                for (let i = 0; i < textChannels.length; i++) {
-                    if (!textChannels[i].permissionOverwrites.get(mutedRole.id) || textChannels[i].permissionOverwrites.get(mutedRole.id).deny !== 2048) {
-                        try {
-                            await textChannels[i].editPermission(mutedRole.id, 0, 2048, 'role', 'Needed for the mute to properly work');
-                        } catch (err) {
-                            console.error(err);
+                let selectedRole = guildEntry.moderation.mutedRoles[0];
+                if (guildEntry.moderation.mutedRoles.length > 1) {
+                    let i = 1;
+                    let reply = await message.awaitReply({
+                        message: {
+                            embed: {
+                                description: 'There is multiple mute roles, please select one with the corresponding number ```\n' + guildEntry.moderation.mutedRoles.map(r => `[${i++}] - ${r.name ? r.name.replace(/%ROLE%/gim, message.guild.roles.get(r.id).name) : message.guild.roles.get(r.id).name}`).join('\n') + '```'
+                            }
+                        }
+                    });
+                    if (reply.reply && guildEntry.moderation.mutedRoles[reply.reply.content - 1]) selectedRole = guildEntry.moderation.mutedRoles[reply.reply.content - 1];
+                }
+                if (message.guild.members.get(client.user.id).highestRole && (selectedRole ? message.guild.roles.get(selectedRole.id).position : mutedRole.position) >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
+                    return resolve(await message.channel.createMessage(`:x: The \`${selectedRole ? message.guild.roles.get(selectedRole.id).name : 'muted'}\` role seems to be higher than my highest role, therefore i can't mute :v`));
+                }
+                await message.guild.members.get(memberToMute.id).addRole(selectedRole ? selectedRole.id : mutedRole.id, `Muted by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.modLog.cases.length + 1 : reason) : "No reason specified"}`);
+                //If its the default mute, use the default server-wide mute
+                if (!selectedRole) {
+                    const textChannels = Array.from(message.guild.channels.filter(c => c.type === 0).values());
+                    for (let i = 0; i < textChannels.length; i++) {
+                        if (!textChannels[i].permissionOverwrites.get(mutedRole.id) || textChannels[i].permissionOverwrites.get(mutedRole.id).deny !== 2112) {
+                            try {
+                                await textChannels[i].editPermission(mutedRole.id, 0, 2112, 'role', 'Needed for the mute to properly work');
+                            } catch (err) {
+                                console.error(err);
+                            }
                         }
                     }
                 }
                 if (guildEntry.modLog.channel) {
                     await registerCase(client, {
                         user: memberToMute.user,
-                        action: "mute",
+                        action: selectedRole ? (selectedRole.name ? selectedRole.name.replace(/%ROLE%/gim, message.guild.roles.get(selectedRole.id).name) : message.guild.roles.get(selectedRole.id).name) : "mute",
                         moderator: message.author,
                         reason: reason,
                         guild: message.guild,
-                        screenshot: screenshot
+                        screenshot: screenshot,
+                        color: 0xffcc00,
+                        performedAction: selectedRole ? `${selectedRole.name ? selectedRole.name.replace(/%ROLE%/gim, message.guild.roles.get(selectedRole.id).name) : message.guild.roles.get(selectedRole.id).name}` : `Has been muted`
                     });
                 }
                 resolve(await message.channel.createMessage(`:white_check_mark: Successfully muted the user \`${memberToMute.tag}\``));

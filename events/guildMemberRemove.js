@@ -1,4 +1,4 @@
-const registerCase = require("../util/helpers/registerCase.js")
+const registerCase = require("../util/helpers/moderationHandler").registerCase;
 
 module.exports = async(client, guild, member) => {
     const guildEntry = client.guildData.get(guild.id) || client.defaultGuildData(guild.id);

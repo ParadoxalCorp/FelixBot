@@ -1,4 +1,4 @@
-const registerCase = require("../../util/helpers/registerCase.js");
+const registerCase = require("../../util/helpers/moderationHandler.js").registerCase;
 
 class Softban {
     constructor() {
