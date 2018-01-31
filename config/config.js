@@ -1,10 +1,10 @@
 module.exports = {
     //An array of trustable peoples IDs, put yours as well since in most case this is checked rather than the ownerID
-    admins: ["138657194986962945"],
+    admins: ["TRUSTABLE_PEOPLE_ID_1", "TRUSTABLE_PEOPLE_ID_2", "WHY_NOT_A_THIRD"],
     //The default prefix, this will be one by default on each new server and in dm
-    prefix: "owo.",
+    prefix: "uwu.",
     //Your ID
-    ownerID: "138657194986962945",
+    ownerID: "YOUR_ID",
     //API key for different bot lists, in a selfhost case, leave that false
     discordBotList: false,
     discordBotFr: false,
@@ -29,7 +29,7 @@ module.exports = {
     //Whatanime.ga API key (still not implemented)
     whatAnimeKey: false,
     //Actually needed: The token of the bot, won't work without it
-    token: "Mzc5NTM2MDI2MDUxMjgwODk2.DU9gQg.cdUVs6CMIJtR492c9pcylHCAidI",
+    token: "TOKEN",
 	 //Some customizable options 
     options: {
         //The activity countdown (time before a user may win experience with a message again, in milliseconds)
