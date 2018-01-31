@@ -39,9 +39,10 @@ class Softban {
                 if (guildEntry.modLog.channel) {
                     await registerCase(client, {
                         user: memberToBan.first(),
-                        action: "kick",
+                        action: "soft-ban",
                         moderator: message.author,
                         reason: reason,
+                        color: 0xff9933,
                         guild: message.guild,
                         performedAction: `Has been soft-banned`,
                         screenshot: screenshot

@@ -1,4 +1,5 @@
 const registerCase = require("../util/helpers/moderationHandler").registerCase;
+const sleep = require(`../util/modules/sleep`);
 
 module.exports = async(client, guild, user) => {
     const guildEntry = client.guildData.get(guild.id) || client.defaultGuildData(guild.id);

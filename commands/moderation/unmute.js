@@ -37,15 +37,14 @@ class Unmute {
                             if (!memberToUnmute.roles.find(r => r === mutedRole.id) && !memberToUnmute.roles.filter(r => guildEntry.moderation.mutedRoles.find(mr => mr.id === r))[0]) {
                                 return resolve(await message.channel.createMessage(`:x: The user \`${memberToUnmute.tag}\` is not muted`));
                             }
-                            let selectedRole = message.guild.roles.get(guildEntry.moderation.mutedRoles.filter(mr => memberToUnmute.roles.includes(mr.id))[0]) || mutedRole;
-                            let mutedRoles = message.guild.roles.filter(r => message.guild.members.get(memberToUnmute.id).roles.includes(r.id) && (mutedRole ? r.id === mutedRole.id : guildEntry.moderation.mutedRoles.find(mr => mr.id === r.id)));
-                            console.log(mutedRoles, selectedRole);
+                            let selectedRole = guildEntry.moderation.mutedRoles.filter(mr => memberToUnmute.roles.includes(mr.id))[0];
+                            let mutedRoles = guildEntry.moderation.mutedRoles.filter(r => message.guild.members.get(memberToUnmute.id).roles.includes(r.id));
                             if (mutedRoles.length > 1) {
-                                let i = 1;
+                                let i = 2;
                                 let reply = await message.awaitReply({
                                     message: {
                                         embed: {
-                                            description: 'This user has multiple muted roles, please select one with the corresponding number ```\n[1] - All muted roles\n' + mutedRoles.map(r => `[${i++}] - ${r.name ? r.name.replace(/%ROLE%/gim, message.guild.roles.get(r.id).name) : message.guild.roles.get(r.id).name}\n`) + '```'
+                                            description: 'This user has multiple muted roles, please select one with the corresponding number ```\n[1] - All muted roles\n' + mutedRoles.map(r => `[${i++}] - ${r.name ? r.name.replace(/%ROLE%/gim, message.guild.roles.get(r.id).name) : message.guild.roles.get(r.id).name}`).join('\n') + '```'
                                         }
                                     }
                                 });
@@ -54,7 +53,7 @@ class Unmute {
                             if (Array.isArray(selectedRole)) {
                                 const missingPermissionsRoles = [];
                                 for (let i = 0; i < selectedRole.length; i++) {
-                                    if (message.guild.members.get(client.user.id).highestRole && selectedRole[i].position >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
+                                    if (message.guild.members.get(client.user.id).highestRole && message.guild.roles.get(selectedRole[i].id).position >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
                                         missingPermissionsRoles.push(selectedRole[i]);
                                     } else {
                                         message.guild.members.get(memberToUnmute.id).removeRole(selectedRole[i].id, `Unmuted by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.modLog.cases.length + 1 : reason) : "No reason specified"}`).catch(err => {
@@ -63,21 +62,22 @@ class Unmute {
                                     };
                                     await sleep(100);
                                 };
-                                if (missingPermissionsRoles) {
+                                if (missingPermissionsRoles[0]) {
                                     message.channel.send(`:x: I miss the permissions to remove the following role(s): ${missingPermissionsRoles.map(r => '`' + r.name + '`')}`);
                                 };
                 } else {
-                    if (message.guild.members.get(client.user.id).highestRole && (selectedRole ? selectedRole.position : mutedRole.position) >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
+                    if (message.guild.members.get(client.user.id).highestRole && (selectedRole ? message.guild.roles.get(selectedRole.id).position : mutedRole.position) >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
                         return resolve(await message.channel.createMessage(`:x: The \`${selectedRole ? selectedRole.name : 'muted'}\` role seems to be higher than my highest role, therefore i can't mute :v`));
                     }
+                    await message.guild.members.get(memberToUnmute.id).removeRole(selectedRole ? selectedRole.id : mutedRole.id, `Unmuted by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.modLog.cases.length + 1 : reason) : "No reason specified"}`);
                 }
-                await message.guild.members.get(memberToUnmute.id).removeRole(selectedRole ? selectedRole.id : mutedRole.id, `Unmuted by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.modLog.cases.length + 1 : reason) : "No reason specified"}`);
                 if (guildEntry.modLog.channel) {
                     await registerCase(client, {
                         user: memberToUnmute.user,
                         action: selectedRole ? (Array.isArray(selectedRole) ? 'Global unmute' : 'Removed' + (selectedRole.name ? selectedRole.name.replace(/%ROLE%/gim, message.guild.roles.get(selectedRole.id).name) : message.guild.roles.get(selectedRole.id).name)) : "unmute",
                         moderator: message.author,
                         reason: reason,
+                        type: selectedRole && !Array.isArray(selectedRole) ? 3007 : undefined,
                         guild: message.guild,
                         screenshot: screenshot,
                         color: 0x00ff00,
@@ -92,4 +92,4 @@ class Unmute {
     }
 }
 
-module.exports = new Unmute()
+module.exports = new Unmute();

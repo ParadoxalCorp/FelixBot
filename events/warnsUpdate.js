@@ -16,8 +16,9 @@ module.exports = async(client, guild, user) => {
                             moderator: client.user,
                             color: 0xffcc00,
                             action: customMutedRole ? ('Automatic ' + `${(customMutedRole.name ? customMutedRole.name.replace(/%ROLE%/gim, guild.roles.get(customMutedRole.id).name) : guild.roles.get(customMutedRole.id).name)}`) : 'Automatic-mute',
+                            type: 3005,
                             reason: `Has been warned ${memberData.warns.length} times`,
-                            performedAction: customMutedRole ? `Has been automatically ${customMutedRole.name === "%ROLE%" ? guild.roles.get(customMutedRole).name : customMutedRole.name} muted` : `Has been automatically muted`
+                            performedAction: customMutedRole ? `Automatic ${customMutedRole.name === "%ROLE%" ? guild.roles.get(customMutedRole).name : customMutedRole.name}` : `Has been automatically muted`
 
                         }).catch(err => {
                             return console.log(err, `^ ${guild.id} | ${guild.name}`);
@@ -42,11 +43,11 @@ module.exports = async(client, guild, user) => {
                         message: guildData.moderation.warns.actions[memberData.warns.length].message,
                         client: client,
                         guild: guild,
-                        color: 0xff9933,
                         user: user,
                         moderator: client.user
                     })).catch();
                 }
+                client.guilds.get(guild.id).lastKicked = user.id;
                 await guild.members.get(user.id).kick(`Has been warned ${memberData.warns.length} times`).catch(err => {
                     return console.log(err, `^ ${guild.id} | ${guild.name}`);
                 });
@@ -55,8 +56,9 @@ module.exports = async(client, guild, user) => {
                     user: user,
                     moderator: client.user,
                     action: 'Automatic-kick',
+                    color: 0xff9933,
                     reason: `Has been warned ${memberData.warns.length} times`,
-                    performedAction: `Has been kicked`
+                    performedAction: `Has been automatically kicked`
                 }).catch(err => {
                     return console.log(err, `^ ${guild.id} | ${guild.name}`);
                 });
@@ -68,21 +70,22 @@ module.exports = async(client, guild, user) => {
                         message: guildData.moderation.warns.actions[memberData.warns.length].message,
                         client: client,
                         guild: guild,
-                        color: 0xff0000,
                         user: user,
                         moderator: client.user
                     })).catch();
                 }
+                client.guilds.get(guild.id).lastBanned = user.id;
                 await guild.members.get(user.id).ban(0, `Has been warned ${memberData.warns.length} times`).catch(err => {
                     return console.log(err, `^ ${guild.id} | ${guild.name}`);
                 });
                 ModerationHandler.registerCase(client, {
                     guild: guild,
                     user: user,
+                    color: 0xff0000,
                     moderator: client.user,
                     action: 'Automatic-ban',
                     reason: `Has been warned ${memberData.warns.length} times`,
-                    performedAction: `Has been banned`
+                    performedAction: `Has been automatically banned`
                 }).catch(err => {
                     return console.log(err, `^ ${guild.id} | ${guild.name}`);
                 });

@@ -49,7 +49,8 @@ class ModerationHandler {
      * @prop {String} case.reason The reason of the action
      * @prop {Integer} case.color The color in 0x format, in case its a custom action
      * @prop {String} [case.screenshot] The url of a screenshot that could be added as thumbnail to the case
-     * @prop {String} [case.performedAction] The performed action ("Has been [custom action]"), this should be specified for every case that hasn't a preset-action (actions that are achieved with commands, like kicks)
+     * @prop {String} [case.performedAction] The performed action (Replace "Has been..."), this should be specified for every case that hasn't a preset-action (actions that are achieved with commands, like kicks)
+     * @prop {Number} [case.type] The type code, it shouldn't be specified unless the action isn't stable
      * @returns {Promise<Boolean>}
      */
 
@@ -97,7 +98,7 @@ class ModerationHandler {
                     },
                     color: newCase.color || (modCase ? modCase.color : 0x4f545c),
                     action: newCase.action,
-                    type: DefaultStructures.modCaseTypeCode(newCase.action),
+                    type: newCase.type || DefaultStructures.modCaseTypeCode(newCase.action),
                     performedAction: newCase.performedAction || modCase.action,
                     customPerformedAction: newCase.performedAction,
                     screenshot: newCase.screenshot,

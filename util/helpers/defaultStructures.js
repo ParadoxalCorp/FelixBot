@@ -40,22 +40,29 @@ class DefaultStructures {
     /**
      * Returns the corresponding code of a moderation case type ('warn', 'kick'...)
      * @param {String} modCaseType Type from which the corresponding code should be returned
+     * @param {Object} client The client instance
      * @returns {Number}
      */
     modCaseTypeCode(modCaseType) {
+        modCaseType = modCaseType.toLowerCase();
         let modCaseTypes = {
             'warn': 2999,
-            'forgive': 3000,
-            'mute': 3001,
-            'Global mute': 3002,
-            'unmute': 3004,
-            'Global unmute': 3005,
-            'kick': 3007,
-            'ban': 3008,
-            'unban': 3009,
+            'automatic-warn': 3000,
+            'forgive': 3001,
+            'mute': 3002,
+            'global mute': 3003,
+            'automatic-mute': 3004,
+            'unmute': 3006,
+            'global unmute': 3008,
+            'kick': 3009,
+            'automatic-kick': 3010,
+            'ban': 3011,
+            'automatic-ban': 3012,
+            'soft-ban': 3013,
+            'unban': 3014,
         };
         //Return code and handle custom mutes
-        return modCaseType.includes('mute') && !modCaseTypes[modCaseType] ? 3003 : (modCaseType.includes('unmute') && !modCaseTypes[modCaseType] ? 3006 : modCaseTypes[modCaseType]);
+        return modCaseType.includes('mute') && !modCaseTypes[modCaseType] ? 3005 : (modCaseType.includes('unmute') && !modCaseTypes[modCaseType] ? 3007 : modCaseTypes[modCaseType]);
     }
 
     /**

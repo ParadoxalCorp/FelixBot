@@ -33,10 +33,7 @@ class Mute {
                 if (!new RegExp(/\.jpg|.png|.gif|.jpeg/gim).test(screenshot)) screenshot = undefined;
                 if (new RegExp(/\-s/gim).test(reason)) reason = reason.split(/\-s/gim)[0].trim();
                 if (!memberToMute) return resolve(await message.channel.createMessage(`:x: I couldn't find the user you specified`));
-                if (memberToMute.roles.find(r => r === mutedRole.id) && memberToMute.roles.filter(r => guildEntry.moderation.mutedRoles.find(mr => mr.id === r))[0]) {
-                    return resolve(await message.channel.createMessage(`:x: The user \`${message.author.tag}\` is already muted`));
-                }
-                let selectedRole = guildEntry.moderation.mutedRoles[0];
+                let selectedRole = guildEntry.moderation.mutedRoles.filter(mr => memberToMute.roles.includes(mr.id))[0];
                 if (guildEntry.moderation.mutedRoles.length > 1) {
                     let i = 1;
                     let reply = await message.awaitReply({
@@ -47,6 +44,9 @@ class Mute {
                         }
                     });
                     if (reply.reply && guildEntry.moderation.mutedRoles[reply.reply.content - 1]) selectedRole = guildEntry.moderation.mutedRoles[reply.reply.content - 1];
+                }
+                if (memberToMute.roles.includes(selectedRole.id)) {
+                    return resolve(await message.channel.createMessage(`:x: The user \`${memberToMute.tag}\` is already muted`));
                 }
                 if (message.guild.members.get(client.user.id).highestRole && (selectedRole ? message.guild.roles.get(selectedRole.id).position : mutedRole.position) >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
                     return resolve(await message.channel.createMessage(`:x: The \`${selectedRole ? message.guild.roles.get(selectedRole.id).name : 'muted'}\` role seems to be higher than my highest role, therefore i can't mute :v`));
@@ -71,6 +71,7 @@ class Mute {
                         action: selectedRole ? (selectedRole.name ? selectedRole.name.replace(/%ROLE%/gim, message.guild.roles.get(selectedRole.id).name) : message.guild.roles.get(selectedRole.id).name) : "mute",
                         moderator: message.author,
                         reason: reason,
+                        type: selectedRole ? 3005 : undefined,
                         guild: message.guild,
                         screenshot: screenshot,
                         color: 0xffcc00,

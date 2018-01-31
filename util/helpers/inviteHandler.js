@@ -8,7 +8,7 @@ class InviteHandler {
             const guildData = client.guildData.get(message.guild.id);
             if (!guildData.moderation.inviteFiltering.enabled) return resolve();
             let invitesCode = this._inviteParser(message.content);
-            if (!invitesCode[0]) return resolve();
+            if (!invitesCode[0] || message.guild.members.get(message.author.id).hasPermission('administrator')) return resolve();
             if (!message.guild.members.get(client.user.id).hasPermission("manageMessages")) return resolve();
             if (invitesCode.length > 3) {
                 return resolve(message.delete());
@@ -28,7 +28,8 @@ class InviteHandler {
                                 guild: message.guild,
                                 user: message.author,
                                 moderator: client.user,
-                                action: 'warn',
+                                action: 'automatic-warn',
+                                color: 0xffcc00,
                                 performedAction: 'Has been automatically warned',
                                 reason: 'Advertized one or multiple other servers'
                             }).catch(err => {
