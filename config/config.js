@@ -11,8 +11,6 @@ module.exports = {
     terminalBotList: false,
     //API key for weeb.sh, in a selfhost case you won't be able to get one and therefore most of the image commands will be disabled
     wolkeImageKey: false,
-    //Mashape marketplace API key
-    mashapeKey: false,
     //Account credentials on MyAnimeList, this will be used for anime commands
     malCredentials: {
         name: false, //"should be "USERNAME"

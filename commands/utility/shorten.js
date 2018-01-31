@@ -16,7 +16,7 @@ class Shorten {
     run(client, message, args) {
         return new Promise(async(resolve, reject) => {
             try {
-			if (!args[0]) return resolve(await message.channel.createMessage("Specify a url to shorten kthnx"));
+			if (!args[0]) return resolve(await message.channel.createMessage(":x: No url specified"));
 			const request = require("../../util/modules/request.js");
 			
 			if (!args.includes("-unshorten")){

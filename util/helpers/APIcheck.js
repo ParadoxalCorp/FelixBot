@@ -10,11 +10,6 @@ if (!config.wolkeImageKey) {
 	requirewolkeImageKey.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`wolkeImageKey\` API key which is missing`);
 	logger.log(`No weeb.sh API key found in the config, disabled: ${requirewolkeImageKey.map(c => c.help.name).join(", ")}`, `warn`);
 }
-if (!config.mashapeKey) {
-	let requiremashapeKey = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("mashapeKey"));
-	requiremashapeKey.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`mashapeKey\` API key which is missing`);
-	logger.log(`No mashape key API key found in the config, disabled ${requiremashapeKey.map(c => c.help.name).join(", ")}`, `warn`);
-}
 if (!config.malCredentials || !config.malCredentials.password || !config.malCredentials.name) {
 	let requiremalCredentials = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("malCredentials"));
 	requiremalCredentials.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`malCredentials\` name and password fields which are missing`);
