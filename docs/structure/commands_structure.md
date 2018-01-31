@@ -36,6 +36,11 @@ The conf object is entirely optional and may contain this command "configuration
 
 `conf.cooldownWeight*` {Number} The "weight" of the command, basically the bigger the command output is, the higher this number should be. Users will be ratelimited if they reach 20, default is 5
 
+`conf.require*` {String || Array} The name or an array of property names of the `client.config` object, used to tell to Felix that the command requires for example
+an API key in the config. Felix will automatically disable the command if the said API key is missing.
+
+`conf.requirePerms*` {Array} An array of permissions (like `manageMessages`) that Felix needs to run the command, if specified and Felix hasn't the required permissions, the command handler will abort before launching the command and return an error message to the user.
+
 #### shortcut object*
 
 May be deprecated in a soon future, the shortcuts to be associated with the command, these will be run instead of the command if the trigger is detected by the command handler 
