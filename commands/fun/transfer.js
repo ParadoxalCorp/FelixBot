@@ -32,7 +32,7 @@ class Transfer {
                 //Save the transfer
                 client.userData.set(message.author.id, userEntry);
                 client.userData.set(users.first().id, mentionnedEntry);
-                resolve(await message.channel.createMessage(`:white_check_mark: You transferred **${Math.round(amount[0])}** of your points to **${users.first().tag}**`));
+                resolve(await message.channel.createMessage(`:white_check_mark: You transferred **${Math.round(amount[0])} ${amount[0] == 0 ? '**(No idea why you would do that, but k i guess) ' : '**'}of your points to **${users.first().tag}**`));
             } catch (err) {
                 reject(err);
             }

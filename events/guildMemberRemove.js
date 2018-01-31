@@ -6,10 +6,10 @@ module.exports = async(client, guild, member) => {
         if (guildEntry.onEvent.guildMemberRemove.farewell.enabled && guildEntry.onEvent.guildMemberRemove.farewell.message && !member.bot) {
             let message = guildEntry.onEvent.guildMemberRemove.farewell.message;
             //---------------------------------------Replace all instances of %USER%, %USERNAME% and %GUILD%--------------------------------------
-            if (typeof message === "string") message = message.replace(/\%USER\%/gim, `<@${member.user.id}>`).replace(/\%USERNAME\%/gim, `${member.user.username}`).replace(/\%USERTAG%/gim, `${member.user.tag}`).replace(/\%GUILD\%/gim, `${member.guild.name}`);
+            if (typeof message === "string") message = message.replace(/\%USER\%/gim, `<@${member.user.id}>`).replace(/\%USERNAME\%/gim, `${member.user.username}`).replace(/\%USERTAG%/gim, `${member.user.tag}`).replace(/\%GUILD\%/gim, `${guild.name}`).replace(/\%MEMBERCOUNT%/gim, guild.members.size);
             else {
                 for (var key in message) {
-                    if (typeof message[key] === "string") message[key] = message[key].replace(/\%USER\%/gim, `<@${member.user.id}>`).replace(/\%USERNAME\%/gim, `${member.user.username}`).replace(/\%USERTAG%/gim, `${member.user.tag}`).replace(/\%GUILD\%/gim, `${member.guild.name}`);
+                    if (typeof message[key] === "string") message[key] = message[key].replace(/\%USER\%/gim, `<@${member.user.id}>`).replace(/\%USERNAME\%/gim, `${member.user.username}`).replace(/\%USERTAG%/gim, `${member.user.tag}`).replace(/\%GUILD\%/gim, `${guild.name}`).replace(/\%MEMBERCOUNT%/gim, guild.members.size);
                 }
             }; //---------------------------------------------------------Greets------------------------------------------------------------
             if (!member.guild.channels.has(guildEntry.onEvent.guildMemberRemove.farewell.channel)) {

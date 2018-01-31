@@ -25,7 +25,7 @@ class Slots {
                     }
                     var gambledPoints = args[0];
                     //If invalid number set to 1
-                    if (isNaN(gambledPoints)) gambledPoints = 1;
+                    if (isNaN(gambledPoints) || !parseInt(gambledPoints)) gambledPoints = 1;
                     //Handle invalid arguments
                     if (gambledPoints > userEntry.generalSettings.points) return resolve(await message.channel.createMessage(":x: You do not have enough points ! You currently have **" + userEntry.generalSettings.points + "** points"));
                     if (gambledPoints < 0) return resolve(await message.channel.createMessage(':x: Ehhhh, what do you want me to do with that'));
