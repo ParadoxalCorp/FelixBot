@@ -276,6 +276,11 @@ const Felix = new Client(config.token, {
     Felix.connect();
 
     //This is where Felix checks for API keys and disable features if missing keys
+	if (!config.bitlyApiKey || !config.googleShortenerApiKey) {
+		let requireURLshortenAPIKEY	 = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("googleShortenerApiKey") || c.conf.require && c.conf.require.includes("bitlyApiKey"));
+		requireURLshortenAPIKEY.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`bitlyApiKey\`  and the \`googleShortenerApiKey\`API key which are missing`);
+		logger.log(`No google or bitly api key found in the config, disabled: ${requireURLshortenAPIKEY.map(c => c.help.name).join(", ")}`, `warn`);
+	}
     if (!config.raven) logger.log(`No raven link found in the config, errors will be logged to the console`, "warn");
     if (!config.wolkeImageKey) {
         let requirewolkeImageKey = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("wolkeImageKey"));
