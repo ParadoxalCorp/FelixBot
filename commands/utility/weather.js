@@ -31,7 +31,7 @@ class Weather {
 					description: result.summary,
 					fields:  [{
 						name: "Location",
-						value: Geo.address.replace(/,/g , "\n"),
+						value: Geo.address.replace(/, /g , "\n"),
 						inline: true
 					},{
 						name: "Summary",
