@@ -6,7 +6,7 @@ A moderation case type can be programmatically identified with their `type` prop
 | --- | --- | --- |
 | <code>2999</code> | Warn | Self-explanatory |
 | <code>3000</code> | Automatic-warn | Self-explanatory |
-| <code>3001</code> | Forgive | Self-explanatory |
+| <code>3001</code> | Revoke | When a warn is revoked |
 | <code>3002</code> | Mute | Self-explanatory |
 | <code>3003</code> | Global-mute | When all the existing muted roles are added, needs at least two muted roles |
 | <code>3004</code> | Automatic-mute | Self-explanatory |

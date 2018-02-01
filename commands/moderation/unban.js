@@ -4,7 +4,7 @@ class Unban {
     constructor() {
         this.help = {
             name: "unban",
-            usage: "unban <user_id> -r <reason>",
+            usage: "unban <user_id> -r <reason> -s <screenshot_url_or_attachment>",
             description: "Unban a member from the server with their id, reason is optional and can be added after. Screenshot is optional as well, it may be followed by the (single) url of the screenshot or stay blank if the screenshot is attached"
         }
         this.conf = {
@@ -29,16 +29,14 @@ class Unban {
                 //This will be used to avoid triggering two times the case register
                 client.guilds.get(message.guild.id).lastUnbanned = userToUnban.id;
                 await message.guild.unbanMember(userToUnban.id, `Unbanned by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.modLog.cases.length + 1 : reason) : "No reason specified"}`);
-                if (guildEntry.modLog.channel) {
-                    await registerCase(client, {
-                        user: userToUnban,
-                        action: "unban",
-                        moderator: message.author,
-                        reason: reason,
-                        guild: message.guild,
-                        screenshot: screenshot
-                    });
-                }
+                await registerCase(client, {
+                    user: userToUnban,
+                    action: "unban",
+                    moderator: message.author,
+                    reason: reason,
+                    guild: message.guild,
+                    screenshot: screenshot
+                });
                 resolve(await message.channel.createMessage(`:white_check_mark: Successfully unbanned the user \`${userToUnban.username}#${userToUnban.discriminator}\``));
             } catch (err) {
                 reject(err);

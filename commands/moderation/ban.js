@@ -33,16 +33,14 @@ class Ban {
                 //This will be used to avoid triggering two times the case register
                 client.guilds.get(message.guild.id).lastBanned = memberToBan.first().id;
                 await message.guild.members.get(memberToBan.first().id).ban(daysAmount, `Banned by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.modLog.cases.length + 1 : reason) : "No reason specified"}`);
-                if (guildEntry.modLog.channel) {
-                    await registerCase(client, {
-                        user: memberToBan.first(),
-                        action: "ban",
-                        moderator: message.author,
-                        reason: reason,
-                        guild: message.guild,
-                        screenshot: screenshot
-                    });
-                }
+                await registerCase(client, {
+                    user: memberToBan.first(),
+                    action: "ban",
+                    moderator: message.author,
+                    reason: reason,
+                    guild: message.guild,
+                    screenshot: screenshot
+                });
                 resolve(await message.channel.createMessage(`:white_check_mark: Successfully banned the user \`${memberToBan.first().tag}\``));
             } catch (err) {
                 reject(err);

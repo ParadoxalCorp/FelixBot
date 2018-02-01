@@ -4,7 +4,7 @@ class Mute {
     constructor() {
         this.help = {
             name: 'mute',
-            usage: 'mute <user_resolvable> -r <reason> -s <screenshot_url>',
+            usage: 'mute <user_resolvable> -r <reason> -s <screenshot_url_or_attachment>',
             description: 'Mute a member, reason is optional and can be added after. Screenshot is optional as well, it may be followed by the (single) url of the screenshot or stay blank if the screenshot is attached'
         }
         this.conf = {
@@ -65,19 +65,17 @@ class Mute {
                         }
                     }
                 }
-                if (guildEntry.modLog.channel) {
-                    await registerCase(client, {
-                        user: memberToMute.user,
-                        action: selectedRole ? (selectedRole.name ? selectedRole.name.replace(/%ROLE%/gim, message.guild.roles.get(selectedRole.id).name) : message.guild.roles.get(selectedRole.id).name) : "mute",
-                        moderator: message.author,
-                        reason: reason,
-                        type: selectedRole ? 3005 : undefined,
-                        guild: message.guild,
-                        screenshot: screenshot,
-                        color: 0xffcc00,
-                        performedAction: selectedRole ? `${selectedRole.name ? selectedRole.name.replace(/%ROLE%/gim, message.guild.roles.get(selectedRole.id).name) : message.guild.roles.get(selectedRole.id).name}` : `Has been muted`
-                    });
-                }
+                await registerCase(client, {
+                    user: memberToMute.user,
+                    action: selectedRole ? (selectedRole.name ? selectedRole.name.replace(/%ROLE%/gim, message.guild.roles.get(selectedRole.id).name) : message.guild.roles.get(selectedRole.id).name) : "mute",
+                    moderator: message.author,
+                    reason: reason,
+                    type: selectedRole ? 3005 : undefined,
+                    guild: message.guild,
+                    screenshot: screenshot,
+                    color: 0xffcc00,
+                    performedAction: selectedRole ? `${selectedRole.name ? selectedRole.name.replace(/%ROLE%/gim, message.guild.roles.get(selectedRole.id).name) : message.guild.roles.get(selectedRole.id).name}` : `Has been muted`
+                });
                 resolve(await message.channel.createMessage(`:white_check_mark: Successfully muted the user \`${memberToMute.tag}\``));
             } catch (err) {
                 reject(err);

@@ -6,9 +6,9 @@ module.exports = async(client, guild, user) => {
     if (guildData.moderation.warns.actions[memberData.warns.length]) {
         switch (guildData.moderation.warns.actions[memberData.warns.length].action) {
             case 'mute':
-                const customMutedRole = guildData.moderation.mutedRoles.find(r => r.id === guildData.moderation.warns.actions[memberData.warns.length].customMutedRole) || guildData.moderation.mutedRoles[0];
+                const customMutedRole = guildData.moderation.mutedRoles.find(r => r.id === guildData.moderation.warns.actions[memberData.warns.length].customMutedRole);
                 if (!customMutedRole && !guild.roles.find(r => r.name === "muted")) return;
-                guild.members.get(user.id).addRole(customMutedRole || guild.roles.find(r => r.name === "muted").id, `Has been warned ${memberData.warns.length} times`)
+                guild.members.get(user.id).addRole(customMutedRole ? customMutedRole.id : guild.roles.find(r => r.name === "muted").id, `Has been warned ${memberData.warns.length} times`)
                     .then(async() => {
                         await ModerationHandler.registerCase(client, {
                             guild: guild,
@@ -18,7 +18,7 @@ module.exports = async(client, guild, user) => {
                             action: customMutedRole ? ('Automatic ' + `${(customMutedRole.name ? customMutedRole.name.replace(/%ROLE%/gim, guild.roles.get(customMutedRole.id).name) : guild.roles.get(customMutedRole.id).name)}`) : 'Automatic-mute',
                             type: 3005,
                             reason: `Has been warned ${memberData.warns.length} times`,
-                            performedAction: customMutedRole ? `Automatic ${customMutedRole.name === "%ROLE%" ? guild.roles.get(customMutedRole).name : customMutedRole.name}` : `Has been automatically muted`
+                            performedAction: customMutedRole ? `Automatic ${customMutedRole.name ? customMutedRole.name.replace(/%ROLE%/gim, guild.roles.get(customMutedRole.id).name) : guild.roles.get(customMutedRole.id).name}` : `Has been automatically muted`
 
                         }).catch(err => {
                             return console.log(err, `^ ${guild.id} | ${guild.name}`);

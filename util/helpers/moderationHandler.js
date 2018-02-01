@@ -35,7 +35,7 @@ class ModerationHandler {
             guildData.moderation.users.push(DefaultStructures.modUsersData(params.user.id)) - 1;
         guildData.moderation.users[memberPos].warns.push(DefaultStructures.warnData(params.reason, params.moderator, params.screenshot, params.timestamp));
         params.client.guildData.set(guildData.id, guildData);
-        return guildData.moderation.users[memberPos].warns[guildData.moderation.users[memberPos].warns.length - 1];
+        return params.client.guildData.get(params.guild.id).moderation.users[memberPos].warns[guildData.moderation.users[memberPos].warns.length - 1];
     }
 
     /**
@@ -86,6 +86,10 @@ class ModerationHandler {
                     warn: {
                         color: 0xffcc00,
                         action: "warned"
+                    },
+                    revoke: {
+                        color: 0x00ff00,
+                        action: 'forgiven'
                     }
                 }
                 let modCase = cases[newCase.action];

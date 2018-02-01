@@ -6,14 +6,12 @@ module.exports = async(client, guild, user) => {
         client.guilds.get(guild.id).lastUnbanned = undefined;
         return;
     }
-    if (guildEntry.modLog.channel) {
-        let auditCase = await guild.getAuditLogs(1).catch(err => false);
-        registerCase(client, {
-            guild: guild,
-            user: user,
-            moderator: auditCase && auditCase.entries[0] ? auditCase.entries[0].user : false,
-            action: "unban",
-            reason: auditCase && auditCase.entries[0] ? auditCase.entries[0].reason : false
-        });
-    }
+    let auditCase = await guild.getAuditLogs(1).catch(err => false);
+    registerCase(client, {
+        guild: guild,
+        user: user,
+        moderator: auditCase && auditCase.entries[0] ? auditCase.entries[0].user : false,
+        action: "unban",
+        reason: auditCase && auditCase.entries[0] ? auditCase.entries[0].reason : false
+    });
 }

@@ -48,7 +48,7 @@ class DefaultStructures {
         let modCaseTypes = {
             'warn': 2999,
             'automatic-warn': 3000,
-            'forgive': 3001,
+            'revoke': 3001,
             'mute': 3002,
             'global mute': 3003,
             'automatic-mute': 3004,

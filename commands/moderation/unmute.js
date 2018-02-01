@@ -5,7 +5,7 @@ class Unmute {
     constructor() {
         this.help = {
             name: 'unmute',
-            usage: 'unmute <user_resolvable> -r <reason>',
+            usage: 'unmute <user_resolvable> -r <reason> -s <screenshot_url_or_attachment>',
             description: 'Unmute a member, reason is optional and can be added after. Screenshot is optional as well, it may be followed by the (single) url of the screenshot or stay blank if the screenshot is attached'
         }
         this.conf = {
@@ -71,7 +71,6 @@ class Unmute {
                     }
                     await message.guild.members.get(memberToUnmute.id).removeRole(selectedRole ? selectedRole.id : mutedRole.id, `Unmuted by ${message.author.tag}: ${reason ? (reason.length > 450 ? reason.substr(0, 410) + "... Reason is too long for the audit log, see case #" + guildEntry.modLog.cases.length + 1 : reason) : "No reason specified"}`);
                 }
-                if (guildEntry.modLog.channel) {
                     await registerCase(client, {
                         user: memberToUnmute.user,
                         action: selectedRole ? (Array.isArray(selectedRole) ? 'Global unmute' : 'Removed' + (selectedRole.name ? selectedRole.name.replace(/%ROLE%/gim, message.guild.roles.get(selectedRole.id).name) : message.guild.roles.get(selectedRole.id).name)) : "unmute",
@@ -83,7 +82,6 @@ class Unmute {
                         color: 0x00ff00,
                         performedAction: selectedRole ? (Array.isArray(selectedRole) ? 'Has been globally-unmuted' : `Removed ${selectedRole.name ? selectedRole.name.replace(/%ROLE%/gim, message.guild.roles.get(selectedRole.id).name) : message.guild.roles.get(selectedRole.id).name}`) : `Has been unmuted`
                     });
-                }
                 resolve(await message.channel.createMessage(`:white_check_mark: Successfully unmuted the user \`${memberToUnmute.tag}\``));
             } catch (err) {
                 reject(err);
