@@ -16,6 +16,10 @@ module.exports = {
         name: false, //"should be "USERNAME"
         password: false //"should be "PASSWORD"
     },
+	//Google Geocoding API
+	googleGeoAPIkey: false,
+	//Dark Sky API (weather)
+	DarkSkyAPIKey: false,
 	//Bitly shortener login & API
 	bitlyApiKey: [false, false],
 	//Google shortener API key

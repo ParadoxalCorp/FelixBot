@@ -1,4 +1,19 @@
 module.exports = { run :(config, Felix, logger) => {
+if (!config.DarkSkyAPIKey) {
+	let requireDarkSkyAPIKey	 = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("DarkSkyAPIKey"));
+	requireDarkSkyAPIKey.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`DarkSkyAPIKey\` API Key is missing`);
+	logger.log(`No DarkSky API Key found in the config, disabled: ${requireDarkSkyAPIKey.map(c => c.help.name).join(", ")}`, `warn`);
+}
+if (!config.googleGeoAPIkey) {
+	let requireGoogleGeoAPIkey	 = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("googleGeoAPIkey"));
+	requireGoogleGeoAPIkey.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`googleGeoAPIkey\` API Key is missing`);
+	logger.log(`No Google Geolocation API key found in the config, disabled: ${requireGoogleGeoAPIkey.map(c => c.help.name).join(", ")}`, `warn`);
+}
+if (!config.googleGeoAPIkey) {
+	let requireGoogleGeoAPIkey	 = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("googleGeoAPIkey") || c.conf.require && c.conf.require.includes("bitlyApiKey"));
+	requireGoogleGeoAPIkey.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`bitlyApiKey\`  and the \`googleGeoAPIkey\`API key which are missing`);
+	logger.log(`No Google Geolocation API found in the config, disabled: ${requireGoogleGeoAPIkey.map(c => c.help.name).join(", ")}`, `warn`);
+}
 if (!config.bitlyApiKey || !config.googleShortenerApiKey) {
 	let requireURLshortenAPIKEY	 = Felix.commands.filter(c => c.conf.require && c.conf.require.includes("googleShortenerApiKey") || c.conf.require && c.conf.require.includes("bitlyApiKey"));
 	requireURLshortenAPIKEY.forEach(c => Felix.commands.get(c.help.name).conf.disabled = `This command requires the \`bitlyApiKey\`  and the \`googleShortenerApiKey\`API key which are missing`);
