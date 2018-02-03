@@ -24,13 +24,6 @@ class Uinfo {
                 const guildEntry = client.guildData.get(message.guild.id);
                 if (target.id !== message.author.id && !userEntry.dataPrivacy.publicProfile) return resolve(await message.channel.createMessage(":x: Sorry but the profile of this user is private :v"));
                 let embedFields = [];
-                //Awesome code from Rem to make gifs great again
-                let avatar = target.avatar ? (target.avatar.startsWith('a_') ? `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.gif` : `​https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.webp`) : target.defaultAvatarURL;
-                avatar = avatar.replace(/[^a-zA-Z0-9_\-./:]/, '');
-                avatar += '?size=1024';
-                if (target.avatar && target.avatar.startsWith('a_')) {
-                    avatar += '&f=.gif';
-                }
                 //----------------------------------------------------------------------------------
                 if (message.guild.members.get(target.id).nickname) {
                     embedFields.push({
@@ -113,12 +106,12 @@ class Uinfo {
                         title: ':bust_in_silhouette: User info',
                         author: {
                             name: `${message.guild.members.get(target.id).tag}`,
-                            icon_url: avatar
+                            icon_url: target.avatarURL
                         },
                         fields: embedFields,
                         timestamp: new Date(),
                         image: {
-                            url: avatar
+                            url: target.avatarURL.replace(/size=128/gim, 'size=1024')
                         }
                     }
                 }));

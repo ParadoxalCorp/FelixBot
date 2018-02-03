@@ -20,3 +20,4 @@ A moderation case type can be programmatically identified with their `type` prop
 | <code>3012</code> | Automatic-ban | Self-explanatory |
 | <code>3013</code> | Soft-ban | Self-explanatory |
 | <code>3014</code> | Unban | Self-explanatory |
+| <code>3015</code> | Automatic-soft-ban | Self-explanatory | 
