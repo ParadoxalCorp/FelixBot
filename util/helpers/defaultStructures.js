@@ -60,6 +60,7 @@ class DefaultStructures {
             'automatic-ban': 3012,
             'soft-ban': 3013,
             'unban': 3014,
+            'automatic-soft-ban': 3015
         };
         //Return code and handle custom mutes
         return modCaseType.includes('mute') && !modCaseTypes[modCaseType] ? 3005 : (modCaseType.includes('unmute') && !modCaseTypes[modCaseType] ? 3007 : modCaseTypes[modCaseType]);
@@ -75,6 +76,21 @@ class DefaultStructures {
         return {
             id: id,
             name: name
+        }
+    }
+
+    /**
+     * The warn action structure
+     * Guild.moderation.warns.actions[0]
+     * @param {String} action The action to take at this warn count
+     * @param {String || Boolean} message An optional custom message to send to the user, has a notif or smth
+     * @param {String || Boolean} customMutedRole Specific to mutes, the ID of the custom muted role to use
+     */
+    warnAction(action, message, customMutedRole) {
+        return {
+            action: action,
+            message: message,
+            customMutedRole: customMutedRole
         }
     }
 }

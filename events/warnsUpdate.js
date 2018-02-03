@@ -90,6 +90,37 @@ module.exports = async(client, guild, user) => {
                     return console.log(err, `^ ${guild.id} | ${guild.name}`);
                 });
                 break;
+            case 'soft-ban':
+                if (!guild.members.get(user.id).bannable) return;
+                if (guildData.moderation.warns.actions[memberData.warns.length].message) {
+                    user.createMessage(ModerationHandler.replaceFlags({
+                        message: guildData.moderation.warns.actions[memberData.warns.length].message,
+                        client: client,
+                        guild: guild,
+                        user: user,
+                        moderator: client.user
+                    })).catch();
+                }
+                client.guilds.get(guild.id).lastBanned = user.id;
+                client.guilds.get(guild.id).lastUnbanned = user.id;
+                await guild.members.get(user.id).ban(7, `[SOFT-BAN] - Has been warned ${memberData.warns.length} times`).catch(err => {
+                    return console.log(err, `^ ${guild.id} | ${guild.name}`);
+                });
+                await guild.unbanMember(user.id, `Automatically unbanned as the ban was a soft-ban`).catch(err => {
+                    return console.log(err, `^ ${guild.id} | ${guild.name}`);
+                })
+                ModerationHandler.registerCase(client, {
+                    guild: guild,
+                    user: user,
+                    color: 0xff9933,
+                    moderator: client.user,
+                    action: 'Automatic-soft-ban',
+                    reason: `Has been warned ${memberData.warns.length} times`,
+                    performedAction: `Has been automatically soft-banned`
+                }).catch(err => {
+                    return console.log(err, `^ ${guild.id} | ${guild.name}`);
+                });
+                break;
         }
     }
 }

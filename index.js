@@ -144,14 +144,6 @@ class Client extends Eris {
                                 action: 'mute',
                                 message: `Hoi hoi, you just reached %WARNCOUNT% warns and therefore you've been muted.`,
                                 customMuteRole: false
-                            },
-                            7: {
-                                action: 'kick',
-                                message: "Hoi hoi, you just reached %WARNCOUNT% warns in the server `%GUILD%` and therefore you've been kicked from there."
-                            },
-                            9: {
-                                action: 'ban',
-                                message: "Hoi hoi, you just reached %WARNCOUNT% warns in the server `%GUILD%` and therefore you've been banned from there."
                             }
                         }
                     },

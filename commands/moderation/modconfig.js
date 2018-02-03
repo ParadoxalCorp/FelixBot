@@ -6,7 +6,8 @@ class ModConfig {
             description: 'This command lets you manage most of the moderation system settings'
         }
         this.conf = {
-            guildOnly: true
+            guildOnly: true,
+            aliases: ['modconf']
         }
         this.shortcut = {
             triggers: new Map([
@@ -47,6 +48,11 @@ class ModConfig {
                     help: 'Set a custom warn message that is sent to the member whenever they are automatically warned for advertisement. Don\'t put any text to disable it. See a list of tags on the wiki',
                     usage: 'set_warn_message <text>',
                     args: 1
+                }],
+                ['add_warn_action', {
+                    script: 'addWarnAction.js',
+                    help: 'Add a new automatic action to be taken at the specified warn count',
+                    usage: 'add_warn_action'
                 }]
             ])
         }
@@ -55,9 +61,11 @@ class ModConfig {
     run(client, message, args) {
         return new Promise(async(resolve, reject) => {
             try {
-                const ModConfig = this;
-                resolve(await message.channel.createMessage('Hoi, welcome to the general moderation settings panel, see below what you can do: ```css\n' + Array.from(ModConfig.shortcut.triggers.keys()).map(s =>
+                const guildEntry = client.guildData.get(message.guild.id);
+                const ModConfig = this; //To ensure i always have it under my hand, unsure if this will always be it, smh 
+                return resolve(await message.channel.createMessage('Hoi, welcome to the general moderation settings panel, see below what you can do: ```css\n' + Array.from(ModConfig.shortcut.triggers.keys()).map(s =>
                     `${s} : ${ModConfig.shortcut.triggers.get(s).help}\nUsage example: ${client.guildData.get(message.guild.id).generalSettings.prefix + ModConfig.help.name + ' ' + ModConfig.shortcut.triggers.get(s).usage}\n\n`).join('\n') + '```'));
+
             } catch (err) {
                 reject(err);
             }
