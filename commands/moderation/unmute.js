@@ -31,7 +31,7 @@ class Unmute {
                             memberToUnmute = memberToUnmute.first() ? message.guild.members.get(memberToUnmute.first().id) : false;
                             let reason = new RegExp(/\-r/gim).test(args.join(" ")) ? args.join(" ").split(/\-r/gim)[1].trim() : undefined;
                             let screenshot = message.attachments[0] ? message.attachments[0].url : (new RegExp(/\-s/gim).test(args.join(" ")) ? args.join(" ").split(/\-s/gim)[1].trim() : undefined);
-                            if (!new RegExp(/\.jpg|.png|.gif|.jpeg/gim).test(screenshot)) screenshot = undefined;
+                            if (!new RegExp(/\.jpg|.png|.gif|.webp|.jpeg/gim).test(screenshot)) screenshot = undefined;
                             if (new RegExp(/\-s/gim).test(reason)) reason = reason.split(/\-s/gim)[0].trim();
                             if (!memberToUnmute) return resolve(await message.channel.createMessage(`:x: I couldn't find the user you specified`));
                             if (!memberToUnmute.roles.find(r => r === mutedRole.id) && !memberToUnmute.roles.filter(r => guildEntry.moderation.mutedRoles.find(mr => mr.id === r))[0]) {
