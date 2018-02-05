@@ -110,6 +110,7 @@ class Client extends Eris {
                     prefix: config.prefix,
                     autoAssignablesRoles: [],
                     disabledModules: [],
+                    leftAt: false
                 },
                 levelSystem: {
                     enabled: false,
@@ -204,6 +205,27 @@ const Felix = new Client(config.token, {
         const dbUpdate = await DatabaseUpdater.updateDatabase(Felix);
         logger.draft(`loadingDatabase`, `end`, `${dbUpdate.usersUpdate.entriesUpdated || dbUpdate.usersUpdate.entriesUpdated === 0 ? "Updated " + dbUpdate.usersUpdate.entriesUpdated + " user entries in " + dbUpdate.usersUpdate.time  + "ms" : "Failed to update user database: " + dbUpdate.usersUpdate}, ${dbUpdate.guildsUpdate.entriesUpdated || dbUpdate.guildsUpdate.entriesUpdated === 0 ? "and updated " + dbUpdate.guildsUpdate.entriesUpdated + " guild entries in " + dbUpdate.guildsUpdate.time + "ms": "Failed to update guild database: " + dbUpdate.guildsUpdate}`, dbUpdate.guildsUpdate.entriesUpdated && dbUpdate.usersUpdate.entriesUpdated ? true : false);
     } else logger.draft(`loadingDatabase`, `end`, `Fully loaded the database`, true);
+    //Sneaky thing so there's no need to rewrite one thousand files  
+    Felix.userData.sourceSet = Felix.userData.set;
+    Felix.guildData.sourceSet = Felix.guildData.set;
+    Felix.userData.set = (key, value) => {
+        try {
+            Felix.userData.sourceSet(key, value);
+        } catch (err) {
+            return err;
+        }
+        Felix.emit('userDataUpdate', key, value);
+        return true;
+    };
+    Felix.guildData.set = (key, value) => {
+        try {
+            Felix.guildData.sourceSet(key, value);
+        } catch (err) {
+            return err;
+        }
+        Felix.emit('guildDataUpdate', key, value);
+        return true;
+    };
     //Load commands
     logger.draft(`loadingCommands`, `create`, `Loading commands...`);
     const categories = await fs.readdir(`./commands`);
@@ -292,6 +314,8 @@ const Felix = new Client(config.token, {
     const serverLaunch = await server.launch(Felix).catch(err => err);
     Felix.server = serverLaunch;
     logger.draft('serverLaunch', 'end', `Server endpoints launched ${Felix.server && Felix.server.info ? 'at ' + Felix.server.info.uri : ''}`, Felix.server ? true : false);
+    const FelixWebSocket = require('./api/WebSocket');
+    new FelixWebSocket(Felix).launch();
 
     Felix.connect();
 

@@ -18,7 +18,8 @@ class PayloadValidator {
             channel: ['boolean', 'string'],
             method: ['boolean', 'string'],
             levelUpNotif: ['boolean', 'string'],
-            customNotif: ['boolean', 'string']
+            customNotif: ['boolean', 'string'],
+            leftAt: ['boolean', 'number']
         };
         if (guildKeys.filter(k => defaultKeys.includes(k)).length < defaultKeys.length) {
             return { valid: false, invalidKeys: defaultKeys.filter(k => !guildKeys.includes(k)).map(k => `Missing ${k} property`) };

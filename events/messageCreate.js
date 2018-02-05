@@ -24,6 +24,11 @@ module.exports = async(client, message) => {
     }
     if (message.guild) {
         if (!client.guildData.get(message.guild.id)) client.guildData.set(message.guild.id, client.defaultGuildData(message.guild.id));
+        else if (client.guildData.get(message.guild.id).generalSettings.leftAt) {
+            const guildEntry = client.guildData.get(message.guild.id);
+            guildEntry.generalSettings.leftAt = false;
+            client.guildData.set(message.guild.id, guildEntry);
+        }
         require("../util/helpers/expHandler.js").handle(client, message);
         require("../util/helpers/inviteHandler.js").handle(client, message);
     }

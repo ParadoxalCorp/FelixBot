@@ -40,7 +40,7 @@ class ClientStats {
                 });
                 resolve(await message.channel.createMessage({
                     embed: {
-                        description: "```\n" + client.shards.map(s => `Shard ${s.id} | ${s.status} | ${s.latency}ms`).join("\n") + "```"
+                        description: "```\n" + client.shards.map(s => `Shard ${s.id} | ${s.status} | ${s.latency}ms | ${client.guilds.filter(g => g.shard.id === s.id).size} guilds`).join("\n") + "```"
                     }
                 }));
             } catch (err) {

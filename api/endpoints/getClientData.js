@@ -11,8 +11,6 @@ module.exports = async(client, server, PayloadValidator) => {
                 if (req.headers.authorization) req.headers.authorization = req.headers.authorization.split("Bearer")[1].trim();
                 const token = tokens.find(t => t.token === req.headers.authorization);
                 if (!token || token.public) return reply("Forbidden").code(403);
-                tokens[tokens.findIndex(t => t.token === req.headers.authorization)].requests.push({ timestamp: Date.now(), type: req.method });
-                client.clientData.set("tokens", tokens);
                 if (req.params.clientValue === "token") return reply('baguette tbh');
                 return reply(client[req.params.clientValue].first ? Array.from(client[req.params.clientValue].values()) : client[req.params.clientValue]);
             } catch (err) {
