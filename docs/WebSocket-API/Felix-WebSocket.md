@@ -71,6 +71,9 @@ Felix's websocket send data following the same pattern than the client does, wit
 | --- | --- | --- |
 | receivedAt | Number | Timestamp of when Felix's websocket received the heartbeat |
 | shards | Array<Object> | An array of [Eris shards objects](https://abal.moe/Eris/docs/Shard) except that the `Shard.latency` property is replaced by `Shard.ping` |
+| guildsCount | Number | Number of guilds Felix is in |
+| memoryUsage | Number | Current heap used by Felix |
+| uptime | Number | Time in milliseconds since Felix is up |
 
 #### GDB Update data object
 

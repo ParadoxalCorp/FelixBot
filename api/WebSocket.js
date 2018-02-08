@@ -54,7 +54,10 @@ class FelixWebSocket {
                             name: 'Heartbeat ACK',
                             data: {
                                 receivedAt: Date.now(),
-                                shards: this.client.shards.map(s => s)
+                                shards: this.client.shards.map(s => s),
+                                guildsCount: this.client.guilds.size,
+                                memoryUsage: (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2),
+                                uptime: this.client.uptime
                             }
                         }));
                         break;
