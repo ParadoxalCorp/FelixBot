@@ -70,7 +70,7 @@ Felix's websocket send data following the same pattern than the client does, wit
   | Property | Data Type | Description |
 | --- | --- | --- |
 | receivedAt | Number | Timestamp of when Felix's websocket received the heartbeat |
-| shards | Array<Object> | An array of [Eris shards objects](https://abal.moe/Eris/docs/Shard), essentially containing the data of Felix's status with Discord |
+| shards | Array<Object> | An array of [Eris shards objects](https://abal.moe/Eris/docs/Shard) except that the `Shard.latency` property is replaced by `Shard.ping` |
 
 #### GDB Update data object
 

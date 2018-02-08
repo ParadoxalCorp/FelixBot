@@ -22,7 +22,7 @@ class FelixWebSocket {
             });
         }
 
-        wss.on('connection', (ws, req) => {
+        wss.on('connection', (ws) => {
 
             ws.listenToUsers = [],
                 ws.listenToGuilds = [],
@@ -38,11 +38,17 @@ class FelixWebSocket {
                 } catch (err) {
                     return;
                 }
-                if (!data.code) return;
+                if (!data.code) {
+                    return;
+                }
 
 
                 switch (data.code) {
                     case 20001:
+                        //shard.latency will be removed as it is sent, probs cuz it only has a getter. So we copy it and assign the value to a new property
+                        this.client.shards.forEach(shard => {
+                            shard.ping = shard.latency;
+                        });
                         ws.send(JSON.stringify({
                             code: 10001,
                             name: 'Heartbeat ACK',
@@ -53,21 +59,25 @@ class FelixWebSocket {
                         }));
                         break;
                     case 20002:
-                        if (!data.data || !Array.isArray(data.data.users) || !Array.isArray(data.data.guilds)) return;
+                        if (!data.data || !Array.isArray(data.data.users) || !Array.isArray(data.data.guilds)) {
+                            return;
+                        }
                         ws.listenToGuilds = data.data.guilds,
-                            ws.listenToUsers = data.data.users
+                            ws.listenToUsers = data.data.users;
                 }
             });
 
             ws.on('close', (code, reason) => {
                 logger.log(`WebSocket connection with ${ws.upgradeReq.host} as ${ws.upgradeReq.headers['user-agent']} has been closed with the code: ${code} (${reason})`)
-            })
+            });
         });
 
         //Send updated guild and user data to all clients listening to it
         this.client.on('guildDataUpdate', (guildID, guildData) => {
             wss.clients.forEach((ws) => {
-                if (!ws.listenToGuilds.includes(guildID) || !ws.readyState === WebSocket.OPEN) return;
+                if (!ws.listenToGuilds.includes(guildID) || !ws.readyState === WebSocket.OPEN) {
+                    return;
+                }
 
                 ws.send(JSON.stringify({
                     code: 10002,
@@ -82,7 +92,9 @@ class FelixWebSocket {
 
         this.client.on('userDataUpdate', (userID, userData) => {
             wss.clients.forEach((ws) => {
-                if (!ws.listenToUsers.includes(userID) || !ws.readyState === WebSocket.OPEN) return;
+                if (!ws.listenToUsers.includes(userID) || !ws.readyState === WebSocket.OPEN) {
+                    return;
+                }
 
                 ws.send(JSON.stringify({
                     code: 10003,
@@ -98,7 +110,9 @@ class FelixWebSocket {
         //To prevent broken connections, terminate the connection if the ping has not been answered within 30 seconds 
         this._healthCheckInterval = setInterval(() => {
             wss.clients.forEach((ws) => {
-                if (ws.isAlive === false) return ws.terminate();
+                if (ws.isAlive === false) {
+                    return ws.terminate();
+                }
 
                 ws.isAlive = false;
                 ws.ping();

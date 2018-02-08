@@ -31,7 +31,6 @@ The conf object is entirely optional and may contain the command "configuration"
 | cooldownWeight | <code>Number</code> | The "weight" of the command, basically the bigger the command output is, the higher this number should be. Users will be ratelimited if they reach 20, default is 5 |
 | require | <code>Array</code> | An array of property names of the `client.config` object, used to tell to Felix that the command requires for example an API key in the config. Felix will automatically disable the command if the said API key is missing. |
 | requirePerms | <code>Array</code> | An array of permissions (like `manageMessages`) that Felix needs to run the command, if specified and Felix hasn't the required permissions, the command handler will abort before launching the command and return an error message to the user. |
-| donatorOnly | <code>Boolean</code> | Whether or not the command should be locked to donators, this does not work in self-host cases |
 
 #### shortcut object*
 
