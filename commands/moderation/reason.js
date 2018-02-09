@@ -19,7 +19,7 @@ class Reason {
                 let caseNumber = args.shift() - 1,
                     reason = args.join(" ");
                 let screenshot = message.attachments[0] ? message.attachments[0].url : (new RegExp(/\-s/gim).test(args.join(" ")) ? args.join(" ").split(/\-s/gim)[1].trim() : undefined);
-                if (!new RegExp(/\.jpg|.png|.gif|.jpeg/gim).test(screenshot)) screenshot = undefined;
+                if (!new RegExp(/\.jpg|.png|.gif|.webp|.jpeg/gim).test(screenshot)) screenshot = undefined;
                 if (new RegExp(/\-s/gim).test(reason)) reason = reason.split(/\-s/gim)[0].trim();
                 if (!guildEntry.modLog.cases[caseNumber]) return resolve(await message.channel.createMessage(`:x: Invalid case number`));
                 if (!reason && !new RegExp(/\-s/gim).test(args.join(" "))) return resolve(await message.channel.createMessage(`:x: The reason can't be blank`));

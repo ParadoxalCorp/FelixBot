@@ -53,7 +53,7 @@ class RPS {
                         }
                     }));
                 }
-                if (pointsGambled < 0) return resolve(await message.channel.createMessage(':x: Ehhhh, what do you want me to do with that'));
+                if (pointsGambled <= 0) return resolve(await message.channel.createMessage(':x: Ehhhh, what do you want me to do with that'));
                 //Else determine how much was gambled and how much was won/lost
                 if (Math.round(Number(pointsGambled)) > userEntry.generalSettings.points) pointsGambled = userEntry.generalSettings.points;
                 else pointsGambled = Math.round(Number(pointsGambled));

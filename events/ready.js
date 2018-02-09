@@ -5,6 +5,10 @@ const request = require(`../util/modules/request`);
 module.exports = async(client) => {
     logger.draft(`login`, `create`, `Logging in...`);
     await sleep(1000); //Wait for the data to be loaded into the client
+    if (!client.user.bot) {
+        logger.draft(`login`, `end`, `Invalid login details were provided, the process will exit`, false);
+        process.exit(0);
+    }
     logger.draft(`login`, `end`, `Logged in as ${client.user.tag}, running Felix ${client.coreData.version}`, true);
     await sleep(1000);
     console.log(`===============================================\nGuilds: ${client.guilds.size}\nUsers: ${client.users.size}\nPrefix: ${client.config.prefix}\n===============================================`);
@@ -58,4 +62,35 @@ module.exports = async(client) => {
             require(`../util/helpers/generateImageSubcommands.js`)(client);
         }, 43200000);
     }
+
+    //Update guilds count every hour
+    client._guildsCountUpdateInterval = setInterval(() => {
+        if (client.config.discordBotList) {
+            request.post(`https://discordbots.org/api/bots/${client.user.id}/stats`, { server_count: client.guilds.size }, { 'Authorization': client.config.discordBotList })
+                .then(res => {
+                    logger.log(`Updated guilds count on DiscordBots.org to ${client.guilds.size}`, 'INFO');
+                })
+                .catch(err => {
+                    client.emit('error', err);
+                });
+        }
+        if (client.config.discordBotFr) {
+            request.post(`https://discordbot.takohell.com/api/v1/bot/${client.user.id}`, { server_count: client.guilds.size, shard_count: client.shards.size }, { 'Authorization': client.config.discordBotFr, 'Content-Type': 'application/json' })
+                .then(res => {
+                    logger.log(`Updated guilds count on discorbot.takohell.com to ${client.guilds.size}`, 'INFO');
+                })
+                .catch(err => {
+                    client.emit('error', err);
+                });
+        }
+        if (client.config.terminalBotList) {
+            request.post(`https://ls.terminal.ink/api/v1/bots/${client.user.id}`, { server_count: client.guilds.size }, { 'Authorization': client.config.terminalBotList, 'Content-Type': 'application/json' })
+                .then(res => {
+                    logger.log(`Updated guilds count on ls.terminal.ink to ${client.guilds.size}`, 'INFO');
+                })
+                .catch(err => {
+                    client.emit('error', err);
+                });
+        }
+    }, 3600000);
 }

@@ -4,14 +4,9 @@
     <a href="https://github.com/ParadoxalCorp/FelixBot/blob/master" target="_blank"><img src="https://img.shields.io/github/stars/ParadoxalCorp/FelixBot.svg?style=social&label=Star" alt="Github Stars"></a>
     <a href="https://github.com/ParadoxalCorp/FelixBot/issues" target="_blank"><img src="https://img.shields.io/github/issues/ParadoxalCorp/FelixBot.svg" alt="Github Issues"></a>
   </p>
-  <p align="center">
-  <a href="https://discordbots.org/bot/327144735359762432?utm_source=widget">
-  <img src="https://discordbots.org/api/widget/327144735359762432.svg" alt="Discord Bots" />
-</a>
-</p>
 
 Felix is here, was first supposed to be a meme but hey, its a thing now ! 
-About Felix's source usage, note that Felix is under APACHE 2.0 license, more informations at the very bottom of this readme.
+About Felix's source usage, note that Felix is under APACHE 2.0 license
 # Tables of contents
 * [Features](https://github.com/ParadoxalCorp/FelixBot/blob/master/README.md#features)
 * [Commands](https://github.com/ParadoxalCorp/FelixBot/wiki/Generic)

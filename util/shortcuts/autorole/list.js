@@ -26,7 +26,7 @@ module.exports = async(client, message, args) => {
                     inline: true
                 }, {
                     name: 'HEX Color',
-                    value: `#${guildRole.color}`,
+                    value: `#${guildRole.hexColor}`,
                     inline: true
                 }, {
                     name: `Hoisted`,

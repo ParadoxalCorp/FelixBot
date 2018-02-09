@@ -51,7 +51,7 @@ class ReactionCollector extends Collector {
      * @private
      */
     handle(reaction) {
-        if (reaction.message.id !== this.message.id) return null;
+        if (reaction.message && this.message && reaction.message.id !== this.message.id) return null;
         return {
             key: reaction.emoji.id || reaction.emoji.name,
             value: reaction,
@@ -66,6 +66,7 @@ class ReactionCollector extends Collector {
      * @private
      */
     postCheck(reaction, user) {
+        if (!reaction.user) return null;
         this.users.set(reaction.user.id, reaction.user);
         if (this.options.max && ++this.total >= this.options.max) return 'limit';
         if (this.options.maxEmojis && this.collected.size >= this.options.maxEmojis) return 'emojiLimit';

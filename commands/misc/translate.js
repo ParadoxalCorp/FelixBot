@@ -13,12 +13,12 @@ class Translate {
     run(client, message, args) {
         return new Promise(async(resolve, reject) => {
             try {
-                args = args.join(" ").split('"');
-                args.shift();
+                args = args.join(" ").split('"').filter(a => a !== "").map(a => a.trim());
+                if (args[0] && args[0].includes(':') && !new RegExp(/\s+/g).test(args[0])) args.push(args.shift().trim());
                 let textToTranslate = args[0];
-                if (!args[1]) return resolve(await message.channel.createMessage(`:x: You need to at least specify the text to translate and the language to which i should translate it`));
+                if (!args[1] || !textToTranslate) return resolve(await message.channel.createMessage(`:x: You need to at least specify the text to translate and the language to which i should translate it`));
                 let sourceLang = args[1].split(":")[0].toLowerCase().trim();
-                let targetLang = args[1].split(":")[1] ? args[1].split(":")[1].toLowerCase().trim() : false;
+                let targetLang = args[1].split(":")[1] ? args[args[1].includes('"') ? 0 : 1].split(":")[1].toLowerCase().trim() : false;
                 //If only one language iso is specified, take it as the target
                 if (!targetLang) {
                     targetLang = sourceLang;
