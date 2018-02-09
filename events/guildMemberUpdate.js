@@ -10,7 +10,7 @@ module.exports = async(client, guild, member, oldMember) => {
     const mutedRole = guild.roles.find(r => r.name === 'muted');
     //Manual mute case
     if (addedRole) {
-        if (!customMutedRole && mutedRole.id !== addedRole) return;
+        if (!customMutedRole && (!mutedRole || mutedRole.id !== addedRole)) return;
         await sleep(500); //Give 500ms for discord to update the guilds audit log and felix to save the case if its the case
         //Abort if a case recent enough(registered less than 2 seconds ago) is the current member being muted with the current role. 
         //Long story short if the case of this event has already been registered
