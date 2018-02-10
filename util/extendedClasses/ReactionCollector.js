@@ -51,7 +51,8 @@ class ReactionCollector extends Collector {
      * @private
      */
     handle(reaction) {
-        if (reaction.message && this.message && reaction.message.id !== this.message.id) return null;
+        if (reaction.message && this.message && (reaction.message.id !== this.message.id)) return null;
+        if (!reaction.emoji) return null;
         return {
             key: reaction.emoji.id || reaction.emoji.name,
             value: reaction,

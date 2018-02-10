@@ -16,7 +16,7 @@ module.exports = async(client, err, message) => {
             });
         }
         logger.log(`${err ? (err.stack ? err.stack : err) : 'Undefined error'} \nGuild: ${message && message.guild ? message.guild.id + ' | ' + message.guild.name : 'None'} \ntriggerMessage: ${message ? message.content : 'None'}`, `error`);
-        if (message) {
+        if (message && message.channel) {
             message.channel.createMessage({
                 embed: {
                     title: ':x: An error occurred :v',

@@ -45,7 +45,7 @@ class Mute {
                     });
                     if (reply.reply && guildEntry.moderation.mutedRoles[reply.reply.content - 1]) selectedRole = guildEntry.moderation.mutedRoles[reply.reply.content - 1];
                 }
-                if (memberToMute.roles.includes(selectedRole.id)) {
+                if (memberToMute.roles.includes(selectedRole && selectedRole.id)) {
                     return resolve(await message.channel.createMessage(`:x: The user \`${memberToMute.tag}\` is already muted`));
                 }
                 if (message.guild.members.get(client.user.id).highestRole && (selectedRole ? message.guild.roles.get(selectedRole.id).position : mutedRole.position) >= message.guild.roles.get(message.guild.members.get(client.user.id).highestRole).position) {
@@ -60,7 +60,7 @@ class Mute {
                             try {
                                 await textChannels[i].editPermission(mutedRole.id, 0, 2112, 'role', 'Needed for the mute to properly work');
                             } catch (err) {
-                                console.error(err);
+                                console.log(err, `^ ${message.guild.id} | ${message.guild.name}`);
                             }
                         }
                     }

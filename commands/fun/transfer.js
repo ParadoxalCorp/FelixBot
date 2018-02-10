@@ -27,6 +27,12 @@ class Transfer {
                 else if (Math.round(amount[0]) > userEntry.generalSettings.points) return resolve(await message.channel.createMessage(`:x: Sorry but you dont have enough points to do that, you currently have **${userEntry.generalSettings.points}** points`));
                 let mentionnedEntry = client.userData.get(users.first().id) || client.defaultUserData(users.first().id);
                 //Transfer the points
+                if (mentionnedEntry.generalSettings.points === client.config.options.pointsLimit) {
+                    return resolve(await message.channel.createMessage(`:x: Sorry but this user has hit the points limit`));
+                }
+                if (mentionnedEntry.generalSettings.points + (Math.round(Number(amount[0]))) > client.config.options.pointsLimit) {
+                    return resolve(await message.channel.createMessage(`:x: This would make this user exceed the points limit`));
+                }
                 mentionnedEntry.generalSettings.points = (Math.round(Number(amount[0])) + Number(mentionnedEntry.generalSettings.points));
                 userEntry.generalSettings.points = (Number(userEntry.generalSettings.points) - Math.round(Number(amount[0])));
                 //Save the transfer
