@@ -37,6 +37,7 @@ module.exports = {
         //The daily cooldown (time before a user can use daily again, in milliseconds)
         dailyCooldown: 86400000,
         //The amount of points given when using the daily command
-        dailyPoints: 500
+        dailyPoints: 500,
+		pointsLimit: 99999999999999999999
     }
 }
