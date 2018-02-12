@@ -260,9 +260,9 @@ class Message extends Base {
     /**
      * Wait for a reply to the message and returns the reply, returns false if the collector timed out without a reply
      * @param {Object} [options] An object of options
-     * @param {Object || string} [options.message] A message to send along, usually if you want to await a reply to a question
-     * @param {number} [options.timeout=60000] Time in milliseconds before the collector should stop, default is 60000 
-     * @param {Channel} [options.channel=this] The channel in which a reply should be awaited, default is the channel in which the message has been sent 
+     * @prop {Object || string} [options.message] A message to send along, usually if you want to await a reply to a question
+     * @prop {number} [options.timeout=60000] Time in milliseconds before the collector should stop, default is 60000 
+     * @prop {Channel} [options.channel=this] The channel in which a reply should be awaited, default is the channel in which the message has been sent 
      * @returns {Promise<Message>}
      */
     awaitReply(options = {}) {
@@ -292,9 +292,9 @@ class Message extends Base {
     /**
      * Get the users resolvable of a message.
      * @param {Object} [options] The options to provide
-     * @param {Number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
-     * @param {Boolean} [options.guildOnly=true] Whether or not the resolve attempt should be limited to the guild members, default is true
-     * @param {Number} [options.max=infinity] Max users to resolve
+     * @prop {Number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @prop {Boolean} [options.guildOnly=true] Whether or not the resolve attempt should be limited to the guild members, default is true
+     * @prop {Number} [options.max=infinity] Max users to resolve
      * @returns {Promise<Collection<id, User>>}
      * @example
      * // Get the users of a message
@@ -384,9 +384,9 @@ class Message extends Base {
     /**
      * Get the channels resolvable of a message.
      * @param {Object} [options] The options to provide
-     * @param {Number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
-     * @param {Number} [options.max=infinity] Max channels to resolve
-     * @param {Boolean} [options.type=text] The type of channels that has to be search, can be "text", "voice" or "all"
+     * @prop {Number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @prop {Number} [options.max=infinity] Max channels to resolve
+     * @prop {Boolean} [options.type=text] The type of channels that has to be search, can be "text", "voice" or "all"
      * @returns {Promise<Collection<id, Channel>>}
      * @example
      * // Get the channels of a message
@@ -470,8 +470,9 @@ class Message extends Base {
     /**
      * Get the Roles resolvable of a message.
      * @param {Object} [options] The options to provide
-     * @param {number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
-     * @param {Number} [options.max=infinity] Max roles to resolve
+     * @prop {number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @prop {Number} [options.max=infinity] Max roles to resolve
+     * @prop {String} [options.text] A string to search in instead of the message content
      * @returns {Promise<Collection<id, Role>>}
      * @example
      * // Get the Roles of a message
@@ -481,13 +482,14 @@ class Message extends Base {
      */
     getRoleResolvable(options = {}) {
         return new Promise(async(resolve, reject) => {
-            let potentialRolesResolvables = this.content.split(/\s+/gim).filter(r => r.length >= (options.charLimit || 3));
-            let args = this.content.split(/\s+/gim);
+            const text = options ? (options.text ? options.text : this.content) : this.content;
+            let potentialRolesResolvables = text.split(/\s+/gim).filter(r => r.length >= (options.charLimit || 3));
+            let args = text.split(/\s+/gim);
             const RolesResolved = new Collection();
             let roles = this.guild.roles;
             let conflictedRoles = [];
-            const supposedCommand = !this.content.startsWith('<') ? args.shift().slice(this.guild ? this._client.guildData.get(this.guild.id).generalSettings.prefix.length : this._client.config.prefix.length).toLowerCase() : (args[1] ? args[1].toLowerCase() : false);
-            let parsedContent = this.content.substr(this.content.toLowerCase().indexOf(supposedCommand.toLowerCase()) + supposedCommand.length).toLowerCase().trim();
+            const supposedCommand = !text.startsWith('<') ? args.shift().slice(this.guild ? this._client.guildData.get(this.guild.id).generalSettings.prefix.length : this._client.config.prefix.length).toLowerCase() : (args[1] ? args[1].toLowerCase() : false);
+            let parsedContent = text.substr(text.toLowerCase().indexOf(supposedCommand.toLowerCase()) + supposedCommand.length).toLowerCase().trim();
             roles.forEach(r => {
                 if (options.max === RolesResolved.size) return;
                 if (roles.filter(role => role.name.toLowerCase() === r.name.toLowerCase() && parsedContent.includes(role.name.toLowerCase())).size > 1) {
@@ -593,8 +595,8 @@ class Message extends Base {
     /**
      * Get the guilds resolvable of a message.
      * @param {Object} [options] The options to provide
-     * @param {Number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
-     * @param {Number} [options.max=infinity] Max guilds to resolve
+     * @prop {Number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
+     * @prop {Number} [options.max=infinity] Max guilds to resolve
      * @returns {Promise<Collection<id, Guild>>}
      * @example
      * // Get the guilds of a message

@@ -25,7 +25,7 @@ class Slots {
                     }
                     var gambledPoints = args[0];
                     //If invalid number set to 1
-                    if (isNaN(gambledPoints)) gambledPoints = 1;
+                    if (isNaN(gambledPoints) || !parseInt(gambledPoints)) gambledPoints = 1;
                     //Handle invalid arguments
                     if (gambledPoints > userEntry.generalSettings.points) return resolve(await message.channel.createMessage(":x: You do not have enough points ! You currently have **" + userEntry.generalSettings.points + "** points"));
                     if (gambledPoints < 0) return resolve(await message.channel.createMessage(':x: Ehhhh, what do you want me to do with that'));
@@ -88,7 +88,7 @@ class Slots {
                     } else {
                         let wonPoints = gambledPoints * multiplier;
                         if (userEntry.generalSettings.perks.boosters.find(p => p.boost === "points")) wonPoints = new String(wonPoints + ((userEntry.generalSettings.perks.boosters.find(p => p.boost === "points").percentageBoost / wonPoints) * 100));
-                        userEntry.generalSettings.points = Number(userEntry.generalSettings.points) + Number(Number(wonPoints).toFixed(wonPoints.length + 1));
+                        userEntry.generalSettings.points = userEntry.generalSettings.points === client.config.options.pointsLimit ? client.config.options.pointsLimit : Number(userEntry.generalSettings.points) + Number(Number(wonPoints).toFixed(wonPoints.length + 1));
                         client.userData.set(message.author.id, userEntry);
                         return resolve(sendResults(`You **win**, **${Math.round(Number(Number(wonPoints).toFixed(wonPoints.length + 1)))}** points has been credited to your account. You now have **${Math.round(userEntry.generalSettings.points)}** points`));
                     }

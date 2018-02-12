@@ -20,7 +20,7 @@ class StarboardManager {
         });
         this.client.on("messageReactionUpdate", async(message, emoji, userID) => {
             message = message.channel.messages.get(message.id) || await this.client.getMessage(message.channel.id, message.id).catch(err => { return (err) });
-            if (!message.channel) return;
+            if (!message.channel || !message.guild) return;
             message.channel.messages.set(message.id, message);
             const guildEntry = this.client.guildData.get(message.guild.id);
             if (!guildEntry || !guildEntry.starboard.channel) return;

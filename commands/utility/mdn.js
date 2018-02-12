@@ -16,8 +16,8 @@ class MDN {
                 args.shift();
                 if (!args[0]) return resolve(await message.channel.createMessage(":x: You must specify something to search"));
                 let result = await request.get(`https://developer.mozilla.org/en-US/search.json?locale=en-US&q=${encodeURIComponent(args.join())}`);
-                if (!result.body.documents || !result.body.documents.length) return resolve(await message.channel.createMessage(":x: Your search did not returned any result"))
-                let firstResult = result.body.documents[0];
+                if (!result.data.documents || !result.data.documents.length) return resolve(await message.channel.createMessage(":x: Your search did not returned any result"))
+                let firstResult = result.data.documents[0];
                 await message.channel.createMessage({
                     embed: {
                         color: 3447003,

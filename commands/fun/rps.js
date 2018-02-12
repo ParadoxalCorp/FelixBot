@@ -53,7 +53,7 @@ class RPS {
                         }
                     }));
                 }
-                if (pointsGambled < 0) return resolve(await message.channel.createMessage(':x: Ehhhh, what do you want me to do with that'));
+                if (pointsGambled <= 0) return resolve(await message.channel.createMessage(':x: Ehhhh, what do you want me to do with that'));
                 //Else determine how much was gambled and how much was won/lost
                 if (Math.round(Number(pointsGambled)) > userEntry.generalSettings.points) pointsGambled = userEntry.generalSettings.points;
                 else pointsGambled = Math.round(Number(pointsGambled));
@@ -64,7 +64,7 @@ class RPS {
                 } else if (results === 'Oh... You win...') {
                     let wonPoints = pointsGambled * 2;
                     if (userEntry.generalSettings.perks.boosters.find(p => p.boost === "points")) wonPoints = new String(wonPoints + ((userEntry.generalSettings.perks.boosters.find(p => p.boost === "points").percentageBoost / wonPoints) * 100));
-                    userEntry.generalSettings.points = Number(userEntry.generalSettings.points) + Number(Number(wonPoints).toFixed(wonPoints.length + 1));
+                    userEntry.generalSettings.points = userEntry.generalSettings.points === client.config.options.pointsLimit ? client.config.options.pointsLimit : Number(userEntry.generalSettings.points) + Number(Number(wonPoints).toFixed(wonPoints.length + 1));
                     pointsResults = `You win **${Math.round(Number(Number(wonPoints).toFixed(wonPoints.length + 1)))}** points, you now have **${Math.round(userEntry.generalSettings.points)}** points`;
                 }
                 //Save the changes

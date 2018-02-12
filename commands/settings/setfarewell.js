@@ -4,7 +4,7 @@ class SetFarewell {
             name: 'setfarewell',
             description: 'Set the farewell of the server',
             usage: 'setfarewell enable',
-            detailedUsage: '**FLAGS**\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`'
+            detailedUsage: '**FLAGS**\n`%USERNAME%` The username of the user, will look like `Bobby`\n`%USERTAG%` The username and the discriminator of the user, will look like `Bobby#0000`\n`%GUILD%` The server name, will look like `Bobby\'s server`\n`%MEMBERCOUNT%` The new member count of the server, this may be off for servers over 200 members'
         }
         this.conf = {
             aliases: ["farewell"],

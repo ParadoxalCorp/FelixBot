@@ -15,7 +15,7 @@ module.exports = async(client, server, PayloadValidator) => {
                 if (req.headers.authorization) req.headers.authorization = req.headers.authorization.split("Bearer")[1].trim();
                 const token = tokens.find(t => t.token === req.headers.authorization);
                 if (!token) return reply("Forbidden").code(403);
-                if (token.public && token.requests.filter(r => r.timestamp > Date.now() - 86400000).length > 500) return reply("Ratelimit reached: You may only use a public token 500 times a day").code(403);
+                if (token.public && token.requests.filter(r => r.timestamp > Date.now() - 86400000).length > 500) return reply("Ratelimit reached: You may only use a public token 500 times a day").code(429);
                 tokens[tokens.findIndex(t => t.token === req.headers.authorization)].requests.push({ timestamp: Date.now(), type: req.method });
                 client.clientData.set("tokens", tokens);
                 //If an array is provided return an array of the specified ids (with a cheap way to transform the string to an array)
