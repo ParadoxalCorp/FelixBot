@@ -20,7 +20,7 @@ class Revoke {
                 const member = await message.getUserResolvable({ max: 1, guildOnly: true }).then(m => m.first());
                 const warnID = args.filter(a => !isNaN(a))[0];
                 const reason = new RegExp(/\-r/gim).test(args.join(" ")) ? args.join(" ").split(/\-r/gim)[1].trim() : undefined;
-                const screenshot = message.attachments[0] ? message.attachments[0].url : (new RegExp(/\-s/gim).test(args.join(" ")) ? args.join(" ").split(/\-s/gim)[1].trim() : undefined);
+                let screenshot = message.attachments[0] ? message.attachments[0].url : (new RegExp(/\-s/gim).test(args.join(" ")) ? args.join(" ").split(/\-s/gim)[1].trim() : undefined);
                 if (!new RegExp(/\.jpg|.png|.gif|.webp|.jpeg/gim).test(screenshot)) screenshot = undefined;
                 if (!member) return resolve(await message.channel.createMessage(`:x: You did not specified a user for me to revoke a warn from them`));
                 if (!guildEntry.moderation.users.find(u => u.id === member.id) || !guildEntry.moderation.users.find(u => u.id === member.id).warns[0]) {
