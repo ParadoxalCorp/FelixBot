@@ -83,6 +83,7 @@ class Client extends Eris {
                     malAccount: "",
                     blackListed: false,
                     afk: false,
+					afkSetAt: 0,
                     reminders: [],
                     points: 0,
                     perks: {
