@@ -29,10 +29,10 @@ module.exports = (client, message, command) => {
     if (guildEntry.permissions.channels.find(c => c.id === message.channel.id) && (guildEntry.permissions.channels.find(c => c.id === message.channel.id).restrictedCommands.includes(command.help.name))) allowed = false;
     //Roles permissions
     let highestRole = message.guild.members.get(message.author.id).roles.filter(r => guildEntry.permissions.roles.find(sr => sr.id === r)).sort((a, b) => b.position - a.position)[0];
-    if (highestRole && guildEntry.permissions.roles.find(r => r.id === highestRole.id).allowedCommands.includes(`${command.help.category}*`)) allowed = true;
-    if (highestRole && guildEntry.permissions.roles.find(r => r.id === highestRole.id).restrictedCommands.includes(`${command.help.category}*`)) allowed = false;
-    if (highestRole && (guildEntry.permissions.roles.find(r => r.id === highestRole.id).allowedCommands.includes(command.help.name))) allowed = true;
-    if (highestRole && (guildEntry.permissions.roles.find(r => r.id === highestRole.id).restrictedCommands.includes(command.help.name))) allowed = false;
+    if (highestRole && guildEntry.permissions.roles.find(r => r.id === highestRole).allowedCommands.includes(`${command.help.category}*`)) allowed = true;
+    if (highestRole && guildEntry.permissions.roles.find(r => r.id === highestRole).restrictedCommands.includes(`${command.help.category}*`)) allowed = false;
+    if (highestRole && (guildEntry.permissions.roles.find(r => r.id === highestRole).allowedCommands.includes(command.help.name))) allowed = true;
+    if (highestRole && (guildEntry.permissions.roles.find(r => r.id === highestRole).restrictedCommands.includes(command.help.name))) allowed = false;
     //Users permissions
     if (guildEntry.permissions.users.find(u => u.id === message.author.id) && guildEntry.permissions.users.find(u => u.id === message.author.id).allowedCommands.includes(`${command.help.category}*`)) allowed = true;
     if (guildEntry.permissions.users.find(u => u.id === message.author.id) && guildEntry.permissions.users.find(u => u.id === message.author.id).restrictedCommands.includes(`${command.help.category}*`)) allowed = false;
