@@ -2,16 +2,11 @@ class Account {
     constructor() {
         this.help = {
             name: 'account',
-            usage: 'account upvote_privacy private',
+            usage: 'account profile_privacy private',
             description: 'Enter your account settings, where you can reset your data or change some of your data privacy (only stuff related to Felix ofc)'
         }
         this.shortcut = {
             triggers: new Map([
-                ['upvote_privacy', {
-                    script: 'setUpvotePrivacy.js',
-                    args: 1,
-                    help: 'Set your upvote privacy(if you upvoted, whether or not you will appear on Felix\'s status), valid privacies are `Public` and `Private`'
-                }],
                 ['points_privacy', {
                     script: 'setPointsPrivacy.js',
                     args: 1,
@@ -39,6 +34,10 @@ class Account {
                 ['reset_everything', {
                     script: 'resetEverything.js',
                     help: 'Reset all your data, that includes love points, global experience...'
+                }],
+                ['choose_lang', {
+                    script: 'chooseLang.js',
+                    help: 'Select the language Felix should answer with, this will override the set language of the server you\'re in'
                 }]
             ])
         }

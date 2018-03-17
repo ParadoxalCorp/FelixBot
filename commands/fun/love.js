@@ -6,12 +6,12 @@ class Love {
             name: 'love',
             description: 'Love someone, bring some love to this world !',
             usage: 'love [user resolvable]',
-            detailedUsage: 'You have by default only one love point that you can use every 12 hours, you get an extra love point if you upvoted Felix on Discord bot list\n`{prefix}love 2 user resolvable` Will gives two LPs to the specified user\n`{prefix}love user1 user2` Will give 1 LP to each users specified'
-        }
+            detailedUsage: 'You have by default only one love point that you can use every 12 hours, you can purchase extra love points on the market\n`{prefix}love 2 user resolvable` Will gives two LPs to the specified user\n`{prefix}love user1 user2` Will give 1 LP to each users specified'
+        };
         this.conf = {
             guildOnly: true,
             aliases: ["luv"]
-        }
+        };
     }
 
     run(client, message, args) {
@@ -33,14 +33,6 @@ class Love {
                         return a.cooldown - b.cooldown;
                     });
                     return sortByCooldown[0].cooldown;
-                }
-                //------------------------------------------------------Check for upvote------------------------------------------
-                if (client.upvoters && client.upvoters.includes(message.author.id) && userEntry.generalSettings.perks.love.filter(l => l.name === "upvote").length === 0) {
-                    userEntry.generalSettings.perks.love.push({
-                        name: "upvote",
-                        cooldown: 0
-                    });
-                    client.userData.set(message.author.id, userEntry);
                 }
                 if (!users.size) { //--------------------------------------------Get remaining lps/time til refill------------------------------------
                     let remainingLps = getRemainingLps();
