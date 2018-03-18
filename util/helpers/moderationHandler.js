@@ -140,7 +140,7 @@ class ModerationHandler {
                                 url: newCase.screenshot
                             } : undefined
                         }
-                    }).catch((err) => console.log(err, `^ ${message.guild.id} | ${message.guild.name}`));
+                    }).catch((err) => console.log(err, `^ ${newCase.guild.id} | ${newCase.guild.name}`));
                     guildEntry.modLog.cases[guildEntry.modLog.cases.length - 1].modLogMessage = logMessage ? logMessage.id : undefined;
                 }
                 client.guildData.set(newCase.guild.id, guildEntry);

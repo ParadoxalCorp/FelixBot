@@ -3,6 +3,9 @@ const sleep = require(`../util/modules/sleep`);
 
 module.exports = async(client, guild, member, oldMember) => {
     const guildEntry = client.guildData.get(guild.id);
+	if (!oldMember) {
+		return;
+	}
     const addedRole = member.roles.filter(r => !oldMember.roles.includes(r))[0];
     const removedRole = oldMember.roles.filter(r => !member.roles.includes(r))[0];
     if (!addedRole && !removedRole) return;
