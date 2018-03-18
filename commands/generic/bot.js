@@ -85,6 +85,11 @@ class Bot {
                     inline: true
                 });
                 embedFields.push({
+                    name: 'Support us !',
+                    value: '[Patreon](https://www.patreon.com/paradoxorigins)',
+                    inline: true
+                });
+                embedFields.push({
                     name: `:gear: Shard`,
                     value: `${message.guild.shard.id}/${client.shards.size}`,
                     inline: true

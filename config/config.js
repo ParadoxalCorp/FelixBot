@@ -38,8 +38,8 @@ module.exports = {
         dailyCooldown: 86400000,
         //The amount of points given when using the daily command
         dailyPoints: 500,
-		pointsLimit: 99999999999999999999,
-		//Time in milliseconds before the afk status of someone should be reset
+    		pointsLimit: 99999999999999999999,
+		    //Time in milliseconds before the afk status of someone should be reset
         afkReset: 43200000
     }
 };
