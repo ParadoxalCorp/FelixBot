@@ -12,7 +12,9 @@ module.exports = async(client, message) => {
     if (userEntry && Date.now() - userEntry.generalSettings.afkSetAt > client.config.options.afkReset) {
         userEntry.generalSettings.afk = false;
         userEntry.generalSettings.afkSetAt = 0;
-        mentionned = mentionned.filter(u => u.id !== message.author.id);
+		if (mentionned) {
+            mentionned = mentionned.filter(u => u.id !== message.author.id);
+		}
         client.userData.set(message.author.id, userEntry);
     }
     if (mentionned.size < 3) { //(Don't send AFK messages if more than 2 mentionned users are AFK to avoid spam)
