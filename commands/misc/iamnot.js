@@ -94,8 +94,8 @@ class Iamnot {
                 } else {
                     if (!message.guild.members.get(client.user.id).hasPermission("manageRoles")) return resolve(await message.channel.createMessage(":x: I don't have the permission to do that"));
                     let guildRole = await message.getRoleResolvable({
-                        charLimit: 1,
-                        max: 1
+                        text: args.join(" "),
+                        single: true,
                     });
                     if (!guildRole.first() || !guildEntry.generalSettings.autoAssignablesRoles.includes(guildRole.first().id)) return resolve(await message.channel.createMessage(":x: The specified role does not exist or it is not a self-assignable role"));
                     if (!message.guild.members.get(message.author.id).roles.find(r => r === guildRole.first().id)) return resolve(await message.channel.createMessage(`:x: You don't have this role so i can't really remove it :v`));

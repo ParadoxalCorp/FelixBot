@@ -472,8 +472,9 @@ class Message extends Base {
      * @param {Object} [options] The options to provide
      * @prop {number} [options.charLimit=3] The needed length for a word to be included in the resolve attempt, default is 3
      * @prop {Number} [options.max=infinity] Max roles to resolve
-     * @prop {String} [options.text] A string to search in instead of the message content
-     * @returns {Promise<Collection<id, Role>>}
+     * @prop {String} [options.text=message.content] A string to search in instead of the message content
+     * @prop {boolean} [options.single=false] Whether only one role should be searched, if true, the args won't be separated to search for multiple roles
+     * @returns {Promise<Collection<id, Role>>} A collection of roles
      * @example
      * // Get the Roles of a message
      * message.getRoleResolvable()
@@ -488,13 +489,16 @@ class Message extends Base {
             const RolesResolved = new Collection();
             let roles = this.guild.roles;
             let conflictedRoles = [];
+            if (options.single) {
+                potentialRolesResolvables = [text];
+            }
             const supposedCommand = !text.startsWith('<') ? args.shift().slice(this.guild ? this._client.guildData.get(this.guild.id).generalSettings.prefix.length : this._client.config.prefix.length).toLowerCase() : (args[1] ? args[1].toLowerCase() : false);
             let parsedContent = text.substr(text.toLowerCase().indexOf(supposedCommand.toLowerCase()) + supposedCommand.length).toLowerCase().trim();
             roles.forEach(r => {
                 if (options.max === RolesResolved.size) return;
                 if (roles.filter(role => role.name.toLowerCase() === r.name.toLowerCase() && parsedContent.includes(role.name.toLowerCase())).size > 1) {
                     roles.filter(role => role.name.toLowerCase() === r.name.toLowerCase() && parsedContent.includes(role.name.toLowerCase())).forEach(role => {
-                        if (!conflictedRoles.find(cRole => cRole.id === role.id)) conflictedRoles.push(role)
+                        if (!conflictedRoles.find(cRole => cRole.id === role.id)) conflictedRoles.push(role);
                     });
                 }
                 if (parsedContent.includes(r.name.toLowerCase())) {

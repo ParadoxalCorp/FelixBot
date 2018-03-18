@@ -1,12 +1,12 @@
 class Autorole {
     constructor() {
         this.help = {
-            name: 'autorole',
+            name: 'selfrole',
             description: 'Set the self-assignables roles',
-            usage: 'autorole add_role <role_name>'
+            usage: 'selfrole add_role <role_name>'
         }
         this.conf = {
-            aliases: ["selfrole"],
+            aliases: ["sr", "sar"],
             guildOnly: true,
             cooldownWeight: 4
         }
