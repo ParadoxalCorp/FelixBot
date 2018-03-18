@@ -7,7 +7,14 @@ module.exports = async(client, message) => {
     if (client.userData.get(message.author.id) && client.userData.get(message.author.id).generalSettings.blackListed && message.author.id !== client.config.ownerID) return;
     //AFK feature
     if (client.users.get(message.author.id)) client.users.get(message.author.id).lastMessageID = message.id;
-    const mentionned = message.mentions.users ? message.mentions.users.filter(u => client.userData.has(u.id) && client.userData.get(u.id).generalSettings.afk !== false) : {};
+    let mentionned = message.mentions.users ? message.mentions.users.filter(u => client.userData.has(u.id) && client.userData.get(u.id).generalSettings.afk !== false) : {};
+    const userEntry = client.userData.get(message.author.id);
+    if (userEntry && Date.now() - userEntry.generalSettings.afkSetAt > client.config.options.afkReset) {
+        userEntry.generalSettings.afk = false;
+        userEntry.generalSettings.afkSetAt = 0;
+        mentionned = mentionned.filter(u => u.id !== message.author.id);
+        client.userData.set(message.author.id, userEntry);
+    }
     if (mentionned.size < 3) { //(Don't send AFK messages if more than 2 mentionned users are AFK to avoid spam)
         mentionned.forEach(m => {
             message.channel.createMessage({
@@ -24,6 +31,11 @@ module.exports = async(client, message) => {
     }
     if (message.guild) {
         if (!client.guildData.get(message.guild.id)) client.guildData.set(message.guild.id, client.defaultGuildData(message.guild.id));
+        else if (client.guildData.get(message.guild.id).generalSettings.leftAt) {
+            const guildEntry = client.guildData.get(message.guild.id);
+            guildEntry.generalSettings.leftAt = false;
+            client.guildData.set(message.guild.id, guildEntry);
+        }
         require("../util/helpers/expHandler.js").handle(client, message);
         require("../util/helpers/inviteHandler.js").handle(client, message);
     }

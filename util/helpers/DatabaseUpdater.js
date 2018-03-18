@@ -53,7 +53,13 @@ class DatabaseUpdater extends EventEmitter {
             try {
                 let startTime = Date.now();
                 let guildsUpdated = 0;
+                let guildsDeleted = 0;
                 client.guildData.forEach(guild => {
+                    //If the guild has been left over than 30 days ago, delete it from the database
+                    if (guild.generalSettings.leftAt && (Date.now() - guild.generalSettings.leftAt > 2592000000)) {
+                        client.guildData.delete(guild.id);
+                        return guildsDeleted++;
+                    }
                     let defaultGuildData = client.defaultGuildData(guild.id);
                     let guildKeys = Object.keys(guild),
                         defaultKeys = Object.keys(defaultGuildData);
@@ -79,6 +85,7 @@ class DatabaseUpdater extends EventEmitter {
                 });
                 let results = {
                     entriesUpdated: guildsUpdated,
+                    entriesDeleted: guildsDeleted,
                     time: Date.now() - startTime
                 };
                 resolve(results);

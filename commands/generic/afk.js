@@ -14,10 +14,12 @@ class Afk {
                 const userEntry = client.userData.get(message.author.id);
                 if (!args.length) {
                     userEntry.generalSettings.afk = userEntry.generalSettings.afk === false ? "" : false;
+                    userEntry.generalSettings.afkSetAt = userEntry.generalSettings.afk === false ? 0 : Date.now();
                     client.userData.set(message.author.id, userEntry);
                     resolve(await message.channel.createMessage(`:white_check_mark: Alright, i ${userEntry.generalSettings.afk === false ? "disabled" : "enabled"} your afk status`));
                 } else {
                     userEntry.generalSettings.afk = args.join(" ");
+                    userEntry.generalSettings.afkSetAt = Date.now();
                     client.userData.set(message.author.id, userEntry);
                     resolve(await message.channel.createMessage(`:white_check_mark: Alright, i updated your afk status`));
                 }

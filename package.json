@@ -35,13 +35,14 @@
         "npm-module-search": "^2.0.0",
         "popura": "^1.2.5",
         "rapidapi-connect": "0.0.6",
-        "raven": "^2.1.2",
+        "raven": "^2.4.0",
         "rebuild": "^0.1.2",
         "request": "^2.81.0",
         "underscore": "^1.8.3",
         "unirest": "^0.5.1",
         "util": "^0.10.3",
         "uws": "^8.14.1",
-        "winston": "^2.3.1"
+        "winston": "^2.3.1",
+        "ws": "^4.0.0"
     }
 }
