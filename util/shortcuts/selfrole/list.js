@@ -11,7 +11,9 @@ module.exports = async(client, message, args) => {
         try {
             const guildEntry = client.guildData.get(message.guild.id);
             guildEntry.generalSettings.autoAssignablesRoles = guildEntry.generalSettings.autoAssignablesRoles.filter(r => message.guild.roles.get(r)); //Filter deleted roles
-            if (guildEntry.generalSettings.autoAssignablesRoles.length < 1) return resolve(await message.channel.createMessage(":x: There is no self-assignable role set on this server"));
+            if (guildEntry.generalSettings.autoAssignablesRoles.length < 1) {
+                return resolve(await message.channel.createMessage(":x: There is no self-assignable role set on this server"));
+            }
             let roleList = guildEntry.generalSettings.autoAssignablesRoles.map(r => message.guild.roles.get(r).name);
             roleList = paginateResult(roleList, 5);
             let page = 0;
@@ -54,11 +56,12 @@ module.exports = async(client, message, args) => {
             let raw = false;
             const sentListMessage = await message.channel.createMessage(listMessage(page, raw));
             const reactions = ["◀", "▶", "🗒", "❌"];
-            for (let i = 0; i < reactions.length; i++) await sentListMessage.addReaction(reactions[i]);
+            for (let i = 0; i < reactions.length; i++) {
+                await sentListMessage.addReaction(reactions[i]);
+            }
             const collector = await sentListMessage.createReactionCollector((r) => r.user.id === message.author.id);
-            client.on("messageDelete", m => { if (m.id === sentListMessage.id) return resolve(true) });
             let timeout = setTimeout(() => {
-                collector.stop("timeout")
+                collector.stop("timeout");
             }, 60000);
             collector.on("collect", async(r) => {
                 sentListMessage.removeReaction(r.emoji.name, r.user.id);
@@ -78,10 +81,10 @@ module.exports = async(client, message, args) => {
                 }
                 timeout = setTimeout(() => {
                     collector.stop("timeout");
-                }, 60000)
+                }, 60000);
             });
-            collector.on("end", (collected, reason) => {
-                sentListMessage.delete();
+            collector.on("end", () => {
+                sentListMessage.delete().catch();
                 resolve(true);
             });
         } catch (err) {

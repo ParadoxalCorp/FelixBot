@@ -11,7 +11,9 @@ module.exports = async(client, message, args) => {
         try {
             const guildEntry = client.guildData.get(message.guild.id);
             guildEntry.levelSystem.roles = guildEntry.levelSystem.roles.filter(r => message.guild.roles.get(r.id));
-            if (guildEntry.levelSystem.roles.length === 0) return resolve(await message.channel.createMessage(`:x: There is not role set to be given at a specific point`));
+            if (guildEntry.levelSystem.roles.length === 0) {
+                return resolve(await message.channel.createMessage(`:x: There is not role set to be given at a specific point`));
+            }
             let roleList = guildEntry.levelSystem.roles.map(r => `${message.guild.roles.get(r.id).name} | At ${r.method === "message" ? r.at + " messages" : "level " + r.at}`);
             roleList = paginateResult(roleList, 5);
             let page = 0;
@@ -51,16 +53,17 @@ module.exports = async(client, message, args) => {
                         fields: raw ? undefined : rolesFields[page],
                         color: raw ? 0x000 : parseInt(message.guild.roles.get(guildEntry.levelSystem.roles[page].id).color)
                     }
-                }
-            }
+                };
+            };
             let raw = false;
             const sentListMessage = await message.channel.createMessage(listMessage(page));
             const reactions = ["◀", "▶", "🗒", "❌"];
-            for (let i = 0; i < reactions.length; i++) await sentListMessage.addReaction(reactions[i]);
+            for (let i = 0; i < reactions.length; i++) {
+                await sentListMessage.addReaction(reactions[i]);
+            }
             const collector = await sentListMessage.createReactionCollector((r) => r.user.id === message.author.id);
-            client.on("messageDelete", m => { if (m.id === sentListMessage.id) return resolve(true) });
             let timeout = setTimeout(() => {
-                collector.stop("timeout")
+                collector.stop("timeout");
             }, 60000);
             collector.on("collect", async(r) => {
                 sentListMessage.removeReaction(r.emoji.name, r.user.id);
@@ -80,10 +83,10 @@ module.exports = async(client, message, args) => {
                 }
                 timeout = setTimeout(() => {
                     collector.stop("timeout");
-                }, 60000)
+                }, 60000);
             });
-            collector.on("end", (collected, reason) => {
-                sentListMessage.delete();
+            collector.on("end", () => {
+                sentListMessage.delete().catch();
                 resolve(true);
             });
         } catch (err) {

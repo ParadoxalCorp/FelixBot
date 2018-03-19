@@ -19,7 +19,9 @@ class Module {
                 if (!message.guild.members.get(message.author.id).hasPermission("administrator")) return resolve(await message.channel.createMessage(`:x: You need to have administrator permissions to do that`));
                 const guildEntry = client.guildData.get(message.guild.id);
                 if (args[0] && args[0].toLowerCase() === "-list") {
-                    if (!guildEntry.generalSettings.disabledModules[0]) return resolve(await message.channel.createMessage(`:x: There is no disabled modules`));
+                    if (!guildEntry.generalSettings.disabledModules[0]) {
+                        return resolve(await message.channel.createMessage(`:x: There is no disabled modules`));
+                    }
                     const paginated = paginate(guildEntry.generalSettings.disabledModules, 10);
                     let page = 0;
                     let listMessage = function(page) {
@@ -35,41 +37,48 @@ class Module {
                     }
                     const sentListMessage = await message.channel.createMessage(listMessage(page));
                     const reactions = ["◀", "▶", "❌"];
-                    for (let i = 0; i < reactions.length; i++) await sentListMessage.addReaction(reactions[i]);
+                    for (let i = 0; i < reactions.length; i++) {
+                        await sentListMessage.addReaction(reactions[i]);
+                    }
                     const collector = await sentListMessage.createReactionCollector((r) => r.user.id === message.author.id);
-                    client.on("messageDelete", m => { if (m.id === sentListMessage.id) return resolve(true) });
                     let timeout = setTimeout(() => {
-                        collector.stop("timeout")
+                        collector.stop("timeout");
                     }, 60000);
                     collector.on("collect", async(r) => {
                         sentListMessage.removeReaction(r.emoji.name, r.user.id);
                         clearTimeout(timeout);
                         if (r.emoji.name === "◀") {
-                            if (page !== 0) page--;
+                            page = page === 0 ? paginated.length - 1 : page--;
                             sentListMessage.edit(listMessage(page));
                         } else if (r.emoji.name === "▶") {
-                            if (page !== (paginated.length - 1)) page++;
+                            page = page === paginated.length - 1 ? 0 : page++;
                             sentListMessage.edit(listMessage(page));
                         } else if (r.emoji.name === "❌") {
                             collector.stop("aborted");
                         }
                         timeout = setTimeout(() => {
                             collector.stop("timeout");
-                        }, 60000)
+                        }, 60000);
                     });
-                    collector.on("end", (collected, reason) => {
-                        sentListMessage.delete();
+                    collector.on("end", () => {
+                        sentListMessage.delete().catch();
                         return resolve(true);
                     });
                 } else {
                     const disable = new RegExp(/-disable|-enable/gim).test(message.content);
                     let categories = [];
                     client.commands.forEach(c => {
-                        if (!categories.includes(c.help.category)) categories.push(c.help.category);
+                        if (!categories.includes(c.help.category)) {
+                            categories.push(c.help.category);
+                        }
                     });
                     const modules = args.filter(a => categories.includes(a.split("*")[0]) || client.commands.get(a) || client.commands.get(client.aliases.get(a)));
-                    if (!modules[0]) return resolve(await message.channel.createMessage(`:x: You didn't specify a category or command to disable/enable`));
-                    if (!disable) return resolve(await message.channel.createMessage(`:x: You must specify whether or not it should be disabled or enabled !`));
+                    if (!modules[0]) {
+                        return resolve(await message.channel.createMessage(`:x: You didn't specify a category or command to disable/enable`));
+                    }
+                    if (!disable) {
+                        return resolve(await message.channel.createMessage(`:x: You must specify whether or not it should be disabled or enabled !`));
+                    }
                     const toDisable = new RegExp(/-disable/gim).test(message.content);
                     let changedModules = [];
                     modules.forEach(m => {
@@ -82,7 +91,9 @@ class Module {
                         }
                     });
                     client.guildData.set(message.guild.id, guildEntry);
-                    if (!changedModules[0]) return resolve(await message.channel.createMessage(`:x: The specified module(s) are already ${toDisable ? "disabled" : "enabled"}`));
+                    if (!changedModules[0]) {
+                        return resolve(await message.channel.createMessage(`:x: The specified module(s) are already ${toDisable ? "disabled" : "enabled"}`));
+                    }
                     resolve(await message.channel.createMessage(`:white_check_mark: Successfully ${toDisable ? "disabled" : "enabled"} \`${changedModules.join(", ")}\` (modules that were already ${toDisable ? "disabled" : "enabled"} aren't displayed)`));
                 }
             } catch (err) {

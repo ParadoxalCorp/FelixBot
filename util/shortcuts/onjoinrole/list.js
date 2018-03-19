@@ -48,11 +48,12 @@ module.exports = (client, message, args) => {
             let page = 0;
             const sentListMessage = await message.channel.createMessage(listMessage(page));
             const reactions = ["◀", "▶", "🗒", "❌"];
-            for (let i = 0; i < reactions.length; i++) await sentListMessage.addReaction(reactions[i]);
+            for (let i = 0; i < reactions.length; i++) {
+                await sentListMessage.addReaction(reactions[i]);
+            }
             const collector = await sentListMessage.createReactionCollector((r) => r.user.id === message.author.id);
-            client.on("messageDelete", m => { if (m.id === sentListMessage.id) return resolve(true) });
             let timeout = setTimeout(() => {
-                collector.stop("timeout")
+                collector.stop("timeout");
             }, 60000);
             collector.on("collect", async(r) => {
                 sentListMessage.removeReaction(r.emoji.name, r.user.id);
@@ -72,10 +73,10 @@ module.exports = (client, message, args) => {
                 }
                 timeout = setTimeout(() => {
                     collector.stop("timeout");
-                }, 60000)
+                }, 60000);
             });
-            collector.on("end", (collected, reason) => {
-                sentListMessage.delete();
+            collector.on("end", () => {
+                sentListMessage.delete().catch();
                 resolve(true);
             });
         } catch (err) {

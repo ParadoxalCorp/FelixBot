@@ -20,7 +20,9 @@ class Iamnot {
                 const guildEntry = client.guildData.get(message.guild.id);
                 guildEntry.generalSettings.autoAssignablesRoles = guildEntry.generalSettings.autoAssignablesRoles.filter(r => message.guild.roles.get(r)); //Filter deleted roles
                 if (args.length < 1) {
-                    if (guildEntry.generalSettings.autoAssignablesRoles.length < 1) return resolve(await message.channel.createMessage(":x: There is no self-assignable role set on this server"));
+                    if (guildEntry.generalSettings.autoAssignablesRoles.length < 1) {
+                        return resolve(await message.channel.createMessage(":x: There is no self-assignable role set on this server"));
+                    }
                     let roleList = guildEntry.generalSettings.autoAssignablesRoles.map(r => message.guild.roles.get(r).name);
                     roleList = paginateResult(roleList, 5);
                     let page = 0;
@@ -61,11 +63,12 @@ class Iamnot {
                     let raw = false;
                     const sentListMessage = await message.channel.createMessage(listMessage(page));
                     const reactions = ["◀", "▶", "🗒", "❌"];
-                    for (let i = 0; i < reactions.length; i++) await sentListMessage.addReaction(reactions[i]);
+                    for (let i = 0; i < reactions.length; i++) {
+                        await sentListMessage.addReaction(reactions[i]);
+                    }
                     const collector = await sentListMessage.createReactionCollector((r) => r.user.id === message.author.id);
-                    client.on("messageDelete", m => { if (m.id === sentListMessage.id) return resolve(true) });
                     let timeout = setTimeout(() => {
-                        collector.stop("timeout")
+                        collector.stop("timeout");
                     }, 60000);
                     collector.on("collect", async(r) => {
                         sentListMessage.removeReaction(r.emoji.name, r.user.id);
@@ -85,20 +88,26 @@ class Iamnot {
                         }
                         timeout = setTimeout(() => {
                             collector.stop("timeout");
-                        }, 60000)
+                        }, 60000);
                     });
-                    collector.on("end", (collected, reason) => {
-                        sentListMessage.delete();
+                    collector.on("end", () => {
+                        sentListMessage.delete().catch();
                         resolve(true);
                     });
                 } else {
-                    if (!message.guild.members.get(client.user.id).hasPermission("manageRoles")) return resolve(await message.channel.createMessage(":x: I don't have the permission to do that"));
+                    if (!message.guild.members.get(client.user.id).hasPermission("manageRoles")) {
+                        return resolve(await message.channel.createMessage(":x: I don't have the permission to do that"));
+                    }
                     let guildRole = await message.getRoleResolvable({
                         text: args.join(" "),
                         single: true,
                     });
-                    if (!guildRole.first() || !guildEntry.generalSettings.autoAssignablesRoles.includes(guildRole.first().id)) return resolve(await message.channel.createMessage(":x: The specified role does not exist or it is not a self-assignable role"));
-                    if (!message.guild.members.get(message.author.id).roles.find(r => r === guildRole.first().id)) return resolve(await message.channel.createMessage(`:x: You don't have this role so i can't really remove it :v`));
+                    if (!guildRole.first() || !guildEntry.generalSettings.autoAssignablesRoles.includes(guildRole.first().id)) {
+                        return resolve(await message.channel.createMessage(":x: The specified role does not exist or it is not a self-assignable role"));
+                    }
+                    if (!message.guild.members.get(message.author.id).roles.find(r => r === guildRole.first().id)) {
+                        return resolve(await message.channel.createMessage(`:x: You don't have this role so i can't really remove it :v`));
+                    }
                     await message.guild.members.get(message.author.id).removeRole(guildRole.first().id);
                     resolve(await message.channel.createMessage(":white_check_mark: Alright, i removed from you the role `" + guildRole.first().name + "`"));
                 }
