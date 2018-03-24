@@ -1,46 +1,52 @@
+const Command = new(require('../util/helpers/Command'));
+
 module.exports = async(client, message) => {
-    //Ignore users during maintenance
-    if (client.maintenance && message.author.id !== client.config.ownerID) return;
-    //Ignore bots
-    if (message.author.bot) return;
-    //Ignore blacklisted users
-    if (client.userData.get(message.author.id) && client.userData.get(message.author.id).generalSettings.blackListed && message.author.id !== client.config.ownerID) return;
-    //AFK feature
-    if (client.users.get(message.author.id)) client.users.get(message.author.id).lastMessageID = message.id;
-    let mentionned = message.mentions.users ? message.mentions.users.filter(u => client.userData.has(u.id) && client.userData.get(u.id).generalSettings.afk !== false) : {};
-    const userEntry = client.userData.get(message.author.id);
-    if (userEntry && Date.now() - userEntry.generalSettings.afkSetAt > client.config.options.afkReset) {
-        userEntry.generalSettings.afk = false;
-        userEntry.generalSettings.afkSetAt = 0;
-		if (mentionned) {
-            mentionned = mentionned.filter(u => u.id !== message.author.id);
-		}
-        client.userData.set(message.author.id, userEntry);
+    if (message.author.bot) {
+        return;
     }
-    if (mentionned.size < 3) { //(Don't send AFK messages if more than 2 mentionned users are AFK to avoid spam)
-        mentionned.forEach(m => {
-            message.channel.createMessage({
-                embed: ({
-                    color: 3447003,
-                    author: {
-                        name: `${m.tag} is AFK`,
-                        icon_url: m.avatarURL
-                    },
-                    description: client.userData.get(m.id).generalSettings.afk
-                })
-            }).catch(console.error);
-        });
+    const command = await Command.parseCommand(message, client);
+    if (!command) {
+        return;
     }
-    if (message.guild) {
-        if (!client.guildData.get(message.guild.id)) client.guildData.set(message.guild.id, client.defaultGuildData(message.guild.id));
-        else if (client.guildData.get(message.guild.id).generalSettings.leftAt) {
-            const guildEntry = client.guildData.get(message.guild.id);
-            guildEntry.generalSettings.leftAt = false;
-            client.guildData.set(message.guild.id, guildEntry);
+    if (client.database) {
+        let userEntry = await client.database.getUser(message.author.id);
+        if (!userEntry) {
+            userEntry = await client.database.set(client.refs.userEntry(message.author.id))
+                .catch(err => {
+                    client.emit("error", err);
+                    return message.channel.createMessage(`:x: An error occurred`);
+                });
         }
-        require("../util/helpers/expHandler.js").handle(client, message);
-        require("../util/helpers/inviteHandler.js").handle(client, message);
+        if (userEntry.blacklisted) {
+            return;
+        }
+        if (message.channel.guild) {
+            let guildEntry = await client.database.getGuild(message.channel.guild.id);
+            if (!guildEntry) {
+                guildEntry = await client.database.set(client.refs.guildEntry(message.channel.guild.id), "guild")
+                    .catch(err => {
+                        client.emit("error", err);
+                        return message.channel.createMessage(`:x: An error occurred`);
+                    });
+            }
+        }
     }
-    //Commands
-    require("../util/helpers/commandHandler.js")(client, message);
-}
+    if (command.conf.guildOnly && !message.channel.guild) {
+        return message.channel.createMessage(`:x: This command may only be used in guilds and not in private messages`);
+    }
+    const hasPermissions = Command.hasPermissions(message, client, command.conf.requirePerms);
+    if (!Array.isArray(hasPermissions)) {
+        if (command.conf.disabled) {
+            return message.channel.createMessage(command.conf.disabled);
+        }
+        command.run(client, message, message.content.split(" ").splice(2))
+            .catch(err => {
+                client.emit("error", err, message);
+            });
+    } else {
+        if (hasPermissions.includes("sendMessages")) {
+            return;
+        }
+        message.channel.createMessage(`:x: I need the following permission(s) to run that command: ` + hasPermissions.map(p => `\`${p}\``).join(', '));
+    }
+};

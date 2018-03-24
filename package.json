@@ -1,48 +1,18 @@
 {
-    "name": "FelixBot",
-    "version": "3.0.0",
-    "description": "Felix, a Discord bot",
+    "name": "yuuri",
+    "version": "1.0.0",
+    "description": "Yuuri - A modular discord bot framework",
     "main": "index.js",
-    "repository": {
-        "url": "https://github.com/ParadoxalCorp/FelixBot"
-    },
     "author": "ParadoxOrigins",
-    "contributors": [
-        "Karen"
-    ],
-    "license": "Apache-2.0",
+    "repository": "github:ParadoxalCorp/Yuuri",
+    "license": "GPL-3.0",
     "scripts": {
         "start": "node index.js"
     },
-    "bugs": {
-        "url": "https://github.com/ParadoxalCorp/FelixBot/issues"
-    },
-    "homepage": "https://github.com/ParadoxalCorp/FelixBot#readme",
     "dependencies": {
-        "axios": "^0.17.1",
-        "chalk": "^2.1.0",
+        "chalk": "^2.3.1",
         "draftlog": "^1.0.12",
-        "enmap": "^0.4.2",
-        "enmap-level": "^1.0.0",
-        "eris": "^0.8.1",
-        "fs-extra": "^4.0.2",
-        "google-translate-api": "^2.3.0",
-        "hapi": "^16.6.2",
-        "long": "^3.2.0",
-        "mal-scraper": "^2.2.1",
-        "moment": "^2.19.3",
-        "node-gyp": "^3.6.2",
-        "npm-module-search": "^2.0.0",
-        "popura": "^1.2.5",
-        "rapidapi-connect": "0.0.6",
-        "raven": "^2.4.0",
-        "rebuild": "^0.1.2",
-        "request": "^2.81.0",
-        "underscore": "^1.8.3",
-        "unirest": "^0.5.1",
-        "util": "^0.10.3",
-        "uws": "^8.14.1",
-        "winston": "^2.3.1",
-        "ws": "^4.0.0"
+        "eris": "^0.8.5",
+        "rethinkdb": "^2.3.3"
     }
 }

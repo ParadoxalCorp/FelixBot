@@ -1,1 +1,22 @@
-{}
+{
+    "parserOptions": {
+        "ecmaVersion": 8,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "env": {
+        "node": true
+    },
+    "rules": {
+        "eqeqeq": "warn",
+        "semi": "warn",
+        "curly": "warn",
+        "no-empty": "warn",
+        "valid-jsdoc": "warn",
+        "no-extra-semi": "warn",
+        "no-unused-vars": "warn"
+    }
+
+}
