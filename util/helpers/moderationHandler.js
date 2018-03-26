@@ -57,7 +57,7 @@ class ModerationHandler {
     registerCase(client, newCase) {
         return new Promise(async(resolve, reject) => {
             try {
-                const guildEntry = client.guildData.get(newCase.guild.id) || client.defaultGuildData.get(newCase.guild.id);
+                const guildEntry = client.guildData.get(newCase.guild.id) || client.defaultGuildData(newCase.guild.id);
                 let cases = {
                     ban: {
                         color: 0xff0000,
