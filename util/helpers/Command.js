@@ -1,4 +1,5 @@
 'use strict';
+
 /**
  * Provide some utility methods to parse the args of a message, check the required permissions...
  * @class Command
@@ -42,7 +43,7 @@ class Command {
      * @param {object} [channel=message.channel] - Optional, a specific channel to check perms for (to check if the bot can connect to a VC for example)
      * @returns {boolean | array} - An array of permissions the bot miss, or true if the bot has all the permissions needed, sendMessages permission is also returned if missing
      */
-    hasPermissions(message, client, permissions, channel = message.channel) {
+    clientHasPermissions(message, client, permissions, channel = message.channel) {
         const missingPerms = [];
         const clientMember = message.channel.guild.members.get(client.user.id);
 
@@ -98,7 +99,25 @@ class Command {
     getRoleResolvables(options = {}) {
         if (!options.guild || !options.text) {
             return new Error(`The options.guild and options.text parameters are required`);
+            //TODO
         }
+    }
+
+    /**
+     * Handle the internal permissions system checking
+     * Check if the given member has the permission tu run the given command
+     * @param {object} member - The member to check the permissions for
+     * @param {object} channel - The channel in which the command has been used (checks for channel-wide permissions)
+     * @param {object} command - The command object from which to check if the member has permissions to use it
+     * @returns {Promise<boolean>} A boolean representing whether the member is allowed to use this command
+     */
+    async memberHasPermissions(member, channel, command) {
+        if (member.permission.has("administrator")) {
+            return true;
+        }
+        const guildEntry = await client.database.getGuild(member.guild.id);
+        let allowed = false;
+        //TODO (tm)
     }
 }
 

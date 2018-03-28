@@ -1,11 +1,19 @@
-//Not sure why i would made that a class but ok
+//Not sure why i would make that a class but ok
 
 class References {
     /** 
      * This class provides all the default data model the process may use, for example, the default data models for guild and user entries in the database
-     * This class contains only static methods and may not be instantiated
      */
-    constructor() {}
+    constructor() {
+        this.defaultPermissions = {
+            allowedCommands: ["generic*"],
+            restrictedCommands: ["settings*"]
+        };
+        this.permissionsSet = {
+            allowedCommands: [],
+            restrictedCommands: []
+        };
+    }
 
     /**
      * Returns the default guild entry structure used in the database
@@ -13,10 +21,16 @@ class References {
      * @returns {object} A guild entry 
      * @static
      */
-    static guildEntry(id) {
+    guildEntry(id) {
         return {
             id: id,
-            prefix: ""
+            prefix: "",
+            permissions: {
+                users: [],
+                roles: [],
+                channels: [],
+                global: this.permissionsSet
+            }
         };
     }
 
@@ -26,12 +40,13 @@ class References {
      * @returns {object} A user entry 
      * @static
      */
-    static userEntry(id) {
+    userEntry(id) {
         return {
             id: id,
             blacklisted: false
         };
     }
+
 }
 
-module.exports = References;
+module.exports = new References();
