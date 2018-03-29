@@ -34,19 +34,71 @@ module.exports = async(client, message) => {
     if (command.conf.guildOnly && !message.channel.guild) {
         return message.channel.createMessage(`:x: This command may only be used in guilds and not in private messages`);
     }
-    const hasPermissions = Command.hasPermissions(message, client, command.conf.requirePerms);
-    if (!Array.isArray(hasPermissions)) {
+
+    //If the command has been used in DM, ignore this check, commands that work in DM should not require any guild-related permission
+    const clientHasPermissions = message.channel.guild ? Command.clientHasPermissions(message, client, command.conf.requirePerms) : true;
+
+    if (!Array.isArray(clientHasPermissions)) {
         if (command.conf.disabled) {
             return message.channel.createMessage(command.conf.disabled);
         }
-        command.run(client, message, message.content.split(" ").splice(2))
-            .catch(err => {
-                client.emit("error", err, message);
-            });
+
+        if (!client.database || !message.channel.guild) {
+            let allowed;
+
+            if (client.refs.defaultPermissions.allowedCommands.includes(`${command.help.category}*`)) {
+                allowed = true;
+            }
+            if (client.refs.defaultPermissions.restrictedCommands.includes(`${command.help.category}*`)) {
+                allowed = false;
+            }
+            if (client.refs.defaultPermissions.allowedCommands.includes(command.help.name)) {
+                allowed = true;
+            }
+            if (client.refs.defaultPermissions.restrictedCommands.includes(command.help.name)) {
+                allowed = false;
+            }
+
+            if (message.channel.guild && message.channel.guild.members.get(message.author.id).permission.has("administrator")) {
+                allowed = true;
+            }
+
+            if (command.help.category === "admin") {
+                if (client.config.admins.includes(message.author.id)) {
+                    allowed = command.conf.ownerOnly && client.config.ownerID !== message.author.id ? false : true;
+                } else {
+                    allowed = false;
+                }
+            }
+
+            if (!allowed) {
+                return message.channel.createMessage(`:x: You don't have the permission to use this command`).catch();
+            }
+
+            command.run(client, message, message.content.split(" ").splice(2))
+                .catch(err => {
+                    client.emit("error", err, message);
+                });
+        } else {
+            await Command.memberHasPermissions(message.channel.guild.members.get(message.author.id), message.channel, command, client)
+                .then(isAllowed => {
+                    if (!isAllowed) {
+                        return message.channel.createMessage(`:x: You don't have the permission to use this command`).catch();
+                    }
+
+                    command.run(client, message, message.content.split(" ").splice(2))
+                        .catch(err => {
+                            client.emit("error", err, message);
+                        });
+                })
+                .catch(err => {
+                    return client.emit("error", err, message);
+                });
+        }
     } else {
-        if (hasPermissions.includes("sendMessages")) {
+        if (clientHasPermissions.includes("sendMessages")) {
             return;
         }
-        message.channel.createMessage(`:x: I need the following permission(s) to run that command: ` + hasPermissions.map(p => `\`${p}\``).join(', '));
+        message.channel.createMessage(`:x: I need the following permission(s) to run that command: ` + clientHasPermissions.map(p => `\`${p}\``).join(', '));
     }
 };

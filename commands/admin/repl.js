@@ -15,11 +15,12 @@ class Repl extends Command {
             category: 'admin'
         }
         this.conf = {
-            ownerOnly: true,
+            ownerOnly: false,
             requireDB: false,
             aliases: [],
             requirePerms: [],
-            guildOnly: false
+            guildOnly: false,
+            disabled: false
         }
     }
 

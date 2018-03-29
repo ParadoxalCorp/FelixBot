@@ -109,15 +109,65 @@ class Command {
      * @param {object} member - The member to check the permissions for
      * @param {object} channel - The channel in which the command has been used (checks for channel-wide permissions)
      * @param {object} command - The command object from which to check if the member has permissions to use it
+     * @param {object} client - The client instance
      * @returns {Promise<boolean>} A boolean representing whether the member is allowed to use this command
      */
-    async memberHasPermissions(member, channel, command) {
-        if (member.permission.has("administrator")) {
-            return true;
-        }
+    async memberHasPermissions(member, channel, command, client) {
+
         const guildEntry = await client.database.getGuild(member.guild.id);
         let allowed = false;
-        //TODO (tm)
+
+        function getPrioritaryPermission(target, targetID) {
+            let targetPos;
+            if (Array.isArray(guildEntry.permissions[target])) {
+                targetPos = guildEntry.permissions[target].find(t => t.id === targetID);
+            } else {
+                targetPos = guildEntry.permissions[target];
+            }
+            let isAllowed;
+            if (!targetPos) {
+                return undefined;
+            }
+            //Give priority to commands over categories by checking them after the categories
+            if (targetPos.allowedCommands.includes(`${command.help.category}*`)) {
+                isAllowed = true;
+            }
+            if (targetPos.restrictedCommands.includes(`${command.help.category}*`)) {
+                isAllowed = false;
+            }
+            if (targetPos.allowedCommands.includes(command.help.name)) {
+                isAllowed = true;
+            }
+            if (targetPos.restrictedCommands.includes(command.help.name)) {
+                isAllowed = false;
+            }
+            return isAllowed;
+        }
+
+        guildEntry.permissions.default = client.refs.defaultPermissions;
+
+        const highestRole = member.roles.filter(role => guildEntry.permissions.roles.find(r => r.id === role)).sort((a, b) => member.guild.roles.get(b).position -
+            member.guild.roles.get(a).position)[0];
+
+        [{ name: "default" }, { name: "global" }, { name: "channels", id: channel.id }, { name: "roles", id: highestRole }, { name: "users", id: member.id }].forEach(val => {
+            if (getPrioritaryPermission(val.name, val.id) !== undefined) {
+                allowed = getPrioritaryPermission(val.name, val.id);
+            }
+        });
+
+        if (member.permission.has("administrator")) {
+            allowed = true;
+        }
+
+        if (command.help.category === "admin") {
+            if (client.config.admins.includes(member.id)) {
+                allowed = command.conf.ownerOnly && client.config.ownerID !== member.id ? false : true;
+            } else {
+                allowed = false;
+            }
+        }
+
+        return allowed;
     }
 }
 

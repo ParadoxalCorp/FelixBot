@@ -13,7 +13,7 @@ module.exports = async(client) => {
     console.log(`===============================================\nGuilds: ${client.guilds.size}\nUsers: ${client.users.size}\nPrefix: ${client.config.prefix}\n===============================================`);
     client.shards.forEach(shard => {
         shard.editStatus("online", {
-            name: `${client.config.prefix}help for commands | Shard ${shard.id}`
+            name: `${client.config.prefix} help for commands | Shard ${shard.id}`
         });
     });
 };
