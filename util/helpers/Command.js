@@ -90,16 +90,55 @@ class Command {
 
     /**
      * Try to resolve a role with IDs, names, partial usernames or mentions
-     * @param {object} options An object of options
-     * @prop {object} options.guild The guild to check the roles for
-     * @prop {string} options.text The text from which roles should be resolved
-     * @prop {boolean} [options.multiple=false] Whether multiple roles should be resolved (in case the input contains multiple roles resolvable), this will be less accurate
-     * @returns {Role|Collection<Role>} The resolved role, or a collection of resolved roles if options.multiple is true
+     * @param {object} options - An object of options
+     * @prop {object} options.message - The message from which to get the roles from
+     * @prop {object} options.client - The client instance
+     * @prop {string} [options.text=message.content] - The text from which roles should be resolved, if none provided, it will use the message content
+     * @returns {Promise<Role>} The resolved role, or false if none could be resolved
      */
-    getRoleResolvables(options = {}) {
-        if (!options.guild || !options.text) {
-            return new Error(`The options.guild and options.text parameters are required`);
-            //TODO
+    async getRoleFromText(options = {}) {
+        if (!options.client || !options.message) {
+            Promise.reject(new Error(`The options.client and options.message parameters are mandatory`));
+        }
+        options.text = options.text || options.message.content;
+        const exactMatch = await this._resolveRoleByExactMatch(options.client, options.message, options.text)
+        if (exactMatch) {
+            return exactMatch;
+        }
+        //While it is very unlikely, resolve the role by ID if possible
+        if (options.message.channel.guild.roles.get(options.text)) {
+            return options.message.channel.guild.roles.get(options.text);
+        }
+        return false;
+    }
+
+    /**
+     * @param {*} client - The client instance
+     * @param {*} message - The message
+     * @param {*} text - The text
+     * @private
+     * @returns {Promise<Role>} The role, or false if none found
+     */
+    async _resolveRoleByExactMatch(client, message, text) {
+        const exactMatches = message.channel.guild.roles.filter(r => r.name.toLowerCase().split(/\s+/).join(" ") === text.toLowerCase().split(/\s+/).join(" "));
+        if (exactMatches.length === 1) {
+            return exactMatches[0];
+        } else if (exactMatches.length > 1) {
+            let i = 1;
+            await message.channel.createMessage({
+                embed: {
+                    title: ':mag: Role search',
+                    description: 'I found multiple roles with that name, select one by answering with their corresponding number```\n' + exactMatches.map(r => `[${i++}] - ${r.name} (Position: ${r.position} ; Hoisted: ${r.hoist ? "Yes" : "No"})`).join("\n") + "```",
+                    footer: {
+                        text: 'Time limit: 60 seconds'
+                    }
+                }
+            });
+            const reply = await client.MessageCollector.awaitMessage(message.channel.id, message.author.id, 60000).catch(err => {
+                client.emit("error", err);
+                return false;
+            });
+            return exactMatches[reply.content - 1] ? exactMatches[reply.content - 1] : false;
         }
     }
 

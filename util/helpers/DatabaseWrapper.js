@@ -191,7 +191,7 @@ class DatabaseWrapper {
      * @returns {Promise<boolean>} - true if success, otherwise, the error is rejected
      */
     createTable(name, databaseName) {
-        return new Promise(async(resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const tableList = await this.rethink.db(databaseName).tableList().run().catch(err => Promise.reject(new Error(err)));
             if (tableList.includes(name)) {
                 resolve(`There is already a table with the name ${name} in the database ${databaseName}`);
@@ -205,8 +205,6 @@ class DatabaseWrapper {
                 });
         });
     }
-
-
 }
 
 module.exports = DatabaseWrapper;
