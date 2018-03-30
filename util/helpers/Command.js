@@ -146,10 +146,11 @@ class Command {
 
         guildEntry.permissions.default = client.refs.defaultPermissions;
 
-        const highestRole = member.roles.filter(role => guildEntry.permissions.roles.find(r => r.id === role)).sort((a, b) => member.guild.roles.get(b).position -
-            member.guild.roles.get(a).position)[0];
+        //Filter the user roles that aren't in the database, sort them by position and finally map them to iterate through them later
+        const rolesInDB = member.roles.filter(role => guildEntry.permissions.roles.find(r => r.id === role)).sort((a, b) => member.guild.roles.get(a).position -
+            member.guild.roles.get(b).position).map(r => { return { name: "roles", id: r }; });
 
-        [{ name: "default" }, { name: "global" }, { name: "channels", id: channel.id }, { name: "roles", id: highestRole }, { name: "users", id: member.id }].forEach(val => {
+        [{ name: "default" }, { name: "global" }, { name: "channels", id: channel.id }, ...rolesInDB, { name: "users", id: member.id }].forEach(val => {
             if (getPrioritaryPermission(val.name, val.id) !== undefined) {
                 allowed = getPrioritaryPermission(val.name, val.id);
             }
