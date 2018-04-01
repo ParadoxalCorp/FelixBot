@@ -1,18 +1,20 @@
 {
-    "name": "yuuri",
-    "version": "1.0.0",
-    "description": "Yuuri - A modular discord bot framework",
+    "name": "felix",
+    "version": "4.0.0",
+    "description": "Felix v4",
     "main": "index.js",
     "author": "ParadoxOrigins",
-    "repository": "github:ParadoxalCorp/Yuuri",
+    "repository": "github:ParadoxalCorp/FelixBot",
     "license": "GPL-3.0",
     "scripts": {
         "start": "node index.js"
     },
     "dependencies": {
+        "axios": "^0.18.0",
         "chalk": "^2.3.1",
         "draftlog": "^1.0.12",
         "eris": "^0.8.5",
-        "rethinkdb": "^2.3.3"
+        "eris-sharder": "^1.7.8",
+        "rethinkdbdash": "^2.3.31"
     }
 }

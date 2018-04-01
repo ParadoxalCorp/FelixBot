@@ -16,6 +16,12 @@ module.exports = {
     apiKeys: {
         raven: "",
     },
+	botLists: {
+        terminal: {
+            token: "",
+            url: ""
+        }
+    },
     //Some customizable bot features options, purpose is to be able to quickly change critical values without having to do so in 100 files 
     options: {}
 };

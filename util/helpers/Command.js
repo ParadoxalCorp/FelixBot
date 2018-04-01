@@ -45,7 +45,7 @@ class Command {
      */
     clientHasPermissions(message, client, permissions, channel = message.channel) {
         const missingPerms = [];
-        const clientMember = message.channel.guild.members.get(client.user.id);
+        const clientMember = message.channel.guild.members.get(client.bot.user.id);
 
         function hasPerm(perm, Command) {
             if (clientMember.permission.has("administrator")) {
@@ -89,7 +89,64 @@ class Command {
     }
 
     /**
-     * Try to resolve a role with IDs, names, partial usernames or mentions
+     * Try to resolve a user with IDs, names, partial usernames or mentions
+     * @param {object} options - An object of options
+     * @prop {object} options.message - The message from which to get the roles from
+     * @prop {object} options.client - The client instance
+     * @prop {string} [options.text=message.content] - The text from which roles should be resolved, if none provided, it will use the message content
+     * @returns {Promise<User>} The resolved role, or false if none could be resolved
+     */
+    async getUserFromText(options = {}) {
+        if (!options.client || !options.message) {
+            Promise.reject(new Error(`The options.client and options.message parameters are mandatory`));
+        }
+        options.text = options.text || options.message.content;
+        const exactMatch = await this._resolveUserByExactMatch(options.client, options.message, options.text)
+        if (exactMatch) {
+            return exactMatch;
+        }
+        //While it is unlikely, resolve the user by ID if possible
+        if (options.message.channel.guild.members.get(options.text)) {
+            return options.message.channel.guild.members.get(options.text);
+        }
+        return false;
+    }
+
+    /**
+     * @param {*} client - The client instance
+     * @param {*} message - The message
+     * @param {*} text - The text
+     * @private
+     * @returns {Promise<User>} The user, or false if none found
+     */
+    async _resolveUserByExactMatch(client, message, text) {
+        //Filter the members with a username or nickname that match exactly the text
+        const exactMatches = message.channel.guild.members.filter(m =>
+            m.username.toLowerCase().split(/\s+/).join(" ") === text.toLowerCase().split(/\s+/).join(" ") ||
+            (m.nick && m.nick.toLowerCase().split(/\s+/).join(" ") === text.toLowerCase().split(/\s+/).join(" ")));
+        if (exactMatches.length === 1) {
+            return exactMatches[0];
+        } else if (exactMatches.length > 1) {
+            let i = 1;
+            await message.channel.createMessage({
+                embed: {
+                    title: ':mag: User search',
+                    description: 'I found multiple users with that name, select one by answering with their corresponding number```\n' + exactMatches.map(m => `[${i++}] - ${m.username}#${m.user.discriminator}`).join("\n") + "```",
+                    footer: {
+                        text: 'Time limit: 60 seconds'
+                    }
+                }
+            });
+            const reply = await client.MessageCollector.awaitMessage(message.channel.id, message.author.id, 60000).catch(err => {
+                client.emit("error", err);
+                return false;
+            });
+            return exactMatches[reply.content - 1] ? exactMatches[reply.content - 1] : false;
+        }
+    }
+
+    /**
+     * Try to resolve a role with IDs or names
      * @param {object} options - An object of options
      * @prop {object} options.message - The message from which to get the roles from
      * @prop {object} options.client - The client instance
