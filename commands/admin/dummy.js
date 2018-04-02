@@ -2,7 +2,7 @@
 
 const Command = require('../../util/helpers/Command');
 
-class Ping extends Command {
+class Dummy extends Command {
     constructor() {
         super();
         this.help = {
@@ -22,9 +22,9 @@ class Ping extends Command {
     }
 
     async run(client, message, args) {
-        const role = await this.getRoleFromText({ message: message, client: client, text: args.join(" ") });
-        console.log(role ? role.name : role);
+        const wew = await this.getUserFromText({ message: message, client: client, text: args.join(" ") });
+        console.log(JSON.stringify(wew, null, 2));
     }
 }
 
-module.exports = new Ping();
+module.exports = new Dummy();

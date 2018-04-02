@@ -13,7 +13,7 @@ module.exports = async(client, message) => {
         if (!userEntry) {
             userEntry = await client.database.set(client.refs.userEntry(message.author.id))
                 .catch(err => {
-                    client.emit("error", err);
+                    client.bot.emit("error", err);
                     return message.channel.createMessage(`:x: An error occurred`);
                 });
         }
@@ -25,7 +25,7 @@ module.exports = async(client, message) => {
             if (!guildEntry) {
                 guildEntry = await client.database.set(client.refs.guildEntry(message.channel.guild.id), "guild")
                     .catch(err => {
-                        client.emit("error", err);
+                        client.bot.emit("error", err);
                         return message.channel.createMessage(`:x: An error occurred`);
                     });
             }
@@ -77,7 +77,7 @@ module.exports = async(client, message) => {
 
             command.run(client, message, message.content.split(" ").splice(2))
                 .catch(err => {
-                    client.emit("error", err, message);
+                    client.bot.emit("error", err, message);
                 });
         } else {
             await Command.memberHasPermissions(message.channel.guild.members.get(message.author.id), message.channel, command, client)
@@ -88,11 +88,11 @@ module.exports = async(client, message) => {
 
                     command.run(client, message, message.content.split(" ").splice(2))
                         .catch(err => {
-                            client.emit("error", err, message);
+                            client.bot.emit("error", err, message);
                         });
                 })
                 .catch(err => {
-                    return client.emit("error", err, message);
+                    return client.bot.emit("error", err, message);
                 });
         }
     } else {

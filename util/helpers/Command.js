@@ -25,7 +25,6 @@ class Command {
             let prefixes = client.prefixes.map(p => p);
             if (guildEntry && guildEntry.prefix) {
                 prefixes.push(guildEntry.prefix);
-                prefixes = prefixes.filter(p => p !== client.config.prefix);
             }
             if (!prefixes.filter(p => p === args[0])[0]) {
                 return resolve(undefined);
@@ -138,7 +137,7 @@ class Command {
                 }
             });
             const reply = await client.MessageCollector.awaitMessage(message.channel.id, message.author.id, 60000).catch(err => {
-                client.emit("error", err);
+                client.bot.emit("error", err);
                 return false;
             });
             return exactMatches[reply.content - 1] ? exactMatches[reply.content - 1] : false;
@@ -192,7 +191,7 @@ class Command {
                 }
             });
             const reply = await client.MessageCollector.awaitMessage(message.channel.id, message.author.id, 60000).catch(err => {
-                client.emit("error", err);
+                client.bot.emit("error", err);
                 return false;
             });
             return exactMatches[reply.content - 1] ? exactMatches[reply.content - 1] : false;

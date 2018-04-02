@@ -22,12 +22,15 @@ class Felix extends Base {
         this.prefixes = this.config.prefix ? [this.config.prefix] : [];
         this.database = process.argv.includes('--no-db') ? false : new(require('./util/helpers/DatabaseWrapper'))(this);
         this.refs = require('./util/helpers/references');
+        //Will be initialized in the database wrapper
+        this.stats;
     }
 
     launch() {
         this.loadCommands();
         this.loadEventsListeners();
         this.bot.on('ready', this.ready.bind(this));
+        this.IPCHandler = new(require('./util/helpers/IPCHandler'))(this);
         this.MessageCollector = new(require('./util/helpers/MessageCollector'))(this.bot);
 
         this.ready();
@@ -35,7 +38,6 @@ class Felix extends Base {
 
     loadCommands() {
 
-        this.log.info(`Loading commands..`);
         const categories = fs.readdirSync(join(__dirname, 'commands'));
         let totalCommands = 0;
         for (let i = 0; i < categories.length; i++) {
@@ -61,7 +63,6 @@ class Felix extends Base {
 
     loadEventsListeners() {
         //Load events
-        this.log.info(`Loading events..`);
         const events = fs.readdirSync(join(__dirname, 'events'));
         let loadedEvents = 0;
         events.forEach(e => {
@@ -79,15 +80,12 @@ class Felix extends Base {
     }
 
     async ready() {
-        await this.sleep(1000); //Wait for the data to be loaded into the client
         if (!this.bot.user.bot) {
             this.log.error(`Invalid login details were provided, the process will exit`);
             process.exit(0);
         }
         this.prefixes.push(`<@!${this.bot.user.id}>`, `<@${this.bot.user.id}>`);
-        this.log.info(`Logged in as ${this.bot.user.username}#${this.bot.user.discriminator}, running Felix ${require('./package').version}`);
-        await this.sleep(1000);
-        console.log(`\n===============================================\nGuilds: ${this.bot.guilds.size}\nUsers: ${this.bot.users.size}\nPrefix: ${this.config.prefix}\n===============================================`);
+        process.send({ name: "info", msg: `Logged in as ${this.bot.user.username}#${this.bot.user.discriminator}, running Felix ${require('./package').version}` });
         this.bot.shards.forEach(s => {
             s.editStatus("online", {
                 name: `${this.config.prefix} help for commands | Shard ${s.id}`

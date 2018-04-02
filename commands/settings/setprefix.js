@@ -27,8 +27,7 @@ class SetPrefix extends Command {
             return message.channel.createMessage(`The current prefix on this server is \`${guildEntry.prefix ? guildEntry.prefix : client.config.prefix}\``);
         }
         guildEntry.prefix = args[0];
-        const wew = await client.database.set(guildEntry, "guild");
-        console.log(wew);
+        await client.database.set(guildEntry, "guild");
         message.channel.createMessage(`:white_check_mark: Alright, the prefix has successfully been set to \`${args[0]}\`, commands will now look like \`${args[0]} ping\``);
     }
 }

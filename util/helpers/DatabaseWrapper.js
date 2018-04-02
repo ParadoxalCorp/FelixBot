@@ -1,8 +1,5 @@
 'use strict';
 
-const log = require('../modules/log');
-const references = require('./references');
-
 class DatabaseWrapper {
     /**
      * Wraps the most important methods of RethinkDB and does smart things in the background
@@ -26,7 +23,7 @@ class DatabaseWrapper {
             ],
             silent: true,
             log: (message) => {
-                log.info(message);
+                client.log.info(message);
             }
         });
         this.updateFunc = updateFunc;
@@ -64,12 +61,12 @@ class DatabaseWrapper {
 
             this.rethink.getPoolMaster().on('healthy', healthy => {
                 if (!healthy) {
-                    log.warn('The connection with the database has been closed, commands using the database will be disabled until a successful re-connection has been made');
+                    this.client.log.warn('The connection with the database has been closed, commands using the database will be disabled until a successful re-connection has been made');
                     this.client.commands
                         .filter(c => c.conf.requireDB)
                         .forEach(c => c.conf.disabled = ":x: This command uses the database, however the database seems unavailable at the moment");
                 } else {
-                    log.info(`The connection with the database at ${this.client.config.database.host}:${this.client.config.database.port} has been established`);
+                    this.client.log.info(`The connection with the database at ${this.client.config.database.host}:${this.client.config.database.port} has been established`);
                     this.client.commands
                         .filter(c => c.conf.requireDB)
                         .forEach(c => c.conf.disabled = false);
@@ -131,7 +128,7 @@ class DatabaseWrapper {
         if (this.updateFunc) {
             return this.updateFunc(data, type);
         }
-        const defaultDataModel = type === "guild" ? references.guildEntry(data.id) : references.userEntry(data.id);
+        const defaultDataModel = type === "guild" ? this.client.refs.guildEntry(data.id) : this.client.refs.userEntry(data.id);
         for (const key in data) {
             if (typeof defaultDataModel[key] !== "undefined") {
                 defaultDataModel[key] = data[key];
@@ -191,7 +188,7 @@ class DatabaseWrapper {
      * @returns {Promise<boolean>} - true if success, otherwise, the error is rejected
      */
     createTable(name, databaseName) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
             const tableList = await this.rethink.db(databaseName).tableList().run().catch(err => Promise.reject(new Error(err)));
             if (tableList.includes(name)) {
                 resolve(`There is already a table with the name ${name} in the database ${databaseName}`);
