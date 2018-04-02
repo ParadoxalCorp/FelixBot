@@ -71,7 +71,8 @@ class IPCHandler {
     }
 
     _allClustersAnswered(id) {
-        return this.requests.get(id).responses.length >= (this.clusterCount || 1) ? true : false;
+        return this.requests.get(id).responses.length >= (this.clusterCount ?
+            this.clusterCount - this.client.stats.clusters.filter(c => c.guilds < 1).length : 1) ? true : false;
     }
 }
 

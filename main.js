@@ -22,6 +22,7 @@ class Felix extends Base {
         this.prefixes = this.config.prefix ? [this.config.prefix] : [];
         this.database = process.argv.includes('--no-db') ? false : new(require('./util/helpers/DatabaseWrapper'))(this);
         this.refs = require('./util/helpers/references');
+        this.TimeConverter = require('./util/modules/TimeConverter');
         //Will be initialized in the database wrapper
         this.stats;
     }
