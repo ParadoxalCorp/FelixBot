@@ -16,7 +16,8 @@
         "no-empty": "warn",
         "valid-jsdoc": "warn",
         "no-extra-semi": "warn",
-        "no-unused-vars": "warn"
+        "no-unused-vars": "warn",
+        "camelcase" : ["error", {properties: "always"}]
     }
 
 }
