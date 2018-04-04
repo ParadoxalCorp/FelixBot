@@ -136,7 +136,7 @@ class Command {
                     }
                 }
             });
-            const reply = await client.MessageCollector.awaitMessage(message.channel.id, message.author.id, 60000).catch(err => {
+            const reply = await client.messageCollector.awaitMessage(message.channel.id, message.author.id, 60000).catch(err => {
                 client.bot.emit("error", err);
                 return false;
             });
@@ -190,7 +190,7 @@ class Command {
                     }
                 }
             });
-            const reply = await client.MessageCollector.awaitMessage(message.channel.id, message.author.id, 60000).catch(err => {
+            const reply = await client.messageCollector.awaitMessage(message.channel.id, message.author.id, 60000).catch(err => {
                 client.bot.emit("error", err);
                 return false;
             });

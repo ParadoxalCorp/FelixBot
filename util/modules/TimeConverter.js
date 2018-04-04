@@ -1,6 +1,6 @@
 'use strict';
 
-class TimeConverter {
+class timeConverter {
     constructor() {}
 
     /**
@@ -98,4 +98,4 @@ class TimeConverter {
     }
 }
 
-module.exports = new TimeConverter();
+module.exports = new timeConverter();

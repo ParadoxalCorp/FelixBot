@@ -23,15 +23,16 @@ class DatabaseWrapper {
             ],
             silent: true,
             log: (message) => {
-                client.log.info(message);
+                process.send({ name: "info", msg: message });
             }
         });
         this.updateFunc = updateFunc;
         this.guildData = this.rethink.db('data').table('guilds');
         this.userData = this.rethink.db('data').table('users');
         this.client = client;
-        this.users = new(require('./Collection'))();
-        this.guilds = new(require('./Collection'))();
+        this.users = new(require('./collection'))();
+        this.guilds = new(require('./collection'))();
+        this.healthy = true;
     }
 
     /** 
@@ -61,15 +62,17 @@ class DatabaseWrapper {
 
             this.rethink.getPoolMaster().on('healthy', healthy => {
                 if (!healthy) {
-                    this.client.log.warn('The connection with the database has been closed, commands using the database will be disabled until a successful re-connection has been made');
+                    process.send({ name: 'warn', msg: 'The connection with the database has been closed, commands using the database will be disabled until a successful re-connection has been made' });
                     this.client.commands
                         .filter(c => c.conf.requireDB)
                         .forEach(c => c.conf.disabled = ":x: This command uses the database, however the database seems unavailable at the moment");
+                    this.healthy = false;
                 } else {
-                    this.client.log.info(`The connection with the database at ${this.client.config.database.host}:${this.client.config.database.port} has been established`);
+                    process.send({ name: 'info', msg: `The connection with the database at ${this.client.config.database.host}:${this.client.config.database.port} has been established` });
                     this.client.commands
                         .filter(c => c.conf.requireDB)
                         .forEach(c => c.conf.disabled = false);
+                    this.healthy = true;
                 }
             });
         });

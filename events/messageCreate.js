@@ -8,7 +8,7 @@ module.exports = async(client, message) => {
     if (!command) {
         return;
     }
-    if (client.database) {
+    if (client.database && client.database.healthy) {
         let userEntry = await client.database.getUser(message.author.id);
         if (!userEntry) {
             userEntry = await client.database.set(client.refs.userEntry(message.author.id))
@@ -43,7 +43,7 @@ module.exports = async(client, message) => {
             return message.channel.createMessage(command.conf.disabled);
         }
 
-        if (!client.database || !message.channel.guild) {
+        if ((!client.database || !client.database.healthy) || !message.channel.guild) {
             let allowed;
 
             if (client.refs.defaultPermissions.allowedCommands.includes(`${command.help.category}*`)) {

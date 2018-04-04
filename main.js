@@ -10,29 +10,25 @@ class Felix extends Base {
 
         //If true, this would ignore all messages from everyone besides the owner
         this.maintenance = false;
-        this.Collection = require('./util/helpers/Collection');
-        //A collection that will contain users in cooldown/near the cooldown
-        this.ratelimited = new this.Collection();
-        //This will be filled with mentions prefix once ready
-        this.commands = new this.Collection();
-        this.aliases = new this.Collection();
-        this.log = require('./util/modules/log');
+        this.collection = require('./util/helpers/collection');
         this.config = require('./config');
-        this.sleep = require(`./util/modules/sleep.js`);
         this.prefixes = this.config.prefix ? [this.config.prefix] : [];
-        this.database = process.argv.includes('--no-db') ? false : new(require('./util/helpers/DatabaseWrapper'))(this);
-        this.refs = require('./util/helpers/references');
-        this.TimeConverter = require('./util/modules/TimeConverter');
-        //Will be initialized in the database wrapper
         this.stats;
     }
 
     launch() {
+        Object.assign(this, require('./util')(this));
+        this.ratelimited = new this.collection();
+        //This will be filled with mentions prefix once ready
+        this.commands = new this.collection();
+        this.aliases = new this.collection();
         this.loadCommands();
         this.loadEventsListeners();
         this.bot.on('ready', this.ready.bind(this));
-        this.IPCHandler = new(require('./util/helpers/IPCHandler'))(this);
-        this.MessageCollector = new(require('./util/helpers/MessageCollector'))(this.bot);
+
+        if (this.database) {
+            this.database.init();
+        }
 
         this.ready();
     }

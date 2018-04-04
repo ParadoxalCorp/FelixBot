@@ -2,7 +2,7 @@
 
 class IPCHandler {
     constructor(client) {
-        this.requests = new client.Collection;
+        this.requests = new client.collection();
         this.client = client;
         process.on('message', this._handleIncomingMessage.bind(this));
     }

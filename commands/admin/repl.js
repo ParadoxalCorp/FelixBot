@@ -69,7 +69,7 @@ class Repl extends Command {
         };
         message.channel.createMessage('REPL started. Available commands:\n```\n.exit\n.clear\n_\n```');
         const runCommand = async() => {
-            const commandMsg = await client.MessageCollector.awaitMessage(message.channel.id, message.author.id, 60e3);
+            const commandMsg = await client.messageCollector.awaitMessage(message.channel.id, message.author.id, 60e3);
             if (!commandMsg) {
                 return message.channel.createMessage('Timed out, automatically exiting REPL...');
             }
