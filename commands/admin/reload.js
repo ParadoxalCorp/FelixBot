@@ -8,8 +8,32 @@ class Reload extends Command {
         this.help = {
             name: 'reload',
             category: 'admin',
-            description: 'Reload a module',
-            usage: '{prefix} reload <file_path> <opts>'
+            description: 'Reload a module - This command use a command-line like syntax for its parameters, as in, parameters looks like `--<parameter_name>`. Parameters can have a value, the syntax for specifying a value for a parameter is `--<parameter_name>=<value>`\n\nExample: `{prefix} reload ./module.js --module --bindToClient=moduleBaguette --instantiate`\nThe above example reload the file `module.js` at the root of this command\'s folder, instantiate it without additional parameters and add it as a propriety of the client class under the name `moduleBaguette`',
+            usage: '{prefix} reload <file_path> <params>',
+            params: {
+                '--event': 'Specify that the file you want to reload is an event listener',
+                '--command': 'Specify that the file you want to reload is a command, unless the command isn\'t added yet, a path is usually not needed and the command name can be provided instead',
+                '--module': 'Specify that the file you want to reload is a module, permit the use of the `--bindToClient` and `--instantiate` parameters',
+                '--bindToClient': {
+                    description: 'Specify that the file should be added as a property of the client class',
+                    mandatoryValue: false,
+                    values: [{
+                        name: '<name>',
+                        description: 'Specify the name under which the file should be added as a property of the client class'
+                    }]
+                },
+                '--instantiate': {
+                    description: 'This specify that the command should expect a non-instantiated class that should be instantiated',
+                    mandatoryValue: false,
+                    values: [{
+                        name: 'client',
+                        description: 'Specify that the class should be instantiated with the client'
+                    }, {
+                        name: 'bot',
+                        description: 'Specify that the class should be instantiated with the bot instance'
+                    }]
+                }
+            }
         };
         this.conf = {
             requireDB: false,
@@ -52,7 +76,7 @@ class Reload extends Command {
             if (!arg.includes('--')) {
                 return;
             }
-            parsedArgs[arg.split('--')[1].split('=')[0]] = arg.includes('=') ? arg.split('=')[1] : true;
+            parsedArgs[arg.split('--')[1].split('=')[0].toLowerCase()] = arg.includes('=') ? arg.split('=')[1] : true;
         });
         return parsedArgs;
     }
@@ -79,16 +103,16 @@ class Reload extends Command {
         const moduleName = args[0].split(/\/|\\/gm)[args[0].split(/\/|\\/gm).length - 1].split('.')[0];
         delete require.cache[require.resolve(args[0])];
 
-        if (client[typeof parsedArgs['bindToClient'] === 'string' ? parsedArgs['bindToClient'] : moduleName]) {
+        if (client[typeof parsedArgs['bindtoclient'] === 'string' ? parsedArgs['bindtoclient'] : moduleName]) {
             delete client[moduleName];
-            parsedArgs['bindToClient'] = true;
+            parsedArgs['bindtoclient'] = true;
         }
 
         const actualModule = parsedArgs['instantiate'] ? new(require(args[0]))(parsedArgs['instantiate'] === 'client' ?
             client : (parsedArgs['instantiate'] === 'bot' ? client.bot : false)) : require(args[0]);
 
-        if (parsedArgs['bindToClient']) {
-            client[typeof parsedArgs['bindToClient'] === 'string' ? parsedArgs['bindToClient'] : moduleName] = actualModule;
+        if (parsedArgs['bindtoclient']) {
+            client[typeof parsedArgs['bindtoclient'] === 'string' ? parsedArgs['bindtoclient'] : moduleName] = actualModule;
         }
 
         return moduleName;

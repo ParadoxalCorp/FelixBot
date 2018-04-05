@@ -132,12 +132,27 @@ class DatabaseWrapper {
             return this.updateFunc(data, type);
         }
         const defaultDataModel = type === "guild" ? this.client.refs.guildEntry(data.id) : this.client.refs.userEntry(data.id);
-        for (const key in data) {
-            if (typeof defaultDataModel[key] !== "undefined") {
-                defaultDataModel[key] = data[key];
+
+        return this._traverseAndUpdate(defaultDataModel, data);
+    }
+
+    /**
+     * Depth-less update function, the values of the properties that the source object has in common with the target object will be assigned to the target object
+     * and this regardless of the depth, if the property is an object, all the properties of this object will be checked as well.
+     * @param {object} targetObj - The object that will receive the source object values
+     * @param {object} sourceObj - The object that will transmit it's values to the target object
+     * @returns {object} - The target object, filled with the values of the properties that the source object had in common with it
+     * @private
+     */
+    _traverseAndUpdate(targetObj, sourceObj) {
+        for (const key in sourceObj) {
+            if (typeof targetObj[key] === typeof sourceObj[key] && typeof targetObj[key] === "object" && !Array.isArray(targetObj[key])) {
+                this._traverseAndUpdate(targetObj[key], sourceObj[key]);
+            } else if (typeof targetObj[key] !== "undefined") {
+                targetObj[key] = sourceObj[key];
             }
         }
-        return defaultDataModel;
+        return targetObj;
     }
 
     /**

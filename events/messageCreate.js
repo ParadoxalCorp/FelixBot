@@ -8,6 +8,7 @@ module.exports = async(client, message) => {
     if (!command) {
         return;
     }
+    let guildEntry;
     if (client.database && client.database.healthy) {
         let userEntry = await client.database.getUser(message.author.id);
         if (!userEntry) {
@@ -21,7 +22,7 @@ module.exports = async(client, message) => {
             return;
         }
         if (message.channel.guild) {
-            let guildEntry = await client.database.getGuild(message.channel.guild.id);
+            guildEntry = await client.database.getGuild(message.channel.guild.id);
             if (!guildEntry) {
                 guildEntry = await client.database.set(client.refs.guildEntry(message.channel.guild.id), "guild")
                     .catch(err => {
@@ -86,7 +87,7 @@ module.exports = async(client, message) => {
                         return message.channel.createMessage(`:x: You don't have the permission to use this command`).catch();
                     }
 
-                    command.run(client, message, message.content.split(" ").splice(2))
+                    command.run(client, message, message.content.split(" ").splice(2), guildEntry)
                         .catch(err => {
                             client.bot.emit("error", err, message);
                         });
