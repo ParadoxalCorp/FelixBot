@@ -44,8 +44,9 @@ class ClientStats extends Command {
                         value: '```' + client.stats.clusters.map(c => `Cluster ${c.cluster}: ${c.shards} shard(s) | ${c.guilds} guild(s) | ${c.ram.toFixed(2)}MB RAM used | Up for ${client.timeConverter.toElapsedTime(c.uptime, true)}`).join('\n--\n') + '```'
                     }
                 ]
-            }
-        })
+            },
+            color: client.config.options.embedColor
+        });
     }
 }
 

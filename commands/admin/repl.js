@@ -57,16 +57,7 @@ class Repl extends Command {
         let statementQueue = [];
         let openingBrackets = 0;
         let closingBrackets = 0;
-        const credentialRX = new RegExp(
-            [
-                client.config.token,
-                client.config.database.host
-            ].join('|'),
-            'gi'
-        );
-        const redact = (string) => {
-            return string.replace(credentialRX, 'baguette')
-        };
+
         message.channel.createMessage('REPL started. Available commands:\n```\n.exit\n.clear\n_\n```');
         const runCommand = async() => {
             const commandMsg = await client.messageCollector.awaitMessage(message.channel.id, message.author.id, 60e3);
@@ -136,7 +127,7 @@ class Repl extends Command {
                 result = `ERROR:\n${typeof error === 'string' ? error : inspect(error, { depth: 1 })}`;
             }
 
-            message.channel.createMessage('```js\n' + redact(result) + '\n```');
+            message.channel.createMessage('```js\n' + client.redact(result) + '\n```');
 
             runCommand();
         };

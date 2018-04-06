@@ -1,6 +1,7 @@
 'use strict';
 
 const Command = require('../../util/helpers/Command');
+const { inspect } = require('util');
 
 class Reload extends Command {
     constructor() {
@@ -47,27 +48,47 @@ class Reload extends Command {
 
     async run(client, message, args) {
         if (!args[0]) {
-            return message.channel.createMessage('Come on scrub at least give me the name of the command to reload');
+            return message.channel.createMessage(':x: Come on scrub at least give me the name of the command to reload');
         }
+        const isPath = new RegExp(/\/|\\/gim).test(args[0]);
+        const path = this.verifyPath(args.includes('--command') && !isPath ? `../${client.commands.get(args[0]).help.category}/${client.commands.get(args[0]).help.name}` : args[0]);
+        if (!path) {
+            return message.channel.createMessage(':x: Look, i don\'t want to be mean, but this is NOT a valid path, try again');
+        }
+        const fileName = path.split(/\/|\\/gm)[path.split(/\/|\\/gm).length - 1].split('.')[0];
+
         if (args.includes('--event')) {
-            const reloadedEvent = this.reloadEventListener(client, args);
-            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the \`${reloadedEvent}\` event listener`);
+            await client.IPCHandler.broadcastReload('event', path)
+                .catch(err => {
+                    return message.channel.createMessage({
+                        embed: {
+                            description: 'So, at least one clusters reported that the reload failed, here\'s the list scrub ```js\n' + inspect(err, { depth: 2 }) + '```'
+                        }
+                    });
+                });
+            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the \`${fileName}\` event listener`);
         } else if (args.includes('--command')) {
-            const reloadedCommand = this.reloadCommand(client, args);
-            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the command \`${reloadedCommand}\``);
+            await client.IPCHandler.broadcastReload('command', path)
+                .catch(err => {
+                    return message.channel.createMessage({
+                        embed: {
+                            description: 'So, at least one clusters reported that the reload failed, here\'s the list scrub ```js\n' + inspect(err, { depth: 2 }) + '```'
+                        }
+                    });
+                });
+            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the command \`${fileName}\``);
         } else if (args.includes('--module')) {
-            const reloadedModule = this.reloadModule(client, args);
-            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the module ${reloadedModule}`);
+            await client.IPCHandler.broadcastReload('module', path, fileName, this.parseArguments(args))
+                .catch(err => {
+                    return message.channel.createMessage({
+                        embed: {
+                            description: 'So, at least one clusters reported that the reload failed, here\'s the list scrub ```js\n' + inspect(err, { depth: 2 }) + '```'
+                        }
+                    });
+                });
+            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the module ${moduleName}`);
         }
         return message.channel.createMessage(`Hoi, this is not valid syntax, try again kthx`);
-    }
-
-    reloadEventListener(client, args) {
-        const eventName = args[0].split(/\/|\\/gm)[args[0].split(/\/|\\/gm).length - 1].split('.')[0];
-        delete require.cache[require.resolve(args[0])];
-        client.bot.removeAllListeners(eventName);
-        client.bot.on(eventName, require(args[0]).bind(null, client));
-        return eventName;
     }
 
     parseArguments(args) {
@@ -81,41 +102,15 @@ class Reload extends Command {
         return parsedArgs;
     }
 
-    reloadCommand(client, args) {
-        const isPath = new RegExp(/\/|\\/gim).test(args[0]);
-        delete require.cache[require.resolve(isPath ? args[0] : `../${client.commands.get(args[0]).help.category}/${client.commands.get(args[0]).help.name}`)];
-        const command = require(isPath ? args[0] : `../${client.commands.get(args[0]).help.category}/${client.commands.get(args[0]).help.name}`);
-
-        if ((!client.database || !client.database.healthy) && command.conf.requireDB) {
-            command.conf.disabled = ":x: This command uses the database, however the database seems unavailable at the moment";
+    verifyPath(path) {
+        let resolvedPath;
+        try {
+            resolvedPath = require.resolve(path);
         }
+        // eslint-disable-next-line no-empty
+        catch (err) {}
 
-        client.commands.set(command.help.name, command);
-        command.conf.aliases.forEach(alias => {
-            client.aliases.set(alias, command.help.name);
-        });
-
-        return command.help.name;
-    }
-
-    reloadModule(client, args) {
-        const parsedArgs = this.parseArguments(args);
-        const moduleName = args[0].split(/\/|\\/gm)[args[0].split(/\/|\\/gm).length - 1].split('.')[0];
-        delete require.cache[require.resolve(args[0])];
-
-        if (client[typeof parsedArgs['bindtoclient'] === 'string' ? parsedArgs['bindtoclient'] : moduleName]) {
-            delete client[moduleName];
-            parsedArgs['bindtoclient'] = true;
-        }
-
-        const actualModule = parsedArgs['instantiate'] ? new(require(args[0]))(parsedArgs['instantiate'] === 'client' ?
-            client : (parsedArgs['instantiate'] === 'bot' ? client.bot : false)) : require(args[0]);
-
-        if (parsedArgs['bindtoclient']) {
-            client[typeof parsedArgs['bindtoclient'] === 'string' ? parsedArgs['bindtoclient'] : moduleName] = actualModule;
-        }
-
-        return moduleName;
+        return resolvedPath;
     }
 }
 

@@ -23,5 +23,7 @@ module.exports = {
         }
     },
     //Some customizable bot features options, purpose is to be able to quickly change critical values without having to do so in 100 files 
-    options: {}
+    options: {
+		embedColor: 0x7a0099
+	}
 };

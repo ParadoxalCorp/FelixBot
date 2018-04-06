@@ -22,8 +22,7 @@ class Dummy extends Command {
     }
 
     async run(client, message, args) {
-        const wew = await this.getUserFromText({ message: message, client: client, text: args.join(" ") });
-        console.log(JSON.stringify(wew, null, 2));
+        console.log("uwu");
     }
 }
 
