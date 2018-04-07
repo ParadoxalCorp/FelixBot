@@ -17,7 +17,8 @@ class Help extends Command {
             aliases: ['halp'],
             requirePerms: [],
             guildOnly: false,
-            ownerOnly: false
+            ownerOnly: false,
+            expectedArgs: []
         };
     }
 

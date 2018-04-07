@@ -265,6 +265,61 @@ class Command {
 
         return allowed;
     }
+
+    /**
+     * Query to the user the arguments that they forgot to specify
+     * @param {*} client - The client instance
+     * @param {*} message - The message that triggered the command
+     * @param {*} command - The command that the user is trying to run
+     * @returns {Promise<Array>} An array of arguments
+     */
+    async queryMissingArgs(client, message, command) {
+        let args = [];
+
+        const queryArg = async(arg, ongoingQuery) => {
+            const queryMsg = ongoingQuery || await message.channel.createMessage('Hoi ! Seems like you forgot a parameter for this command, note that you can cancel this query anytime by replying `cancel`\n\n' + arg.description);
+            const response = await client.messageCollector.awaitMessage(message.channel.id, message.author.id);
+            if (!response || response.content.toLowerCase() === "cancel") {
+                queryMsg.delete().catch();
+                return false;
+            }
+            if (arg.possibleValues && !arg.possibleValues.filter(value => value.name === "*" || value.name.toLowerCase() === response.content.toLowerCase())[0]) {
+                message.channel.createMessage(':x: This is not a valid answer, please reply again with a valid answer')
+                    .then(m => {
+                        setTimeout(() => {
+                            m.delete().catch();
+                        }, 5000);
+                    });
+                queryArg(arg, queryMsg)
+                    .then(r => {
+                        return r;
+                    });
+            } else {
+                queryMsg.delete().catch();
+                const value = arg.possibleValues ? arg.possibleValues.find(value => value.name.toLowerCase() === response.content.toLowerCase() || value.name === '*') : false;
+                return value ? (value.interpretAs === false ? undefined : value.interpretAs.replace(/{value}/gim, response.content.toLowerCase())) : response.content;
+            }
+        };
+
+        for (const element of command.conf.expectedArgs) {
+            if ((element.condition && element.condition(client, message, args)) || !element.condition) {
+                const query = await queryArg(element)
+                    .catch(err => {
+                        client.bot.emit('error', err, message);
+                        return false;
+                    });
+                if (query === false) {
+                    message.channel.createMessage(':x: Command aborted').catch();
+                    return false;
+                }
+                if (query !== undefined) {
+                    args.push(query);
+                }
+            }
+        }
+
+        return args;
+    }
 }
 
 module.exports = Command;

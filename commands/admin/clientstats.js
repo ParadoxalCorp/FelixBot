@@ -17,7 +17,8 @@ class ClientStats extends Command {
             aliases: ["cs", "botstats"],
             requirePerms: [],
             guildOnly: false,
-            ownerOnly: false
+            ownerOnly: false,
+            expectedArgs: []
         };
     }
 

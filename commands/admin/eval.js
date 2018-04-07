@@ -18,7 +18,8 @@ class Eval extends Command {
             aliases: [],
             requirePerms: [],
             guildOnly: false,
-            ownerOnly: false
+            ownerOnly: false,
+            expectedArgs: []
         };
     }
 

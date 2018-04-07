@@ -25,7 +25,7 @@ class Reload extends Command {
                 },
                 '--instantiate': {
                     description: 'This specify that the command should expect a non-instantiated class that should be instantiated',
-                    mandatoryValue: false,
+                    mandatoryValue: true,
                     values: [{
                         name: 'client',
                         description: 'Specify that the class should be instantiated with the client'
@@ -42,7 +42,50 @@ class Reload extends Command {
             aliases: [],
             requirePerms: [],
             guildOnly: false,
-            ownerOnly: false
+            ownerOnly: false,
+            expectedArgs: [{
+                description: 'Please specify the path of the file you want to reload/add, or, if a command that is already loaded, the name of the command',
+            }, {
+                description: 'Please specify the type of the file you want to reload, can be either `event`, `command` or `module`',
+                possibleValues: [{
+                    name: 'command',
+                    interpretAs: '--command'
+                }, {
+                    name: 'event',
+                    interpretAs: '--event'
+                }, {
+                    name: 'module',
+                    interpretAs: '--module'
+                }]
+            }, {
+                //Conditional branch
+                description: 'Please specify if a non-instantiated class should be expected from this module, and with what it should be instantiated. Can be either `bot`, `client` or `no` to not instantiate it',
+                condition: (client, message, args) => args.includes('--module'),
+                possibleValues: [{
+                    name: 'bot',
+                    interpretAs: '--instantiate=bot',
+                }, {
+                    name: 'client',
+                    interpretAs: '--instantiate=client'
+                }, {
+                    name: 'no',
+                    interpretAs: false
+                }]
+            }, {
+                //Conditional branch
+                description: 'Please specify whether the module should be added as a property of the client class, can be either `yes`, `<name>` or `no`. Where `<name>` is the name under which the property should be added, if `yes`, the file name will be used',
+                condition: (client, message, args) => args.includes('--module'),
+                possibleValues: [{
+                    name: 'yes',
+                    interpretAs: '--bindtoclient',
+                }, {
+                    name: '*',
+                    interpretAs: '--bindtoclient={value}'
+                }, {
+                    name: 'no',
+                    interpretAs: false
+                }]
+            }]
         };
     }
 
@@ -62,7 +105,7 @@ class Reload extends Command {
                 .catch(err => {
                     return message.channel.createMessage({
                         embed: {
-                            description: 'So, at least one clusters reported that the reload failed, here\'s the list scrub ```js\n' + inspect(err, { depth: 2 }) + '```'
+                            description: 'So, at least one cluster reported that the reload failed, here\'s the list scrub ```js\n' + inspect(err, { depth: 2 }) + '```'
                         }
                     });
                 });
@@ -86,7 +129,7 @@ class Reload extends Command {
                         }
                     });
                 });
-            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the module ${moduleName}`);
+            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the module ${fileName}`);
         }
         return message.channel.createMessage(`Hoi, this is not valid syntax, try again kthx`);
     }

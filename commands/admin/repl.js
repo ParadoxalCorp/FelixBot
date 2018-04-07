@@ -20,7 +20,8 @@ class Repl extends Command {
             aliases: [],
             requirePerms: [],
             guildOnly: false,
-            disabled: false
+            disabled: false,
+            expectedArgs: []
         }
     }
 

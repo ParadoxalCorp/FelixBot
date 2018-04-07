@@ -17,7 +17,8 @@ class SetPrefix extends Command {
             aliases: ["prefix"],
             requirePerms: [],
             guildOnly: true,
-            ownerOnly: false
+            ownerOnly: false,
+            expectedArgs: []
         };
     }
 

@@ -107,7 +107,7 @@ class IPCHandler {
                     }
                 } catch (err) {
                     success = false;
-                    process.send({ name: 'error', msg: err });
+                    this.client.bot.emit('error', err);
                 }
 
                 this.client.ipc.sendTo(message.clusterID, 'reloadDone', {

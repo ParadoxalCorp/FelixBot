@@ -24,10 +24,10 @@ const master = new Sharder(config.token, '/main.js', {
         messageLimit: 25,
         defaultImageSize: 2048,
     },
-    guildsPerShards: 1,
+    guildsPerShards: 1750,
     debug: true,
-    shards: 2,
-    clusters: 2
+    shards: 1,
+    clusters: 1
 });
 
 master.on('stats', res => {

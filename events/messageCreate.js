@@ -9,13 +9,14 @@ module.exports = async(client, message) => {
         return;
     }
     let guildEntry;
+    let userEntry;
     if (client.database && client.database.healthy) {
-        let userEntry = await client.database.getUser(message.author.id);
+        userEntry = await client.database.getUser(message.author.id);
         if (!userEntry) {
             userEntry = await client.database.set(client.refs.userEntry(message.author.id))
                 .catch(err => {
-                    client.bot.emit("error", err);
-                    return message.channel.createMessage(`:x: An error occurred`);
+                    client.bot.emit("error", err, message);
+                    return;
                 });
         }
         if (userEntry.blacklisted) {
@@ -26,8 +27,8 @@ module.exports = async(client, message) => {
             if (!guildEntry) {
                 guildEntry = await client.database.set(client.refs.guildEntry(message.channel.guild.id), "guild")
                     .catch(err => {
-                        client.bot.emit("error", err);
-                        return message.channel.createMessage(`:x: An error occurred`);
+                        client.bot.emit("error", err, message);
+                        return;
                     });
             }
         }
@@ -76,18 +77,42 @@ module.exports = async(client, message) => {
                 return message.channel.createMessage(`:x: You don't have the permission to use this command`).catch();
             }
 
-            command.run(client, message, message.content.split(" ").splice(2))
+            let args = message.content.split(" ").splice(2);
+            //Query arguments if the command expect some and none are provided
+            if (!args[0] && command.conf.expectedArgs[0]) {
+                args = await Command.queryMissingArgs(client, message, command)
+                    .catch(err => {
+                        client.bot.emit('error', err, message);
+                    });
+                if (!args) {
+                    return;
+                }
+            }
+
+            command.run(client, message, args)
                 .catch(err => {
                     client.bot.emit("error", err, message);
                 });
         } else {
             await Command.memberHasPermissions(message.channel.guild.members.get(message.author.id), message.channel, command, client)
-                .then(isAllowed => {
+                .then(async(isAllowed) => {
                     if (!isAllowed) {
                         return message.channel.createMessage(`:x: You don't have the permission to use this command`).catch();
                     }
 
-                    command.run(client, message, message.content.split(" ").splice(2), guildEntry)
+                    let args = message.content.split(" ").splice(2);
+                    //Query arguments if the command expect some and none are provided
+                    if (!args[0] && command.conf.expectedArgs[0]) {
+                        args = await Command.queryMissingArgs(client, message, command)
+                            .catch(err => {
+                                client.bot.emit('error', err, message);
+                            });
+                        if (!args) {
+                            return;
+                        }
+                    }
+
+                    command.run(client, message, args, guildEntry, userEntry)
                         .catch(err => {
                             client.bot.emit("error", err, message);
                         });

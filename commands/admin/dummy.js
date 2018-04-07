@@ -17,7 +17,8 @@ class Dummy extends Command {
             aliases: [],
             requirePerms: [],
             guildOnly: false,
-            ownerOnly: true
+            ownerOnly: true,
+            expectedArgs: []
         };
     }
 

@@ -61,8 +61,8 @@ class Reloader {
             options['bindtoclient'] = true;
         }
 
-        const actualModule = options['instantiate'] ? new(require(args[0]))(options['instantiate'] === 'client' ?
-            this.client : (options['instantiate'] === 'bot' ? this.client.bot : false)) : require(args[0]);
+        const actualModule = options['instantiate'] ? new(require(path))(options['instantiate'] === 'client' ?
+            this.client : (options['instantiate'] === 'bot' ? this.client.bot : false)) : require(path);
 
         if (options['bindtoclient']) {
             this.client[typeof options['bindtoclient'] === 'string' ? options['bindtoclient'] : name] = actualModule;
