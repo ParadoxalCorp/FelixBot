@@ -129,7 +129,7 @@ class Reload extends Command {
                         }
                     });
                 });
-            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the module ${fileName}`);
+            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the module \`${fileName}\``);
         }
         return message.channel.createMessage(`Hoi, this is not valid syntax, try again kthx`);
     }

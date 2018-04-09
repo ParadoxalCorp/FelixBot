@@ -8,7 +8,7 @@ class Help extends Command {
         this.help = {
             name: 'help',
             category: 'generic',
-            description: 'pong',
+            description: 'Display the list of available commands or get more details on a specific command.\n\nYou can use the `--noEmbed` and `--dm` options to respectively send the help without embed and send it in your direct messages. Like `{prefix} help --noEmbed`, note that those options are case-insensitive and can be combined',
             usage: '{prefix} help'
         };
         this.conf = {

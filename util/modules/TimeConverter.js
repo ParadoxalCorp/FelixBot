@@ -33,7 +33,7 @@ class timeConverter {
             hours: Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
             minutes: Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60)),
             seconds: Math.floor((ms % (1000 * 60)) / 1000)
-        }
+        };
     }
 
     /**

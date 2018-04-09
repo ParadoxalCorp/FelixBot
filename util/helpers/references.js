@@ -43,7 +43,13 @@ class References {
     userEntry(id) {
         return {
             id: id,
-            blacklisted: false
+            blacklisted: false,
+            economy: {
+                coins: 500
+            },
+            cooldowns: {
+                dailyCooldown: 0
+            }
         };
     }
 

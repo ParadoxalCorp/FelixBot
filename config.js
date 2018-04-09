@@ -24,6 +24,9 @@ module.exports = {
     },
     //Some customizable bot features options, purpose is to be able to quickly change critical values without having to do so in 100 files 
     options: {
-		embedColor: 0x7a0099
-	}
+        embedColor: 0x7a0099,
+        dailyCoins: 2500,
+        dailyCooldown: 86400000,
+        coinsLimit: 100000000000000000000
+    }
 };

@@ -40,7 +40,7 @@ module.exports = async(client, message) => {
     //If the command has been used in DM, ignore this check, commands that work in DM should not require any guild-related permission
     const clientHasPermissions = message.channel.guild ? Command.clientHasPermissions(message, client, command.conf.requirePerms) : true;
 
-    if (!Array.isArray(clientHasPermissions)) {
+    if (clientHasPermissions === true) {
         if (command.conf.disabled) {
             return message.channel.createMessage(command.conf.disabled);
         }
