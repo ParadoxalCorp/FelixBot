@@ -28,6 +28,6 @@ module.exports = {
         dailyCoins: 2500,
         dailyCooldown: 86400000,
         coinsLimit: 100000000000000000000,
-		    economyEvents: true
+        economyEvents: true
     }
 };
