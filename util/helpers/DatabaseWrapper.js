@@ -1,8 +1,18 @@
 'use strict';
 
+/**
+ * Wraps the most important methods of RethinkDB and does smart things in the background
+ * @prop {*} rethink The object returned by the rethinkdbdash module after requiring it
+ * @prop {function} updateFunc The update function given in the constructor, if any
+ * @prop {*} guildData The rethinkDB  table of guilds
+ * @prop {*} userData The rethinkDB table of users
+ * @prop {*} client The client instance given in the constructor
+ * @prop {collection} users A collection of cached user entries
+ * @prop {collection} guilds A collection of cached guild entries
+ * @prop {boolean} healthy A boolean representing whether the connection with the database is established
+ */
 class DatabaseWrapper {
     /**
-     * Wraps the most important methods of RethinkDB and does smart things in the background
      * @param {object} client - The client (or bot) instance
      * @param {function} updateFunc - Optional, the function that should be called to update the retrieved entries from the database before returning them. This update function will be called instead of the default update strategy, with the "data" and "type" arguments, which are respectively the database entry and the type of the database entry (either "guild" or "user"). The update function must return an object, this is the object that the DatabaseWrapper.getGuild() and DatabaseWrapper.getUser() methods will return.
      * @example 

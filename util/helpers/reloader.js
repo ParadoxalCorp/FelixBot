@@ -58,7 +58,7 @@ class Reloader {
 
         if (this.client[typeof options['bindtoclient'] === 'string' ? options['bindtoclient'] : name]) {
             delete this.client[typeof options['bindtoclient'] === 'string' ? options['bindtoclient'] : name];
-            options['bindtoclient'] = true;
+            options['bindtoclient'] = typeof options['bindtoclient'] === 'string' ? options['bindtoclient'] : name;
         }
 
         const actualModule = options['instantiate'] ? new(require(path))(options['instantiate'] === 'client' ?

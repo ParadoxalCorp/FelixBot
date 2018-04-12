@@ -6,7 +6,7 @@ class References {
      */
     constructor() {
         this.defaultPermissions = {
-            allowedCommands: ["generic*"],
+            allowedCommands: ["generic*", "fun*"],
             restrictedCommands: ["settings*"]
         };
         this.permissionsSet = {
@@ -19,7 +19,6 @@ class References {
      * Returns the default guild entry structure used in the database
      * @param {string} id The ID of the guild
      * @returns {object} A guild entry 
-     * @static
      */
     guildEntry(id) {
         return {
@@ -38,19 +37,39 @@ class References {
      * Returns the default user entry structure used in the database
      * @param {string} id The ID of the user
      * @returns {object} A user entry 
-     * @static
      */
     userEntry(id) {
         return {
             id: id,
             blacklisted: false,
             economy: {
-                coins: 500
+                coins: 500,
+                transactions: [],
+                items: []
             },
             cooldowns: {
                 dailyCooldown: 0
             }
         };
+    }
+
+    /**
+     * 
+     * @param {object} data An object of data
+     * @param {number} data.amount The amount of coins that has been debited/credited(negative if debited, positive if credited)
+     * @param {string} data.from  Username#Discriminator of the user from who the coins once belonged
+     * @param {string} data.to Username#Discriminator of who received the coins
+     * @param {string} data.reason The reason of the transfer (automatic, intended..)
+     * @return {object} The transaction data object
+     */
+    transactionData(data) {
+        return {
+            amount: data.amount,
+            from: data.from,
+            to: data.to,
+            reason: data.reason,
+            date: Date.now()
+        }
     }
 
 }

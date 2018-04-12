@@ -90,11 +90,9 @@ class Reload extends Command {
     }
 
     async run(client, message, args) {
-        if (!args[0]) {
-            return message.channel.createMessage(':x: Come on scrub at least give me the name of the command to reload');
-        }
         const isPath = new RegExp(/\/|\\/gim).test(args[0]);
-        const path = this.verifyPath(args.includes('--command') && !isPath ? `../${client.commands.get(args[0]).help.category}/${client.commands.get(args[0]).help.name}` : args[0]);
+        const command = client.commands.get(args[0]) || client.commands.get(client.aliases.get(args[0]));
+        const path = this.verifyPath(args.includes('--command') && !isPath ? `../${command.help.category}/${command.help.name}` : args[0]);
         if (!path) {
             return message.channel.createMessage(':x: Look, i don\'t want to be mean, but this is NOT a valid path, try again');
         }

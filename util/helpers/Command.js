@@ -100,7 +100,7 @@ class Command {
             Promise.reject(new Error(`The options.client and options.message parameters are mandatory`));
         }
         options.text = options.text || options.message.content;
-        const exactMatch = await this._resolveUserByExactMatch(options.client, options.message, options.text)
+        const exactMatch = await this._resolveUserByExactMatch(options.client, options.message, options.text);
         if (exactMatch) {
             return exactMatch;
         }
@@ -108,6 +108,11 @@ class Command {
         if (options.message.channel.guild.members.get(options.text)) {
             return options.message.channel.guild.members.get(options.text);
         }
+
+        if (options.message.mentions[0]) {
+            return options.message.mentions[0];
+        }
+
         return false;
     }
 
