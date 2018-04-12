@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Provides some utility methods to parse time
+ */
 class timeConverter {
     constructor() {}
 

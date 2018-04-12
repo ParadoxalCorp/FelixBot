@@ -6,6 +6,10 @@ const sleep = require('./sleep');
 require('draftlog').into(console);
 
 const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+/**
+ * Provides some fancy colored logs for errors, warns and info, but also animated logs
+ * @prop {Map} drafts A map of all the current draft-logs going on
+ */
 class Log {
     constructor() {
         this.drafts = new Map();

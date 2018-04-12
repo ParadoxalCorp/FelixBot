@@ -1,5 +1,9 @@
 //Actually that may reveal itself useful at some point, so let's keep it
 
+/**
+ * @prop {Collection} requests A collection of the current ongoing requests
+ * @prop {*} client The client instance given in the constructor
+ */
 class IPCHandler {
     constructor(client) {
         this.requests = new client.collection();
@@ -74,6 +78,7 @@ class IPCHandler {
                 if (this._allClustersAnswered(message.id)) {
                     //Resolve the request and reorder the responses in case it wasn't already
                     request.resolve(request.responses.sort((a, b) => a.clusterID - b.clusterID));
+                    this.requests.delete(message.id);
                 }
                 break;
 
@@ -132,6 +137,7 @@ class IPCHandler {
                     } else {
                         reloadRequest.resolve(reloadRequest.responses.sort((a, b) => a.clusterID - b.clusterID));
                     }
+                    this.requests.delete(message.id);
                 }
                 break;
 
@@ -141,6 +147,12 @@ class IPCHandler {
         }
     }
 
+    /**
+     * Check if all the active clusters responded to a request
+     * @param {string} id - The ID of the request to check if all the clusters answered to
+     * @returns {boolean} Whether all the active clusters responded to the request
+     * @private
+     */
     _allClustersAnswered(id) {
         return this.requests.get(id).responses.length >= (this.clusterCount ?
             this.clusterCount - this.client.stats.clusters.filter(c => c.guilds < 1).length : 1) ? true : false;

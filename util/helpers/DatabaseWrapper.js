@@ -7,8 +7,8 @@
  * @prop {*} guildData The rethinkDB  table of guilds
  * @prop {*} userData The rethinkDB table of users
  * @prop {*} client The client instance given in the constructor
- * @prop {collection} users A collection of cached user entries
- * @prop {collection} guilds A collection of cached guild entries
+ * @prop {Collection} users A collection of cached user entries
+ * @prop {Collection} guilds A collection of cached guild entries
  * @prop {boolean} healthy A boolean representing whether the connection with the database is established
  */
 class DatabaseWrapper {

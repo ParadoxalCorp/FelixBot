@@ -6,8 +6,12 @@
 * [Command](#Command)
     * [new Command()](#new_Command_new)
     * [.parseCommand(message, client)](#Command+parseCommand) ⇒ <code>Promise.&lt;object&gt;</code>
-    * [.hasPermissions(message, client, permissions, [channel])](#Command+hasPermissions) ⇒ <code>boolean</code> \| <code>array</code>
+    * [.clientHasPermissions(message, client, permissions, [channel])](#Command+clientHasPermissions) ⇒ <code>boolean</code> \| <code>array</code>
     * [.hasChannelOverwrite(channel, member, permission)](#Command+hasChannelOverwrite) ⇒ <code>boolean</code> \| <code>PermissionOverwrite</code>
+    * [.getUserFromText(options)](#Command+getUserFromText) ⇒ <code>Promise.&lt;User&gt;</code>
+    * [.getRoleFromText(options)](#Command+getRoleFromText) ⇒ <code>Promise.&lt;Role&gt;</code>
+    * [.memberHasPermissions(member, channel, command, client)](#Command+memberHasPermissions) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [.queryMissingArgs(client, message, command)](#Command+queryMissingArgs) ⇒ <code>Promise.&lt;Array&gt;</code>
 
 <a name="new_Command_new"></a>
 
@@ -27,9 +31,9 @@ As it calls the database to check for a custom prefix, the method is asynchronou
 | message | <code>object</code> | The message object to parse the command from |
 | client | <code>object</code> | The client instance |
 
-<a name="Command+hasPermissions"></a>
+<a name="Command+clientHasPermissions"></a>
 
-### command.hasPermissions(message, client, permissions, [channel]) ⇒ <code>boolean</code> \| <code>array</code>
+### command.clientHasPermissions(message, client, permissions, [channel]) ⇒ <code>boolean</code> \| <code>array</code>
 This is a deep check and the channels wide permissions will be checked too
 
 **Kind**: instance method of [<code>Command</code>](#Command)
@@ -55,3 +59,62 @@ It takes into account the roles of the member, their position and the member its
 | channel | <code>object</code> | The channel to check permissions overwrites in |
 | member | <code>object</code> | The member object to check permissions overwrites for |
 | permission | <code>string</code> | The permission to search channel overwrites for |
+
+<a name="Command+getUserFromText"></a>
+
+### command.getUserFromText(options) ⇒ <code>Promise.&lt;User&gt;</code>
+Try to resolve a user with IDs, names, partial usernames or mentions
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>Promise.&lt;User&gt;</code> - The resolved role, or false if none could be resolved
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>object</code> |  | An object of options |
+| options.message | <code>object</code> |  | The message from which to get the roles from |
+| options.client | <code>object</code> |  | The client instance |
+| [options.text] | <code>string</code> | <code>&quot;message.content&quot;</code> | The text from which roles should be resolved, if none provided, it will use the message content |
+
+<a name="Command+getRoleFromText"></a>
+
+### command.getRoleFromText(options) ⇒ <code>Promise.&lt;Role&gt;</code>
+Try to resolve a role with IDs or names
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>Promise.&lt;Role&gt;</code> - The resolved role, or false if none could be resolved
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>object</code> |  | An object of options |
+| options.message | <code>object</code> |  | The message from which to get the roles from |
+| options.client | <code>object</code> |  | The client instance |
+| [options.text] | <code>string</code> | <code>&quot;message.content&quot;</code> | The text from which roles should be resolved, if none provided, it will use the message content |
+
+<a name="Command+memberHasPermissions"></a>
+
+### command.memberHasPermissions(member, channel, command, client) ⇒ <code>Promise.&lt;boolean&gt;</code>
+Check if the given member has the permission tu run the given command
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>Promise.&lt;boolean&gt;</code> - A boolean representing whether the member is allowed to use this command
+
+| Param | Type | Description |
+| --- | --- | --- |
+| member | <code>object</code> | The member to check the permissions for |
+| channel | <code>object</code> | The channel in which the command has been used (checks for channel-wide permissions) |
+| command | <code>object</code> | The command object from which to check if the member has permissions to use it |
+| client | <code>object</code> | The client instance |
+
+<a name="Command+queryMissingArgs"></a>
+
+### command.queryMissingArgs(client, message, command) ⇒ <code>Promise.&lt;Array&gt;</code>
+Query to the user the arguments that they forgot to specify
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>Promise.&lt;Array&gt;</code> - An array of arguments
+
+| Param | Type | Description |
+| --- | --- | --- |
+| client | <code>\*</code> | The client instance |
+| message | <code>\*</code> | The message that triggered the command |
+| command | <code>\*</code> | The command that the user is trying to run |

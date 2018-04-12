@@ -2,6 +2,7 @@
 
 /**
  * Provides methods to reload events listeners, modules and commands
+ * @prop {*} client - The client given in the constructor
  */
 class Reloader {
     /**
