@@ -10,6 +10,8 @@ For a better view of how a command should look like, check the [example](#exampl
 - * [help parameters](#help-parameters)
 - - * [parameter value](#parameter-value)
 * [conf object](#conf-object)
+- * [expected arg](#expected-arg)
+- - * [possible arg value](#possible-arg-value)
 * [extra](#extra)
 * [run function](#run-function)
 * [examples](#examples)
@@ -55,8 +57,7 @@ This define most of the command characteristics and will directly impact how the
 | requireDB | <code>boolean</code> | Whether or not the command use the database, if true, the command won't be loaded when the bot is launched without database, and will be dynamically disabled if the connection is lost with the database at some point in the run (and re-enabled once the connection is back) |
 | disabled | <code>boolean OR string</code> | Whether the command is disabled, if false, the command is called as expected, otherwise, the value is expected to be a string and the command handler won't run the command. It will instead state to the user that the command is disabled, and print the value as the reason |
 | aliases | <code>array[string]</code> | An array of aliases to this command |
-| requirePerms | <code>array[string]</code> | An array of permissions (like `manageMessages`) that the bot needs for the command to work perfectly, the command 
-won't be triggered if the bot hasn't one of the permissions in the array |
+| requirePerms | <code>array[string]</code> | An array of permissions (like `manageMessages`) that the bot needs for the command to work perfectly, the command won't be triggered if the bot hasn't one of the permissions in the array |
 | guildOnly | <code>boolean</code> | Whether this command can only be used in a guild |
 | ownerOnly | <code>boolean</code> | Whether this command can only be used by the owner set in the config file |
 | expectedArgs | <code>array<[expected arg](#expected-arg)></code> | An array of arguments the command expect, if you set it, whenever a user trigger the command without arguments, the command handler will query the user for each expected argument |
@@ -75,9 +76,13 @@ Note that the `expectedArgs` property is extremely powerful and will affect the 
 
 | Property | Data Type | Description |
 | --- | --- | --- |
-| name | <code>string</code> | The name of the value, it defines what the command handler should expect, if the user input does not match with the name, they will 
-be prompted again. To accept any value, this should be `*` |
+| name | <code>string</code> | The name of the value, it defines what the command handler should expect, if the user input does not match with the name, they will be prompted again. To accept any value, this should be `*` |
 | interpretAs | <code>string</code> | This is especially helpful when the syntax of the command isn't how you would humanly prompt a user, this define what exactly will be pushed in the `args` array, note that `{value}` will be replaced by value. If `false`, it won't be pushed into the `args` array |
+
+## extra
+
+This property is entirely optional, it may be of whatever data type, it is just if you want to have other properties for use by the command itself, they should be 
+under `<Command>.extra` so they're easily accessible and to be consistent with the other commands which do that
 
 ## run function
 
