@@ -17,7 +17,7 @@ class Sinfo extends Command {
             disabled: false,
             aliases: ['serverinfo'],
             requirePerms: [],
-            guildOnly: false,
+            guildOnly: true,
             ownerOnly: false,
             expectedArgs: []
         };
@@ -25,64 +25,65 @@ class Sinfo extends Command {
 
     async run(client, message) {
         const embedFields = [{
-            name: 'Name',
-            value: message.guild.name,
-            inline: true
-        },
-        {
-            name: 'ID',
-            value: message.guild.id,
-            inline: true
-        },
-        {
-            name: 'Created the',
-            value: TimeConverter.toHumanDate(message.guild.createdAt, true)
-        },
-        {
-            name: 'I\'m here since the',
-            value: TimeConverter.toHumanDate(message.guild.joinedAt, true)
-        },
-        {
-            name: 'Owner',
-            value: `<@${message.guild.ownerID}> ${message.guild.members.has(message.guild.ownerID) ? '(' + message.guild.members.get(message.guild.ownerID).tag + ')' : ''}`,
-            inline: true
-        },
-        {
-            name: 'Region',
-            value: message.guild.region,
-            inline: true
-        },
-        {
-            name: 'Members',
-            value: message.guild.memberCount
-        },
-        {
-            name: 'Shard',
-            value: message.guild.shard.id,
-            inline: true
-        },
-        {
-            name: 'Latest members',
-            value: Array.from(message.guild.members.values()).sort((a, b) => b.joinedAt - a.joinedAt).map(m => m.tag).splice(0, 5).join(` > `)
-        },
-        {
-            name: 'Text channels / Voice channels',
-            value: `${message.guild.channels.filter(c => c.type === 0).size} / ${message.guild.channels.filter(c => c.type === 2).size}`,
-            inline: true
-        }, {
-            name: '2FA',
-            value: message.guild.mfaLevel === 0 ? `:x:` : `:white_check_mark:`,
-            inline: true
-        }, {
-            name: 'Roles',
-            value: message.guild.roles.size
-        }];
+                name: 'Name',
+                value: message.channel.guild.name,
+                inline: true
+            },
+            {
+                name: 'ID',
+                value: message.channel.guild.id,
+                inline: true
+            },
+            {
+                name: 'Created the',
+                value: TimeConverter.toHumanDate(message.channel.guild.createdAt, true)
+            },
+            {
+                name: 'I\'m here since the',
+                value: TimeConverter.toHumanDate(message.channel.guild.joinedAt, true)
+            },
+            {
+                name: 'Owner',
+                value: `<@!${message.channel.guild.ownerID}>`,
+                inline: true
+            },
+            {
+                name: 'Region',
+                value: message.channel.guild.region,
+                inline: true
+            },
+            {
+                name: 'Members',
+                value: message.channel.guild.memberCount
+            },
+            {
+                name: 'Shard',
+                value: message.channel.guild.shard.id,
+                inline: true
+            },
+            {
+                name: 'Latest members',
+                value: Array.from(message.channel.guild.members.values()).sort((a, b) => b.joinedAt - a.joinedAt).map(m => `<@!${m.id}>`).splice(0, 5).join(` > `)
+            },
+            {
+                name: 'Text channels / Voice channels',
+                value: `${message.channel.guild.channels.filter(c => c.type === 0).length} / ${message.channel.guild.channels.filter(c => c.type === 2).length}`,
+                inline: true
+            }, {
+                name: '2FA',
+                value: message.channel.guild.mfaLevel === 0 ? `:x:` : `:white_check_mark:`,
+                inline: true
+            }, {
+                name: 'Roles',
+                value: message.channel.guild.roles.size
+            }
+        ];
         message.channel.createMessage({
             embed: {
-                title: `${message.guild.name}'s info`,
+                title: `${message.channel.guild.name}'s info`,
                 fields: embedFields,
                 image: {
-                    url: message.guild.iconURL ? message.guild.iconURL : undefined
+                    url: message.channel.guild.iconURL ? message.channel.guild.iconURL : undefined
                 }
             }
         });

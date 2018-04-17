@@ -23,7 +23,7 @@ class Invite extends Command {
     }
 
     async run(client, message) {
-        message.channel.createMessage(`Here's my invite link :wave: <https://discordapp.com/oauth2/authorize?&client_id=${client.user.id}&scope=bot&permissions=2146950271> \nPlease remember that I might not work perfectly if I dont have all permissions~`);
+        message.channel.createMessage(`Here's my invite link :wave: <https://discordapp.com/oauth2/authorize?&client_id=${client.bot.user.id}&scope=bot&permissions=2146950271> \nPlease remember that I might not work perfectly if I dont have all permissions~`);
     }
 }
 

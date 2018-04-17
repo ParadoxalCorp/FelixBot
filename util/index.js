@@ -10,6 +10,8 @@ module.exports = (client) => {
         reloader: new(require('./helpers/reloader'))(client),
         getRandomNumber: require('./modules/getRandomNumber'),
         redact: require('./helpers/redact').bind(null, client),
-        economyManager: new(require('./helpers/economyManager'))(client)
+        economyManager: new(require('./helpers/economyManager'))(client),
+        paginate: require('./modules/paginate'),
+        reactionCollector: new(require('./helpers/reactionCollector'))(client.bot)
     };
 };

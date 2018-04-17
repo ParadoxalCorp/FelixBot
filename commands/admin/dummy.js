@@ -22,8 +22,10 @@ class Dummy extends Command {
         };
     }
 
-    async run(client, message, args) {
-        console.log("uwu");
+    async run(client, message) {
+        const { inspect } = require('util');
+        const reaction = await client.reactionCollector.awaitReaction(message.channel.id, message.id, message.author.id);
+        return message.channel.createMessage('```js\n' + inspect(reaction, { depth: 2 }) + '```');
     }
 }
 
