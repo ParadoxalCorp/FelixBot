@@ -12,6 +12,8 @@ module.exports = (client) => {
         redact: require('./helpers/redact').bind(null, client),
         economyManager: new(require('./helpers/economyManager'))(client),
         paginate: require('./modules/paginate'),
-        reactionCollector: new(require('./helpers/reactionCollector'))(client.bot)
+        reactionCollector: new(require('./helpers/reactionCollector'))(client.bot),
+        traverse: require('./modules/traverse'),
+        interactiveList: new(require('./helpers/interactiveList'))(client)
     };
 };
