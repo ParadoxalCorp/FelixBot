@@ -8,9 +8,7 @@ function paginate(array, size) {
     let result = [];
     let j = 0;
     for (let i = 0; i < Math.ceil(array.length / (size || 10)); i++) {
-        let builtPage = [];
-        builtPage.push(array.slice(j, j + (size || 10)));
-        result.push(builtPage);
+        result.push(array.slice(j, j + (size || 10)));
         j = j + (size || 10);
     }
     return result;

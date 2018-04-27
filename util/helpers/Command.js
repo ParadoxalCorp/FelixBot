@@ -325,6 +325,27 @@ class Command {
 
         return args;
     }
+
+    /**
+     * Resolve a user from a user resolvable and returns an extended user
+     * Note that if the user is not found, only username, discriminator and tag are guaranteed (set to unknown) 
+     * @param {*} client - The client instance
+     * @param {*} userResolvable - A user resolvable, can be an ID, a username#discriminator pattern or a user object
+     * @returns {extendedUser} returns an extended user object
+     */
+    resolveUser(client, userResolvable) {
+        const defaultUser = { username: 'Unknown', discriminator: 'Unknown' };
+        if (!isNaN(userResolvable)) {
+            const user = client.bot.users.get(userResolvable);
+            return client.extendedUser(user ? user : defaultUser);
+        } else if (typeof userResolvable === 'string') {
+            const spliced = userResolvable.split('#');
+            const user = client.bot.users.filter(u => u.username === spliced[0] && u.discriminator === spliced[1]).random();
+            return client.extendedUser(user ? user : defaultUser);
+        } else if (typeof userResolvable === 'object') {
+            return client.extendedUser(user);
+        }
+    }
 }
 
 module.exports = Command;

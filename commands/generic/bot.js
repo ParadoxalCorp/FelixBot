@@ -25,6 +25,34 @@ class Bot extends Command {
     }
 
     async run(client, message) {
+        if (client.bot.uptime < 60000) {
+            return message.channel.createMessage(':x: I am still booting up ! Please try again in a minute');
+        }
+        return this.sendStats(client, message);
+    }
+
+    sendStats(client, message) {
+        return message.channel.createMessage({
+            embed: {
+                thumbnail: {
+                    url: client.bot.user.avatarURL
+                },
+                color: client.config.options.embedColor,
+                author: {
+                    name: "Requested by: " + message.author.username + "#" + message.author.discriminator,
+                    icon_url: message.author.avatarURL
+                },
+                fields: this.buildEmbedFields(client, message),
+                timestamp: new Date(),
+                footer: {
+                    icon_url: client.bot.user.avatarURL,
+                    text: message.channel.guild.name
+                }
+            }
+        });
+    }
+
+    buildEmbedFields(client, message) {
         let embedFields = [];
         embedFields.push({
             name: ":desktop: Servers/Guilds",
@@ -56,7 +84,7 @@ class Bot extends Command {
             value: client.bot.users.size,
             inline: true
         });
-        let uptime = TimeConverter.toElapsedTime(client.uptime);
+        let uptime = TimeConverter.toElapsedTime(client.bot.uptime);
         embedFields.push({
             name: ":timer: Uptime",
             value: `${uptime.days}d ${uptime.hours}h ${uptime.minutes}m ${uptime.seconds}s`,
@@ -100,32 +128,15 @@ class Bot extends Command {
         embedFields.push({
             name: `:gear: Shard`,
             value: (() => {
-                let shardsCount = 0;
+                let shardCount = 0;
                 for (const cluster of client.stats.clusters) {
-                    shardsCount = shardCount + cluster.shards;
+                    shardCount = shardCount + cluster.shards;
                 }
-                return shardsCount;
+                return `${message.channel.guild.shard.id}/${shardCount}`;
             })(),
             inline: true
         });
-        return message.channel.createMessage({
-            embed: {
-                thumbnail: {
-                    url: client.bot.user.avatarURL
-                },
-                color: client.config.options.embedColor,
-                author: {
-                    name: "Requested by: " + message.author.username + "#" + message.author.discriminator,
-                    icon_url: message.author.avatarURL
-                },
-                fields: embedFields,
-                timestamp: new Date(),
-                footer: {
-                    icon_url: client.bot.user.avatarURL,
-                    text: message.channel.guild.name
-                }
-            }
-        });
+        return embedFields;
     }
 }
 

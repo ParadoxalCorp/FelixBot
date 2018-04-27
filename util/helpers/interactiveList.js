@@ -32,9 +32,9 @@ class InteractiveList {
         }
         let page = 0;
 
-        this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID)
+        this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID, params.timeout, params.filter)
             .then(r => {
-                return this._handleReaction(params, r, page);
+                return this._handleReaction(params, r, page, message, paginatedMessages);
             });
     }
 
@@ -46,23 +46,26 @@ class InteractiveList {
     _replacePageTags(messages) {
         const index = new RegExp(/{index}/gim);
         let page = 1;
-        for (const message in messages) {
+        messages = messages.map(message => {
             if (typeof message === "object") {
                 message = this.client.traverse(message, (value) => {
                     if (Array.isArray(value)) {
-                        for (const field of value) {
-                            field.name.replace(index, page);
-                            field.value.replace(index, page);
-                        }
+                        value = value.map(field => {
+                            field.name = field.name.replace(index, page);
+                            field.value = field.value.replace(index, page);
+                            return field;
+                        });
                     } else {
-                        value.replace(index, page);
+                        value = value.replace(index, page);
                     }
+                    return value;
                 });
             } else {
                 message = message.replace(index, page);
             }
             page++;
-        }
+            return message;
+        });
 
         return messages;
     }
@@ -72,29 +75,33 @@ class InteractiveList {
      * @param {object} params - The object of parameters
      * @param {object} reaction - The reaction object given by the reaction collector
      * @param {number} page - The current page
+     * @param {object} message - The message
+     * @param {array} paginatedMessages - The messages with replaced page tags
      * @private
      * @returns {Promise<void>} Returns a promise with no particular value
      */
-    async _handleReaction(params, reaction, page) {
+    async _handleReaction(params, reaction, page, message, paginatedMessages) {
+        reaction ? message.removeReaction(reaction.emoji.name, params.userID).catch() : 'baguette';
         if (!reaction) {
+            message.delete().catch();
             return;
         } else if (reaction.emoji.name === '◀') {
             page = page === 0 ? paginatedMessages.length - 1 : page - 1;
             await message.edit(paginatedMessages[page]);
-            return this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID)
-                .then(r => handleReaction(params, r, page));
+            return this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID, params.timeout, params.filter)
+                .then(r => this._handleReaction(params, r, page, message, paginatedMessages));
         } else if (reaction.emoji.name === '▶') {
             page = page === paginatedMessages.length - 1 ? 0 : page + 1;
             await message.edit(paginatedMessages[page]);
-            return this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID)
-                .then(r => handleReaction(params, r, page));
+            return this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID, params.timeout, params.filter)
+                .then(r => this._handleReaction(params, r, page, message, paginatedMessages));
         } else if (reaction.emoji.name === '❌') {
             message.delete().catch();
             return;
         } else if (params.reactions && params.reactions.map(r => r.unicode).includes(reactions.emoji.name)) {
             await params.reactions.find(r => r.unicode === reaction.emoji.name).callback(params.messages[page], reaction);
-            return this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID)
-                .then(r => handleReaction(params, r, page));
+            return this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID, params.timeout, params.filter)
+                .then(r => this._handleReaction(params, r, page, message, paginatedMessages));
         }
     }
 }

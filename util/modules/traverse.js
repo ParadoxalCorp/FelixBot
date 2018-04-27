@@ -7,14 +7,14 @@
  * @returns {object} - The given object
  */
 const traverse = (object, callback) => {
-    for (const key of object) {
-        if (typeof object[key] !== object || Array.isArray(object[key])) {
-            callback(object[key]);
+    for (const key in object) {
+        if (typeof object[key] !== 'object' || Array.isArray(object[key])) {
+            object[key] = callback(object[key]);
         } else {
             traverse(object[key], callback);
         }
     }
     return object;
-}
+};
 
 module.exports = traverse;
