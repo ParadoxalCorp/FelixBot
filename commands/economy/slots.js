@@ -9,7 +9,7 @@ class Slots extends Command {
             name: 'slots',
             description: 'Gamble your holy coins on your luck, and if you dont have any luck, well, good luck.\n\nYou can use the `--noEmbed` option to send the slots results without an embed, like `{prefix} slots 200 --noEmbed`. Note that this option is case-insensitive',
             usage: 'slots <coins>',
-            category: "fun"
+            category: "economy"
         };
         this.conf = {
             requireDB: true,
@@ -72,7 +72,7 @@ class Slots extends Command {
         }
         const randomSlotsEvent = client.getRandomNumber(0, 5) === 1 ? true : false;
         const coinsChange = gambledCoins * (slots.match[0].multiplier * (slots.match.length - 1));
-        if (randomSlotsEvent) {
+        if (randomSlotsEvent && client.config.options.economyEvents.slotsEvents) {
             return this.runRandomSlotsEvent(client, message, userEntry, slots, coinsChange);
         } else if (coinsChange < 0) {
             return this.outputLostGamble(client, message, userEntry, slots, coinsChange);
@@ -83,7 +83,9 @@ class Slots extends Command {
 
     runSlots(client) {
         const getLine = () => { return this.extra.slotsOutputs[client.getRandomNumber(0, this.extra.slotsOutputs.length - 1)]; };
-        const results = [getLine(), getLine(), getLine()];
+        const results = [getLine()];
+        //Increase the chances of having a two-lines match
+        results.push(client.getRandomNumber(0, 5) !== 0 ? results[0] : getLine(), getLine());
 
         return {
             getLine: getLine,

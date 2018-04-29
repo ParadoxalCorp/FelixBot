@@ -7,14 +7,14 @@ class Balance extends Command {
         super();
         this.help = {
             name: 'balance',
-            category: 'fun',
+            category: 'economy',
             description: 'Check your balance',
             usage: '{prefix} balance'
         };
         this.conf = {
             requireDB: true,
             disabled: false,
-            aliases: [],
+            aliases: ['coins'],
             requirePerms: [],
             guildOnly: false,
             ownerOnly: false,

@@ -7,7 +7,7 @@ class Give extends Command {
         super();
         this.help = {
             name: 'give',
-            category: 'fun',
+            category: 'economy',
             description: 'Give some of your holy coins to the specified user',
             usage: '{prefix} give <user> <coins>'
         };

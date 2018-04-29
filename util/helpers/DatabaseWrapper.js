@@ -66,7 +66,7 @@ class DatabaseWrapper {
                 if (data.type === "remove") {
                     this.users.delete(data.old_val.id);
                 } else {
-                    this.users.set(data.new_val.id, data.new_val);
+                    this.users.set(data.new_val.id, new this.client.extendedUserEntry(data.new_val));
                 }
             });
 
@@ -117,11 +117,11 @@ class DatabaseWrapper {
     getUser(id) {
         return new Promise(async(resolve, reject) => {
             if (this.users.has(id)) {
-                return resolve(this._updateDataModel(this.users.get(id), 'user'));
+                return resolve(new this.client.extendedUserEntry(this._updateDataModel(this.users.get(id)), 'user'));
             }
             this.userData.get(id).run()
                 .then(data => {
-                    resolve(data ? this._updateDataModel(data, 'user') : null);
+                    resolve(data ? new this.client.extendedUserEntry(this._updateDataModel(data, 'user')) : null);
                 })
                 .catch(err => {
                     reject(err);
@@ -177,6 +177,9 @@ class DatabaseWrapper {
                 return reject(`Missing arguments, both the data and type parameters are needed`);
             }
             type = type === "guild" ? "guildData" : "userData";
+            if (data instanceof this.client.extendedUserEntry) {
+                data = JSON.parse(data.toJSON());
+            }
             this[type].get(data.id).replace(data, { returnChanges: "always" }).run()
                 .then(result => {
                     this[type === "guild" ? "guilds" : "users"].set(data.id, data);

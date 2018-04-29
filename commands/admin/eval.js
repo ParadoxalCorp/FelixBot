@@ -23,7 +23,7 @@ class Eval extends Command {
         };
     }
 
-    async run(client, message, args) {
+    async run(client, message, args, guildEntry, userEntry) {
         if (!args[0]) {
             return message.channel.createMessage('baguette tbh');
         }

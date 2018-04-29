@@ -59,7 +59,7 @@ class InteractiveList {
                         value = value.replace(index, page);
                     }
                     return value;
-                });
+                }, ["item"]);
             } else {
                 message = message.replace(index, page);
             }
@@ -98,8 +98,8 @@ class InteractiveList {
         } else if (reaction.emoji.name === '❌') {
             message.delete().catch();
             return;
-        } else if (params.reactions && params.reactions.map(r => r.unicode).includes(reactions.emoji.name)) {
-            await params.reactions.find(r => r.unicode === reaction.emoji.name).callback(params.messages[page], reaction);
+        } else if (params.reactions && params.reactions.map(r => r.unicode).includes(reaction.emoji.name)) {
+            await params.reactions.find(r => r.unicode === reaction.emoji.name).callback(message, params.messages[page], reaction);
             return this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID, params.timeout, params.filter)
                 .then(r => this._handleReaction(params, r, page, message, paginatedMessages));
         }

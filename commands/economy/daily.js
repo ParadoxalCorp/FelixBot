@@ -7,7 +7,7 @@ class Daily extends Command {
         super();
         this.help = {
             name: 'daily',
-            category: 'fun',
+            category: 'economy',
             description: 'Get your daily holy coins',
             usage: '{prefix} daily'
         };

@@ -71,7 +71,19 @@ class References {
             to: data.to,
             reason: data.reason,
             date: Date.now()
-        }
+        };
+    }
+
+    /**
+     * 
+     * @param {object} item - The item
+     * @returns {{id: number, count: number}} The item database entry
+     */
+    item(item) {
+        return {
+            id: item.id,
+            count: 1
+        };
     }
 
 }

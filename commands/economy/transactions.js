@@ -7,7 +7,7 @@ class Transactions extends Command {
         super();
         this.help = {
             name: 'transactions',
-            category: 'fun',
+            category: 'economy',
             description: 'See the 10 latest transactions of your account',
             usage: '{prefix} transactions'
         };

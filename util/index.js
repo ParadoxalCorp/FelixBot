@@ -15,6 +15,7 @@ module.exports = (client) => {
         reactionCollector: new(require('./helpers/reactionCollector'))(client.bot),
         traverse: require('./modules/traverse'),
         interactiveList: new(require('./helpers/interactiveList'))(client),
-        extendedUser: require('./helpers/extendedUser')
+        extendedUser: require('./helpers/extendedUser'),
+        extendedUserEntry: require('./helpers/extendedUserEntry')
     };
 };
