@@ -50,6 +50,26 @@ class ExtendedUserEntry {
     }
 
     /**
+     * Quickly compare the current timestamp with the cooldown to see if the user is in cooldown
+     * @param {string} cooldown - The name of the cooldown
+     * @return {boolean} Whether or not the user is in cooldown
+     */
+    isInCooldown(cooldown) {
+        return this.cooldowns[cooldown] > Date.now();
+    }
+
+    /**
+     * Add a cooldown to the user
+     * @param {string} cooldown - The name of the cooldown
+     * @param {number} duration - The duration in milliseconds of the cooldown
+     * @returns {number} The timestamp at which the cooldown will expire
+     */
+    addCooldown(cooldown, duration) {
+        this.cooldowns[cooldown] = Date.now() + duration;
+        return this.cooldowns[cooldown];
+    }
+
+    /**
      * Should be JSON.stringify() but for some reason it doesn't work, so it does shit that works
      * @returns {*} - The stringified object
      */

@@ -14,6 +14,7 @@ class EconomyManager {
         this.client = client;
         this.marketItems = require('./marketItems');
         this.slotsEvents = require('./slotsEvents')(this);
+        this.dailyEvents = require('./dailyEvents')(this);
     }
 
     /**
