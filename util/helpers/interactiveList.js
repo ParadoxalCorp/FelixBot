@@ -56,7 +56,9 @@ class InteractiveList {
                             return field;
                         });
                     } else {
-                        value = value.replace(index, page);
+                        if (typeof value === 'string') {
+                            value = value.replace(index, page);
+                        }
                     }
                     return value;
                 }, ["item"]);
@@ -81,7 +83,7 @@ class InteractiveList {
      * @returns {Promise<void>} Returns a promise with no particular value
      */
     async _handleReaction(params, reaction, page, message, paginatedMessages) {
-        reaction ? message.removeReaction(reaction.emoji.name, params.userID).catch() : 'baguette';
+        reaction ? message.removeReaction(reaction.emoji.name, params.userID).catch(() => {}) : 'baguette';
         if (!reaction) {
             message.delete().catch();
             return;

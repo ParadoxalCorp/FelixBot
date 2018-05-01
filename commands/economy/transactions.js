@@ -55,7 +55,8 @@ class Transactions extends Command {
                     })(),
                     footer: {
                         text: `Showing page ${!splicedTransactions[1] ? '1/1' : '{index}/' + splicedTransactions.length }`
-                    }
+                    },
+                    color: client.config.options.embedColor
                 }
             };
         });

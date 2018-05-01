@@ -26,7 +26,7 @@ class Daily extends Command {
         if (userEntry.isInCooldown('dailyCooldown')) {
             return message.channel.createMessage(`Ahhh, i am very sorry but you still have to wait \`${client.timeConverter.toElapsedTime(userEntry.cooldowns.dailyCooldown - Date.now(), true)}\` before using daily again`);
         }
-        let randomEvent = client.config.options.economyEvents.dailyEvents ? client.getRandomNumber(0, 4) === 0 : false;
+        let randomEvent = client.config.options.economyEvents.dailyEvents ? client.getRandomNumber(0, 100) < client.config.options.economyEvents.dailyEventsRate : false;
         if (randomEvent) {
             randomEvent = this.runRandomDailyEvent(client, message, userEntry);
         } else {
@@ -41,7 +41,11 @@ class Daily extends Command {
         const dailyEvent = client.economyManager.dailyEvents[client.getRandomNumber(0, client.economyManager.dailyEvents.length - 1)];
         const eventCoinsChangeRate = Array.isArray(dailyEvent.changeRate) ? client.getRandomNumber(dailyEvent.changeRate[0], dailyEvent.changeRate[1]) : dailyEvent.changeRate;
         const eventCoinsChange = Math.abs(client.config.options.dailyCoins / 100 * eventCoinsChangeRate);
-        const conditionalVariant = dailyEvent.conditionalVariants.filter(v => v.condition(userEntry))[0];
+        const conditionalVariant = (() => {
+            const conditionalVariants = dailyEvent.conditionalVariants.filter(v => v.condition(userEntry));
+            const randomVariant = conditionalVariants[client.getRandomNumber(0, conditionalVariants.length - 1)];
+            return randomVariant && randomVariant.context ? randomVariant.context(userEntry) : randomVariant;
+        })();
         const conditionalVariantSuccess = conditionalVariant ? client.getRandomNumber(0, 100) < conditionalVariant.successRate : false;
         let resultText = 'Hai ! Here\'s your daily holy coins... Wait... ';
         if (conditionalVariant) {
@@ -52,9 +56,9 @@ class Daily extends Command {
         const coinsChange = conditionalVariantSuccess ? client.config.options.dailyCoins : eventCoinsChangeRate > 0 ? client.config.options.dailyCoins + eventCoinsChange : client.config.options.dailyCoins - eventCoinsChange;
         resultText += `\n\n\`${Math.abs(coinsChange)}\` holy coins have been ${coinsChange > 0 ? 'credited to' : 'debited from'} your account, you now have \`${userEntry.economy.coins + coinsChange}\` holy coins`;
         if (coinsChange < 0) {
-            userEntry.addCoins(coinsChange);
+            userEntry.addCoins(Math.ceil(coinsChange));
         } else {
-            userEntry.subtractCoins(coinsChange);
+            userEntry.subtractCoins(Math.ceil(coinsChange));
         }
         return {
             text: resultText,

@@ -30,7 +30,11 @@ module.exports = {
         coinsLimit: 100000000000000000000,
         economyEvents: {
 			slotsEvents: true,
-			dailyEvents: true
+			dailyEvents: true,
+            //Chances out of 100 that a daily event will occur when using daily
+            dailyEventsRate: 50,
+            //Chances out of 100 that a slots event will occur when using slots
+            slotsEventsRate: 35
 		}
     }
 };

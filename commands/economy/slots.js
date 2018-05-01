@@ -70,7 +70,7 @@ class Slots extends Command {
         if (!slots.match) {
             return this.sendResults(client, message, slots, "**Nothing**, you don't lose nor win any holy coins, everyone's happy right?");
         }
-        const randomSlotsEvent = client.getRandomNumber(0, 5) === 1 ? true : false;
+        const randomSlotsEvent = client.getRandomNumber(0, 100) < client.config.options.economyEvents.slotsEventsRate;
         const coinsChange = gambledCoins * (slots.match[0].multiplier * (slots.match.length - 1));
         if (randomSlotsEvent && client.config.options.economyEvents.slotsEvents) {
             return this.runRandomSlotsEvent(client, message, userEntry, slots, coinsChange);
@@ -126,6 +126,7 @@ class Slots extends Command {
     }
 
     async outputWonGamble(client, message, userEntry, slots, wonCoins, randomEvent) {
+        wonCoins = Math.ceil(wonCoins);
         userEntry.economy.coins = (userEntry.economy.coins + wonCoins) >= client.config.options.coinsLimit ?
             client.config.options.coinsLimit : userEntry.economy.coins + wonCoins;
         await client.database.set(userEntry, "user");
@@ -137,7 +138,11 @@ class Slots extends Command {
         const slotsEvent = filteredSlotsEvents[client.getRandomNumber(0, filteredSlotsEvents.length - 1)];
         const eventCoinsChangeRate = Array.isArray(slotsEvent.changeRate) ? client.getRandomNumber(slotsEvent.changeRate[0], slotsEvent.changeRate[1]) : slotsEvent.changeRate;
         const eventCoinsChange = Math.abs(coinsChange / 100 * eventCoinsChangeRate);
-        const conditionalVariant = slotsEvent.conditionalVariants.filter(v => v.condition(userEntry))[0];
+        const conditionalVariant = (() => {
+            const conditionalVariants = slotsEvent.conditionalVariants.filter(v => v.condition(userEntry));
+            const randomVariant = conditionalVariants[client.getRandomNumber(0, conditionalVariants.length - 1)];
+            return randomVariant && randomVariant.context ? randomVariant.context(userEntry) : randomVariant;
+        })();
         const conditionalVariantSuccess = conditionalVariant ? client.getRandomNumber(0, 100) < conditionalVariant.successRate : false;
         let resultText;
         let targetFunc;

@@ -13,8 +13,8 @@ class EconomyManager {
     constructor(client) {
         this.client = client;
         this.marketItems = require('./marketItems');
-        this.slotsEvents = require('./slotsEvents')(this);
-        this.dailyEvents = require('./dailyEvents')(this);
+        this.slotsEvents = require('./slotsEvents')(client, this);
+        this.dailyEvents = require('./dailyEvents')(client, this);
     }
 
     /**

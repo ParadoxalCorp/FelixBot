@@ -51,7 +51,11 @@ class Market extends Command {
                     }],
                     footer: {
                         text: `Showing page {index}/${client.economyManager.marketItems.length} ${client.config.admins.includes(message.author.id) ? '| Item ID: ' + item.id : ''}`
-                    }
+                    },
+                    image: {
+                        url: item.image
+                    },
+                    color: client.config.options.embedColor
 
                 },
                 item: item //Will be used by buyItem
