@@ -36,5 +36,11 @@ module.exports = {
             //Chances out of 100 that a slots event will occur when using slots
             slotsEventsRate: 35
 		}
+    },
+	process: {
+        guildsPerShards: 1750,
+        shards: 1,
+        clusters: 1,
+        debug: true
     }
 };

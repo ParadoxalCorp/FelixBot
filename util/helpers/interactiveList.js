@@ -85,7 +85,7 @@ class InteractiveList {
     async _handleReaction(params, reaction, page, message, paginatedMessages) {
         reaction ? message.removeReaction(reaction.emoji.name, params.userID).catch(() => {}) : 'baguette';
         if (!reaction) {
-            message.delete().catch();
+            message.delete().catch(() => {});
             return;
         } else if (reaction.emoji.name === '◀') {
             page = page === 0 ? paginatedMessages.length - 1 : page - 1;
@@ -98,7 +98,7 @@ class InteractiveList {
             return this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID, params.timeout, params.filter)
                 .then(r => this._handleReaction(params, r, page, message, paginatedMessages));
         } else if (reaction.emoji.name === '❌') {
-            message.delete().catch();
+            message.delete().catch(() => {});
             return;
         } else if (params.reactions && params.reactions.map(r => r.unicode).includes(reaction.emoji.name)) {
             await params.reactions.find(r => r.unicode === reaction.emoji.name).callback(message, params.messages[page], reaction);

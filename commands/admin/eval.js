@@ -27,14 +27,19 @@ class Eval extends Command {
         if (!args[0]) {
             return message.channel.createMessage('baguette tbh');
         }
+        let toEval = args.join('');
+        const parsedArgs = client.commands.get('reload').parseArguments(args);
+        for (const arg in parsedArgs) {
+            toEval = toEval.replace(`--${arg + (typeof parsedArgs[arg] !== 'boolean' ? '=' + parsedArgs[arg] : '')}`, '');
+        }
         try {
-            let evaluated = new RegExp(/--await/gim).test(message.content) ? await eval(args.join(" ").split("--await")[0]) : eval(args.join(" "));
+            let evaluated = parsedArgs['await'] ? await eval(toEval) : eval(toEval);
             throw evaluated;
         } catch (err) {
-
+            //+!(inspect(err, { depth: parsedArgs['depth'] ? parseInt(parsedArgs['depth']) : 1 }).length > 1990)
             if (typeof err !== 'string') {
                 err = inspect(err, {
-                    depth: +!(inspect(err, { depth: 1 }).length > 1990), // Results in either 0 or 1
+                    depth: parsedArgs['depth'] ? parseInt(parsedArgs['depth']) : 1, // Results in either 0 or 1
                     showHidden: true
                 });
             }

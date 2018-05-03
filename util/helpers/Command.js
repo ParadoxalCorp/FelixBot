@@ -285,14 +285,14 @@ class Command {
             const queryMsg = ongoingQuery || await message.channel.createMessage('Hoi ! Seems like you forgot a parameter for this command, note that you can cancel this query anytime by replying `cancel`\n\n' + arg.description);
             const response = await client.messageCollector.awaitMessage(message.channel.id, message.author.id);
             if (!response || response.content.toLowerCase() === "cancel") {
-                queryMsg.delete().catch();
+                queryMsg.delete().catch(() => {});
                 return false;
             }
             if (arg.possibleValues && !arg.possibleValues.filter(value => value.name === "*" || value.name.toLowerCase() === response.content.toLowerCase())[0]) {
                 message.channel.createMessage(':x: This is not a valid answer, please reply again with a valid answer')
                     .then(m => {
                         setTimeout(() => {
-                            m.delete().catch();
+                            m.delete().catch(() => {});
                         }, 5000);
                     });
                 queryArg(arg, queryMsg)
@@ -300,7 +300,7 @@ class Command {
                         return r;
                     });
             } else {
-                queryMsg.delete().catch();
+                queryMsg.delete().catch(() => {});
                 const value = arg.possibleValues ? arg.possibleValues.find(value => value.name.toLowerCase() === response.content.toLowerCase() || value.name === '*') : false;
                 return value ? (value.interpretAs === false ? undefined : value.interpretAs.replace(/{value}/gim, response.content.toLowerCase())) : response.content;
             }
@@ -314,7 +314,7 @@ class Command {
                         return false;
                     });
                 if (query === false) {
-                    message.channel.createMessage(':x: Command aborted').catch();
+                    message.channel.createMessage(':x: Command aborted').catch(() => {});
                     return false;
                 }
                 if (query !== undefined) {

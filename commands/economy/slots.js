@@ -70,7 +70,7 @@ class Slots extends Command {
         if (!slots.match) {
             return this.sendResults(client, message, slots, "**Nothing**, you don't lose nor win any holy coins, everyone's happy right?");
         }
-        const randomSlotsEvent = client.getRandomNumber(0, 100) < client.config.options.economyEvents.slotsEventsRate;
+        const randomSlotsEvent = client.getRandomNumber(1, 100) <= client.config.options.economyEvents.slotsEventsRate;
         const coinsChange = gambledCoins * (slots.match[0].multiplier * (slots.match.length - 1));
         if (randomSlotsEvent && client.config.options.economyEvents.slotsEvents) {
             return this.runRandomSlotsEvent(client, message, userEntry, slots, coinsChange);
