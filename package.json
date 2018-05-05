@@ -18,5 +18,8 @@
         "google-translate-api": "^2.3.0",
         "moment": "^2.22.1",
         "rethinkdbdash": "^2.3.31"
+    },
+    "optionalDependencies": {
+        "raven": "^2.6.0"
     }
 }
