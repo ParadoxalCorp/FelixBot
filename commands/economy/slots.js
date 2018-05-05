@@ -1,6 +1,6 @@
 'use strict';
 
-const Command = require('../../util/helpers/Command');
+const Command = require('../../util/helpers/modules/Command');
 
 class Slots extends Command {
     constructor() {
@@ -18,7 +18,8 @@ class Slots extends Command {
             requirePerms: [],
             guildOnly: false,
             ownerOnly: false,
-            expectedArgs: []
+            expectedArgs: [],
+            cooldownWeight: 2
         };
         this.extra = {
             slotsOutputs: [{

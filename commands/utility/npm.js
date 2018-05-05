@@ -1,6 +1,6 @@
 'use strict';
 
-const Command = require('../../util/helpers/Command');
+const Command = require('../../util/helpers/modules/Command');
 const axios = require('axios');
 const moment = require('moment');
 

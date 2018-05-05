@@ -1,21 +1,22 @@
 module.exports = (client) => {
     return {
-        database: process.argv.includes('--no-db') ? false : new(require('./helpers/DatabaseWrapper'))(client),
-        refs: require('./helpers/references'),
+        database: process.argv.includes('--no-db') ? false : new(require('./helpers/modules/DatabaseWrapper'))(client),
+        refs: require('./helpers/data/references'),
         log: require('./modules/log'),
         timeConverter: require('./modules/timeConverter'),
-        messageCollector: new(require('./helpers/messageCollector'))(client.bot),
-        IPCHandler: new(require('./helpers/IPCHandler'))(client),
+        messageCollector: new(require('./helpers/modules/messageCollector'))(client.bot),
+        IPCHandler: new(require('./helpers/modules/IPCHandler'))(client),
         sleep: require('./modules/sleep.js'),
-        reloader: new(require('./helpers/reloader'))(client),
+        reloader: new(require('./helpers/modules/reloader'))(client),
         getRandomNumber: require('./modules/getRandomNumber'),
-        redact: require('./helpers/redact').bind(null, client),
-        economyManager: new(require('./helpers/economyManager'))(client),
+        redact: require('./helpers/modules/redact').bind(null, client),
+        economyManager: new(require('./helpers/modules/economyManager'))(client),
         paginate: require('./modules/paginate'),
-        reactionCollector: new(require('./helpers/reactionCollector'))(client.bot),
+        reactionCollector: new(require('./helpers/modules/reactionCollector'))(client.bot),
         traverse: require('./modules/traverse'),
-        interactiveList: new(require('./helpers/interactiveList'))(client),
-        extendedUser: require('./helpers/extendedUser'),
-        extendedUserEntry: require('./helpers/extendedUserEntry')
+        interactiveList: new(require('./helpers/modules/interactiveList'))(client),
+        extendedUser: require('./helpers/modules/extendedUser'),
+        extendedUserEntry: require('./helpers/modules/extendedUserEntry'),
+        extendedGuildEntry: require('./helpers/modules/extendedGuildEntry')
     };
 };

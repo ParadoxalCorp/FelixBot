@@ -1,6 +1,6 @@
 'use strict';
 
-const Command = require('../../util/helpers/Command');
+const Command = require('../../util/helpers/modules/Command');
 
 class Invite extends Command {
     constructor() {

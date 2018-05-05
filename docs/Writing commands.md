@@ -114,7 +114,7 @@ For a very basic command, here's an example:
 ```js
 'use strict';
 
-const Command = require('../../util/helpers/Command');
+const Command = require('../../util/helpers/modules/Command');
 
 class Ping extends Command {
     constructor() {
@@ -149,7 +149,7 @@ For a more complicated command that takes full advantage of the command handler 
 ```js
 'use strict';
 
-const Command = require('../../util/helpers/Command');
+const Command = require('../../util/helpers/modules/Command');
 const { inspect } = require('util');
 
 class Reload extends Command {
