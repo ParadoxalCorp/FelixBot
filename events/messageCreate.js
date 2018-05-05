@@ -1,4 +1,6 @@
-const Command = new(require('../util/helpers/Command'));
+'use strict';
+
+const Command = new(require('../util/helpers/modules/Command'));
 
 class MessageHandler {
     constructor() {}
@@ -32,6 +34,9 @@ class MessageHandler {
         if (!memberHasPermissions) {
             return message.channel.createMessage(`:x: You don't have the permission to use this command`).catch(() => {});
         }
+        if (client.ratelimited.has(message.author.id) && client.ratelimited.get(message.author.id) >= 20) {
+            return message.channel.createMessage(':x: Hoi hoi chill a little, there, a 20 seconds cooldown for you :heart:');
+        }
         this.runCommand(client, message, command, databaseEntries);
     }
 
@@ -42,7 +47,7 @@ class MessageHandler {
         };
         const handleRejection = (err) => {
             client.bot.emit('error', err, message);
-        }
+        };
         if (!client.database || !client.database.healthy) {
             return databaseEntries;
         }
@@ -66,10 +71,7 @@ class MessageHandler {
         if (!databaseEntries.guild) {
             allowed = this._checkDefaultPermissions(client, message, command);
         } else {
-            allowed = await Command.memberHasPermissions(message.channel.guild.members.get(message.author.id), message.channel, command, client)
-                .catch(err => {
-                    client.bot.emit('error', err, message);
-                });
+            allowed = databaseEntries.guild.memberHasPermission(message.author.id, command, message.channel);
         }
         return allowed;
     }
@@ -127,8 +129,18 @@ class MessageHandler {
             .catch(err => {
                 client.bot.emit('error', err, message);
             });
+        const commandCooldownWeight = typeof command.conf.cooldownWeight === 'undefined' ? client.config.options.defaultCooldownWeight : command.conf.cooldownWeight;
+        client.ratelimited.set(message.author.id, client.ratelimited.get(message.author.id) ?
+            (client.ratelimited.get(message.author.id) + commandCooldownWeight) : commandCooldownWeight);
+        setTimeout(() => {
+            if (client.ratelimited.get(message.author.id) > commandCooldownWeight) {
+                client.ratelimited.set(message.author.id, client.ratelimited.get(message.author.id) - commandCooldownWeight);
+            } else {
+                client.ratelimited.delete(message.author.id);
+            }
+        }, client.config.options.commandCooldownDuration);
     }
 
 }
 
-module.exports = new MessageHandler().handle.bind(new MessageHandler());
+module.exports = new MessageHandler();

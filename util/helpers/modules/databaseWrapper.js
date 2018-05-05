@@ -40,8 +40,8 @@ class DatabaseWrapper {
         this.guildData = this.rethink.db('data').table('guilds');
         this.userData = this.rethink.db('data').table('users');
         this.client = client;
-        this.users = new(require('./collection'))();
-        this.guilds = new(require('./collection'))();
+        this.users = new(require('../../modules/collection'))();
+        this.guilds = new(require('../../modules/collection'))();
         this.healthy = true;
     }
 
@@ -66,7 +66,7 @@ class DatabaseWrapper {
                 if (data.type === "remove") {
                     this.users.delete(data.old_val.id);
                 } else {
-                    this.users.set(data.new_val.id, new this.client.extendedUserEntry(data.new_val));
+                    this.users.set(data.new_val.id, data.new_val);
                 }
             });
 
@@ -96,11 +96,11 @@ class DatabaseWrapper {
     getGuild(id) {
         return new Promise(async(resolve, reject) => {
             if (this.guilds.has(id)) {
-                return resolve(this._updateDataModel(this.guilds.get(id), 'guild'));
+                return resolve(new this.client.extendedGuildEntry(this._updateDataModel(this.guilds.get(id), 'guild'), this.client));
             }
             this.guildData.get(id).run()
                 .then(data => {
-                    resolve(data ? this._updateDataModel(data, 'guild') : null);
+                    resolve(data ? new this.client.extendedGuildEntry(this._updateDataModel(data, 'guild'), this.client) : null);
                 })
                 .catch(err => {
                     reject(err);
@@ -179,6 +179,8 @@ class DatabaseWrapper {
             type = type === "guild" ? "guildData" : "userData";
             if (data instanceof this.client.extendedUserEntry) {
                 data = JSON.parse(data.toJSON());
+            } else if (data instanceof this.client.extendedGuildEntry) {
+                data = data.toDatabaseEntry();
             }
             this[type].get(data.id).replace(data, { returnChanges: "always" }).run()
                 .then(result => {

@@ -3,7 +3,7 @@
 
 const { inspect } = require('util');
 const { createContext, runInContext } = require('vm');
-const Command = require('../../util/helpers/Command');
+const Command = require('../../util/helpers/modules/Command');
 
 class Repl extends Command {
     constructor() {
