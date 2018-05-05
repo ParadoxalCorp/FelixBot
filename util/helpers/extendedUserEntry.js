@@ -1,6 +1,6 @@
 'use strict';
 
-const references = require('../data/references');
+const references = require('./references');
 
 class ExtendedUserEntry {
     constructor(userEntry) {

@@ -1,6 +1,6 @@
 'use strict';
 
-const Command = require('../../util/helpers/modules/Command');
+const Command = require('../../util/helpers/Command');
 
 class Ping extends Command {
     constructor() {
@@ -25,7 +25,7 @@ class Ping extends Command {
     async run(client, message) {
         const startTime = Date.now();
         const messageSent = await message.channel.createMessage(`Baguetting the hell outta Diskurd...`);
-        return messageSent.edit(`~~Baguette~~ Pong | \`${Date.now() - startTime}\`ms`);
+        messageSent.edit(`~~Baguette~~ Pong | \`${Date.now() - startTime}\`ms`);
     }
 }
 

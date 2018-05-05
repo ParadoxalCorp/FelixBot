@@ -1,6 +1,6 @@
 'use strict';
 
-const Command = require('../../util/helpers/modules/Command');
+const Command = require('../../util/helpers/Command');
 const { inspect } = require('util');
 
 class Reload extends Command {

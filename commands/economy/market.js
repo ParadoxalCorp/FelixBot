@@ -1,6 +1,6 @@
 'use strict';
 
-const Command = require('../../util/helpers/modules/Command');
+const Command = require('../../util/helpers/Command');
 
 class Market extends Command {
     constructor() {

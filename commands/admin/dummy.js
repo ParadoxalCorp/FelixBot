@@ -1,6 +1,6 @@
 'use strict';
 
-const Command = require('../../util/helpers/modules/Command');
+const Command = require('../../util/helpers/Command');
 
 class Dummy extends Command {
     constructor() {
@@ -23,7 +23,9 @@ class Dummy extends Command {
     }
 
     async run(client, message) {
-        return message.channel.createMessage('wew');
+        const { inspect } = require('util');
+        const reaction = await client.reactionCollector.awaitReaction(message.channel.id, message.id, message.author.id);
+        return message.channel.createMessage('```js\n' + inspect(reaction, { depth: 2 }) + '```');
     }
 }
 

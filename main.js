@@ -10,9 +10,8 @@ class Felix extends Base {
 
         //If true, this would ignore all messages from everyone besides the owner
         this.maintenance = false;
-        this.collection = require('./util/modules/collection');
+        this.collection = require('./util/helpers/collection');
         this.config = require('./config');
-        this.package = require('./package');
         this.prefixes = this.config.prefix ? [this.config.prefix] : [];
         this.stats;
     }
@@ -23,7 +22,6 @@ class Felix extends Base {
         //This will be filled with mentions prefix once ready
         this.commands = new this.collection();
         this.aliases = new this.collection();
-        //this.database = process.argv.includes('--no-db') ? false : new(require('./util/helpers/modules/databaseWrapper'))(this);
         this.loadCommands();
         this.loadEventsListeners();
         this.bot.on('ready', this.ready.bind(this));
@@ -46,13 +44,12 @@ class Felix extends Base {
                 try {
                     const command = require(join(__dirname, 'commands', categories[i], c));
                     //Add the command and its aliases to the collection
-                    if (!this.database && command.conf.requireDB) {
-                        command.conf.disabled = 'This command require the database, however the database seems unavailable at the moment';
+                    if (!process.argv.includes('--no-db') || !command.conf.requireDB) {
+                        this.commands.set(command.help.name, command);
+                        command.conf.aliases.forEach(alias => {
+                            this.aliases.set(alias, command.help.name);
+                        });
                     }
-                    this.commands.set(command.help.name, command);
-                    command.conf.aliases.forEach(alias => {
-                        this.aliases.set(alias, command.help.name);
-                    });
                 } catch (err) {
                     this.log.error(`Failed to load command ${c}: ${err.stack || err}`);
                 }
@@ -70,16 +67,13 @@ class Felix extends Base {
                 const eventName = e.split(".")[0];
                 const event = require(join(__dirname, 'events', e));
                 loadedEvents++;
-                this.bot.on(eventName, event.handle.bind(event, this));
+                this.bot.on(eventName, event.bind(null, this));
                 delete require.cache[require.resolve(join(__dirname, 'events', e))];
             } catch (err) {
                 this.log.error(`Failed to load event ${e}: ${err.stack || err}`);
             }
         });
         this.log.info(`Loaded ${loadedEvents}/${events.length} events`);
-        process.on('unhandledRejection', (err) => this.bot.emit('error', err));
-        process.on('uncaughtException', (err) => this.bot.emit('error', err));
-        process.on('error', (err) => this.bot.emit('error', err));
     }
 
     async ready() {

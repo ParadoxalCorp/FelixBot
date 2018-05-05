@@ -1,10 +1,11 @@
 module.exports = {
-    admins: ["YOUR_ID", "SOMEONE_TRUSTABLE", "A_SECOND_TRUSTABLE_PERSON_IF_YOU_KNOW_ANY_IDK"],
-    prefix: "felix",
-    //User Settings > Appearance > Enable Developer Mode > Right click on your username and the click "Copy ID". There, you got your Discord ID
-    ownerID: "YOUR_ID",
-    //Toke is needed
-    token: "baguette",
+    //Multiple "admins" of the bot, they will have access to most of the admins commands
+    admins: ["your_ID", "trusted_collaborator_ID", "another_trusted_collaborator_ID"],
+    prefix: "uwu.",
+    ownerID: "your_ID",
+    botID: "bot_ID",
+    //The token of the bot application to connect to, it is required.
+    token: "",
     database: {
         //Unless the database is on another server, the host should stay like this
         host: "127.0.0.1",
@@ -13,9 +14,9 @@ module.exports = {
     },
     //Additional API keys that the bot use for commands for example
     apiKeys: {
-        sentryDSN: "",
+        raven: "",
     },
-    botLists: {
+	botLists: {
         terminal: {
             token: "",
             url: ""
@@ -26,25 +27,20 @@ module.exports = {
         embedColor: 0x7a0099,
         dailyCoins: 2500,
         dailyCooldown: 86400000,
-        coinsLimit: 1e20,
+        coinsLimit: 100000000000000000000,
         economyEvents: {
-            slotsEvents: true,
-            dailyEvents: true,
+			slotsEvents: true,
+			dailyEvents: true,
             //Chances out of 100 that a daily event will occur when using daily
             dailyEventsRate: 50,
             //Chances out of 100 that a slots event will occur when using slots
             slotsEventsRate: 35
-        },
-        //Roughly allows the use of 4 commands within the given period before ratelimits may apply
-        defaultCooldownWeight: 5,
-        //Duration in milliseconds the command cooldown may last, setting it to something like 1000 would effectively disable it
-        commandCooldownDuration: 20000
+		}
     },
-    process: {
+	process: {
         guildsPerShards: 1750,
         shards: 1,
         clusters: 1,
-        debug: true,
-        environment: 'production'
+        debug: true
     }
 };
