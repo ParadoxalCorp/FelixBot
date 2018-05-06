@@ -177,11 +177,7 @@ class DatabaseWrapper {
                 return reject(`Missing arguments, both the data and type parameters are needed`);
             }
             type = type === "guild" ? "guildData" : "userData";
-            if (data instanceof this.client.extendedUserEntry) {
-                data = JSON.parse(data.toJSON());
-            } else if (data instanceof this.client.extendedGuildEntry) {
-                data = data.toDatabaseEntry();
-            }
+            data = data.toDatabaseEntry();
             this[type].get(data.id).replace(data, { returnChanges: "always" }).run()
                 .then(result => {
                     this[type === "guild" ? "guilds" : "users"].set(data.id, data);
