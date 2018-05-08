@@ -100,7 +100,9 @@ class DatabaseWrapper {
             }
             this.guildData.get(id).run()
                 .then(data => {
-                    resolve(data ? new this.client.extendedGuildEntry(this._updateDataModel(data, 'guild'), this.client) : null);
+                    resolve(data ?
+                        new this.client.extendedGuildEntry(this._updateDataModel(data, 'guild'), this.client) :
+                        new this.client.extendedGuildEntry(this.client.refs.guildEntry(id), this.client));
                 })
                 .catch(err => {
                     reject(err);
@@ -121,7 +123,9 @@ class DatabaseWrapper {
             }
             this.userData.get(id).run()
                 .then(data => {
-                    resolve(data ? new this.client.extendedUserEntry(this._updateDataModel(data, 'user')) : null);
+                    resolve(data ?
+                        new this.client.extendedUserEntry(this._updateDataModel(data, 'user')) :
+                        new this.client.extendedUserEntry(this.client.refs.userEntry(id)));
                 })
                 .catch(err => {
                     reject(err);
