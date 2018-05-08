@@ -55,7 +55,7 @@ class Daily extends Command {
         }
         const coinsChange = conditionalVariantSuccess ? client.config.options.dailyCoins : eventCoinsChangeRate > 0 ? client.config.options.dailyCoins + eventCoinsChange : client.config.options.dailyCoins - eventCoinsChange;
         resultText += `\n\n\`${Math.abs(coinsChange)}\` holy coins have been ${coinsChange > 0 ? 'credited to' : 'debited from'} your account, you now have \`${userEntry.economy.coins + coinsChange}\` holy coins`;
-        if (coinsChange < 0) {
+        if (coinsChange > 0) {
             userEntry.addCoins(Math.ceil(coinsChange));
         } else {
             userEntry.subtractCoins(Math.ceil(coinsChange));
