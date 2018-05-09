@@ -10,7 +10,8 @@ const redact = (client, string) => {
     const credentialRX = new RegExp(
         [
             client.config.token,
-            client.config.database.host
+            client.config.database.host,
+            client.config.apiKeys.sentryDSN
         ].join('|'),
         'gi'
     );

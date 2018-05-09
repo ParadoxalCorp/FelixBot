@@ -1,9 +1,9 @@
 module.exports = (client) => {
     return {
-        database: process.argv.includes('--no-db') ? false : new(require('./helpers/modules/DatabaseWrapper'))(client),
+        database: process.argv.includes('--no-db') ? false : new(require('./helpers/modules/databaseWrapper'))(client),
         refs: require('./helpers/data/references'),
         log: require('./modules/log'),
-        timeConverter: require('./modules/timeConverter'),
+        timeConverter: require('./modules/timeConverter.js'),
         messageCollector: new(require('./helpers/modules/messageCollector'))(client.bot),
         IPCHandler: new(require('./helpers/modules/IPCHandler'))(client),
         sleep: require('./modules/sleep.js'),
