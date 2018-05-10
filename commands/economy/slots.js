@@ -67,18 +67,19 @@ class Slots extends Command {
         if (gambledCoins > userEntry.economy.coins) {
             return message.channel.createMessage(`:x: I am very sorry but you only have \`${userEntry.economy.coins}\` holy coins, you can't gamble more than that`);
         }
+        const animatedSlots = client.config.options.animatedSlotsEmote ? await this.runAnimatedSlots(client, message) : false;
         const slots = this.runSlots(client);
         if (!slots.match) {
-            return this.sendResults(client, message, slots, "**Nothing**, you don't lose nor win any holy coins, everyone's happy right?");
+            return this.sendResults(client, message, slots, "**Nothing**, you don't lose nor win any holy coins, everyone's happy right?", animatedSlots);
         }
         const randomSlotsEvent = client.getRandomNumber(1, 100) <= client.config.options.economyEvents.slotsEventsRate;
         const coinsChange = gambledCoins * (slots.match[0].multiplier * (slots.match.length - 1));
         if (randomSlotsEvent && client.config.options.economyEvents.slotsEvents) {
-            return this.runRandomSlotsEvent(client, message, userEntry, slots, coinsChange);
+            return this.runRandomSlotsEvent(client, message, userEntry, slots, coinsChange, animatedSlots);
         } else if (coinsChange < 0) {
-            return this.outputLostGamble(client, message, userEntry, slots, coinsChange);
+            return this.outputLostGamble(client, message, userEntry, slots, coinsChange, randomSlotsEvent, animatedSlots);
         } else {
-            return this.outputWonGamble(client, message, userEntry, slots, coinsChange);
+            return this.outputWonGamble(client, message, userEntry, slots, coinsChange, randomSlotsEvent, animatedSlots);
         }
     }
 
@@ -103,38 +104,73 @@ class Slots extends Command {
 
     }
 
-    sendResults(client, message, slots, resultText) {
+    sendResults(client, message, slots, resultText, animatedSlots) {
+        console.log(require('util').inspect(animatedSlots, { depth: 2 }));
         const noEmbed = new RegExp(/--noEmbed/gim).test(message.content);
         let slotsResults = "You run the slots, and...\n\n---------------------\n";
-        slotsResults += `-| ${slots.getLine().name} | ${slots.getLine().name} |  ${slots.getLine().name} |-\n`;
-        slotsResults += `>| ${slots.results[0].name}|${slots.results[1].name}|${slots.results[2].name} |<\n`;
+        slotsResults += `-| ${slots.getLine().name} | ${slots.getLine().name} | ${slots.getLine().name} |-\n`;
+        slotsResults += `>| ${slots.results[0].name} | ${slots.results[1].name}| ${slots.results[2].name} |<\n`;
         slotsResults += `-| ${slots.getLine().name} | ${slots.getLine().name} | ${slots.getLine().name} |-\n\n`;
         slotsResults += `----------------------\n`;
         slotsResults += resultText;
-        return message.channel.createMessage(noEmbed ? slotsResults : {
-            embed: {
-                title: ":slot_machine: Slots",
-                description: slotsResults.replace(/undefined/gim, ''),
-                color: client.config.options.embedColor
-            }
+        if (!animatedSlots) {
+            return message.channel.createMessage(noEmbed ? slotsResults : {
+                embed: {
+                    title: ":slot_machine: Slots",
+                    description: slotsResults.replace(/undefined/gim, ''),
+                    color: client.config.options.embedColor
+                }
+            });
+        } else {
+            return animatedSlots.edit(noEmbed ? slotsResults : {
+                embed: {
+                    title: ":slot_machine: Slots",
+                    description: slotsResults.replace(/undefined/gim, ''),
+                    color: client.config.options.embedColor
+                }
+            });
+        }
+    }
+
+    runAnimatedSlots(client, message) {
+        return new Promise(async(resolve) => {
+            const noEmbed = new RegExp(/--noEmbed/gim).test(message.content);
+            const animatedEmote = client.config.options.animatedSlotsEmote;
+            let slotsResults = "You run the slots, and...\n\n---------------------\n";
+            slotsResults += `-| ${animatedEmote} | ${animatedEmote} | ${animatedEmote} |-\n`;
+            slotsResults += `>| ${animatedEmote} | ${animatedEmote} | ${animatedEmote} |<\n`;
+            slotsResults += `-| ${animatedEmote} | ${animatedEmote} | ${animatedEmote} |-\n\n`;
+            slotsResults += `----------------------\n`;
+            const animatedSlots = await message.channel.createMessage(noEmbed ? slotsResults : {
+                embed: {
+                    title: ":slot_machine: Slots",
+                    description: slotsResults.replace(/undefined/gim, ''),
+                    color: client.config.options.embedColor
+                }
+            });
+            setTimeout(() => {
+                return resolve(animatedSlots);
+            }, 2000);
         });
     }
 
-    async outputLostGamble(client, message, userEntry, slots, lostCoins, randomEvent) {
+    async outputLostGamble(client, message, userEntry, slots, lostCoins, randomEvent, animatedSlots) {
         userEntry.economy.coins = (userEntry.economy.coins + lostCoins) < 0 ? 0 : userEntry.economy.coins + lostCoins;
         await client.database.set(userEntry, "user");
-        return this.sendResults(client, message, slots, `${randomEvent ? (randomEvent + '\n\n') : 'You **lose**, '}\`${Math.abs(lostCoins)}\` holy coins has been debited from your account. You now have \`${userEntry.economy.coins}\` holy coins`);
+        const resultText = `${randomEvent ? (randomEvent + '\n\n') : 'You **lose**, '}\`${Math.abs(lostCoins)}\` holy coins has been debited from your account. You now have \`${userEntry.economy.coins}\` holy coins`;
+        return this.sendResults(client, message, slots, resultText, animatedSlots);
     }
 
-    async outputWonGamble(client, message, userEntry, slots, wonCoins, randomEvent) {
+    async outputWonGamble(client, message, userEntry, slots, wonCoins, randomEvent, animatedSlots) {
         wonCoins = Math.ceil(wonCoins);
         userEntry.economy.coins = (userEntry.economy.coins + wonCoins) >= client.config.options.coinsLimit ?
             client.config.options.coinsLimit : userEntry.economy.coins + wonCoins;
         await client.database.set(userEntry, "user");
-        return this.sendResults(client, message, slots, `${randomEvent ? (randomEvent + '\n\n') : 'You **win**, '}\`${wonCoins}\` holy coins has been credited to your account. You now have \`${userEntry.economy.coins}\` holy coins`);
+        const resultText = `${randomEvent ? (randomEvent + '\n\n') : 'You **win**, '}\`${wonCoins}\` holy coins has been credited to your account. You now have \`${userEntry.economy.coins}\` holy coins`;
+        return this.sendResults(client, message, slots, resultText, animatedSlots);
     }
 
-    runRandomSlotsEvent(client, message, userEntry, slots, coinsChange) {
+    runRandomSlotsEvent(client, message, userEntry, slots, coinsChange, animatedSlots) {
         const filteredSlotsEvents = client.economyManager.slotsEvents.filter(e => e.case === (coinsChange > 0 ? 'won' : 'lost'));
         const slotsEvent = filteredSlotsEvents[client.getRandomNumber(0, filteredSlotsEvents.length - 1)];
         const eventCoinsChangeRate = Array.isArray(slotsEvent.changeRate) ? client.getRandomNumber(slotsEvent.changeRate[0], slotsEvent.changeRate[1]) : slotsEvent.changeRate;
@@ -159,7 +195,7 @@ class Slots extends Command {
         } else {
             resultText += slotsEvent.message.replace(/{value}/gim, eventCoinsChange);
         }
-        return targetFunc(client, message, userEntry, slots, conditionalVariantSuccess ? coinsChange : (eventCoinsChangeRate > 0 ? coinsChange + eventCoinsChange : coinsChange - eventCoinsChange), resultText);
+        return targetFunc(client, message, userEntry, slots, conditionalVariantSuccess ? coinsChange : (eventCoinsChangeRate > 0 ? coinsChange + eventCoinsChange : coinsChange - eventCoinsChange), resultText, animatedSlots);
     }
 }
 
