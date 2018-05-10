@@ -17,7 +17,7 @@ class Command {
     parseCommand(message, client) {
         return new Promise(async(resolve, reject) => {
             const args = message.content.split(/\s+/);
-            const guildEntry = message.channel.guild && client.database ?
+            const guildEntry = message.channel.guild && client.database && client.database.healthy ?
                 await client.database.getGuild(message.channel.guild.id).catch(err => {
                     return reject(err);
                 }) :

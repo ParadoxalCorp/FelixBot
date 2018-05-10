@@ -54,21 +54,25 @@ class DatabaseWrapper {
             const guildCursor = await this.guildData.changes({ squash: true, includeInitial: true, includeTypes: true }).run().catch(err => reject(err));
             const userCursor = await this.userData.changes({ squash: true, includeInitial: true, includeTypes: true }).run().catch(err => reject(err));
 
-            guildCursor.on('data', (data) => {
-                if (data.type === "remove") {
-                    this.guilds.delete(data.old_val.id);
-                } else {
-                    this.guilds.set(data.new_val.id, data.new_val);
-                }
-            });
+            if (guildCursor) {
+                guildCursor.on('data', (data) => {
+                    if (data.type === "remove") {
+                        this.guilds.delete(data.old_val.id);
+                    } else {
+                        this.guilds.set(data.new_val.id, data.new_val);
+                    }
+                });
+            }
 
-            userCursor.on('data', (data) => {
-                if (data.type === "remove") {
-                    this.users.delete(data.old_val.id);
-                } else {
-                    this.users.set(data.new_val.id, data.new_val);
-                }
-            });
+            if (userCursor) {
+                userCursor.on('data', (data) => {
+                    if (data.type === "remove") {
+                        this.users.delete(data.old_val.id);
+                    } else {
+                        this.users.set(data.new_val.id, data.new_val);
+                    }
+                });
+            }
 
             this.rethink.getPoolMaster().on('healthy', healthy => {
                 if (!healthy) {
@@ -106,7 +110,7 @@ class DatabaseWrapper {
                 })
                 .catch(err => {
                     reject(err);
-                    this.client.emit('error', err);
+                    this.client.bot.emit('error', err);
                 });
         });
     }
