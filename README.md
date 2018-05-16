@@ -62,6 +62,12 @@ Now it's the part where we get the database, technically, Felix v4 can work with
 
 You should only need to follow the instructions to install RethinkDB with binaries available [here](https://rethinkdb.com/docs/install/ubuntu/)
 
+In rare cases, if your server is publicly available and if, for some reasons, you decide to make your RethinkDB instance available on the network, 
+you should setup a password; RethinkDB has a [relatively advanced permissions system](https://www.rethinkdb.com/docs/permissions-and-accounts/) that you can 
+use to restrict the access to Felix only. 
+
+The Web UI however cannot be password-protected, so you should configure it to only allow connections from trusted IP addresses, there is some documentation about that available [here](https://www.rethinkdb.com/docs/security/#binding-the-web-interface-port)
+
 ### Installing and setting up Felix v4
 
 You should now create a new folder somewhere, open your command-line there and enter the following

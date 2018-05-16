@@ -17,6 +17,7 @@ module.exports = (client) => {
         interactiveList: new(require('./helpers/modules/interactiveList'))(client),
         extendedUser: require('./helpers/modules/extendedUser'),
         extendedUserEntry: require('./helpers/modules/extendedUserEntry'),
-        extendedGuildEntry: require('./helpers/modules/extendedGuildEntry')
+        extendedGuildEntry: require('./helpers/modules/extendedGuildEntry'),
+        prompt: require('./modules/prompt')
     };
 };
