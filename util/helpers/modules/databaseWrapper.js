@@ -35,12 +35,12 @@ class DatabaseWrapper {
             log: (message) => {
                 process.send({ name: "info", msg: message });
             },
-            user: client.config.options.database.user,
-            password: client.config.options.database.password
+            user: client.config.database.user,
+            password: client.config.database.password
         });
         this.updateFunc = updateFunc;
-        this.guildData = this.rethink.db(client.config.options.database.database).table('guilds');
-        this.userData = this.rethink.db(client.config.options.database.database).table('users');
+        this.guildData = this.rethink.db(client.config.database.database).table('guilds');
+        this.userData = this.rethink.db(client.config.database.database).table('users');
         this.client = client;
         this.users = new(require('../../modules/collection'))();
         this.guilds = new(require('../../modules/collection'))();

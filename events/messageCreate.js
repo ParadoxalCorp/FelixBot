@@ -18,7 +18,7 @@ class MessageHandler {
             return;
         }
         if (command.conf.disabled) {
-            return message.channel.createMessage(command.conf.disabled);
+            return message.channel.createMessage(`:x: Sorry but this command is disabled at the moment\nReason: ${command.conf.disabled}`);
         }
         if (command.conf.guildOnly && !message.channel.guild) {
             return message.channel.createMessage(`:x: This command may only be used in guilds and not in private messages`);

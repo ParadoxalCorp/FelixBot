@@ -18,6 +18,7 @@ module.exports = (client) => {
         extendedUser: require('./helpers/modules/extendedUser'),
         extendedUserEntry: require('./helpers/modules/extendedUserEntry'),
         extendedGuildEntry: require('./helpers/modules/extendedGuildEntry'),
-        prompt: require('./modules/prompt')
+        prompt: require('./modules/prompt'),
+        isWholeNumber: require('./modules/isWholeNumber')
     };
 };

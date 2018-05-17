@@ -61,7 +61,7 @@ class Slots extends Command {
             return message.channel.createMessage(`You currently have \`${userEntry.economy.coins}\` holy coins`);
         }
         const gambledCoins = Number(args[0]);
-        if (!Number.isInteger(gambledCoins) || gambledCoins < 0) {
+        if (!client.isWholeNumber(gambledCoins) || gambledCoins <= 0) {
             return message.channel.createMessage(':x: Please input a whole number');
         }
         if (gambledCoins > userEntry.economy.coins) {
@@ -73,7 +73,7 @@ class Slots extends Command {
             return this.sendResults(client, message, slots, "**Nothing**, you don't lose nor win any holy coins, everyone's happy right?", animatedSlots);
         }
         const randomSlotsEvent = client.getRandomNumber(1, 100) <= client.config.options.economyEvents.slotsEventsRate;
-        const coinsChange = gambledCoins * (slots.match[0].multiplier * (slots.match.length - 1));
+        const coinsChange = Math.round(gambledCoins * (slots.match[0].multiplier * (slots.match.length - 1)));
         if (randomSlotsEvent && client.config.options.economyEvents.slotsEvents) {
             return this.runRandomSlotsEvent(client, message, userEntry, slots, coinsChange, animatedSlots);
         } else if (coinsChange < 0) {
@@ -105,7 +105,6 @@ class Slots extends Command {
     }
 
     sendResults(client, message, slots, resultText, animatedSlots) {
-        console.log(require('util').inspect(animatedSlots, { depth: 2 }));
         const noEmbed = new RegExp(/--noEmbed/gim).test(message.content);
         let slotsResults = "You run the slots, and...\n\n---------------------\n";
         slotsResults += `-| ${slots.getLine().name} | ${slots.getLine().name} | ${slots.getLine().name} |-\n`;
@@ -174,7 +173,7 @@ class Slots extends Command {
         const filteredSlotsEvents = client.economyManager.slotsEvents.filter(e => e.case === (coinsChange > 0 ? 'won' : 'lost'));
         const slotsEvent = filteredSlotsEvents[client.getRandomNumber(0, filteredSlotsEvents.length - 1)];
         const eventCoinsChangeRate = Array.isArray(slotsEvent.changeRate) ? client.getRandomNumber(slotsEvent.changeRate[0], slotsEvent.changeRate[1]) : slotsEvent.changeRate;
-        const eventCoinsChange = Math.abs(coinsChange / 100 * eventCoinsChangeRate);
+        const eventCoinsChange = Math.round(Math.abs(coinsChange / 100 * eventCoinsChangeRate));
         const conditionalVariant = (() => {
             const conditionalVariants = slotsEvent.conditionalVariants.filter(v => v.condition(userEntry));
             const randomVariant = conditionalVariants[client.getRandomNumber(0, conditionalVariants.length - 1)];

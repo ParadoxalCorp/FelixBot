@@ -40,7 +40,7 @@ class Daily extends Command {
     runRandomDailyEvent(client, message, userEntry) {
         const dailyEvent = client.economyManager.dailyEvents[client.getRandomNumber(0, client.economyManager.dailyEvents.length - 1)];
         const eventCoinsChangeRate = Array.isArray(dailyEvent.changeRate) ? client.getRandomNumber(dailyEvent.changeRate[0], dailyEvent.changeRate[1]) : dailyEvent.changeRate;
-        const eventCoinsChange = Math.abs(client.config.options.dailyCoins / 100 * eventCoinsChangeRate);
+        const eventCoinsChange = Math.round(Math.abs(client.config.options.dailyCoins / 100 * eventCoinsChangeRate));
         const conditionalVariant = (() => {
             const conditionalVariants = dailyEvent.conditionalVariants.filter(v => v.condition(userEntry));
             const randomVariant = conditionalVariants[client.getRandomNumber(0, conditionalVariants.length - 1)];
@@ -54,7 +54,7 @@ class Daily extends Command {
             resultText += dailyEvent.message.replace(/{value}/gim, eventCoinsChange);
         }
         const coinsChange = conditionalVariantSuccess ? client.config.options.dailyCoins : eventCoinsChangeRate > 0 ? client.config.options.dailyCoins + eventCoinsChange : client.config.options.dailyCoins - eventCoinsChange;
-        resultText += `\n\n\`${Math.abs(coinsChange)}\` holy coins have been ${coinsChange > 0 ? 'credited to' : 'debited from'} your account, you now have \`${userEntry.economy.coins + coinsChange}\` holy coins`;
+        resultText += `\n\n\`${Math.ceil(Math.abs(coinsChange))}\` holy coins have been ${coinsChange > 0 ? 'credited to' : 'debited from'} your account, you now have \`${userEntry.economy.coins + Math.ceil(coinsChange)}\` holy coins`;
         if (coinsChange > 0) {
             userEntry.addCoins(Math.ceil(coinsChange));
         } else {
