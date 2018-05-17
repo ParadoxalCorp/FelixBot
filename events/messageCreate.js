@@ -17,6 +17,9 @@ class MessageHandler {
         if (databaseEntries.user && databaseEntries.user.blackListed) {
             return;
         }
+        if (command.conf.disabled) {
+            return message.channel.createMessage(command.conf.disabled);
+        }
         if (command.conf.guildOnly && !message.channel.guild) {
             return message.channel.createMessage(`:x: This command may only be used in guilds and not in private messages`);
         }
