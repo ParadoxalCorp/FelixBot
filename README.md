@@ -149,3 +149,17 @@ With PM2:
 Without PM2:
 
 > `node index.js --no-db`
+
+### Updating 
+
+If a new release comes out, to update, you should follow the following steps:
+
+* Backup the `config` file (you will need to refill the fields once the update is done, hence the backup)
+* Run in a terminal shell in the folder where you cloned Felix: 
+> git stash
+* Regardless of the output of the above (unless the output is "critical error [...] explosions may occur" i guess), run:
+> git pull
+* Fill the config file again, as it most likely got overwritten in the process
+
+
+
