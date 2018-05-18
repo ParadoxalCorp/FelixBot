@@ -46,7 +46,17 @@ module.exports = {
         //Roughly allows the use of 4 commands within the given period before ratelimits may apply
         defaultCooldownWeight: 5,
         //Duration in milliseconds the command cooldown may last, setting it to something like 1000 would effectively disable it
-        commandCooldownDuration: 20000
+        commandCooldownDuration: 20000,
+        experience: {
+            exponent: 1.5,
+            baseXP: 100,
+            /* The gainFormula option give enormous control over the system, unless you know EXACTLY what you are doing, you should ONLY change the numbers
+             * The default logic is: If the message length is under 500 characters, give 5 experience, otherwise, apply the formula
+             * The default formula gives a minimum of 5 experience (500 characters) and a maximum of 20 experience (2000 characters) */
+            gainFormula: (length) => length < 500 ? 5 : Math.round(1 * length / 100),
+            //Time in milliseconds before a user may gain experience with a message again
+            cooldown: 30000
+        }
     },
     process: {
         guildsPerShards: 1750,
