@@ -31,7 +31,23 @@ class References {
                 roles: [],
                 channels: [],
                 global: this.permissionsSet
+            },
+            experience: {
+                members: []
             }
+        };
+    }
+
+    /**
+     * Entry for guildEntry.experience.members
+     * Store experience-system related data
+     * @param {string} id - The ID of the member
+     * @returns {object} The object
+     */
+    guildMember(id) {
+        return {
+            id: id,
+            experience: 0
         };
     }
 

@@ -86,6 +86,43 @@ class ExtendedGuildEntry {
     }
 
     /**
+     * Get the activity level of a member
+     * @param {string} id The ID of the member to get the level from
+     * @returns {number} The level
+     */
+    getLevelOf(id) {
+        const member = this.experience.members.find(m => m.id === id) || this.client.refs.guildMember(id);
+        return;
+    }
+
+    /**
+     * Get the activity-related member object of a member of the guild
+     * @param {string} id - The ID of the member
+     * @returns {object} The member object
+     */
+    getMember(id) {
+        return this.experience.members.find(m => m.id === id) || this.client.refs.guildMember(id);
+    }
+
+    /**
+     * 
+     * 
+     * @param {number} amount - The amount of experience to add 
+     * @returns {{to: function}} An object, with a .to(id) callback function to call with the ID of the member to add the experience to. 
+     * @example 
+     * Guild.addExperience(15).to("123456798")
+     */
+    addExperience(amount) {
+        return {
+            to: (id) => {
+                const member = this.experience.members[this.experience.members.findIndex(m => m.id === id) || (this.experience.members.push(this.client.refs.guildMember(id)) - 1)];
+                member.experience = member.experience + amount;
+                return member.experience;
+            }
+        }
+    }
+
+    /**
      * Return this without the additional methods, essentially returns a proper database entry, ready to be saved into the database
      * Note that this shouldn't be called before saving it into the database, as the database wrapper already does it
      * @returns {*} - This, as a proper database entry object (without the additional methods)

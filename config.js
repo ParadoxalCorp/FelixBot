@@ -54,8 +54,18 @@ module.exports = {
              * The default logic is: If the message length is under 500 characters, give 5 experience, otherwise, apply the formula
              * The default formula gives a minimum of 5 experience (500 characters) and a maximum of 20 experience (2000 characters) */
             gainFormula: (length) => length < 500 ? 5 : Math.round(1 * length / 100),
+            /* Like the gainFormula option, unless you know EXACTLY what you are doing, you should ONLY change the numbers
+             * The default logic is: If the total size of the files uploaded is above 10e6 then it will be multiplied by 0.0000005, otherwise, it returns 5
+             * This default logic gives a minimum of 5 experience, but no actual maximum 
+             * Though, even with nitro and really large files, you shouldn't get much more than 25 */
+            uploadGainFormula: (size) => size > 10e6 ? Math.round(0.0000005 * size) : 5,
             //Time in milliseconds before a user may gain experience with a message again
-            cooldown: 30000
+            cooldown: 30000,
+            /* This is rather more complicated, this actually define how often (in milliseconds too) the cooldowns are checked and lifted if they're over
+             * In practice, even if the cooldown is (by default) 30 seconds, it may not be lifted directly after 30 seconds
+             * Life if the latest sweep was a second before, the cooldown will be lifted 39 seconds after 
+             * This allow for better performance at a large scale, but also prevent automated experience farming, as you can't accurately know how long the cooldown will take */
+            sweepInterval: 10000
         }
     },
     process: {
