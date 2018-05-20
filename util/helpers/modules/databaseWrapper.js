@@ -53,12 +53,14 @@ class DatabaseWrapper {
      */
     init() {
         return new Promise(async(resolve, reject) => {
-            const guildCursor = this.guildData.changes({ squash: true, includeInitial: true, includeTypes: true }).run();
-            const userCursor = this.userData.changes({ squash: true, includeInitial: true, includeTypes: true }).run();
-            await Promise.all([guildCursor, userCursor]).catch(reject);
+            let guildCursor = this.guildData.changes({ squash: true, includeInitial: true, includeTypes: true }).run();
+            let userCursor = this.userData.changes({ squash: true, includeInitial: true, includeTypes: true }).run();
+            const promises = await Promise.all([guildCursor, userCursor]).catch(reject);
+            guildCursor = promises[0],
+                userCursor = promises[1];
 
             //In case of a reconnection, enable the commands that requires the database previously disabled
-            if (client.commands.filter(c => c.conf.requireDB && c.conf.disabled).size > 0) {
+            if (this.client.commands.filter(c => c.conf.requireDB && c.conf.disabled).size > 0) {
                 this.client.commands
                     .filter(c => c.conf.requireDB)
                     .forEach(c => c.conf.disabled = false);
