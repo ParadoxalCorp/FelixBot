@@ -125,6 +125,9 @@ class IPCHandler {
 
             case 'reloadDone':
                 let reloadRequest = this.requests.get(message.id);
+                if (!reloadRequest) {
+                    return;
+                }
                 reloadRequest.responses.push({
                     clusterID: message.clusterID,
                     data: message.data

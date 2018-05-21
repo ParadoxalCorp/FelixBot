@@ -44,7 +44,7 @@ class Reload extends Command {
             guildOnly: false,
             ownerOnly: false,
             expectedArgs: [{
-                description: 'Please specify the path of the file you want to reload/add, or, if a command that is already loaded, the name of the command',
+                description: 'Please specify the path of the file you want to reload/add, or, if a command that is already loaded, the name of the command. Input `all` if you want to reload all commands/modules/events listeners',
             }, {
                 description: 'Please specify the type of the file you want to reload, can be either `event`, `command` or `module`',
                 possibleValues: [{
@@ -60,7 +60,7 @@ class Reload extends Command {
             }, {
                 //Conditional branch
                 description: 'Please specify if a non-instantiated class should be expected from this module, and with what it should be instantiated. Can be either `bot`, `client` or `no` to not instantiate it',
-                condition: (client, message, args) => args.includes('--module'),
+                condition: (client, message, args) => args.includes('--module') && !args.includes('all'),
                 possibleValues: [{
                     name: 'bot',
                     interpretAs: '--instantiate=bot',
@@ -74,7 +74,7 @@ class Reload extends Command {
             }, {
                 //Conditional branch
                 description: 'Please specify whether the module should be added as a property of the client class, can be either `yes`, `<name>` or `no`. Where `<name>` is the name under which the property should be added, if `yes`, the file name will be used',
-                condition: (client, message, args) => args.includes('--module'),
+                condition: (client, message, args) => args.includes('--module') && !args.includes('all'),
                 possibleValues: [{
                     name: 'yes',
                     interpretAs: '--bindtoclient',
@@ -92,14 +92,20 @@ class Reload extends Command {
     async run(client, message, args) {
         const isPath = new RegExp(/\/|\\/gim).test(args[0]);
         const command = client.commands.get(args[0]) || client.commands.get(client.aliases.get(args[0]));
-        const path = this.verifyPath(args.includes('--command') && !isPath ? `../${command.help.category}/${command.help.name}` : args[0]);
+        const path = args[0] === 'all' || this.verifyPath(args.includes('--command') && !isPath ? `../${command.help.category}/${command.help.name}` : args[0]);
         if (!path) {
             return message.channel.createMessage(':x: Look, i don\'t want to be mean, but this is NOT a valid path, try again');
         }
-        const fileName = path.split(/\/|\\/gm)[path.split(/\/|\\/gm).length - 1].split('.')[0];
+        const fileName = typeof path === 'string' ? path.split(/\/|\\/gm)[path.split(/\/|\\/gm).length - 1].split('.')[0] : false;
 
         if (args.includes('--event')) {
-            await client.IPCHandler.broadcastReload('event', path)
+            await client.IPCHandler.broadcastReload('event', args[0] === 'all' ? args[0] : path)
+                .then(() => {
+                    if (args[0] === 'all') {
+                        return message.channel.createMessage(':white_check_mark: Successfully reloaded all events listeners');
+                    }
+                    return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the \`${fileName}\` event listener`);
+                })
                 .catch(err => {
                     return message.channel.createMessage({
                         embed: {
@@ -107,9 +113,14 @@ class Reload extends Command {
                         }
                     });
                 });
-            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the \`${fileName}\` event listener`);
         } else if (args.includes('--command')) {
-            await client.IPCHandler.broadcastReload('command', path)
+            await client.IPCHandler.broadcastReload('command', args[0] === 'all' ? args[0] : path)
+                .then(() => {
+                    if (args[0] === 'all') {
+                        return message.channel.createMessage(':white_check_mark: Successfully reloaded all commands');
+                    }
+                    return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the command \`${fileName}\``);
+                })
                 .catch(err => {
                     return message.channel.createMessage({
                         embed: {
@@ -117,9 +128,14 @@ class Reload extends Command {
                         }
                     });
                 });
-            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the command \`${fileName}\``);
         } else if (args.includes('--module')) {
-            await client.IPCHandler.broadcastReload('module', path, fileName, this.parseArguments(args))
+            await client.IPCHandler.broadcastReload('module', args[0] === 'all' ? args[0] : path, fileName, this.parseArguments(args))
+                .then(() => {
+                    if (args[0] === 'all') {
+                        return message.channel.createMessage(':white_check_mark: Successfully reloaded all modules');
+                    }
+                    return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the module \`${fileName}\``);
+                })
                 .catch(err => {
                     return message.channel.createMessage({
                         embed: {
@@ -127,9 +143,8 @@ class Reload extends Command {
                         }
                     });
                 });
-            return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the module \`${fileName}\``);
         }
-        return message.channel.createMessage(`Hoi, this is not valid syntax, try again kthx`);
+        return args[0] === 'all' ? true : message.channel.createMessage(`Hoi, this is not valid syntax, try again kthx`);
     }
 
     parseArguments(args) {

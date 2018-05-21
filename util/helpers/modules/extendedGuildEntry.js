@@ -89,16 +89,18 @@ class ExtendedGuildEntry {
      * Get the activity level of a member
      * @param {string} id The ID of the member to get the level from
      * @returns {number} The level
+     * @example Guild.getLevelOf("123456789");
      */
     getLevelOf(id) {
         const member = this.experience.members.find(m => m.id === id) || this.client.refs.guildMember(id);
-        return;
+        return Math.floor(Math.pow(member.experience / this.client.config.options.experience.baseXP, 1 / this.client.config.options.experience.exponent));
     }
 
     /**
      * Get the activity-related member object of a member of the guild
      * @param {string} id - The ID of the member
      * @returns {object} The member object
+     * @example Guild.getMember("123456789");
      */
     getMember(id) {
         return this.experience.members.find(m => m.id === id) || this.client.refs.guildMember(id);
@@ -109,17 +111,31 @@ class ExtendedGuildEntry {
      * 
      * @param {number} amount - The amount of experience to add 
      * @returns {{to: function}} An object, with a .to(id) callback function to call with the ID of the member to add the experience to. 
-     * @example 
-     * Guild.addExperience(15).to("123456798")
+     * @example Guild.addExperience(15).to("123456798");
      */
     addExperience(amount) {
         return {
             to: (id) => {
-                const member = this.experience.members[this.experience.members.findIndex(m => m.id === id) || (this.experience.members.push(this.client.refs.guildMember(id)) - 1)];
+                let member = this.experience.members[this.experience.members.findIndex(m => m.id === id)];
+                if (!member) {
+                    const newLength = this.experience.members.push(this.client.refs.guildMember(id));
+                    member = this.experience.members[this.experience.members.findIndex(m => m.id === id)];
+                }
                 member.experience = member.experience + amount;
                 return member.experience;
             }
-        }
+        };
+    }
+
+    /**
+     * Remove a role set to be given at a certain level
+     * @param {string} id - The ID of the role to remove
+     * @returns {number} The new count of roles set to be given at a certain level
+     * @example Guild.removeActivityRole("123456789");
+     */
+    removeActivityRole(id) {
+        this.experience.roles.splice(this.experience.roles.findIndex(r => r.id === id), 1);
+        return this.experience.roles.length;
     }
 
     /**

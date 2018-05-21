@@ -33,7 +33,14 @@ class References {
                 global: this.permissionsSet
             },
             experience: {
-                members: []
+                members: [],
+                roles: [],
+                enabled: false,
+                notifications: {
+                    channel: '',
+                    message: '',
+                    enabled: true
+                }
             }
         };
     }
@@ -48,6 +55,21 @@ class References {
         return {
             id: id,
             experience: 0
+        };
+    }
+
+    /**
+     * 
+     * @param {string} id - The ID of the role
+     * @param {number} at - The level at which this role should be given
+     * @param {boolean} isStatic - Whether this role should be removed when a higher one is won, if false, the role will be removed
+     * @return {object} The role object
+     */
+    activityGuildRole(id, at, isStatic = true) {
+        return {
+            id: id,
+            static: isStatic,
+            at: at
         };
     }
 

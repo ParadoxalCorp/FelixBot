@@ -9,12 +9,15 @@ class MessageHandler {
         if (message.author.bot) {
             return;
         }
-        const command = await Command.parseCommand(message, client);
-        if (!command) {
-            return;
-        }
         const databaseEntries = await this.getDatabaseEntries(client, message);
         if (databaseEntries.user && databaseEntries.user.blackListed) {
+            return;
+        }
+        if (databaseEntries.guild && databaseEntries.guild.experience.enabled) {
+            client.experienceHandler.handle(message, databaseEntries.guild);
+        }
+        const command = await Command.parseCommand(message, client);
+        if (!command) {
             return;
         }
         if (command.conf.disabled) {

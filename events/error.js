@@ -3,19 +3,19 @@
 class ErrorHandler {
     constructor() {
         this.discordErrorCodes = {
-            10018: {
+            '10018': {
                 message: false,
                 discard: true
             },
-            50001: {
+            '50001': {
                 message: 'I don\'t have enough permissions to perform this action',
                 discard: true
             },
-            50007: {
+            '50007': {
                 message: 'I tried to send a DM but you/the given user have your/their DMs disabled',
                 discard: true
             },
-            50013: {
+            '50013': {
                 message: 'I don\'t have enough permissions to perform this action',
                 discard: true
             },

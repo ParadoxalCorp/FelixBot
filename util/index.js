@@ -19,6 +19,8 @@ module.exports = (client) => {
         extendedUserEntry: require('./helpers/modules/extendedUserEntry'),
         extendedGuildEntry: require('./helpers/modules/extendedGuildEntry'),
         prompt: require('./modules/prompt'),
-        isWholeNumber: require('./modules/isWholeNumber')
+        isWholeNumber: require('./modules/isWholeNumber'),
+        getLevelDetails: require('./helpers/modules/getLevelDetails').bind(null, client),
+        experienceHandler: new(require('./helpers/modules/experienceHandler'))(client)
     };
 };
