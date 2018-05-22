@@ -26,6 +26,9 @@ class ExperienceHandler {
             if (guildEntry.experience.notifications.enabled) {
                 this._notifyUser(message, guildEntry, levelDetails, wonRoles);
             }
+            if (wonRoles) {
+                this._removeOlderRoles(message, guildEntry, levelDetails);
+            }
         }
         this._addCooldown(this.client.config.options.experience.cooldown).to(message.author.id);
         await this.client.database.set(guildEntry, 'guild');
@@ -48,8 +51,9 @@ class ExperienceHandler {
     }
 
     async _addWonRoles(message, guildEntry, levelDetails) {
+        guildEntry.experience.roles = guildEntry.experience.roles.filter(r => message.channel.guild.roles.has(r.id));
         const member = message.channel.guild.members.get(message.author.id);
-        let wonRoles = guildEntry.experience.roles.filter(r => r.at === levelDetails.nextLevel && message.channel.guild.roles.has(r.id) && !member.roles.includes(r.id));
+        let wonRoles = guildEntry.experience.roles.filter(r => r.at === levelDetails.nextLevel && !member.roles.includes(r.id));
         const handleError = (id) => {
             wonRoles = wonRoles.filter(r => r.id !== id);
         };
@@ -57,7 +61,6 @@ class ExperienceHandler {
             await member.addRole(wonRoles[i].id)
                 .catch(handleError.bind(wonRoles[i].id));
         }
-        guildEntry.experience.roles = guildEntry.experience.roles.filter(r => message.channel.guild.roles.has(r.id));
         return wonRoles[0] ? wonRoles.map(r => '`' + message.channel.guild.roles.get(r.id).name + '`') : false;
     }
 
@@ -79,6 +82,17 @@ class ExperienceHandler {
             message.channel.guild.channels.get(guildEntry.experience.notifications.channel).createMessage(notif).catch(() => {});
         } else {
             message.channel.createMessage(notif).catch(() => {});
+        }
+    }
+
+    async _removeOlderRoles(message, guildEntry, levelDetails) {
+        const member = message.channel.guild.members.get(message.author.id);
+        const lowerRemovableRoles = guildEntry.experience.roles.filter(r => r.at < levelDetails.nextLevel && !r.static && member.roles.includes(r.id));
+        if (lowerRemovableRoles[0]) {
+            for (let i = 0; i < lowerRemovableRoles.length; i++) {
+                await this.client.sleep(1000);
+                member.removeRole(lowerRemovableRoles[i].id).catch(console.error);
+            }
         }
     }
 }
