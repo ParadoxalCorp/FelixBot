@@ -1,4 +1,3 @@
-const popura = require('popura');
 const malScraper = require('mal-scraper');
 
 class Anime {
@@ -7,31 +6,31 @@ class Anime {
             name: 'anime',
             description: 'Search for the specified anime through MyAnimeList',
             usage: 'anime One Piece'
-        }
+        };
         this.conf = {
             require: ["malCredentials"]
-        }
+        };
     }
 
     run(client, message, args) {
         return new Promise(async(resolve, reject) => {
-            const malClient = popura(client.config.malCredentials.name, client.config.malCredentials.password);
             try {
-                if (!args.length) return resolve(await message.channel.createMessage(":x: You did not enter an anime to search for"));
+                if (!args[0]) {
+                    return resolve(await message.channel.createMessage(":x: You did not enter an anime to search for"));
+                }
                 let animeName = args.join(" ");
-                const res = await malClient.searchAnimes(animeName);
-                if (!res[0]) return resolve(await message.channel.createMessage(":x: Your search did not returned any result"));
+                const res = await malScraper.getResultsFromSearch(animeName);
+                if (!res[0]) {
+                    return resolve(await message.channel.createMessage(":x: Your search did not returned any result"));
+                }
                 let embedFields = [];
                 let selectedAnime = res[0];
                 if (res.length > 1) {
                     let i = 1;
-                    let resultList = res.map(a => `[${i++}] ${a.title}`).join('\n').replace(/undefined/gim, "");
-                    if (resultList.length > 2030) resultList = resultList.substr(0, 2030) + '..';
                     const reply = await message.awaitReply({
                         message: {
                             embed: {
-                                title: ":mag: Your search has returned more than one result, select one by typing a number",
-                                description: "```\n" + resultList + "```"
+                                description: "owo, i found multiple animes corresponding to your search, please select one with its number ```\n" + res.map(a => `[${i++}] ${a.name}`).join('\n') + "```"
                             }
                         }
                     });
@@ -39,88 +38,95 @@ class Anime {
                         reply.query.delete();
                         return resolve(await message.channel.createMessage(":x: Timeout: Command aborted"));
                     }
-                    if (isNaN(reply.reply.content) || reply.reply.content > res.length || reply.reply.content < 1) {
-                        if (message.guild && message.guild.members.get(client.user.id).hasPermission("manageMessages")) await reply.reply.delete();
-                        await reply.query.delete();
+                    if (!res[reply.reply.content - 1]) {
+                        reply.reply.delete().catch(() => {});
+                        reply.query.delete().catch(() => {});
                         return resolve(await message.channel.createMessage(":x: You did not enter a whole number or the number you specified is not valid"));
                     }
-                    selectedAnime = res[Math.round(reply.reply.content - 1)];
-                    if (reply.reply.deletable) reply.reply.delete();
-                    reply.query.delete();
+                    selectedAnime = res[reply.reply.content - 1];
+                    reply.reply.delete().catch(() => {});
+                    reply.query.delete().catch(() => {});
                 }
-                const anime = await malScraper.getInfoFromName(selectedAnime.title);
-                if (anime.genres.length > 0) {
+                let anime = await malScraper.getInfoFromURL(selectedAnime.url);
+                if (anime.japaneseTitle) {
                     embedFields.push({
-                        name: ':open_file_folder: Genres',
-                        value: anime.genres.join(', '),
+                        name: 'Japanese name',
+                        value: anime.japaneseTitle,
                         inline: true
                     });
                 }
-                if (anime.studios.length > 0) {
+                if (anime.type) {
                     embedFields.push({
-                        name: ':film_frames: Studio',
-                        value: anime.studios.join(', '),
-                        inline: true
-                    })
-                }
-                if (selectedAnime.episodes) {
-                    embedFields.push({
-                        name: ':1234: Episodes',
-                        value: selectedAnime.episodes.toString(),
+                        name: 'Type',
+                        value: anime.type,
                         inline: true
                     });
                 }
-                if (selectedAnime.score) {
+                if (anime.characters && anime.characters[0]) {
                     embedFields.push({
-                        name: ':star: Score',
-                        value: selectedAnime.score.toString(),
+                        name: 'Characters',
+                        value: anime.characters.map(c => `[${c.name}](${c.link}) (${c.role})`).splice(0, 10).join(', ') + (anime.characters.length > 10 ? '...' : '')
+                    });
+                }
+                if (anime.score) {
+                    embedFields.push({
+                        name: 'Score',
+                        value: anime.score,
                         inline: true
                     });
                 }
-                if (selectedAnime.type) {
+                if (anime.status) {
                     embedFields.push({
-                        name: ':projector: Type',
-                        value: selectedAnime.type
-                    });
-                }
-                if (selectedAnime.status) {
-                    embedFields.push({
-                        name: ':tv: Status',
-                        value: selectedAnime.status,
+                        name: 'Status',
+                        value: anime.status,
                         inline: true
                     });
                 }
-                if (selectedAnime.start_date) {
+                if (anime.genres) {
                     embedFields.push({
-                        name: ':calendar: Start date',
-                        value: selectedAnime.start_date.replace(/-/g, "/"),
+                        name: 'Genres',
+                        value: anime.genres.join(', ')
+                    });
+                }
+                if (anime.episodes) {
+                    embedFields.push({
+                        name: 'Episodes',
+                        value: anime.episodes,
                         inline: true
                     });
                 }
-                if (selectedAnime.end_date && selectedAnime.end_date !== '0000-00-00') {
+                if (anime.aired) {
                     embedFields.push({
-                        name: ':calendar: End date',
-                        value: selectedAnime.end_date.replace(/-/g, "/"),
+                        name: 'Aired',
+                        value: anime.aired,
                         inline: true
                     });
                 }
-                if (selectedAnime.synopsis) {
-                    if (selectedAnime.synopsis.length > 1024) selectedAnime.synopsis = selectedAnime.synopsis.substr(0, 1021) + '..';
+                if (anime.studios) {
                     embedFields.push({
-                        name: ':notepad_spiral: Synopsis',
-                        value: selectedAnime.synopsis.replace(/(&quot;|&mdash;|&rsquo;|&#039;|\[i]|\[\/i])/gim, "") || "None found :v",
+                        name: 'Studios',
+                        value: anime.studios.join(', ')
                     });
                 }
+                if (anime.synopsis) {
+                    anime.synopsis = anime.synopsis.length > 1015 ? `${anime.synopsis.substr(0, 1015)}...` : anime.synopsis;
+                    anime.synopsis = anime.synopsis.replace(/\[i\]|\[\/i\]/gm, '**');
+                    embedFields.push({
+                        name: 'Synopsis',
+                        value: anime.synopsis
+                    });
+                }
+                const nsfwRatings = ['Rx', 'R+'];
                 return resolve(await message.channel.createMessage({
                     embed: {
-                        title: selectedAnime.title,
-                        url: anime.url || 'https://myanimelist.net/',
+                        title: anime.title,
+                        url: selectedAnime.url && (!nsfwRatings.filter(r => anime.rating.includes(r))[0] || message.channel.nsfw) ? selectedAnime.url : 'https://myanimelist.net/',
                         image: {
-                            url: selectedAnime.image
+                            url: anime.picture && (!nsfwRatings.filter(r => anime.rating.includes(r))[0] || message.channel.nsfw) ? anime.picture : undefined
                         },
                         fields: embedFields,
                         footer: {
-                            text: (anime.scoreStats || "") +
+                            text: (anime.scoreStats ? anime.scoreStats.charAt(0).toUpperCase() + anime.scoreStats.substr(1) : "") +
                                 " | Popularity: " + (anime.popularity || 'None') + " | Members: " + (anime.members || 'None') + " | Ranking: " + (anime.ranked || 'None') + " | Rating: " + (anime.rating || 'None')
                         }
                     }
