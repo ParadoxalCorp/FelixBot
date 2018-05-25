@@ -129,6 +129,12 @@ class Help extends Command {
                 inline: true
             });
         }
+        if (command.help.externalDoc) {
+            embedFields.push({
+                name: 'External documentation',
+                value: `This command has an external documentation available [here](${command.help.externalDoc})`
+            });
+        }
         return {
             embed: {
                 title: `:book: Help for the ${command.help.name} command`,
@@ -141,9 +147,9 @@ class Help extends Command {
 
     getNormalCommandHelp(client, message, args, command, guildEntry) {
         //Focusing highly on readability here, one-lining this would look like hell
-        let normalHelp = `**Description**: ${command.help.description.replace(/{prefix}/gim, guildEntry && guildEntry.prefix ? guildEntry.prefix : client.config.prefix)}\n`;
+        let normalHelp = `**Description**: ${command.help.description.replace(/{prefix}/gim, guildEntry ? guildEntry.getPrefix : client.config.prefix)}\n`;
         normalHelp += `**Category**: ${command.help.category}\n`;
-        normalHelp += `**Usage**: \`${command.help.usage.replace(/{prefix}/gim, guildEntry && guildEntry.prefix ? guildEntry.prefix : client.config.prefix)}\`\n`;
+        normalHelp += `**Usage**: \`${command.help.usage.replace(/{prefix}/gim, guildEntry ? guildEntry.getPrefix : client.config.prefix)}\`\n`;
         if (command.conf.aliases[0]) {
             normalHelp += `**Aliases**: ${command.conf.aliases.map(a => '\`' + a + '\`').join(', ')}\n`;
         }
@@ -162,6 +168,9 @@ class Help extends Command {
                     normalHelp += "\n"; //Bonus new-line
                 }
             }
+        }
+        if (command.help.externalDoc) {
+            normalHelp += `**External documentation**: <${command.help.externalDoc}>`;
         }
         
         return normalHelp;

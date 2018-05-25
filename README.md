@@ -1,7 +1,83 @@
 # Felix V4
 
+## Tables of content
+
+* [Tables of content](#tables-of-content)
+* [Introduction](#introduction)
+* [V4 LTS release](#v4-lts-release)
+- * [Goals](#goals)
+- * [Long Term Support implications](#long-term-support-implications)
+* [Contributing](#contributing)
+- * [Naming conventions](#naming-conventions)
+* [Installation](#installation)
+- * [Installing Node.js](#installing-nodejs)
+- * [Installing PM2](#installing-pm2)
+- * [Installing RethinkDB](#installing-rethinkdb)
+- * [Installing and setting up FelixV4](#installing-and-setting-up-felix-v4)
+- - * [Running Felix without database](#running-felix-without-database)
+- * [Updating](#updating)
+
+## Introduction
+
+Felix is a powerful Discord bot that aims to provide advanced features (and some memes) will staying relatively easy to use
+
+## V4 LTS Release 
+
+The `4.0.0` Major release brings numerous changes, reworked features, new features, removed features and a brand-new back-end, it is also 
+the only `Long Term Support` release and might be the last one to provide self-hosting support
+
+### Goals
+
+V4 has been written with numerous goals in mind, such as
+
+* Meaningful code: V4 has been written with the will to write easily understandable code, regardless of the few nanoseconds lost by doing that
+* Self-host support: V4 provides an extensive support for self-hosting, and has most of its main features configurable in the config file
+* High speed: V4 tries to achieve the best speed possible, the most noticeable aspect of that is the perhaps excessive caching
+
+### Long Term Support implications
+
+As said before, the `4.0.0` release is a LTS release, we'll see why's that and what does it imply exactly
+
+#### Reasons
+
+* Stability: In previous releases, entire features have been removed (such as with 2.0.0 major, the 3.0.0 major and the 4.0.0 itself), and back-end changed without any warnings. This was not friendly at all with self-hosting, as for example, updating to a newer release to fix a bug might also remove stuff that you initially wanted
+
+* Policy changes: For some reasons, mainly the fact that code from felix has been stolen without compliance to the license (sadly there is downsides to open-sourcing projects, this is because of this kind of people that we can't have nice things), **Felix will now be restricted-source** (as in: anyone who asks will still get access to the repository, need to ask though). This apply to future releases, therefore 
+this repository will eventually differ from the live bot. So as a "goodbye gift" for good peoples who cares about the license, this release will stay open-source 
+and receive a long-term support
+
+#### Implications
+
+As of it's official release, the `4.0.0` release will benefit from:
+
+* Minor enhancements if needed
+* Deprecations notices for potentially breaking changes before complete implementation  
+* Bug-fixes
+
+During 6 months. Additionally, bug-fixes only support will be effective **until new notice**, this means there is no defined date for the end of bug-fixes.
+This roughly means V4 can be considered to work until a notice of dropped support is issued
+
+## Contributing
+
+**You should always ask me (on the Discord support server or something) if the feature you want to add is alright before making it, as i may decline 
+a PR if i am not okay with it**
+
+Any contribution is more than welcome, here are the steps toward a "cool" PR:
+
+* Fork the repository
+* Code as your heart wishes and, as i try to force a consistent code style in Felix, comply to the ESLint rules of this project
+* Follow the [naming conventions](#naming-conventions)
+* Open a pull request ! 
+
+You can see the ESLint rules enabled on this project [here](https://github.com/ParadoxalCorp/FelixBot/blob/frosty-release/.eslintrc.json)
+Note: You can comply to more rules if you want, the set of rules on Felix is very small and basic
+
 Regarding the docs, most of the methods/classes documented in `./docs` are available under the same name as properties of the `client` instance.
 To check their exact name, you may head to `./util/index.js`
+
+### Naming conventions
+
+Everything follow the lower camel case convention (`camelCase`), with the only exception of classes names which follow the upper camel case convention (`CamelCase`)
 
 ## Installation
 

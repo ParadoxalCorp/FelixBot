@@ -99,7 +99,7 @@ class Reload extends Command {
         const fileName = typeof path === 'string' ? path.split(/\/|\\/gm)[path.split(/\/|\\/gm).length - 1].split('.')[0] : false;
 
         if (args.includes('--event')) {
-            await client.IPCHandler.broadcastReload('event', args[0] === 'all' ? args[0] : path)
+            const reloadedEvent = await client.IPCHandler.broadcastReload('event', args[0] === 'all' ? args[0] : path)
                 .then(() => {
                     if (args[0] === 'all') {
                         return message.channel.createMessage(':white_check_mark: Successfully reloaded all events listeners');
@@ -113,8 +113,9 @@ class Reload extends Command {
                         }
                     });
                 });
+            return reloadedEvent;
         } else if (args.includes('--command')) {
-            await client.IPCHandler.broadcastReload('command', args[0] === 'all' ? args[0] : path)
+            const reloadedCommand = await client.IPCHandler.broadcastReload('command', args[0] === 'all' ? args[0] : path)
                 .then(() => {
                     if (args[0] === 'all') {
                         return message.channel.createMessage(':white_check_mark: Successfully reloaded all commands');
@@ -128,8 +129,9 @@ class Reload extends Command {
                         }
                     });
                 });
+            return reloadedCommand;
         } else if (args.includes('--module')) {
-            await client.IPCHandler.broadcastReload('module', args[0] === 'all' ? args[0] : path, fileName, this.parseArguments(args))
+            const reloadedModule = await client.IPCHandler.broadcastReload('module', args[0] === 'all' ? args[0] : path, fileName, this.parseArguments(args))
                 .then(() => {
                     if (args[0] === 'all') {
                         return message.channel.createMessage(':white_check_mark: Successfully reloaded all modules');
@@ -143,8 +145,9 @@ class Reload extends Command {
                         }
                     });
                 });
+            return reloadedModule;
         }
-        return args[0] === 'all' ? true : message.channel.createMessage(`Hoi, this is not valid syntax, try again kthx`);
+        return message.channel.createMessage(`Hoi, this is not valid syntax, try again kthx`);
     }
 
     parseArguments(args) {

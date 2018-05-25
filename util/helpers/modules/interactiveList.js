@@ -51,6 +51,9 @@ class InteractiveList {
                 message = this.client.traverse(message, (value) => {
                     if (Array.isArray(value)) {
                         value = value.map(field => {
+                            if (typeof field.value === "number") {
+                                field.value = `${field.value}`;
+                            }
                             field.name = field.name.replace(index, page);
                             field.value = field.value.replace(index, page);
                             return field;

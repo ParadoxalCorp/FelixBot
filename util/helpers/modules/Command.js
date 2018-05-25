@@ -50,11 +50,20 @@ class Command {
             if (clientMember.permission.has("administrator")) {
                 return true;
             }
-            if (!clientMember.permission.has(perm) && (!Command.hasChannelOverwrite(channel, clientMember, perm) ||
-                    !Command.hasChannelOverwrite(channel, clientMember, perm).has(perm))) {
-                return false;
+            const hasChannelOverwrite = Command.hasChannelOverwrite(channel, clientMember, perm);
+            if (!clientMember.permission.has(perm)) {
+                if (!hasChannelOverwrite) {
+                    return false;
+                } else {
+                    return hasChannelOverwrite.has(perm) ? true : false;
+                }
+            } else {
+                if (!hasChannelOverwrite) {
+                    return true;
+                } else {
+                    return hasChannelOverwrite.has(perm) ? true : false;
+                }
             }
-            return true;
         }
 
         permissions.forEach(perm => {
@@ -62,8 +71,8 @@ class Command {
                 missingPerms.push(perm);
             }
         });
-        if (!hasPerm("sendMessages", this)) {
-            missingPerms.push(perm);
+        if (!permissions.includes('sendMessages') && !hasPerm('sendMessages', this)) {
+            missingPerms.push('sendMessages');
         }
         return missingPerms[0] ? missingPerms : true;
     }
@@ -162,7 +171,7 @@ class Command {
             Promise.reject(new Error(`The options.client and options.message parameters are mandatory`));
         }
         options.text = options.text || options.message.content;
-        const exactMatch = await this._resolveRoleByExactMatch(options.client, options.message, options.text)
+        const exactMatch = await this._resolveRoleByExactMatch(options.client, options.message, options.text);
         if (exactMatch) {
             return exactMatch;
         }
@@ -204,6 +213,60 @@ class Command {
     }
 
     /**
+     * 
+     * @param {object} options - An object of options
+     * @param {object} options.client - The client instance
+     * @param {object} options.message - The message
+     * @param {string} [options.text=message.content] - The text to resolve a channel from
+     * @param {boolean} [options.textual=true] - Whether the channel to resolve is a text channel or a voice channel
+     * @returns {object|boolean} The channel object, or false if none found
+     */
+    async getChannelFromText(options) {
+        const text = options.text || options.message.content;
+        //While it is very unlikely, resolve the role by ID (and mention) if possible
+        options.text = options.text.replace(/<|>|#/g, '');
+        if (options.message.channel.guild.channels.get(options.text)) {
+            return options.message.channel.guild.channels.get(options.text);
+        }
+        const exactMatch = await this._resolveChannelByExactMatch(options.client, options.message, options.text, options.textual);
+        if (exactMatch) {
+            return exactMatch;
+        }
+        return false;
+    }
+
+    /**
+     * @param {*} client - The client instance
+     * @param {*} message - The message
+     * @param {string} text - The text
+     * @param {boolean} textual - Whether the channel is a text channel or a voice channel
+     * @private
+     * @returns {Promise<Role>} The role, or false if none found
+     */
+    async _resolveChannelByExactMatch(client, message, text, textual) {
+        const exactMatches = message.channel.guild.channels.filter(c => c.name === text && c.type === textual ? 0 : 2);
+        if (exactMatches.length === 1) {
+            return exactMatches[0];
+        } else if (exactMatches.length > 1) {
+            let i = 1;
+            await message.channel.createMessage({
+                embed: {
+                    title: ':mag: Channel search',
+                    description: 'I found multiple channels with that name, select one by answering with their corresponding number```\n' + exactMatches.map(c => `[${i++}] - ${c.name} (Topic: ${c.topic ? c.topic.substr(0, 42) + '...' : 'None'} ; Bitrate: ${c.bitrate ? c.bitrate : "None (text channel)"})`).join("\n") + "```",
+                    footer: {
+                        text: 'Time limit: 60 seconds'
+                    }
+                }
+            });
+            const reply = await client.messageCollector.awaitMessage(message.channel.id, message.author.id, 60000).catch(err => {
+                client.bot.emit("error", err);
+                return false;
+            });
+            return exactMatches[reply.content - 1] ? exactMatches[reply.content - 1] : false;
+        }
+    }
+
+    /**
      * Query to the user the arguments that they forgot to specify
      * @param {*} client - The client instance
      * @param {*} message - The message that triggered the command
@@ -214,7 +277,7 @@ class Command {
         let args = [];
 
         const queryArg = async(arg, ongoingQuery) => {
-            const queryMsg = ongoingQuery || await message.channel.createMessage('Hoi ! Seems like you forgot a parameter for this command, note that you can cancel this query anytime by replying `cancel`\n\n' + arg.description);
+            const queryMsg = ongoingQuery || await message.channel.createMessage('Note that you can cancel this query anytime by replying `cancel`\n\n' + arg.description);
             const response = await client.messageCollector.awaitMessage(message.channel.id, message.author.id);
             if (!response || response.content.toLowerCase() === "cancel") {
                 queryMsg.delete().catch(() => {});
@@ -227,10 +290,8 @@ class Command {
                             m.delete().catch(() => {});
                         }, 5000);
                     });
-                queryArg(arg, queryMsg)
-                    .then(r => {
-                        return r;
-                    });
+                const reQuery = await queryArg(arg, queryMsg);
+                return reQuery;
             } else {
                 queryMsg.delete().catch(() => {});
                 const value = arg.possibleValues ? arg.possibleValues.find(value => value.name.toLowerCase() === response.content.toLowerCase() || value.name === '*') : false;
@@ -239,7 +300,8 @@ class Command {
         };
 
         for (const element of command.conf.expectedArgs) {
-            if ((element.condition && element.condition(client, message, args)) || !element.condition) {
+            const condition = element.condition ? await element.condition(client, message, args) : undefined;
+            if (condition || typeof condition === 'undefined') {
                 const query = await queryArg(element)
                     .catch(err => {
                         client.bot.emit('error', err, message);
@@ -277,6 +339,18 @@ class Command {
         } else if (typeof userResolvable === 'object') {
             return client.extendedUser(user);
         }
+    }
+
+    /**
+     * Get the highest role of the specified member and returns it
+     * @param {object|string} member - The member object or their ID
+     * @param {*} guild - The guild object
+     * @returns {*} The highest role of the user
+     */
+    getHighestRole(member, guild) {
+        member = member.id ? member : guild.members.get(member);
+        const filteredRoles = guild.roles.filter(r => member.roles.includes(r.id));
+        return filteredRoles.sort((a, b) => b.position - a.position)[0];
     }
 }
 

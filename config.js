@@ -63,9 +63,14 @@ module.exports = {
             cooldown: 30000,
             /* This is rather more complicated, this actually define how often (in milliseconds too) the cooldowns are checked and lifted if they're over
              * In practice, even if the cooldown is (by default) 30 seconds, it may not be lifted directly after 30 seconds
-             * Life if the latest sweep was a second before, the cooldown will be lifted 39 seconds after 
+             * For example, if the latest sweep was a second before the 30 seconds passed, the cooldown will be lifted 9 seconds after, so 39 seconds after the message was sent
              * This allow for better performance at a large scale, but also prevent automated experience farming, as you can't accurately know how long the cooldown will take */
-            sweepInterval: 10000
+            sweepInterval: 10000,
+            //This define the limit of roles that can be given at the same level
+            maxRolesPerLevel: 3,
+            //Define what is the maximum level at which you can set roles to be given at
+            maxRolesLevel: 1000,
+            defaultLevelUpMessage: 'Hai **%USERTAG%**, you just reached the level %LEVEL% %WONROLES% !'
         }
     },
     process: {

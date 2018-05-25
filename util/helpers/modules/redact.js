@@ -7,12 +7,15 @@
  * @returns {string} The given strings with credentials replaced
  */
 const redact = (client, string) => {
+    let credentials = [client.config.token, client.config.database.host];
+    const secondaryCredentials = [client.config.apiKeys.sentryDSN, client.config.database.password, client.config.botLists.terminal.token];
+    for (const value of secondaryCredentials) {
+        if (value) {
+            credentials.push(value);
+        }
+    }
     const credentialRX = new RegExp(
-        [
-            client.config.token,
-            client.config.database.host,
-            client.config.apiKeys.sentryDSN
-        ].join('|'),
+        credentials.join('|'),
         'gi'
     );
 

@@ -11,6 +11,10 @@ class ExtendedGuildEntry {
         this.client = client;
     }
 
+    get getPrefix() {
+        return this.prefix || this.client.config.prefix;
+    }
+
     /**
      * Check if the specified member has the permission to run the given command
      * @param {string} memberID - The member ID to check if they have the permission to run the specified command
