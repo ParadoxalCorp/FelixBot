@@ -8,7 +8,7 @@
 class References {
     constructor() {
         this.defaultPermissions = {
-            allowedCommands: ["generic*", "fun*", 'economy*'],
+            allowedCommands: ["generic*", "fun*", 'economy*', 'misc*'],
             restrictedCommands: ["settings*"]
         };
         this.permissionsSet = {
@@ -26,6 +26,7 @@ class References {
         return {
             id: id,
             prefix: "",
+            selfAssignableRoles: [],
             permissions: {
                 users: [],
                 roles: [],

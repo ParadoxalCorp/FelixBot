@@ -4,6 +4,10 @@
 
 * [Tables of content](#tables-of-content)
 * [Introduction](#introduction)
+* [Commands arguments syntax](#commands-arguments-syntax)
+- * [Without arguments](#without-arguments)
+- * [With arguments separated by spaces](#with-arguments-separated-by-spaces)
+- * [With arguments separated by vertical bars](#with-arguments-separated-by-vertical-bars)
 * [V4 LTS release](#v4-lts-release)
 - * [Goals](#goals)
 - * [Long Term Support implications](#long-term-support-implications)
@@ -20,6 +24,47 @@
 ## Introduction
 
 Felix is a powerful Discord bot that aims to provide advanced features (and some memes) will staying relatively easy to use
+
+## Commands arguments syntax
+
+For consistency purposes, as well as to make it easy to learn, all commands that takes multiple arguments can first of all be called without specifying any arguments.
+
+To explore all the ways of calling "complicated" commands, we'll take the `sar` (Self Assignable Roles) command, which allows you to either add a self-assignable role, remove one or list the self-assignable roles set.
+
+#### Without arguments
+
+> felix sar
+
+Calling the command like that will prompt you what action you want to do (add a role, remove one and such) and the name of the role if you didn't choose to list them.
+This is a longer but easier way.
+
+#### With arguments separated by spaces
+
+> felix sar add baguette
+
+Here we specify both the action (`add`) and the name of the role (`baguette`) we want to add in a single message, this is the fastest way but there is an issue with it, we can see it with
+the following example:
+
+> felix sar add mighty baguette
+
+Because arguments are separated by spaces, in the case where an argument contain a space (like here, the role name has a space between `mighty` and `baguette`) only 
+part of the argument will be taken into account, or even worse, the last part will be taken as another argument.
+
+In this case, only `mighty` would be considered as the role name, and therefore Felix won't be able to find it. This can be avoided by calling the command without arguments like above, or by calling the command with arguments separated by `|` like below
+
+#### With arguments separated by vertical bars 
+
+To avoid the issue described above, we can call commands like this:
+
+> felix sar add | mighty baguette
+
+As arguments are separated by `|` instead of spaces, you can specify arguments that have spaces without issues, it is a bit slower though, especially for phone users
+
+#### Additional example
+
+As said all above, this apply to all commands, so it works for the `experience` command too for example:
+
+> felix experience add_role | mighty baguette | 10 | static
 
 ## V4 LTS Release 
 

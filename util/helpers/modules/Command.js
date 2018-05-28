@@ -25,6 +25,7 @@ class Command {
             let prefixes = client.prefixes.map(p => p);
             if (guildEntry && guildEntry.prefix) {
                 prefixes.push(guildEntry.prefix);
+                prefixes = prefixes.filter(p => p !== client.config.options.prefix);
             }
             if (!prefixes.filter(p => p === args[0])[0]) {
                 return resolve(undefined);
@@ -337,7 +338,7 @@ class Command {
             const user = client.bot.users.filter(u => u.username === spliced[0] && u.discriminator === spliced[1]).random();
             return client.extendedUser(user ? user : defaultUser);
         } else if (typeof userResolvable === 'object') {
-            return client.extendedUser(user);
+            return client.extendedUser(userResolvable);
         }
     }
 
@@ -351,6 +352,20 @@ class Command {
         member = member.id ? member : guild.members.get(member);
         const filteredRoles = guild.roles.filter(r => member.roles.includes(r.id));
         return filteredRoles.sort((a, b) => b.position - a.position)[0];
+    }
+
+    /**
+     * Get a HEX code from decimals
+     * @param {number} decimal - The decimal(s) to convert to a HEX representation
+     * @returns {string} The HEX code, without the leading hashtag
+     */
+    getHexColor(decimal) {
+        let col = decimal.toString(16);
+        //If the decimal is 0
+        while (col.length < 6) {
+            col = `0${col}`;
+        }
+        return col;
     }
 }
 

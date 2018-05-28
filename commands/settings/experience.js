@@ -8,53 +8,53 @@ class Experience extends Command {
         this.extra = {
             possibleActions: [{
                 name: 'enable',
-                interpretAs: '{value}',
                 func: this.enable.bind(this),
+                interpretAs: '{value}',
                 expectedArgs: 0
             }, {
                 name: 'disable',
-                interpretAs: '{value}',
                 func: this.disable.bind(this),
+                interpretAs: '{value}',
                 expectedArgs: 0
             }, {
                 name: 'add_role',
-                interpretAs: '{value}',
                 func: this.addRole.bind(this),
+                interpretAs: '{value}',
                 expectedArgs: 3
             }, {
                 name: 'remove_role',
-                interpretAs: '{value}',
                 func: this.removeRole.bind(this),
+                interpretAs: '{value}',
                 expectedArgs: 1
             }, {
                 name: 'list_roles',
-                interpretAs: '{value}',
                 func: this.listRoles.bind(this),
+                interpretAs: '{value}',
                 expectedArgs: 0
             }, {
                 name: 'enable_levelup_notifs',
-                interpretAs: '{value}',
                 func: this.enableLevelUpNotifs.bind(this),
+                interpretAs: '{value}',
                 expectedArgs: 0
             }, {
                 name: 'disable_levelup_notifs',
-                interpretAs: '{value}',
                 func: this.disableLevelUpNotifs.bind(this),
+                interpretAs: '{value}',
                 expectedArgs: 0
             }, {
                 name: 'set_levelup_notifs_target',
-                interpretAs: '{value}',
                 func: this.setLevelUpNotifsTarget.bind(this),
+                interpretAs: '{value}',
                 expectedArgs: 1
             }, {
                 name: 'set_levelup_notifs_message',
-                interpretAs: '{value}',
                 func: this.setLevelUpNotifsMessage.bind(this),
+                interpretAs: '{value}',
                 expectedArgs: 1
             }, {
                 name: 'see_settings',
-                interpretAs: '{value}',
                 func: this.seeSettings.bind(this),
+                interpretAs: '{value}',
                 expectedArgs: 0
             }]
         };
@@ -211,12 +211,13 @@ class Experience extends Command {
             channel: message.channel,
             userID: message.author.id,
             messages: guildEntry.experience.roles.map(r => {
+                const guildRole = message.channel.guild.roles.get(r.id);
                 return {
                     embed: {
                         title: 'Activity roles list',
                         fields: [{
                             name: 'Name',
-                            value: message.channel.guild.roles.get(r.id).name,
+                            value: guildRole.name,
                             inline: true
                         }, {
                             name: 'At level',
@@ -225,11 +226,14 @@ class Experience extends Command {
                         }, {
                             name: 'Static',
                             value: r.static ? ':white_check_mark:' : ':x:'
+                        }, {
+                            name: 'Color',
+                            value: `#${this.getHexColor(guildRole.color)} (The borders colors of this list are a preview`
                         }],
                         footer: {
                             text: `Showing page {index}/${guildEntry.experience.roles.length}`
                         },
-                        color: client.config.options.embedColor
+                        color: guildRole.color
                     }
                 };
             })
@@ -316,26 +320,24 @@ class Experience extends Command {
     }
 
     _checkPermissions(client, message, guildEntry) {
-            let result = '';
-            const channel = message.channel.guild.channels.get(guildEntry.experience.notifications.channel);
-            if (channel) {
-                result += Array.isArray(this.clientHasPermissions(message, client, ['sendMessages'], channel)) ? `:warning: I don't have enough permissions to send messages in <#${channel.id}>\n` : '';
-            }
-            if (Array.isArray(this.clientHasPermissions(message, client, ['manageRoles'])) && guildEntry.experience.roles[0]) {
-                result += ':warning: I don\'t have the `Manage Roles` permission and there are roles set to be given\n';
-            }
-            guildEntry.experience.roles = guildEntry.experience.roles.filter(r => message.channel.guild.roles.has(r.id));
-            const higherRoles = guildEntry.experience.roles.filter(r => message.channel.guild.roles.get(r.id).position > this.getHighestRole(client.bot.user.id, message.channel.guild).position);
-            if (higherRoles[0]) {
-                result += ':warning: The role(s) ' + higherRoles.map(r => `\`${message.channel.guild.roles.get(r.id).name}\``).join(', ') + ' is/are set to be given at some point, however it is/they are higher than my highest role and i therefore can\'t give them';
-            }
-            if (!result) {
-                result = ':white_check_mark: No permissions issues have been detected with the current settings';
-            }
-            return result;
+        let result = '';
+        const channel = message.channel.guild.channels.get(guildEntry.experience.notifications.channel);
+        if (channel) {
+            result += Array.isArray(this.clientHasPermissions(message, client, ['sendMessages'], channel)) ? `:warning: I don't have enough permissions to send messages in <#${channel.id}>\n` : '';
         }
-        //TODO:
-        //Check what's wrong with the conditions of the queries, especially the add_role static one
+        if (Array.isArray(this.clientHasPermissions(message, client, ['manageRoles'])) && guildEntry.experience.roles[0]) {
+            result += ':warning: I don\'t have the `Manage Roles` permission and there are roles set to be given\n';
+        }
+        guildEntry.experience.roles = guildEntry.experience.roles.filter(r => message.channel.guild.roles.has(r.id));
+        const higherRoles = guildEntry.experience.roles.filter(r => message.channel.guild.roles.get(r.id).position > this.getHighestRole(client.bot.user.id, message.channel.guild).position);
+        if (higherRoles[0]) {
+            result += ':warning: The role(s) ' + higherRoles.map(r => `\`${message.channel.guild.roles.get(r.id).name}\``).join(', ') + ' is/are set to be given at some point, however it is/they are higher than my highest role and i therefore can\'t give them';
+        }
+        if (!result) {
+            result = ':white_check_mark: No permissions issues have been detected with the current settings';
+        }
+        return result;
+    }
 }
 
 module.exports = new Experience();

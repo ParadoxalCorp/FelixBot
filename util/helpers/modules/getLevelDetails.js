@@ -1,8 +1,18 @@
+'use strict';
+
 /**
- * 
- * @param {*} client - The client instance
+ * @typedef LevelDetails 
+ * @prop {number} level The level  
+ * @prop {number} nextLevel The next level (basically level + 1 yes)
+ * @prop {number} expTillNextLevel The experience left required to reach the next level
+ * @prop {number} thisLevelExp The experience required to reach this level
+ */
+
+
+/**
+ * @param {object} client - The client instance
  * @param {number} level - The level to get the details from
- * @return {*} An object containing data about the experience required for this level and the next level
+ * @return {LevelDetails} An object containing data about the experience required for this level and the next level
  */
 const getLevelDetails = (client, level) => {
     return {

@@ -22,7 +22,8 @@ class Ping extends Command {
         };
     }
 
-    async run(client, message) {
+    // eslint-disable-next-line no-unused-vars 
+    async run(client, message, args, guildEntry, userEntry) {
         const startTime = Date.now();
         const messageSent = await message.channel.createMessage(`Baguetting the hell outta Diskurd...`);
         return messageSent.edit(`~~Baguette~~ Pong | \`${Date.now() - startTime}\`ms`);
