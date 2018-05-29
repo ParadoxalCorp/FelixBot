@@ -22,7 +22,7 @@ const master = new Sharder(config.token, '/main.js', {
             TYPING_START: true
         },
         messageLimit: 25,
-        defaultImageSize: 2048,
+        defaultImageSize: 1024,
     },
     guildsPerShards: config.process.guildsPerShards,
     debug: config.process.debug,
