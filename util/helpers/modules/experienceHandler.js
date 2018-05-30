@@ -21,6 +21,8 @@ class ExperienceHandler {
         const expGain = totalSize ? this.client.config.options.experience.uploadGainFormula(totalSize) : this.client.config.options.experience.gainFormula(message.content.length);
         const levelDetails = this.client.getLevelDetails(guildEntry.getLevelOf(message.author.id));
         const totalExperience = guildEntry.addExperience(expGain).to(message.author.id);
+        this._addCooldown(this.client.config.options.experience.cooldown).to(message.author.id);
+        await this.client.database.set(guildEntry, 'guild');
         if (totalExperience >= levelDetails.expTillNextLevel) {
             const wonRoles = guildEntry.experience.roles.find(r => r.at === levelDetails.nextLevel) ? await this._addWonRoles(message, guildEntry, levelDetails) : false;
             if (guildEntry.experience.notifications.enabled) {
@@ -30,8 +32,7 @@ class ExperienceHandler {
                 this._removeOlderRoles(message, guildEntry, levelDetails);
             }
         }
-        this._addCooldown(this.client.config.options.experience.cooldown).to(message.author.id);
-        await this.client.database.set(guildEntry, 'guild');
+        return true;
     }
 
     _sweep() {
