@@ -25,7 +25,7 @@ class Command {
             let prefixes = client.prefixes.map(p => p);
             if (guildEntry && guildEntry.prefix) {
                 prefixes.push(guildEntry.prefix);
-                prefixes = prefixes.filter(p => p !== client.config.options.prefix);
+                prefixes = prefixes.filter(p => p !== client.config.prefix);
             }
             if (!prefixes.filter(p => p === args[0])[0]) {
                 return resolve(undefined);
