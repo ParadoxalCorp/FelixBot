@@ -102,8 +102,8 @@ class Command {
      * @param {object} options - An object of options
      * @param {object} options.message - The message from which to get the roles from
      * @param {object} options.client - The client instance
-     * @param {string} [options.text=message.content] - The text from which roles should be resolved, if none provided, it will use the message content
-     * @returns {Promise<User>} The resolved role, or false if none could be resolved
+     * @param {string} [options.text=message.content] - The text from which users should be resolved, if none provided, it will use the message content
+     * @returns {Promise<User>} The resolved user, or false if none could be resolved
      */
     async getUserFromText(options = {}) {
         if (!options.client || !options.message) {
