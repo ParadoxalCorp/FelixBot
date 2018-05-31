@@ -15,6 +15,7 @@ For a better view of how a command should look like, check the [example](#exampl
 * [extra](#extra)
 * [run function](#run-function)
 * [examples](#examples)
+* [helpful methods](#helpful-methods)
 
 ## help object
 
@@ -26,7 +27,8 @@ This object purpose is for use in the help command, and to retrieve the commands
 | category | <code>string</code> | The category of the command |
 | usage | <code>string</code> | The syntax of the command, note that all instances of `{prefix}` will be replaced by the effective prefix in the help |
 | description | <code>string</code> | The description of the command, like usage, instances of `{prefix}` will be replaced by the actual prefix |
-| params | <code>object</code> | A [parameters](#help-parameters) object |
+| externalDoc | <code>string</code> | A link to an external documentation page, optional | 
+| params | <code>object</code> | A [parameters](#help-parameters) object, optional |
 
 ### help parameters
 
@@ -61,6 +63,7 @@ This define most of the command characteristics and will directly impact how the
 | guildOnly | <code>boolean</code> | Whether this command can only be used in a guild |
 | ownerOnly | <code>boolean</code> | Whether this command can only be used by the owner set in the config file |
 | expectedArgs | <code>array<[expected arg](#expected-arg)></code> | An array of arguments the command expect, if you set it, whenever a user trigger the command without arguments, the command handler will query the user for each expected argument |
+| cooldownWeight | <code>number</code> | The "weight" of the command, if not specified, this will use the default weight set in the config |
 
 Note that the `expectedArgs` property is extremely powerful and will affect the arguments with which the run function is called 
 
@@ -69,7 +72,7 @@ Note that the `expectedArgs` property is extremely powerful and will affect the 
 | Property | Data Type | Description |
 | --- | --- | --- |
 | description | <code>string</code> | Description that will be used when querying the user. This is the only mandatory property |
-| condition | <code>function</code> | A function that will be called with the three `client`, `message` and `args` parameters, where `client` is the client, `message` the message and `args` an array of arguments that have already been prompted to the user. If the function resolve to `false`, this argument won't be prompted to the user |
+| condition | <code>function</code> | A function that will be called with the three `client`, `message` and `args` parameters, where `client` is the client, `message` the message and `args` an array of arguments that have already been prompted to the user. If the function resolve to `false`, this argument won't be prompted to the user. This function can be async and return a promise, it will in that case be awaited |
 | possibleValues | <code>array<[possible arg value](#possible-arg-value)></code> | An array of [possible arg value](#possible-arg-value) objects, which represent the values the command handler should expect |
 
 #### possible arg value
@@ -86,7 +89,7 @@ under `<Command>.extra` so they're easily accessible and to be consistent with t
 
 ## run function
 
-**This function must be async**
+**This function must return a promise**
 
 This is the function where the main command code should be, and the one called by the command handler. The command handler will call it with the following arguments:
 
@@ -104,8 +107,9 @@ While the `args` parameter are by default directly parsed from the message conte
 (prefix and command are not included), this is not always the case. If `conf.expectedArgs` is set and a user trigger the command without specifying any argument, the `args` array will no longer simply be the message content parsed. Each argument in the `conf.expectedArgs` will be prompted to the user, and the `args` array 
 will be filled with the user replies.
 
-To see this behavior in action, and a full scope of how powerful it can be, you may want to check ou the reload command code (see the second example) and try 
-running the reload command without any argument
+To see this behavior in action, and a full scope of how powerful it can be, you may want to check out the reload command code (see the second example) and try 
+running the reload command without any argument, or even better, the experience command code, which show-off ways to do a lot of things, like dynamically transforming
+the args through the arguments conditions
 
 ## Examples
 
@@ -246,4 +250,153 @@ class Reload extends Command {
 module.exports = new Reload();
 ```
 
+## Helpful methods
 
+As you can see in the examples, commands should extend the `Command` class. While it's not an absolute necessity, it gives access to the following helpful methods through 
+the `this` keyword
+
+## Command
+**Kind**: global class
+
+* [Command](#Command)
+    * [new Command()](#new_Command_new)
+    * [.parseCommand(message, client)](#Command+parseCommand) ⇒ <code>Promise.&lt;object&gt;</code>
+    * [.clientHasPermissions(message, client, permissions, [channel])](#Command+clientHasPermissions) ⇒ <code>boolean</code> \| <code>array</code>
+    * [.hasChannelOverwrite(channel, member, permission)](#Command+hasChannelOverwrite) ⇒ <code>boolean</code> \| <code>PermissionOverwrite</code>
+    * [.getUserFromText(options)](#Command+getUserFromText) ⇒ <code>Promise.&lt;User&gt;</code>
+    * [.getRoleFromText(options)](#Command+getRoleFromText) ⇒ <code>Promise.&lt;Role&gt;</code>
+    * [.getChannelFromText(options)](#Command+getChannelFromText) ⇒ <code>object</code> \| <code>boolean</code>
+    * [.queryMissingArgs(client, message, command)](#Command+queryMissingArgs) ⇒ <code>Promise.&lt;Array&gt;</code>
+    * [.resolveUser(client, userResolvable)](#Command+resolveUser) ⇒ <code>extendedUser</code>
+    * [.getHighestRole(member, guild)](#Command+getHighestRole) ⇒ <code>\*</code>
+
+<a name="new_Command_new"></a>
+
+### new Command()
+Provide some utility methods to parse the args of a message, check the required permissions...
+
+<a name="Command+parseCommand"></a>
+
+### command.parseCommand(message, client) ⇒ <code>Promise.&lt;object&gt;</code>
+As it calls the database to check for a custom prefix, the method is asynchronous and may be awaited
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>Promise.&lt;object&gt;</code> - - The command object, or undefined if the message is not prefixed or the command does not exist
+
+| Param | Type | Description |
+| --- | --- | --- |
+| message | <code>object</code> | The message object to parse the command from |
+| client | <code>object</code> | The client instance |
+
+<a name="Command+clientHasPermissions"></a>
+
+### command.clientHasPermissions(message, client, permissions, [channel]) ⇒ <code>boolean</code> \| <code>array</code>
+This is a deep check and the channels wide permissions will be checked too
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>boolean</code> \| <code>array</code> - - An array of permissions the bot miss, or true if the bot has all the permissions needed, sendMessages permission is also returned if missing
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| message | <code>object</code> |  | The message that triggered the command |
+| client | <code>object</code> |  | The client instance |
+| permissions | <code>array</code> |  | An array of permissions to check for |
+| [channel] | <code>object</code> | <code>message.channel</code> | Optional, a specific channel to check perms for (to check if the bot can connect to a VC for example) |
+
+<a name="Command+hasChannelOverwrite"></a>
+
+### command.hasChannelOverwrite(channel, member, permission) ⇒ <code>boolean</code> \| <code>PermissionOverwrite</code>
+It takes into account the roles of the member, their position and the member itself to return the overwrite which actually is effective
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>boolean</code> \| <code>PermissionOverwrite</code> - - The permission overwrite overwriting the specified permission, or false if none exist
+
+| Param | Type | Description |
+| --- | --- | --- |
+| channel | <code>object</code> | The channel to check permissions overwrites in |
+| member | <code>object</code> | The member object to check permissions overwrites for |
+| permission | <code>string</code> | The permission to search channel overwrites for |
+
+<a name="Command+getUserFromText"></a>
+
+### command.getUserFromText(options) ⇒ <code>Promise.&lt;User&gt;</code>
+Try to resolve a user with IDs, names, partial usernames or mentions
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>Promise.&lt;User&gt;</code> - The resolved role, or false if none could be resolved
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>object</code> |  | An object of options |
+| options.message | <code>object</code> |  | The message from which to get the roles from |
+| options.client | <code>object</code> |  | The client instance |
+| [options.text] | <code>string</code> | <code>&quot;message.content&quot;</code> | The text from which roles should be resolved, if none provided, it will use the message content |
+
+<a name="Command+getRoleFromText"></a>
+
+### command.getRoleFromText(options) ⇒ <code>Promise.&lt;Role&gt;</code>
+Try to resolve a role with IDs or names
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>Promise.&lt;Role&gt;</code> - The resolved role, or false if none could be resolved
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>object</code> |  | An object of options |
+| options.message | <code>object</code> |  | The message from which to get the roles from |
+| options.client | <code>object</code> |  | The client instance |
+| [options.text] | <code>string</code> | <code>&quot;message.content&quot;</code> | The text from which roles should be resolved, if none provided, it will use the message content |
+
+<a name="Command+getChannelFromText"></a>
+
+### command.getChannelFromText(options) ⇒ <code>object</code> \| <code>boolean</code>
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>object</code> \| <code>boolean</code> - The channel object, or false if none found
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>object</code> |  | An object of options |
+| options.client | <code>object</code> |  | The client instance |
+| options.message | <code>object</code> |  | The message |
+| [options.text] | <code>string</code> | <code>&quot;message.content&quot;</code> | The text to resolve a channel from |
+| [options.textual] | <code>boolean</code> | <code>true</code> | Whether the channel to resolve is a text channel or a voice channel |
+
+<a name="Command+queryMissingArgs"></a>
+
+### command.queryMissingArgs(client, message, command) ⇒ <code>Promise.&lt;Array&gt;</code>
+Query to the user the arguments that they forgot to specify
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>Promise.&lt;Array&gt;</code> - An array of arguments
+
+| Param | Type | Description |
+| --- | --- | --- |
+| client | <code>\*</code> | The client instance |
+| message | <code>\*</code> | The message that triggered the command |
+| command | <code>\*</code> | The command that the user is trying to run |
+
+<a name="Command+resolveUser"></a>
+
+### command.resolveUser(client, userResolvable) ⇒ <code>extendedUser</code>
+Note that if the user is not found, only username, discriminator and tag are guaranteed (set to unknown)
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>extendedUser</code> - returns an extended user object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| client | <code>\*</code> | The client instance |
+| userResolvable | <code>\*</code> | A user resolvable, can be an ID, a username#discriminator pattern or a user object |
+
+<a name="Command+getHighestRole"></a>
+
+### command.getHighestRole(member, guild) ⇒ <code>\*</code>
+Get the highest role of the specified member and returns it
+
+**Kind**: instance method of [<code>Command</code>](#Command)
+**Returns**: <code>\*</code> - The highest role of the user
+
+| Param | Type | Description |
+| --- | --- | --- |
+| member | <code>object</code> \| <code>string</code> | The member object or their ID |
+| guild | <code>\*</code> | The guild object |
