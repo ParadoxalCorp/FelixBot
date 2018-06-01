@@ -229,6 +229,9 @@ class Command {
         if (options.message.channel.guild.channels.get(options.text)) {
             return options.message.channel.guild.channels.get(options.text);
         }
+        if (typeof options.textual === 'undefined') {
+            options.textual = true;
+        }
         const exactMatch = await this._resolveChannelByExactMatch(options.client, options.message, options.text, options.textual);
         if (exactMatch) {
             return exactMatch;
@@ -245,7 +248,7 @@ class Command {
      * @returns {Promise<Role>} The role, or false if none found
      */
     async _resolveChannelByExactMatch(client, message, text, textual) {
-        const exactMatches = message.channel.guild.channels.filter(c => c.name === text && c.type === textual ? 0 : 2);
+        const exactMatches = message.channel.guild.channels.filter(c => c.name === text && c.type === (textual ? 0 : 2));
         if (exactMatches.length === 1) {
             return exactMatches[0];
         } else if (exactMatches.length > 1) {

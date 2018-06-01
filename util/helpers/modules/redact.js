@@ -8,7 +8,7 @@
  */
 const redact = (client, string) => {
     let credentials = [client.config.token, client.config.database.host];
-    const secondaryCredentials = [client.config.apiKeys.sentryDSN, client.config.database.password, client.config.botLists.terminal.token];
+    const secondaryCredentials = [client.config.apiKeys.sentryDSN, client.config.database.password, client.config.botLists.terminal.token, client.config.apiKeys.weebSH];
     for (const value of secondaryCredentials) {
         if (value) {
             credentials.push(value);

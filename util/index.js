@@ -21,6 +21,7 @@ module.exports = (client) => {
         prompt: require('./modules/prompt'),
         isWholeNumber: require('./modules/isWholeNumber'),
         getLevelDetails: require('./helpers/modules/getLevelDetails').bind(null, client),
-        experienceHandler: new(require('./helpers/modules/experienceHandler'))(client)
+        experienceHandler: new(require('./helpers/modules/experienceHandler'))(client),
+        moduleIsInstalled: require('./modules/moduleIsInstalled')
     };
 };
