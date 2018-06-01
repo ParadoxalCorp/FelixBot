@@ -11,15 +11,16 @@ module.exports = {
         //The port should be the client driver port, not the administrative HTTP connection nor the intracluster one
         port: 28015,
         //You shouldn't need to change this unless you run multiple instances of the bot and ony one instance of RethinkDB; In that case, you can use different databases
-        database: 'data',
+        database: "data",
         //The username to connect as
-        user: 'admin',
+        user: "admin",
         //If a password is set, the password to connect with (in case the server has a public address and the RethinkDB instance is set to not only be available locally)
-        password: ''
+        password: ""
     },
     //Additional API keys that the bot use for commands for example
     apiKeys: {
         sentryDSN: "",
+        weebSH: ""
     },
     botLists: {
         terminal: {
@@ -42,7 +43,7 @@ module.exports = {
             slotsEventsRate: 35
         },
         //If given, Felix will use this animated emotes to animate the slots command; Should look like this: <a:animatedslots:443420980170326036> 
-        animatedSlotsEmote: '',
+        animatedSlotsEmote: "",
         //Roughly allows the use of 4 commands within the given period before ratelimits may apply
         defaultCooldownWeight: 5,
         //Duration in milliseconds the command cooldown may last, setting it to something like 1000 would effectively disable it
@@ -70,7 +71,7 @@ module.exports = {
             maxRolesPerLevel: 3,
             //Define what is the maximum level at which you can set roles to be given at
             maxRolesLevel: 1000,
-            defaultLevelUpMessage: 'Hai **%USERTAG%**, you just reached the level %LEVEL% %WONROLES% !'
+            defaultLevelUpMessage: "Hai **%USERTAG%**, you just reached the level %LEVEL% %WONROLES% !"
         }
     },
     process: {
@@ -78,6 +79,6 @@ module.exports = {
         shards: 1,
         clusters: 1,
         debug: true,
-        environment: 'production'
+        environment: "production"
     }
 };

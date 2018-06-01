@@ -23,7 +23,7 @@ class ExperienceHandler {
         const totalExperience = guildEntry.addExperience(expGain).to(message.author.id);
         this._addCooldown(this.client.config.options.experience.cooldown).to(message.author.id);
         await this.client.database.set(guildEntry, 'guild');
-        if (totalExperience >= levelDetails.expTillNextLevel) {
+        if (totalExperience > levelDetails.expTillNextLevel) {
             const wonRoles = guildEntry.experience.roles.find(r => r.at === levelDetails.nextLevel) ? await this._addWonRoles(message, guildEntry, levelDetails) : false;
             if (guildEntry.experience.notifications.enabled) {
                 this._notifyUser(message, guildEntry, levelDetails, wonRoles);
