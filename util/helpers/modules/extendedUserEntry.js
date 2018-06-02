@@ -55,7 +55,16 @@ class ExtendedUserEntry {
      * @return {boolean} Whether or not the user is in cooldown
      */
     isInCooldown(cooldown) {
-        return this.cooldowns[cooldown] > Date.now();
+        const cooldownObj = this.cooldowns[cooldown];
+        if (typeof cooldownObj === 'object') {
+            for (const cool of cooldownObj.cooldowns) {
+                if (cool < Date.now()) {
+                    return false;
+                }
+            }
+            return cooldownObj.cooldowns.length < cooldownObj.max ? false : true;
+        }
+        return cooldownObj > Date.now();
     }
 
     /**
@@ -65,8 +74,28 @@ class ExtendedUserEntry {
      * @returns {number} The timestamp at which the cooldown will expire
      */
     addCooldown(cooldown, duration) {
+        const cooldownObj = this.cooldowns[cooldown];
+        if (typeof cooldownObj === 'object') {
+            if (cooldownObj.cooldowns.length < cooldownObj.max) {
+                const newLength = cooldownObj.cooldowns.push(Date.now() + duration);
+                return cooldownObj.cooldowns[newLength - 1];
+            }
+            let oldestCooldown = cooldownObj.cooldowns.sort((a, b) => a - b)[0];
+            cooldownObj.cooldowns[cooldownObj.cooldowns.findIndex(c => c === oldestCooldown)] = Date.now() + duration;
+            return oldestCooldown;
+        }
         this.cooldowns[cooldown] = Date.now() + duration;
         return this.cooldowns[cooldown];
+    }
+
+    /**
+     * To use on a cooldown that can have multiple cooldowns, get the first cooldown that will expire
+     * @param {string} cooldown - The name of the cooldown
+     * @returns {number} The timestamp of the nearest cooldown, or undefined if all of them are expired
+     */
+    getNearestCooldown(cooldown) {
+        const cooldownObj = this.cooldowns[cooldown];
+        return cooldownObj.cooldowns.filter(c => c > Date.now()).sort((a, b) => a - b)[0];
     }
 
     /**

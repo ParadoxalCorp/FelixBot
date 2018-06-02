@@ -88,8 +88,15 @@ class References {
                 transactions: [],
                 items: []
             },
+            love: {
+                amount: 0
+            },
             cooldowns: {
-                dailyCooldown: 0
+                dailyCooldown: 0,
+                loveCooldown: {
+                    max: 2,
+                    cooldowns: []
+                }
             }
         };
     }

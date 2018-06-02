@@ -100,8 +100,8 @@ class Command {
     /**
      * Try to resolve a user with IDs, names, partial usernames or mentions
      * @param {object} options - An object of options
-     * @param {object} options.message - The message from which to get the roles from
      * @param {object} options.client - The client instance
+     * @param {object} options.message - The message from which to get the user from
      * @param {string} [options.text=message.content] - The text from which users should be resolved, if none provided, it will use the message content
      * @returns {Promise<User>} The resolved user, or false if none could be resolved
      */
@@ -162,8 +162,8 @@ class Command {
     /**
      * Try to resolve a role with IDs or names
      * @param {object} options - An object of options
-     * @param {object} options.message - The message from which to get the roles from
      * @param {object} options.client - The client instance
+     * @param {object} options.message - The message from which to get the roles from
      * @param {string} [options.text=message.content] - The text from which roles should be resolved, if none provided, it will use the message content
      * @returns {Promise<Role>} The resolved role, or false if none could be resolved
      */
