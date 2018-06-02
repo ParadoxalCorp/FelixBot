@@ -2,9 +2,6 @@
 //@ts-check
 
 const Command = require('../../util/helpers/modules/Command');
-const TimeConverter = require(`../../util/modules/timeConverter.js`);
-const getLevelDetails = require("../../util/helpers/modules/getLevelDetails.js")
-const util = require('util')
 
 class Uinfo extends Command {
     constructor() {
@@ -16,7 +13,7 @@ class Uinfo extends Command {
             usage: '{prefix} uinfo'
         };
         this.conf = {
-            requireDB: false,
+            requireDB: true,
             disabled: false,
             aliases: ['userinfo'],
             requirePerms: [],
@@ -27,19 +24,19 @@ class Uinfo extends Command {
     }
 
     async run(client, message, args, guildEntry, userEntry) {
-        const users = await this.getUserFromText({ message, client, text: args[0] })
-        const target = users !== false ? users : message.author;
+        const user = await this.getUserFromText({ message, client, text: args[0] })
+        const target = user !== false ? user : message.author;
 
-        const thisLevel = guildEntry.getLevelOf( (target.id).toString() );
-        const LevelDetails = getLevelDetails(client, thisLevel );
-        const nextLevelDetails = getLevelDetails(client, thisLevel + 1 );
-        const userExp = guildEntry.experience.members.filter(u => u.id === (target.id).toString() )[0].experience;
+        const thisLevel = guildEntry.getLevelOf( target.id );
+        const LevelDetails = client.getLevelDetails(client, thisLevel );
+        const nextLevelDetails = client.getLevelDetails(client, thisLevel + 1 );
+        const userExp = guildEntry.experience.members.filter(u => u.id === target.id )[0].experience;
 
 
 
         let embedFields = [];
 
-        if (message.channel.guild.members.filter(m => m.id === (target.id).toString())[0].nick !== null) {
+        if (message.channel.guild.members.filter(m => m.id === target.id )[0].nick !== null) {
             embedFields.push({
                 name: ":busts_in_silhouette: Nickname",
                 value: message.channel.guild.members.filter(m => m.id === target.id)[0].nick,
@@ -67,13 +64,13 @@ class Uinfo extends Command {
 
         embedFields.push({
             name: ":date: Created",
-            value: TimeConverter.toHumanDate(message.channel.guild.members.filter(m => m.id === target.id)[0].createdAt),
+            value: client.TimeConverter.toHumanDate(message.channel.guild.members.filter(m => m.id === target.id)[0].createdAt),
             inline: true
         });
 
         embedFields.push({
             name: ":date: Joined",
-            value: TimeConverter.toHumanDate(message.channel.guild.members.filter(m => m.id === target.id)[0].joinedAt),
+            value: client.TimeConverter.toHumanDate(message.channel.guild.members.filter(m => m.id === target.id)[0].joinedAt),
             inline: true
         });
 
