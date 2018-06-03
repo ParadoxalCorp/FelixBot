@@ -14,7 +14,7 @@ class MessageHandler {
             return;
         }
         if (databaseEntries.guild && databaseEntries.guild.experience.enabled) {
-            client.experienceHandler.handle(message, databaseEntries.guild);
+            client.experienceHandler.handle(message, databaseEntries.guild, databaseEntries.user);
         }
         const command = await Command.parseCommand(message, client);
         if (!command) {

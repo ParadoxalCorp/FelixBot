@@ -1,6 +1,7 @@
 'use strict';
 
 const references = require('../data/references');
+const config = require('../../../config');
 
 class ExtendedUserEntry {
     constructor(userEntry) {
@@ -96,6 +97,21 @@ class ExtendedUserEntry {
     getNearestCooldown(cooldown) {
         const cooldownObj = this.cooldowns[cooldown];
         return cooldownObj.cooldowns.filter(c => c > Date.now()).sort((a, b) => a - b)[0];
+    }
+
+    /**
+     * Add experience to the user
+     * @param {number} amount The amount of experience to add to the user
+     * @returns {number} The total experience of the user
+     * @memberof ExtendedUserEntry
+     */
+    addExperience(amount) {
+        this.experience.amount = this.experience.amount + amount;
+        return this.experience.amount;
+    }
+
+    getLevel() {
+        return Math.floor(Math.pow(this.experience.amount / config.options.experience.baseXP, 1 / config.options.experience.exponent));
     }
 
     /**

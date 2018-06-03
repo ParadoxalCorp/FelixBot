@@ -7,7 +7,7 @@ class ExperienceHandler {
         this._sweepInterval = setInterval(this._sweep.bind(this), client.config.options.experience.sweepInterval);
     }
 
-    async handle(message, guildEntry) {
+    async handle(message, guildEntry, userEntry) {
         if (this.cooldowns.has(message.author.id)) {
             return;
         }
@@ -21,8 +21,9 @@ class ExperienceHandler {
         const expGain = totalSize ? this.client.config.options.experience.uploadGainFormula(totalSize) : this.client.config.options.experience.gainFormula(message.content.length);
         const levelDetails = this.client.getLevelDetails(guildEntry.getLevelOf(message.author.id));
         const totalExperience = guildEntry.addExperience(expGain).to(message.author.id);
+        userEntry.addExperience(expGain);
         this._addCooldown(this.client.config.options.experience.cooldown).to(message.author.id);
-        await this.client.database.set(guildEntry, 'guild');
+        await Promise.all([this.client.database.set(guildEntry, 'guild'), this.client.database.set(userEntry, 'user')]);
         if (totalExperience > levelDetails.expTillNextLevel) {
             const wonRoles = guildEntry.experience.roles.find(r => r.at === levelDetails.nextLevel) ? await this._addWonRoles(message, guildEntry, levelDetails) : false;
             if (guildEntry.experience.notifications.enabled) {
