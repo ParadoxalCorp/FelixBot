@@ -28,21 +28,22 @@ class Market extends Command {
             userID: message.author.id,
             reactions: [{
                 unicode: '🛒',
-                callback: this.buyItem.bind(null, client, userEntry)
+                callback: this.buyItem.bind(null, client, guildEntry, userEntry)
             }],
-            messages: this.mapItems(client, message)
+            messages: this.mapItems(client, message, guildEntry, userEntry)
         });
     }
 
-    mapItems(client, message) {
+    mapItems(client, message, guildEntry, userEntry) {
         return client.economyManager.marketItems.map(item => {
+            const price = typeof item.price === 'function' ? item.price(client, guildEntry, userEntry) : item.price;
             return {
                 embed: {
                     title: `Market | ${item.name} ${item.emote ? item.emote : ''}`,
                     description: `**Description** :notepad_spiral:\n${item.description}`,
                     fields: [{
                         name: 'Price :moneybag:',
-                        value: `${item.price} holy coins`,
+                        value: `${price} holy coins`,
                         inline: true
                     }, {
                         name: 'Unique possession :question:',
@@ -63,16 +64,21 @@ class Market extends Command {
         });
     }
 
-    async buyItem(client, userEntry, message, marketPage) {
+    async buyItem(client, guildEntry, userEntry, message, marketPage) {
         const item = marketPage.item;
+        const price = typeof item.price === 'function' ? item.price(client, guildEntry, userEntry) : item.price;
         if (item.buyableOnce && userEntry.hasItem(item.id)) {
             return message.channel.createMessage(':x: Sorry but this item is a unique possession and you already own one :v');
-        } else if (item.price > userEntry.economy.coins) {
-            return message.channel.createMessage(`:x: You need **${item.price - userEntry.economy.coins}** more holy coins to purchase that`);
+        } else if (price > userEntry.economy.coins) {
+            return message.channel.createMessage(`:x: You need **${price - userEntry.economy.coins}** more holy coins to purchase that`);
         }
-        userEntry.subtractCoins(item.price);
+        userEntry.subtractCoins(price);
         userEntry.addItem(item);
+        if (item.run) {
+            item.run(client, guildEntry, userEntry);
+        }
         await client.database.set(userEntry, 'user');
+        message.exit();
         return message.channel.createMessage(`:white_check_mark: The \`${item.name}\` has been added to your belongings, you now have \`${userEntry.economy.coins}\` holy coins`);
     }
 }

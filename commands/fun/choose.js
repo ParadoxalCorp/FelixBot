@@ -9,7 +9,7 @@ class Choose extends Command {
             name: 'choose',
             category: 'fun',
             description: 'Make felix choose between some stuff',
-            usage: '{prefix} choose'
+            usage: '{prefix} choose <choice> ; <choice_2> ; <and_another_one>'
         };
         this.conf = {
             requireDB: false,
@@ -26,9 +26,9 @@ class Choose extends Command {
         if (!args[0]) {
             return message.channel.createMessage(`:x: Well, I need some stuff to choose from, I can't choose from nothing sadly :v`);
         }
-        let choices = args.join(' ').split(/;|\|/).filter(c => c && c !== ' '); //Filter empty choices :^)
+        let choices = args.join(' ').split(/;/g).filter(c => c && c !== ' '); //Filter empty choices :^)
         if (choices.length < 2) {
-            return message.channel.createMessage(`:x: Welp I need to choose from at least two things, I mean what's the point in choosing between only one thing?`)
+            return message.channel.createMessage(`:x: Welp I need to choose from at least two things, I mean what's the point in choosing between only one thing?`);
         }
         let choice = choices[Math.floor(Math.random() * choices.length)].trim();
         message.channel.createMessage(`I choose \`${choice}\`!`);
