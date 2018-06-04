@@ -91,6 +91,9 @@ class References {
             love: {
                 amount: 0
             },
+            experience: {
+                amount: 0
+            },
             cooldowns: {
                 dailyCooldown: 0,
                 loveCooldown: {

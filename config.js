@@ -33,6 +33,7 @@ module.exports = {
         embedColor: 0x7a0099,
         dailyCoins: 2500,
         dailyCooldown: 86400000,
+        loveCooldown: 86400000,
         coinsLimit: 1e20,
         economyEvents: {
             slotsEvents: true,

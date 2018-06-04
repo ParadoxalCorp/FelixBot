@@ -10,6 +10,7 @@ class InteractiveList {
      */
     constructor(client) {
         this.client = client;
+        this.ongoingList = new client.collection();
     }
 
     /**
@@ -32,6 +33,11 @@ class InteractiveList {
         }
         let page = 0;
 
+        this.ongoingList.set(`${message.timestamp}/${params.userID}`, true);
+        message.exit = () => {
+            message.delete().catch(() => {});
+            this.ongoingList.delete(`${message.timestamp}/${params.userID}`);
+        };
         this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID, params.timeout, params.filter)
             .then(r => {
                 return this._handleReaction(params, r, page, message, paginatedMessages);
@@ -101,10 +107,13 @@ class InteractiveList {
             return this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID, params.timeout, params.filter)
                 .then(r => this._handleReaction(params, r, page, message, paginatedMessages));
         } else if (reaction.emoji.name === '❌') {
-            message.delete().catch(() => {});
+            message.exit();
             return;
         } else if (params.reactions && params.reactions.map(r => r.unicode).includes(reaction.emoji.name)) {
             await params.reactions.find(r => r.unicode === reaction.emoji.name).callback(message, params.messages[page], reaction);
+            if (!this.ongoingList.get(`${message.timestamp}/${params.userID}`)) {
+                return;
+            }
             return this.client.reactionCollector.awaitReaction(params.channel.id, message.id, params.userID, params.timeout, params.filter)
                 .then(r => this._handleReaction(params, r, page, message, paginatedMessages));
         }

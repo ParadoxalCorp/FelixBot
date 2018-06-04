@@ -4,8 +4,8 @@
  * @typedef LevelDetails 
  * @prop {number} level The level  
  * @prop {number} nextLevel The next level (basically level + 1 yes)
- * @prop {number} expTillNextLevel The experience left required to reach the next level
  * @prop {number} thisLevelExp The experience required to reach this level
+ * @prop {number} nextLevelExp The experience required to reach the next level
  */
 
 
@@ -18,8 +18,8 @@ const getLevelDetails = (client, level) => {
     return {
         level: level,
         nextLevel: level + 1,
-        expTillNextLevel: Math.floor(client.config.options.experience.baseXP * ((level + 1) ** client.config.options.experience.exponent)),
-        thisLevelExp: Math.floor(client.config.options.experience.baseXP * (level ** client.config.options.experience.exponent))
+        thisLevelExp: Math.floor(client.config.options.experience.baseXP * (level ** client.config.options.experience.exponent)),
+        nextLevelExp: Math.floor(client.config.options.experience.baseXP * ((level + 1) ** client.config.options.experience.exponent))
     };
 };
 

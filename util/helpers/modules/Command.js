@@ -119,8 +119,11 @@ class Command {
             return options.message.channel.guild.members.get(options.text);
         }
 
-        if (options.message.mentions[0]) {
-            return options.message.mentions[0];
+        const mention = new RegExp(/<@|<!@/g);
+        if (mention.test(options.text)) {
+            const id = options.text.replace(/<@!/g, '').replace(/<@/g, '').replace(/>/g, '');
+            const user = options.client.bot.users.get(id);
+            return user ? options.client.extendedUser(user) : false;
         }
 
         return false;
@@ -224,11 +227,7 @@ class Command {
      */
     async getChannelFromText(options) {
         const text = options.text || options.message.content;
-        //While it is very unlikely, resolve the role by ID (and mention) if possible
-        options.text = options.text.replace(/<|>|#/g, '');
-        if (options.message.channel.guild.channels.get(options.text)) {
-            return options.message.channel.guild.channels.get(options.text);
-        }
+
         if (typeof options.textual === 'undefined') {
             options.textual = true;
         }
@@ -236,6 +235,13 @@ class Command {
         if (exactMatch) {
             return exactMatch;
         }
+
+        //While it is very unlikely, resolve the role by ID (and mention) if possible
+        options.text = options.text.replace(/<|>|#/g, '');
+        if (options.message.channel.guild.channels.get(options.text)) {
+            return options.message.channel.guild.channels.get(options.text);
+        }
+
         return false;
     }
 

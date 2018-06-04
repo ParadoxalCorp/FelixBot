@@ -45,6 +45,17 @@ const marketItems = [{
     price: 1e7,
     emote: ':ship:',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Yudachi_II.jpg/300px-Yudachi_II.jpg'
+}, {
+    id: 3000,
+    name: 'Love point',
+    description: 'Gives an extra love point to use',
+    buyableOnce: false,
+    family: 'Perks',
+    //Note that guildEntry may be undefined if the message was sent in DM, and anyway won't be saved if modified, it's for read-only purposes
+    price: (client, guildEntry, userEntry) => 1e7 * userEntry.cooldowns.loveCooldown.max,
+    emote: ':heart:',
+    //Note that guildEntry may be undefined if the message was sent in DM, and anyway won't be saved if modified, it's for read-only purposes
+    run: (client, guildEntry, userEntry) => userEntry.cooldowns.loveCooldown.max++
 }];
 
 module.exports = marketItems;

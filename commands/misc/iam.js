@@ -46,7 +46,7 @@ class Iam extends Command {
                     messages.push({
                         embed: {
                             title: "Self-assignable roles list",
-                            description: "Here's the list of the self-assignable role, you can assign one to yourself with `" + guildEntry.getPrefix + "iam <role_name>`\n",
+                            description: "Here's the list of the self-assignable role, you can assign one to yourself with `" + guildEntry.getPrefix + " iam <role_name>`\n",
                             footer: {
                                 text: `Showing page {index}/${guildEntry.selfAssignableRoles.length} | Time limit: 60 seconds`
                             },
@@ -69,6 +69,7 @@ class Iam extends Command {
                             color: guildRole.color
                         }
                     });
+                    return messages;
                 }
             })()
         });
