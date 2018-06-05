@@ -8,7 +8,7 @@ class Love extends Command {
         this.help = {
             name: 'love',
             description: 'Love someone, bring some love to this world !',
-            usage: 'love <user_resolvable>',
+            usage: 'love <count> <user_resolvable>',
             category: 'fun'
         };
         this.conf = {
@@ -23,8 +23,9 @@ class Love extends Command {
     }
 
     async run(client, message, args, guildEntry, userEntry) {
+        let lp = client.isWholeNumber(args[0]) && args[1] ? parseInt(args[0]) : 1;
+        const remainingLps = this.getRemainingLps(userEntry);
         if (!args[0]) {
-            let remainingLps = this.getRemainingLps(userEntry);
             if (!remainingLps) {
                 const remainingTime = client.timeConverter.toElapsedTime(userEntry.getNearestCooldown('loveCooldown') - Date.now());
                 return message.channel.createMessage(`:x: You already used all your love points, time remaining: ${remainingTime.days}d ${remainingTime.hours}h ${remainingTime.minutes}m ${remainingTime.seconds}s`);
@@ -34,17 +35,23 @@ class Love extends Command {
             const remainingTime = client.timeConverter.toElapsedTime(userEntry.getNearestCooldown('loveCooldown') - Date.now());
             return message.channel.createMessage(`:x: You already used all your love points, time remaining: ${remainingTime.days}d ${remainingTime.hours}h ${remainingTime.minutes}m ${remainingTime.seconds}s`);
         }
-        const targetUser = await this.getUserFromText({ client: client, message: message, text: args.join(' ') });
+        const user = lp === parseInt(args[0]) ? args.splice(1).join(' ') : args.join(' ');
+        const targetUser = await this.getUserFromText({ client: client, message: message, text: user });
         if (!targetUser) {
             return message.channel.createMessage(`:x: I couldn't find the user you specified :v`);
         } else if (targetUser.id === message.author.id) {
             return message.channel.createMessage(`:x: Trying to love yourself eh? :eyes:`);
         }
+        if (remainingLps < lp) {
+            lp = remainingLps;
+        }
         const targetEntry = await client.database.getUser(targetUser.id);
-        targetEntry.love.amount++;
-        userEntry.addCooldown('loveCooldown', client.config.options.loveCooldown);
+        targetEntry.love.amount = targetEntry.love.amount + lp;
+        for (let i = 0; i < lp; i++) {
+            userEntry.addCooldown('loveCooldown', client.config.options.loveCooldown);
+        }
         await Promise.all([client.database.set(userEntry, 'user'), client.database.set(targetEntry, 'user')]);
-        return message.channel.createMessage(`:heart: Haii ! You just gave **1** love point to **${client.extendedUser(targetUser).tag}**`);
+        return message.channel.createMessage(`:heart: Haii ! You just gave **${lp}** love point to **${client.extendedUser(targetUser).tag}**`);
     }
 
     getRemainingLps(userEntry) {

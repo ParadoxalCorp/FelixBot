@@ -30,7 +30,7 @@ class Clear extends Command {
             return message.channel.createMessage(`:x: You didn't specified how many messages to delete`);
         }
         let filtered = [];
-        const getPart = (collection, count) => {
+        const slice = (collection, count) => {
             const newColl = new client.collection();
             const colEntries = new client.collection(collection).sort((a, b) => b.timestamp - a.timestamp).entries();
             for (let i = 0; i < count; i++) {
@@ -40,8 +40,9 @@ class Clear extends Command {
             return newColl;
         }
         //Don't fetch the messages if they're already cached, use the cached messages and take only the specified amount
-        let fetchedMessages = message.channel.messages.size >= limit ? getPart(message.channel.messages, limit) : await message.channel.getMessages(parseInt(limit))
-        fetchedMessages = fetchedMessages.filter(m => m.timestamp > (Date.now() - 1209600000)); //Filter messages older than 2 weeks
+        let fetchedMessages = message.channel.messages.size >= limit ? slice(message.channel.messages, limit) : await message.channel.getMessages(parseInt(limit));
+        //Filter messages older than 2 weeks
+        fetchedMessages = Array.isArray(fetchedMessages) ? fetchedMessages.filter(m => m.timestamp > (Date.now() - 1209600000)) : fetchedMessages.filterArray(m => m.timestamp > (Date.now() - 1209600000));
         for (const arg of args) {
             if (arg.startsWith('-')) {
                 if (arg.toLowerCase().includes('b')) {
@@ -54,7 +55,7 @@ class Clear extends Command {
                 if (arg.toLowerCase().includes('c')) {
                     filtered = filtered.concat(fetchedMessages.filter(m => m.author.id === client.bot.user.id));
                     filtered = filtered.concat(fetchedMessages.filter(m => m.content.startsWith(guildEntry ? guildEntry.getPrefix : client.config.prefix) ||
-                        m.content.startsWith(`<@${client.bot.user.id}>`) || m.content.startsWith(`<@!${client.bot.user.id}`)))
+                        m.content.startsWith(`<@${client.bot.user.id}>`) || m.content.startsWith(`<@!${client.bot.user.id}`)));
                 }
             }
         }
@@ -65,7 +66,9 @@ class Clear extends Command {
                 uniqueMessages.push(m.id);
             }
         }
-        if (uniqueMessages.length < 2) { message.channel.createMessage(':x: Not enough messages have been matched with the filter'); }
+        if (uniqueMessages.length < 2) { 
+            message.channel.createMessage(':x: Not enough messages have been matched with the filter'); 
+        }
         await message.channel.deleteMessages(uniqueMessages);
         message.channel.createMessage(`:white_check_mark: Deleted **${uniqueMessages.length}** messages`).then(m => {
             setTimeout(() => {
