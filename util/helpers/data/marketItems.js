@@ -16,7 +16,7 @@ const marketItems = [{
         type: 'Destroyer',
         flagship: false
     },
-    price: 1e7,
+    price: 1e6,
     emote: ':ship:',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Japanese_destroyer_Asakaze_around_1924.jpg/300px-Japanese_destroyer_Asakaze_around_1924.jpg'
 }, {
@@ -29,7 +29,7 @@ const marketItems = [{
         type: 'Battleship',
         flagship: false
     },
-    price: 3e7,
+    price: 2e6,
     emote: ':ship:',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Japanese_Battleship_Hiei.jpg/220px-Japanese_Battleship_Hiei.jpg'
 }, {
@@ -42,7 +42,7 @@ const marketItems = [{
         type: 'Destroyer',
         flagship: false
     },
-    price: 1e7,
+    price: 1e6,
     emote: ':ship:',
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Yudachi_II.jpg/300px-Yudachi_II.jpg'
 }, {
