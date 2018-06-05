@@ -64,6 +64,7 @@ This define most of the command characteristics and will directly impact how the
 | ownerOnly | <code>boolean</code> | Whether this command can only be used by the owner set in the config file |
 | expectedArgs | <code>array<[expected arg](#expected-arg)></code> | An array of arguments the command expect, if you set it, whenever a user trigger the command without arguments, the command handler will query the user for each expected argument |
 | cooldownWeight | <code>number</code> | The "weight" of the command, if not specified, this will use the default weight set in the config |
+| require | <code>array</code> | An array of API keys key set in the config or/and packages names the command needs |
 
 Note that the `expectedArgs` property is extremely powerful and will affect the arguments with which the run function is called 
 

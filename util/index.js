@@ -1,11 +1,12 @@
 module.exports = (client) => {
     return {
-        database: process.argv.includes('--no-db') ? false : new(require('./helpers/modules/databaseWrapper'))(client),
+        //In case of a complete reload of the modules, ignore the critical modules
+        database: client.database ? client.database : (process.argv.includes('--no-db') ? false : new(require('./helpers/modules/databaseWrapper'))(client)),
         refs: require('./helpers/data/references'),
         log: require('./modules/log'),
         timeConverter: require('./modules/timeConverter.js'),
         messageCollector: new(require('./helpers/modules/messageCollector'))(client.bot),
-        IPCHandler: new(require('./helpers/modules/IPCHandler'))(client),
+        IPCHandler: client.IPCHandler ? client.IPCHandler : new(require('./helpers/modules/IPCHandler'))(client),
         sleep: require('./modules/sleep.js'),
         reloader: new(require('./helpers/modules/reloader'))(client),
         getRandomNumber: require('./modules/getRandomNumber'),

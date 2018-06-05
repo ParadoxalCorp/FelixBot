@@ -117,7 +117,7 @@ class MessageHandler {
         let queryMissingArgs;
         let args;
         if (message.content.includes('|')) {
-            args = [message.content.split(/\|/g).splice(0, 1)[0].split(/\s+/g)[2].trim(), ...message.content.split(/\|/g).splice(1).map(a => a.trim())];
+            args = [message.content.split(/\|/g).splice(0, 1)[0].split(/\s+/g).splice(2).join(' ').trim(), ...message.content.split(/\|/g).splice(1).map(a => a.trim())];
         }
         args = args || message.content.split(/\s+/gim).splice(2);
         if (!args[0] && command.conf.expectedArgs[0]) {

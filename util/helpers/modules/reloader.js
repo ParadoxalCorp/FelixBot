@@ -55,10 +55,11 @@ class Reloader {
         if (path === 'all') {
             fs.readdir(join(process.cwd(), 'events'), (err, events) => {
                 for (const event of events) {
-                    const eventName = path.split(/\/|\\/gm)[path.split(/\/|\\/gm).length - 1].split('.')[0];
-                    delete require.cache[join(process.cwd(), 'events', event)];
+                    const eventName = event.split(/\/|\\/gm)[path.split(/\/|\\/gm).length - 1].split('.')[0];
+                    const eventPath = join(process.cwd(), 'events', event);
+                    delete require.cache[eventPath];
                     this.client.bot.removeAllListeners(eventName);
-                    this.client.bot.on(eventName, require(join(process.cwd(), 'events', event)).handle.bind(require()));
+                    this.client.bot.on(eventName, require(eventPath).handle.bind(require(eventPath), this.client));
                 }
             });
             return true;
