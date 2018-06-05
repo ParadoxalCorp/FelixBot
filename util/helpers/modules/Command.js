@@ -223,7 +223,7 @@ class Command {
      * @param {object} options.message - The message
      * @param {string} [options.text=message.content] - The text to resolve a channel from
      * @param {boolean} [options.textual=true] - Whether the channel to resolve is a text channel or a voice channel
-     * @returns {object|boolean} The channel object, or false if none found
+     * @returns {Promise<object|boolean>} The channel object, or false if none found
      */
     async getChannelFromText(options) {
         const text = options.text || options.message.content;
