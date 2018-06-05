@@ -15,18 +15,25 @@ class Felix extends Base {
         this.package = require('./package');
         this.prefixes = this.config.prefix ? [this.config.prefix] : [];
         this.stats;
+        this.packages = {};
     }
 
     launch() {
+        //Assign modules to the client
         Object.assign(this, require('./util')(this));
         this.ratelimited = new this.collection();
         //This will be filled with mentions prefix once ready
         this.commands = new this.collection();
         this.aliases = new this.collection();
-        //this.database = process.argv.includes('--no-db') ? false : new(require('./util/helpers/modules/databaseWrapper'))(this);
         this.loadCommands();
         this.loadEventsListeners();
+        this.verifyPackages();
         this.bot.on('ready', this.ready.bind(this));
+        if (this.config.apiKeys['weebSH'] && this.packages.taihou) {
+            this.weebSH = new(require('taihou'))(this.config.apiKeys['weebSH'], false, {
+                userAgent: `Felix/${this.package.version}/${this.config.process.environment}`
+            });
+        }
 
         if (this.database) {
             this.database.init();
@@ -88,12 +95,47 @@ class Felix extends Base {
             process.exit(0);
         }
         this.prefixes.push(`<@!${this.bot.user.id}>`, `<@${this.bot.user.id}>`);
-        process.send({ name: "info", msg: `Logged in as ${this.bot.user.username}#${this.bot.user.discriminator}, running Felix ${require('./package').version}` });
+        process.send({ name: "info", msg: `Logged in as ${this.bot.user.username}#${this.bot.user.discriminator}, running Felix ${this.package.version}` });
         this.bot.shards.forEach(s => {
             s.editStatus("online", {
                 name: `${this.config.prefix} help for commands | Shard ${s.id}`
             });
         });
+    }
+
+    verifyPackages() {
+        const verifyRequirements = (command) => {
+            for (const requirement of command.conf.require) {
+                if (typeof this.config.apiKeys[requirement] !== 'undefined') {
+                    if (!this.config.apiKeys[requirement]) {
+                        if (this.config.removeDisabledCommands) {
+                            this.commands.delete(command.help.name);
+                        } else {
+                            command.conf.disabled = `This command requires the \`${requirement}\` API key, but it is missing`;
+                        }
+                        process.send({name: 'warn', msg: `${this.config.removeDisabledCommands ? 'Removed' : 'Disabled'} the command ${command.help.name} because the ${requirement} API key is missing`});
+                    }
+                } else {
+                    if (!this.moduleIsInstalled(requirement)) {
+                        if (this.config.removeDisabledCommands) {
+                            this.commands.delete(command.help.name);
+                        } else {
+                            command.conf.disabled = `This command requires the \`${requirement}\` package, but it is missing`;
+                        }
+                        process.send({name: 'warn', msg: `${this.config.removeDisabledCommands ? 'Removed' : 'Disabled'} the command ${command.help.name} because the ${requirement} package is missing`});
+                    } else {
+                        this.packages[requirement] = require(requirement);
+                    }
+                }
+            }
+        };
+
+        //eslint-disable-next-line no-unused-vars
+        for (const [key, value] of this.commands) {
+            if (value.conf.require && value.conf.require[0]) {
+                verifyRequirements(value);
+            }
+        }
     }
 }
 
