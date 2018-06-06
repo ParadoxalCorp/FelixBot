@@ -15,8 +15,8 @@ const dailyEvents = (client, economyManager) => {
         changeRate: [-40, -60],
         conditionalVariants: [{
             condition: (userEntry) => userEntry.hasItem(1000),
-            success: `A cat run into you and steals \`{value}\` from your daily holy coins ! But your **${economyManager.getItem(1000).name}** catch it and gets your holy coins back !`,
-            fail: `A cat run into you and steals \`{value}\` from your daily holy coins ! But your **${economyManager.getItem(1000).name}** catch it and... wait, your ${economyManager.getItem(1000).name} got beaten by the cat !`,
+            success: `A cat runs into you and steals \`{value}\` from your daily holy coins ! But your **${economyManager.getItem(1000).name}** catches it and gets your holy coins back !`,
+            fail: `A cat runs into you and steals \`{value}\` from your daily holy coins ! But your **${economyManager.getItem(1000).name}** catches it and... wait, your ${economyManager.getItem(1000).name} got beaten by the cat !`,
             successRate: 75
         }]
     }, {

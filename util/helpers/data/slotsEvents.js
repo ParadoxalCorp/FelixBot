@@ -5,7 +5,7 @@ const slotsEvents = (client, economyManager) => {
         changeRate: [-40, -60],
         conditionalVariants: [{
             condition: (userEntry) => userEntry.hasItem(1000),
-            success: `You win ! But... A cat runs into you and steals 570 holy coins from your gains ! But your ${economyManager.getItem(1000).name} catches it and gets your gains back !`
+            success: `You win ! But... A cat runs into you and steals \`{value}\` holy coins from your gains ! But your ${economyManager.getItem(1000).name} catches it and gets your gains back !`,
             fail: `A cat runs into you and steals \`{value}\` holy coins from your gains ! But your ${economyManager.getItem(1000).name} catches it and... wait, your ${economyManager.getItem(1000).name} got beaten by the cat !`,
             successRate: 85
         }],
