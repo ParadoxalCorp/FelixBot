@@ -70,6 +70,7 @@ class Iam extends Command {
                         }
                     });
                 }
+                return messages;
             })()
         });
     }

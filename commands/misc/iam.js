@@ -69,8 +69,8 @@ class Iam extends Command {
                             color: guildRole.color
                         }
                     });
-                    return messages;
                 }
+                return messages;
             })()
         });
     }
