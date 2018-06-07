@@ -9,7 +9,8 @@ class LoveShip extends Command {
             name: 'loveship',
             description: 'Ship a user with another user !',
             usage: 'loveship <user_resolvable> <user_resolvable>',
-            category: 'image'
+            category: 'image',
+            subCategory: 'image-generation'
         };
         this.conf = {
             requireDB: false,

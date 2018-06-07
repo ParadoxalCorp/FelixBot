@@ -23,14 +23,16 @@ class Reloader {
     reloadCommand(path) {
         if (path === 'all') {
             for (const [key, value] of this.client.commands) {
-                delete require.cache[require.resolve(`../../../commands/${value.help.category}/${key}`)];
-                const command = require(`../../../commands/${value.help.category}/${key}`);
-                if ((!this.client.database || !this.client.database.healthy) && command.conf.requireDB) {
-                    command.conf.disabled = ":x: This command uses the database, however the database seems unavailable at the moment";
+                if (!value.conf.subCommand) {
+                    delete require.cache[require.resolve(`../../../commands/${value.help.category}/${key}`)];
+                    const command = require(`../../../commands/${value.help.category}/${key}`);
+                    if ((!this.client.database || !this.client.database.healthy) && command.conf.requireDB) {
+                        command.conf.disabled = ":x: This command uses the database, however the database seems unavailable at the moment";
+                    }
+                    this.client.commands.set(key, command);
+                    this.client.aliases.filter(a => a === command.help.name).forEach(a => this.client.aliases.delete(a));
+                    command.conf.aliases.forEach(alias => this.client.aliases.set(alias, command.help.name));
                 }
-                this.client.commands.set(key, command);
-                this.client.aliases.filter(a => a === command.help.name).forEach(a => this.client.aliases.delete(a));
-                command.conf.aliases.forEach(alias => this.client.aliases.set(alias, command.help.name));
             }
             return true;
         }

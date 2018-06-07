@@ -59,9 +59,13 @@ class Help extends Command {
                         title: ":book: Available commands",
                         description: `Here is the list of all available commands and their categories, you can use commands like \`${guildEntry && guildEntry.prefix ? guildEntry.prefix : client.config.prefix} <command>\``,
                         fields: categories.map(c => {
+                            const subCategories = this.getSubCategories(client, c);
+                            const value = subCategories[0] 
+                            ? subCategories.map(sc => `**${sc}**: ${client.commands.filter(command => command.help.subCategory === sc).map(command => '`' + command.help.name + '`').join(" ")}`).join('\n\n')
+                            : client.commands.filter(command => command.help.category === c).map(command => `\`${command.help.name}\``).join(" ");
                             return {
                                 name: c,
-                                value: client.commands.filter(command => command.help.category === c).map(command => `\`${command.help.name}\``).join(" "),
+                                value: value,
                                 inline: false
                             };
                         }),
@@ -140,7 +144,10 @@ class Help extends Command {
                 title: `:book: Help for the ${command.help.name} command`,
                 description: command.help.description.replace(/{prefix}/gim, guildEntry && guildEntry.prefix ? guildEntry.prefix : client.config.prefix),
                 fields: embedFields,
-                color: client.config.options.embedColor
+                color: client.config.options.embedColor,
+                image: command.help.preview ? {
+                    url: command.help.preview
+                } : undefined
             }
         };
     }
@@ -174,6 +181,19 @@ class Help extends Command {
         }
         
         return normalHelp;
+    }
+
+    getSubCategories(client, category) {
+        let subCategories = [];
+        for (const value of client.commands) {
+            const cmd = value[1];
+            if (cmd.help.category === category) {
+                if (cmd.help.subCategory && !subCategories.includes(cmd.help.subCategory)) {
+                    subCategories.push(cmd.help.subCategory);
+                }
+            }
+        }
+        return subCategories;
     }
 }
 

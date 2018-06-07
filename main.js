@@ -31,7 +31,10 @@ class Felix extends Base {
         this.bot.on('ready', this.ready.bind(this));
         if (this.config.apiKeys['weebSH'] && this.packages.taihou) {
             this.weebSH = new(require('taihou'))(this.config.apiKeys['weebSH'], false, {
-                userAgent: `Felix/${this.package.version}/${this.config.process.environment}`
+                userAgent: `Felix/${this.package.version}/${this.config.process.environment}`,
+                toph: {
+                    nsfw: false
+                }
             });
         }
 
@@ -94,6 +97,15 @@ class Felix extends Base {
             this.log.error(`Invalid login details were provided, the process will exit`);
             process.exit(0);
         }
+        if (this.weebSH) {
+            await this.imageHandler.generateSubCommands()
+                .then(generated => {
+                    process.send({name: 'info', msg: `Generated ${generated} image sub-commands`});
+                })
+                .catch(err => {
+                    process.send({name: 'error', msg: `Failed to generate image sub-commands: ${err.stack || err}`});
+                });
+        } 
         this.prefixes.push(`<@!${this.bot.user.id}>`, `<@${this.bot.user.id}>`);
         process.send({ name: "info", msg: `Logged in as ${this.bot.user.username}#${this.bot.user.discriminator}, running Felix ${this.package.version}` });
         this.bot.shards.forEach(s => {
