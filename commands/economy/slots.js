@@ -7,7 +7,7 @@ class Slots extends Command {
         super();
         this.help = {
             name: 'slots',
-            description: 'Gamble your holy coins on your luck, and if you dont have any luck, well, good luck.\n\nYou can use the `--noEmbed` option to send the slots results without an embed, like `{prefix} slots 200 --noEmbed`. Note that this option is case-insensitive',
+            description: 'Gamble your holy coins on your luck, and if you dont have any luck, well, good luck.\n\nYou can use the `--noEmbed` option to send the slots results without an embed, like `{prefix} slots 200 --noEmbed` and the `--noRoll` option to disable roll animations (if any). Note that these options is case-insensitive',
             usage: 'slots <coins>',
             category: "economy"
         };
@@ -67,7 +67,7 @@ class Slots extends Command {
         if (gambledCoins > userEntry.economy.coins) {
             return message.channel.createMessage(`:x: I am very sorry but you only have \`${userEntry.economy.coins}\` holy coins, you can't gamble more than that`);
         }
-        const animatedSlots = client.config.options.animatedSlotsEmote ? await this.runAnimatedSlots(client, message) : false;
+        const animatedSlots = client.config.options.animatedSlotsEmote && !(new RegExp(/--noRoll/gim).test(message.content)) ? await this.runAnimatedSlots(client, message) : false;
         const slots = this.runSlots(client);
         if (!slots.match) {
             return this.sendResults(client, message, slots, "**Nothing**, you don't lose nor win any holy coins, everyone's happy right?", animatedSlots);
