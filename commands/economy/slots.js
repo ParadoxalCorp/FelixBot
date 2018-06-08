@@ -154,6 +154,10 @@ class Slots extends Command {
     }
 
     async outputLostGamble(client, message, userEntry, slots, lostCoins, randomEvent, animatedSlots) {
+        //In case the user lose/win coins during the slots animation, fetch the latest coins amount
+        if (animatedSlots) {
+            userEntry = await client.database.getUser(userEntry.id);
+        }
         userEntry.economy.coins = (userEntry.economy.coins + lostCoins) < 0 ? 0 : userEntry.economy.coins + lostCoins;
         await client.database.set(userEntry, "user");
         const resultText = `${randomEvent ? (randomEvent + '\n\n') : 'You **lose**, '}\`${Math.abs(lostCoins)}\` holy coins has been debited from your account. You now have \`${userEntry.economy.coins}\` holy coins`;
@@ -161,6 +165,9 @@ class Slots extends Command {
     }
 
     async outputWonGamble(client, message, userEntry, slots, wonCoins, randomEvent, animatedSlots) {
+        if (animatedSlots) {
+            userEntry = await client.database.getUser(userEntry.id);
+        }
         wonCoins = Math.ceil(wonCoins);
         userEntry.economy.coins = (userEntry.economy.coins + wonCoins) >= client.config.options.coinsLimit ?
             client.config.options.coinsLimit : userEntry.economy.coins + wonCoins;
