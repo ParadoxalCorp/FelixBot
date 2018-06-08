@@ -32,7 +32,7 @@ class Command {
                     command = unspacedParsing.command;
                 }
                 prefixes.push(guildEntry.prefix);
-                prefixes = prefixes.filter(p => p !== client.config.prefix);
+                prefixes = prefixes.filter(p => (guildEntry.spacedPrefix && p !== client.config.prefix) || !guildEntry.spacedPrefix);
             }
             if (!prefixes.find(p => p === prefix)) {
                 return resolve(undefined);
