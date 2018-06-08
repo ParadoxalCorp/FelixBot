@@ -11,7 +11,7 @@ class Bot extends Command {
             name: 'bot',
             category: 'generic',
             description: 'Display some ~~useless~~ info about Felix',
-            usage: '{prefix} bot'
+            usage: '{prefix}bot'
         };
         this.conf = {
             requireDB: false,

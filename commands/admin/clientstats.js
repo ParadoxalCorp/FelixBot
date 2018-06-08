@@ -9,7 +9,7 @@ class ClientStats extends Command {
             name: 'clientstats',
             category: 'admin',
             description: 'Get detailed statistics about the bot',
-            usage: '{prefix} stats'
+            usage: '{prefix}stats'
         };
         this.conf = {
             requireDB: false,

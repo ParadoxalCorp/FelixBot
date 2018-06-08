@@ -10,7 +10,7 @@ class Eval extends Command {
             name: 'eval',
             category: 'admin',
             description: 'eval, i think it\'s fairly obvious at this point',
-            usage: '{prefix} eval'
+            usage: '{prefix}eval'
         };
         this.conf = {
             requireDB: false,

@@ -8,8 +8,8 @@ class Iam extends Command {
         this.help = {
             name: 'iamnot',
             category: 'misc',
-            description: 'Remove from yourself a self-assignable role, you can see the list of self-assignable roles set on this server with `{prefix} iamnot`',
-            usage: '{prefix} iamnot <role_name>'
+            description: 'Remove from yourself a self-assignable role, you can see the list of self-assignable roles set on this server with `{prefix}iamnot`',
+            usage: '{prefix}iamnot <role_name>'
         };
         this.conf = {
             requireDB: false,

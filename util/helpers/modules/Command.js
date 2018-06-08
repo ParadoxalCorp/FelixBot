@@ -22,16 +22,35 @@ class Command {
                     return reject(err);
                 }) :
                 false;
-            let prefixes = client.prefixes.map(p => p);
+            let prefixes = client.prefixes.map(p => p); //Clone client.prefixes to not modify it
+            let prefix = args[0];
+            let command = args[1];
             if (guildEntry && guildEntry.prefix) {
+                if (!guildEntry.spacedPrefix) {
+                    const unspacedParsing = this._parseUnspacedCommand(message, client, guildEntry, args);
+                    prefix = unspacedParsing.prefix;
+                    command = unspacedParsing.command;
+                }
                 prefixes.push(guildEntry.prefix);
                 prefixes = prefixes.filter(p => p !== client.config.prefix);
             }
-            if (!prefixes.filter(p => p === args[0])[0]) {
+            if (!prefixes.find(p => p === prefix)) {
                 return resolve(undefined);
             }
-            return resolve(client.commands.get(args[1]) || client.commands.get(client.aliases.get(args[1])));
+            return resolve(client.commands.get(command.toLowerCase()) || client.commands.get(client.aliases.get(command.toLowerCase())));
         });
+    }
+
+    _parseUnspacedCommand(message, client, guildEntry, args) {
+        const mentionTest = message.content.startsWith(`<@${client.bot.user.id}>`) || message.content.startsWith(`<@!${client.bot.user.id}`);
+        const supposedCommand = !mentionTest
+        ? args.shift().slice(guildEntry.getPrefix.length).toLowerCase() 
+        : (args[1] ? args[1].toLowerCase() : false);
+        const prefix = !mentionTest ? message.content.substr(0, guildEntry.getPrefix.length) : args[0];
+        return {
+            prefix,
+            command: supposedCommand
+        }
     }
 
     /**

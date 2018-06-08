@@ -24,6 +24,7 @@ module.exports = (client) => {
         getLevelDetails: require('./helpers/modules/getLevelDetails').bind(null, client),
         experienceHandler: new(require('./helpers/modules/experienceHandler'))(client),
         moduleIsInstalled: require('./modules/moduleIsInstalled'),
-        imageHandler: new(require('./helpers/modules/imageHandler'))(client)
+        imageHandler: new(require('./helpers/modules/imageHandler'))(client),
+        fetchUser: require('./helpers/modules/fetchUser').bind(null, client)
     };
 };

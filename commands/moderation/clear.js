@@ -9,8 +9,8 @@ class Clear extends Command {
         this.help = {
             name: 'clear',
             category: 'moderation',
-            description: 'Prune messages, the available filters are `-b`, (deletes only bot messages) `-c` (delete commands and their outputs) and `-u` (delete the specified user messages)\n\nSo for example `{prefix} clear 50 -bcu @Baguette` will clear all the bots messages, the commands and the messages from the user `Baguette` in the last 50 messages',
-            usage: '{prefix} clear <count> <filters>'
+            description: 'Prune messages, the available filters are `-b`, (deletes only bot messages) `-c` (delete commands and their outputs) and `-u` (delete the specified user messages)\n\nSo for example `{prefix}clear 50 -bcu @Baguette` will clear all the bots messages, the commands and the messages from the user `Baguette` in the last 50 messages',
+            usage: '{prefix}clear <count> <filters>'
         };
         this.conf = {
             requireDB: false,

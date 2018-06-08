@@ -7,7 +7,7 @@ class Announce extends Command {
             name: 'announce',
             category: 'moderation',
             description: 'Announce something with a beautiful (or smth) embed',
-            usage: '{prefix} announce'
+            usage: '{prefix}announce'
         };
         this.conf = {
             requireDB: false,

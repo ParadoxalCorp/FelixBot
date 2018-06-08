@@ -8,7 +8,7 @@ class Love extends Command {
         this.help = {
             name: 'love',
             description: 'Love someone, bring some love to this world !',
-            usage: 'love <count> <user_resolvable>',
+            usage: '{prefix}love <count> <user_resolvable>',
             category: 'fun'
         };
         this.conf = {

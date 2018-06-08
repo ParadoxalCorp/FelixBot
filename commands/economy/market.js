@@ -9,7 +9,7 @@ class Market extends Command {
             name: 'market',
             category: 'economy',
             description: 'The place to see and purchase available items with holy coins',
-            usage: '{prefix} market'
+            usage: '{prefix}market'
         };
         this.conf = {
             requireDB: true,

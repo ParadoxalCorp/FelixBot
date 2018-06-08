@@ -10,7 +10,7 @@ class Execute extends Command {
             name: 'execute',
             category: 'admin',
             description: 'execute, i think it\'s fairly obvious at this point',
-            usage: '{prefix} execute'
+            usage: '{prefix}execute'
         };
         this.conf = {
             requireDB: false,

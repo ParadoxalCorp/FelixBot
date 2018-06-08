@@ -9,7 +9,7 @@ class Choose extends Command {
             name: 'choose',
             category: 'fun',
             description: 'Make felix choose between some stuff',
-            usage: '{prefix} choose <choice> ; <choice_2> ; <and_another_one>'
+            usage: '{prefix}choose <choice> ; <choice_2> ; <and_another_one>'
         };
         this.conf = {
             requireDB: false,

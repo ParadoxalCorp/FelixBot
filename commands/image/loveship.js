@@ -8,7 +8,7 @@ class LoveShip extends Command {
         this.help = {
             name: 'loveship',
             description: 'Ship a user with another user !',
-            usage: 'loveship <user_resolvable> <user_resolvable>',
+            usage: '{prefix}loveship <user_resolvable> <user_resolvable>',
             category: 'image',
             subCategory: 'image-generation'
         };

@@ -9,7 +9,7 @@ class Give extends Command {
             name: 'give',
             category: 'economy',
             description: 'Give some of your holy coins to the specified user',
-            usage: '{prefix} give <user> <coins>'
+            usage: '{prefix}give <user> <coins>'
         };
         this.conf = {
             requireDB: true,

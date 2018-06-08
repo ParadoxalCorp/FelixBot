@@ -8,7 +8,7 @@ class ShitWaifu extends Command {
         this.help = {
             name: 'shitwaifu',
             description: 'Uh well, i think the name is pretty self-explanatory',
-            usage: 'shitwaifu <user_resolvable>',
+            usage: '{prefix}shitwaifu <user_resolvable>',
             category: 'image',
             subCategory: 'image-generation'
         };

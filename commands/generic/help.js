@@ -8,8 +8,8 @@ class Help extends Command {
         this.help = {
             name: 'help',
             category: 'generic',
-            description: 'Display the list of available commands or get more details on a specific command.\n\nYou can use the `--noEmbed` and `--dm` options to respectively send the help without embed and send it in your direct messages. Like `{prefix} help --noEmbed`, note that those options are case-insensitive and can be combined',
-            usage: '{prefix} help'
+            description: 'Display the list of available commands or get more details on a specific command.\n\nYou can use the `--noEmbed` and `--dm` options to respectively send the help without embed and send it in your direct messages. Like `{prefix}help --noEmbed`, note that those options are case-insensitive and can be combined',
+            usage: '{prefix}help'
         };
         this.conf = {
             requireDB: false,
@@ -99,7 +99,7 @@ class Help extends Command {
             inline: true
         }, {
             name: 'Usage',
-            value: '`' + command.help.usage.replace(/{prefix}/gim, guildEntry && guildEntry.prefix ? guildEntry.prefix : client.config.prefix) + '`',
+            value: '`' + command.help.usage.replace(/{prefix}/gim, this.getPrefix(client, guildEntry)) + '`',
             inline: true
         }];
         if (command.help.params) {
@@ -142,7 +142,7 @@ class Help extends Command {
         return {
             embed: {
                 title: `:book: Help for the ${command.help.name} command`,
-                description: command.help.description.replace(/{prefix}/gim, guildEntry && guildEntry.prefix ? guildEntry.prefix : client.config.prefix),
+                description: command.help.description.replace(/{prefix}/gim, this.getPrefix(client, guildEntry)),
                 fields: embedFields,
                 color: client.config.options.embedColor,
                 image: command.help.preview ? {
@@ -154,9 +154,9 @@ class Help extends Command {
 
     getNormalCommandHelp(client, message, args, command, guildEntry) {
         //Focusing highly on readability here, one-lining this would look like hell
-        let normalHelp = `**Description**: ${command.help.description.replace(/{prefix}/gim, guildEntry ? guildEntry.getPrefix : client.config.prefix)}\n`;
+        let normalHelp = `**Description**: ${command.help.description.replace(/{prefix}/gim, this.getPrefix(client, guildEntry))}\n`;
         normalHelp += `**Category**: ${command.help.category}\n`;
-        normalHelp += `**Usage**: \`${command.help.usage.replace(/{prefix}/gim, guildEntry ? guildEntry.getPrefix : client.config.prefix)}\`\n`;
+        normalHelp += `**Usage**: \`${command.help.usage.replace(/{prefix}/gim, this.getPrefix(client, guildEntry))}\`\n`;
         if (command.conf.aliases[0]) {
             normalHelp += `**Aliases**: ${command.conf.aliases.map(a => '\`' + a + '\`').join(', ')}\n`;
         }
@@ -194,6 +194,10 @@ class Help extends Command {
             }
         }
         return subCategories;
+    }
+
+    getPrefix(client, guildEntry) {
+        return guildEntry && guildEntry.prefix ? (guildEntry.prefix + (guildEntry.spacedPrefix ? ' ' : '')) : `${client.config.prefix} `;
     }
 }
 

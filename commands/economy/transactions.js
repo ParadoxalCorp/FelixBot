@@ -9,7 +9,7 @@ class Transactions extends Command {
             name: 'transactions',
             category: 'economy',
             description: 'See the 10 latest transactions of your account',
-            usage: '{prefix} transactions'
+            usage: '{prefix}transactions'
         };
         this.conf = {
             requireDB: true,

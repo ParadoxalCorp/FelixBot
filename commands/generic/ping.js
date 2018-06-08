@@ -9,7 +9,7 @@ class Ping extends Command {
             name: 'ping',
             category: 'generic',
             description: 'pong',
-            usage: '{prefix} ping'
+            usage: '{prefix}ping'
         };
         this.conf = {
             requireDB: false,

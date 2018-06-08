@@ -10,7 +10,7 @@ class Translate extends Command {
             name: 'translate',
             category: 'utility',
             description: 'Translate the provided text to the specified language using google translate',
-            usage: '{prefix} translate \"hello\" en:fr'
+            usage: '{prefix}translate \"hello\" en:fr'
         };
         this.conf = {
             requireDB: false,

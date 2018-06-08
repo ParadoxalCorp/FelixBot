@@ -10,7 +10,7 @@ class Repl extends Command {
         super();
         this.help = {
             name: 'repl',
-            usage: 'repl',
+            usage: '{prefix}repl',
             description: 'Owner only, use `.exit` to exit, `.clear` to clear variables, `//` to ignore a message and `_` to get the last statement',
             category: 'admin'
         }

@@ -10,7 +10,7 @@ class MDN extends Command {
             name: 'mdn',
             category: 'utility',
             description: 'Search something through the Mozilla Developer Network',
-            usage: '{prefix} mdn arrays'
+            usage: '{prefix}mdn arrays'
         };
         this.conf = {
             requireDB: false,

@@ -27,7 +27,7 @@ class Experience extends Command {
             name: 'sar',
             category: 'settings',
             description: 'This command allows you to manage self-assignable roles on this server',
-            usage: '{prefix} sar'
+            usage: '{prefix}sar'
         };
         this.conf = {
             requireDB: true,

@@ -9,7 +9,7 @@ class Balance extends Command {
             name: 'balance',
             category: 'economy',
             description: 'Check your balance',
-            usage: '{prefix} balance'
+            usage: '{prefix}balance'
         };
         this.conf = {
             requireDB: true,

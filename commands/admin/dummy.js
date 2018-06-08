@@ -9,7 +9,7 @@ class Dummy extends Command {
             name: 'dummy',
             category: 'admin',
             description: 'dummy',
-            usage: '{prefix} dummy'
+            usage: '{prefix}dummy'
         };
         this.conf = {
             requireDB: false,

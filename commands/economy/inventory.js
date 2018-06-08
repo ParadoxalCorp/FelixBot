@@ -9,7 +9,7 @@ class Inventory extends Command {
             name: 'inventory',
             category: 'economy',
             description: 'Check the items you possess',
-            usage: '{prefix} inventory'
+            usage: '{prefix}inventory'
         };
         this.conf = {
             requireDB: true,
@@ -40,7 +40,7 @@ class Inventory extends Command {
         return {
             embed: {
                 title: ':package: Inventory',
-                description: `Your owned items are worth a total of \`${ownedItemsWorth}\` holy coins (including ships).\n\nIf you are looking for your ships, you should check your naval base with \`${prefix} navalbase\` instead`,
+                description: `Your owned items are worth a total of \`${ownedItemsWorth}\` holy coins (including ships).\n\nIf you are looking for your ships, you should check your naval base with \`$navalbase\` instead`,
                 fields: (() => {
                     let familiesOwned = [];
                     for (const item of userEntry.economy.items) {

@@ -9,7 +9,7 @@ class Connect extends Command {
             name: 'connect',
             category: 'admin',
             description: 'Connect to the database, in case the bot was launched with the --no-db arg, this allow for a connection to the db',
-            usage: '{prefix} connect'
+            usage: '{prefix}connect'
         };
         this.conf = {
             requireDB: false,

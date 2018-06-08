@@ -11,7 +11,7 @@ class Npm extends Command {
             name: 'npm',
             category: 'utility',
             description: 'Search something through NPM',
-            usage: '{prefix} npm hapi'
+            usage: '{prefix}npm hapi'
         };
         this.conf = {
             requireDB: false,

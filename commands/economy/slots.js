@@ -7,8 +7,8 @@ class Slots extends Command {
         super();
         this.help = {
             name: 'slots',
-            description: 'Gamble your holy coins on your luck, and if you dont have any luck, well, good luck.\n\nYou can use the `--noEmbed` option to send the slots results without an embed, like `{prefix} slots 200 --noEmbed` and the `--noRoll` option to disable roll animations (if any). Note that these options is case-insensitive',
-            usage: 'slots <coins>',
+            description: 'Gamble your holy coins on your luck, and if you dont have any luck, well, good luck.\n\nYou can use the `--noEmbed` option to send the slots results without an embed, like `{prefix}slots 200 --noEmbed` and the `--noRoll` option to disable roll animations (if any). Note that these options is case-insensitive',
+            usage: '{prefix}slots <coins>',
             category: "economy"
         };
         this.conf = {
@@ -113,7 +113,7 @@ class Slots extends Command {
         slotsResults += `----------------------\n`;
         slotsResults += resultText;
         if (!animatedSlots) {
-            return message.channel.createMessage(noEmbed ? slotsResults : {
+            return message.channel.createMessage(noEmbed ? slotsResults.replace(/undefined/gim, '') : {
                 embed: {
                     title: ":slot_machine: Slots",
                     description: slotsResults.replace(/undefined/gim, ''),
@@ -121,7 +121,7 @@ class Slots extends Command {
                 }
             });
         } else {
-            return animatedSlots.edit(noEmbed ? slotsResults : {
+            return animatedSlots.edit(noEmbed ? slotsResults.replace(/undefined/gim, '') : {
                 embed: {
                     title: ":slot_machine: Slots",
                     description: slotsResults.replace(/undefined/gim, ''),
@@ -140,7 +140,7 @@ class Slots extends Command {
             slotsResults += `>| ${animatedEmote} | ${animatedEmote} | ${animatedEmote} |<\n`;
             slotsResults += `-| ${animatedEmote} | ${animatedEmote} | ${animatedEmote} |-\n\n`;
             slotsResults += `----------------------\n`;
-            const animatedSlots = await message.channel.createMessage(noEmbed ? slotsResults : {
+            const animatedSlots = await message.channel.createMessage(noEmbed ? slotsResults.replace(/undefined/gim, '') : {
                 embed: {
                     title: ":slot_machine: Slots",
                     description: slotsResults.replace(/undefined/gim, ''),

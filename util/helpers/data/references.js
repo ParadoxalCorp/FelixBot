@@ -26,6 +26,7 @@ class References {
         return {
             id: id,
             prefix: "",
+            spacedPrefix: true,
             selfAssignableRoles: [],
             permissions: {
                 users: [],

@@ -13,35 +13,35 @@ class ImageHandler {
         this.client = client;
         this.interactions = {
             hug: {
-                usage: '{prefix} hug <user_resolvable>',
+                usage: '{prefix}hug <user_resolvable>',
                 interaction: 'you\'ve just been hugged by'
             },
             pat: {
-                usage: '{prefix} pat <user_resolvable>',
+                usage: '{prefix}pat <user_resolvable>',
                 interaction: 'you\'ve just been patted by'
             },
             cuddle: {
-                usage: '{prefix} cuddle <user_resolvable>',
+                usage: '{prefix}cuddle <user_resolvable>',
                 interaction: 'you\'ve just been cuddled by'
             },
             kiss: {
-                usage: '{prefix} kiss <user_resolvable>',
+                usage: '{prefix}kiss <user_resolvable>',
                 interaction: 'you\'ve just been kissed by'
             },
             lick: {
-                usage: '{prefix} lick <user_resolvable>',
+                usage: '{prefix}lick <user_resolvable>',
                 interaction: 'you\'ve just been l-licked by'
             },
             slap: {
-                usage: '{prefix} slap <user_resolvable>',
+                usage: '{prefix}slap <user_resolvable>',
                 interaction: 'you\'ve just been slapped by'
             },
             tickle: {
-                usage: '{prefix} tickle <user_resolvable>',
+                usage: '{prefix}tickle <user_resolvable>',
                 interaction: 'you\'ve just been tickled by'
             },
             poke: {
-                usage: '{prefix} poke <user_resolvable>',
+                usage: '{prefix}poke <user_resolvable>',
                 interaction: 'you\'ve just been poked by'
             },
         };
@@ -63,7 +63,7 @@ class ImageHandler {
                     subCategory: imageHandler.interactions[type] ? 'interactions' : 'images',
                     preview: preview.url,
                     description: `Return a ${type} image`,
-                    usage: imageHandler.interactions[type] ? imageHandler.interactions[type].usage : `{prefix} ${type}`
+                    usage: imageHandler.interactions[type] ? imageHandler.interactions[type].usage : `${type}`
                 };
                 this.conf = {
                     guildOnly: imageHandler.interactions[type] ? true : false,

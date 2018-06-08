@@ -9,7 +9,7 @@ class Navalbase extends Command {
             name: 'navalbase',
             category: 'economy',
             description: 'Check your fleet',
-            usage: '{prefix} navalbase'
+            usage: '{prefix}navalbase'
         };
         this.conf = {
             requireDB: true,

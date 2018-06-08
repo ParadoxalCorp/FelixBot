@@ -10,7 +10,7 @@ class Sinfo extends Command {
             name: 'sinfo',
             category: 'generic',
             description: 'Display some ~~useless~~ info about this server',
-            usage: '{prefix} sinfo'
+            usage: '{prefix}sinfo'
         };
         this.conf = {
             requireDB: false,

@@ -10,7 +10,7 @@ class Uinfo extends Command {
             name: 'uinfo',
             category: 'generic',
             description: 'Display some ~~useless~~ info about the user',
-            usage: '{prefix} uinfo'
+            usage: '{prefix}uinfo'
         };
         this.conf = {
             requireDB: true,

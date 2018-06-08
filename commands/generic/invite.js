@@ -9,7 +9,7 @@ class Invite extends Command {
             name: 'invite',
             category: 'generic',
             description: 'Get Felix\'s invite link',
-            usage: '{prefix} invite'
+            usage: '{prefix}invite'
         };
         this.conf = {
             requireDB: false,

@@ -9,7 +9,7 @@ class Daily extends Command {
             name: 'daily',
             category: 'economy',
             description: 'Get your daily holy coins',
-            usage: '{prefix} daily'
+            usage: '{prefix}daily'
         };
         this.conf = {
             requireDB: true,
