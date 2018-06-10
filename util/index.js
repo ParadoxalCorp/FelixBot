@@ -25,6 +25,7 @@ module.exports = (client) => {
         experienceHandler: new(require('./helpers/modules/experienceHandler'))(client),
         moduleIsInstalled: require('./modules/moduleIsInstalled'),
         imageHandler: new(require('./helpers/modules/imageHandler'))(client),
-        fetchUser: require('./helpers/modules/fetchUser').bind(null, client)
+        fetchUser: require('./helpers/modules/fetchUser').bind(null, client),
+        musicManager: client.musicManager ? client.musicManager : new(require('./helpers/modules/musicManager'))(client)
     };
 };

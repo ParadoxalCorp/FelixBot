@@ -25,10 +25,10 @@ class Felix extends Base {
         //This will be filled with mentions prefix once ready
         this.commands = new this.collection();
         this.aliases = new this.collection();
+        this.bot.on('ready', this.ready.bind(this));
         this.loadCommands();
         this.loadEventsListeners();
         this.verifyPackages();
-        this.bot.on('ready', this.ready.bind(this));
         if (this.config.apiKeys['weebSH'] && this.packages.taihou) {
             this.weebSH = new(require('taihou'))(this.config.apiKeys['weebSH'], false, {
                 userAgent: `Felix/${this.package.version}/${this.config.process.environment}`,
@@ -37,7 +37,6 @@ class Felix extends Base {
                 }
             });
         }
-
         if (this.database) {
             this.database.init();
         }
@@ -98,19 +97,24 @@ class Felix extends Base {
             process.exit(0);
         }
         if (this.weebSH) {
-            await this.imageHandler.generateSubCommands()
-                .then(generated => {
-                    process.send({name: 'info', msg: `Generated ${generated} image sub-commands`});
-                })
-                .catch(err => {
-                    process.send({name: 'error', msg: `Failed to generate image sub-commands: ${err.stack || err}`});
-                });
+            const generate = async() => {
+                return this.imageHandler.generateSubCommands()
+                    .then(generated => {
+                        process.send({name: 'info', msg: `Generated ${generated} image sub-commands`});
+                    })
+                    .catch(err => {
+                         process.send({name: 'error', msg: `Failed to generate image sub-commands: ${err.stack || err}`});
+                    });
+            };
+            await generate();
+            this._imageTypesInterval = setInterval(generate, this.config.options.imageTypesInterval);
         } 
+        this.verifyMusic();
         this.prefixes.push(`<@!${this.bot.user.id}>`, `<@${this.bot.user.id}>`);
         process.send({ name: "info", msg: `Logged in as ${this.bot.user.username}#${this.bot.user.discriminator}, running Felix ${this.package.version}` });
         this.bot.shards.forEach(s => {
             s.editStatus("online", {
-                name: `${this.config.prefix} help for commands | Shard ${s.id}`
+                name: `@${this.bot.user.username}#${this.bot.user.discriminator} help for commands | Shard ${s.id}`
             });
         });
     }
@@ -148,6 +152,26 @@ class Felix extends Base {
                 verifyRequirements(value);
             }
         }
+    }
+
+    verifyMusic() {
+        if (!this.config.options.music.enabled) {
+            if (this.config.removeDisabledCommands) {
+                this.commands.filter(c => c.help.category === 'music').forEach(c => this.commands.delete(c.help.name));
+            } else {
+                this.commands.filter(c => c.help.category === 'music').forEach(c => this.commands.get(c.help.name).conf.disabled === `This command requires the music to be enabled`);
+            }
+            return process.send({name: 'warn', msg: `${this.config.removeDisabledCommands ? 'Removed' : 'Disabled'} the music commands because config.options.music.enabled is set to false`});
+        }
+        if (!this.moduleIsInstalled('eris-lavalink')) {
+            if (this.config.removeDisabledCommands) {
+                this.commands.filter(c => c.help.category === 'music').forEach(c => this.commands.delete(c.help.name));
+            } else {
+                this.commands.filter(c => c.help.category === 'music').forEach(c => this.commands.get(c.help.name).conf.disabled === `This command require the \`eris-lavalink\` package which is missing`);
+            }
+            return process.send({name: 'warn', msg: `${this.config.removeDisabledCommands ? 'Removed' : 'Disabled'} the music commands because the \`eris-lavalink\` package is missing`});
+        }
+        this.musicManager.init();
     }
 }
 

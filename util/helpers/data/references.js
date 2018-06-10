@@ -8,8 +8,8 @@
 class References {
     constructor() {
         this.defaultPermissions = {
-            allowedCommands: ["generic*", "fun*", 'economy*', 'misc*', 'utility*', 'image*'],
-            restrictedCommands: ["settings*"]
+            allowedCommands: ['generic*', 'fun*', 'economy*', 'misc*', 'utility*', 'image*', 'music*'],
+            restrictedCommands: ['settings*', 'forceskip']
         };
         this.permissionsSet = {
             allowedCommands: [],

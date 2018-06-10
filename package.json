@@ -23,6 +23,7 @@
         "google-translate-api": "^2.3.0",
         "raven": "^2.6.0",
         "taihou": "^1.0.1",
-        "mal-scraper": "^2.4.2"
+        "mal-scraper": "^2.4.2",
+        "eris-lavalink": "^1.0.2"
     }
 }

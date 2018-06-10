@@ -36,6 +36,8 @@ module.exports = {
         dailyCoins: 2500,
         dailyCooldown: 86400000,
         loveCooldown: 86400000,
+        //Defines how often in milliseconds to update the generated images sub-commands if there is any new types
+        imageTypesInterval: 43200000,        
         coinsLimit: 1e20,
         economyEvents: {
             slotsEvents: true,
@@ -75,6 +77,15 @@ module.exports = {
             //Define what is the maximum level at which you can set roles to be given at
             maxRolesLevel: 1000,
             defaultLevelUpMessage: "Hai **%USERTAG%**, you just reached the level %LEVEL% %WONROLES% !"
+        },
+        music: {
+            //If true, Felix will try to connect to the Lavalink server (meaning that you must launch the server), if a success, the music feature will be enabled
+            enabled: false,
+            //The password and port set in the "application.yml" file that should be in the same folder if you downloaded Lavalink
+            password: 'youshallnotpass',
+            port: 2033,
+            //Define how long in milliseconds to wait for a song to be added when the last one ended before leaving to not waste bandwidth. Defaults to 30e4 ms (5 minutes)
+            inactivityTimeout: 30e4
         }
     },
     process: {

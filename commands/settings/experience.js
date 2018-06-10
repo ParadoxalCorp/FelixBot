@@ -61,7 +61,7 @@ class Experience extends Command {
         this.help = {
             name: 'experience',
             category: 'settings',
-            description: 'This command allows you to change the settings of the activity system (enable it, add roles to be given at a specific level and such)',
+            description: 'This command allows you to change the settings of the activity system (enable it, add roles to be given at a specific level and such), the full syntax is like `{prefix}experience add_role <role> <level> <static|no>`',
             usage: '{prefix}experience',
             externalDoc: 'https://github.com/ParadoxalCorp/FelixBot/blob/frosty-release/activity%20system.md'
         };
@@ -132,12 +132,13 @@ class Experience extends Command {
 
     async run(client, message, args, guildEntry, userEntry) {
         const action = this.extra.possibleActions.find(a => a.name === args[0]);
+        const getPrefix = client.commands.get('help').getPrefix;
         if (!action) {
-            return message.channel.createMessage(`:x: The specified action is invalid, if you are lost, simply run the command like \`${guildEntry.getPrefix} experience\``);
+            return message.channel.createMessage(`:x: The specified action is invalid, if you are lost, simply run the command like \`${getPrefix(client, guildEntry)}experience\``);
         }
         //If the command isn't ran without args and the args aren't what's expected, to not conflict with the skipping in conditions 
         if (message.content.split(/\s+/g).length !== 2 && (action.expectedArgs > args.length - 1)) {
-            return message.channel.createMessage(`:x: This action expect \`${action.expectedArgs - (args.length - 1)}\` more argument(s), if you are lost, simply run the command like \`${guildEntry.getPrefix} experience\``);
+            return message.channel.createMessage(`:x: This action expect \`${action.expectedArgs - (args.length - 1)}\` more argument(s), if you are lost, simply run the command like \`${getPrefix(client, guildEntry)}experience\``);
         }
         return action.func(client, message, args, guildEntry, userEntry);
     }

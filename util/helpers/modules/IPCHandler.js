@@ -60,6 +60,26 @@ class IPCHandler {
         });
     }
 
+    fetchGuild(id) {
+        if (this.client.bot.guilds.has(id)) {
+            return this.client.bot.guilds.get(id);
+        }
+        const ID = `${this.client.getRandomNumber(1000, 10000) + Date.now()}`;
+        return new Promise((resolve, reject) => {
+            this.requests.set(ID, {
+                responses: [],
+                resolve: resolve,
+                reject: reject
+            });
+            this.client.ipc.broadcast('fetchGuild', {
+                id: ID,
+                type: 'fetchGuild',
+                clusterID: this.client.clusterID,
+                data: id
+            });
+        });
+    }
+
     /**
      * Called every time the message event is fired on the process
      * @param {*} message - The message
@@ -143,7 +163,36 @@ class IPCHandler {
                     this.requests.delete(message.id);
                 }
                 break;
+            
+            case 'fetchGuild':
+                let guild = this.client.bot.guilds.get(message.data);
+                if (guild) {
+                    guild = { ...guilds }; //Shallow clone
+                    guild.members = Array.from(guild.members.values());
+                    guild.roles = Array.from(guild.roles.values());
+                    guild.channels = Array.from(guild.channels.values());
+                }
+                this.client.ipc.sendTo(message.clusterID, 'requestedGuild', {
+                    type: 'requestedGuild',
+                    id: message.id,
+                    clusterID: this.client.clusterID,
+                    data: guild
+                });
+                break;
 
+            case 'requestedGuild':
+                if (!this.requests.has(message.id)) {
+                    return;
+                }
+                if (this._allClustersAnswered(message.id)) {
+                    this.requests.get(message.id).resolve(message.data);
+                    return this.requests.delete(message.id);
+                }
+                if (message.data) {
+                    this.requests.get(message.id).resolve(message.data);
+                    return this.requests.delete(message.id);
+                }
+                break;
         }
         if (process.argv.includes("--dev")) {
             process.send({ name: "log", msg: `Received the message ${message.type} from cluster ${message.clusterID}: ${JSON.stringify(message, null, 2)}` });

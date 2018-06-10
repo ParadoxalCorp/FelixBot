@@ -19,6 +19,7 @@
 - * [Installing RethinkDB](#installing-rethinkdb)
 - * [Installing and setting up FelixV4](#installing-and-setting-up-felix-v4)
 - - * [Running Felix without database](#running-felix-without-database)
+- * [With music support](#with-music-support)
 - * [Updating](#updating)
 
 ## Introduction
@@ -270,6 +271,21 @@ With PM2:
 Without PM2:
 
 > `node index.js --no-db`
+
+### With music support
+
+The repository doesn't come along with all the necessary music components, to add music support, follow these steps:
+
+* Make sure you run `npm install eris-lavalink` if you installed Felix without optional dependencies (this package is required for music)
+* Make sure you have `Java` installed, as the music server use `Java` 
+* Download Lavalink [here](https://github.com/Frederikam/Lavalink#server-configuration), you should only need the `Lavalink.jar` and `application.yml` files. 
+* Put these files wherever you want, preferably at the root of Felix's folder
+* Configure the `application.yml` file as you wish, and make sure the settings in the (under the `options` > `music` field) `config.js` file of Felix are the same 
+* Make sure to enable the music in the config file (still under `options` > `music`)
+* Then what's left to do is to run the Lavalink server, at the time i write this, the command is `java -jar Lavalink.jar`, but be sure to double check on Lavalink's repository
+* Run Felix, if no errors are logged once it has been launched, that means everything is alright 
+
+**Note: You will always need to start the Lavalink server before launching Felix**
 
 ### Updating 
 
