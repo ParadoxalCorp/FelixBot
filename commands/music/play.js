@@ -53,6 +53,9 @@ class Play extends Command {
         }
         if (tracks.length > 1) {
             track = await this.selectTrack(client, message, tracks).then(t => t ? t : tracks[0]);
+            if (!track) {
+                return;
+            }
         }
         await player.play(track.track);
         connection.nowPlaying = {

@@ -62,6 +62,9 @@ class Queue extends Command {
         }
         if (tracks.length > 1) {
             track = await this.selectTrack(client, message, tracks).then(t => t ? t : tracks[0]);
+            if (!track) {
+                return;
+            }
         }
         if (!player.playing) {
             await player.play(track.track);
