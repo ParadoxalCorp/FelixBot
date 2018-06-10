@@ -277,7 +277,7 @@ Without PM2:
 The repository doesn't come along with all the necessary music components, to add music support, follow these steps:
 
 * Make sure you run `npm install eris-lavalink` if you installed Felix without optional dependencies (this package is required for music)
-* Make sure you have `Java` installed, as the music server use `Java` 
+* Make sure you have `Java` installed, as the music server use `Java` ([this](https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-ubuntu-16-04) should help if you are on Ubuntu 16.04, note that the default JRE is enough)
 * Download Lavalink [here](https://github.com/Frederikam/Lavalink#server-configuration), you should only need the `Lavalink.jar` and `application.yml` files. 
 * Put these files wherever you want, preferably at the root of Felix's folder
 * Configure the `application.yml` file as you wish, and make sure the settings in the (under the `options` > `music` field) `config.js` file of Felix are the same 
@@ -286,6 +286,12 @@ The repository doesn't come along with all the necessary music components, to ad
 * Run Felix, if no errors are logged once it has been launched, that means everything is alright 
 
 **Note: You will always need to start the Lavalink server before launching Felix**
+
+#### Running Lavalink with PM2
+
+To keep the Lavalink server running, you can also run it with PM2 with the following command (the terminal must be opened in the folder where the Lavalink.jar file is)
+
+> `pm2 start java --name="Lavalink" -- -jar Lavalink.jar`
 
 ### Updating 
 
