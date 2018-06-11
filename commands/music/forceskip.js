@@ -41,22 +41,8 @@ class ForceSkip extends Command {
         }
         const voiceChannel = message.channel.guild.channels.get(message.channel.guild.members.get(client.bot.user.id).voiceState.channelID);
         const player = await client.musicManager.getPlayer(voiceChannel);
-        if (connection.queue[0]) {
-            await player.play(connection.queue[0].track);
-            const skippedSong = {...connection.nowPlaying};
-            connection.nowPlaying = {
-                startedAt: Date.now(),
-                ...connection.queue[0].info
-            }
-            connection.queue.shift();
-            return message.channel.createMessage(`:white_check_mark: Skipped **${skippedSong.title}**`);
-        } else {
-            await player.stop();
-            connection.voteSkip.count = 0;
-            const skippedSong = {...connection.nowPlaying};
-            connection.nowPlaying = null;
-            return message.channel.createMessage(`:white_check_mark: Skipped **${skippedSong.title}**`);
-        }
+        const skippedSong = await client.musicManager.skipTrack(player, connection);
+        return message.channel.createMessage(`:white_check_mark: Skipped **${skippedSong.title}**`);       
     }
 }
 

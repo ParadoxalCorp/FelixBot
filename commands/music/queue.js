@@ -58,7 +58,7 @@ class Queue extends Command {
         let queued;
         let track = tracks[0];
         if (!track) {
-            return message.channel.createMessage(`:x: I could not find any song :c, please make sure to follow the syntax (check \`${client.commands.get('help').getPrefix(client, guildEntry)}help ${this.help.name}\`), also, unsecured HTTP links aren't supported`);
+            return message.channel.createMessage(`:x: I could not find any song :c, please make sure to:\n- Follow the syntax (check \`${client.commands.get('help').getPrefix(client, guildEntry)}help ${this.help.name}\`)\n- Use HTTPS links, unsecured HTTP links aren't supported\n- If a YouTube video, i can't play it if it is age-restricted\n - If a YouTube video, it might be blocked in the country my servers are`);
         }
         if (tracks.length > 1) {
             track = await this.selectTrack(client, message, tracks).then(t => t ? t : tracks[0]);
@@ -121,10 +121,10 @@ class Queue extends Command {
         let queue = `:musical_note: Now playing: **${connection.nowPlaying.title}** (${client.musicManager.parseDuration(Date.now() - connection.nowPlaying.startedAt)}/${client.musicManager.parseDuration({info: {...connection.nowPlaying}})})\n\n`;
         let i = 1;
         for (const track of connection.queue) {
-            if (queue.length >= 1950) {
+            if (queue.length >= 1900) {
                 return queue += `\n\nAnd **${connection.queue.length - i}** more...`;
             }
-            queue += `\`${i++}\` - **${track.info.title}** (\`${client.musicManager.parseDuration(track)}\`)`;
+            queue += `\`${i++}\` - **${track.info.title}** (\`${client.musicManager.parseDuration(track)}\`)\n`;
         }
         return queue;
     }

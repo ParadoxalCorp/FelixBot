@@ -105,6 +105,9 @@ class MusicManager {
     }
 
     _handleError(player, err) {
+        if (err.error === 'This video is unavailable.') {
+            return this.skipTrack(player, this.connections.get(player.guildId));
+        }
         if (err) {
             this.client.bot.emit('error', err);
         }
@@ -131,7 +134,7 @@ class MusicManager {
                     startedAt: Date.now(),
                     ...connection.queue[0].info
                 }
-                return connection.queue.shift();
+                connection.queue.shift();
             }
             player.inactivityTimeout = setTimeout(() => {
                 this.client.bot.leaveVoiceChannel(player.channelId);
@@ -192,6 +195,28 @@ class MusicManager {
             query = args[0].toLowerCase() === 'soundcloud' ? `scsearch:${query}` : `ytsearch:${query}`;
         }
         return encodeURIComponent(query);
+    }
+
+    /**
+     * Skip the currently playing track and start the next one
+     * @param {*} player - The player 
+     * @param {*} connection - The connection 
+     * @returns {object} The skipped track
+     */
+    async skipTrack(player, connection) {
+        const skippedSong = { ...connection.nowPlaying };
+        if (connection.queue[0]) {
+            await player.play(connection.queue[0].track);
+            connection.nowPlaying = {
+                startedAt: Date.now(),
+                ...connection.queue[0].info
+            }
+            connection.queue.shift();
+        } else {
+            await player.stop();
+            connection.nowPlaying = null;
+        }
+        return skippedSong;
     }
 }
 

@@ -1,5 +1,7 @@
 'use strict';
 
+const { inspect } = require('util');
+
 class ErrorHandler {
     constructor() {
         this.discordErrorCodes = {
@@ -28,6 +30,9 @@ class ErrorHandler {
             this.initSentry(client);
         }
         const error = typeof err === 'string' ? this.identifyError(err) : false;
+        if (typeof err === 'object') {
+            err = inspect(err, {depth: 5});
+        }
         process.send({ name: 'error', msg: `Error: ${err}\nStacktrace: ${err.stack}\nMessage: ${message ? message.content : 'None'}` });
         if (message) {
             if (client.config.admins.includes(message.author.id)) {

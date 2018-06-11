@@ -58,25 +58,11 @@ class Skip extends Command {
         const userCount = voiceChannel.voiceMembers.filter(m => !m.bot).length;
         if (connection.voteSkip.count >= (userCount === 2 ? 2 : (Math.ceil(userCount / 2)))) {
             const player = await client.musicManager.getPlayer(voiceChannel);
-            if (connection.queue[0]) {
-                await player.play(connection.queue[0].track);
-                const skippedSong = {...connection.nowPlaying};
-                connection.nowPlaying = {
-                    startedAt: Date.now(),
-                    ...connection.queue[0].info
-                }
-                connection.queue.shift();
-                connection.voteSkip.count = 0;
-                return message.channel.createMessage(`:white_check_mark: Skipped **${skippedSong.title}**`);
-            } else {
-                await player.stop();
-                connection.voteSkip.count = 0;
-                const skippedSong = {...connection.nowPlaying};
-                connection.nowPlaying = null;
-                return message.channel.createMessage(`:white_check_mark: Skipped **${skippedSong.title}**`);
-            }
+            const skippedSong = await client.musicManager.skipTrack(player, connection);
+            connection.voteSkip.count = 0;
+            return message.channel.createMessage(`:white_check_mark: Skipped **${skippedSong.title}**`);
         }
-        return message.channel.createMessage(`:white_check_mark: Successfully registered the vote to keep the song, as there is \`${userCount}\` users listening and already \`${connection.voteSkip.count}\` voted, \`${userCount === 2 ? 1 : Math.ceil(userCount / 2) - connection.voteSkip.count}\` more vote(s) are needed`);
+        return message.channel.createMessage(`:white_check_mark: Successfully registered the vote to skip the song, as there is \`${userCount}\` users listening and already \`${connection.voteSkip.count}\` voted, \`${userCount === 2 ? 1 : Math.ceil(userCount / 2) - connection.voteSkip.count}\` more vote(s) are needed`);
     }
 
     async handleVoteEnd(client, message, connection, reason) {

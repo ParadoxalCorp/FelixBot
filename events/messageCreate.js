@@ -116,7 +116,7 @@ class MessageHandler {
     async runCommand(client, message, command, databaseEntries) {
         let queryMissingArgs;
         let args;
-        const toSplice = databaseEntries.guild.spacedPrefix || message.content.startsWith(`<@${client.bot.user.id}>`) || message.content.startsWith(`<@!${client.bot.user.id}`) ? 2 : 1;
+        const toSplice = databaseEntries.guild ? (databaseEntries.guild.spacedPrefix || message.content.startsWith(`<@${client.bot.user.id}>`) || message.content.startsWith(`<@!${client.bot.user.id}`) ? 2 : 1) : 2;
         if (message.content.includes('|')) {
             args = [message.content.split(/\|/g).splice(0, 1)[0].split(/\s+/g).splice(toSplice).join(' ').trim(), ...message.content.split(/\|/g).splice(1).map(a => a.trim())];
         }

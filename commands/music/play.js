@@ -49,7 +49,7 @@ class Play extends Command {
         let tracks = await client.musicManager.resolveTracks(player.node, args.join(' '));
         let track = tracks[0];
         if (!track) {
-            return message.channel.createMessage(`:x: I could not find any song :c, please make sure to follow the syntax (check \`${client.commands.get('help').getPrefix(client, guildEntry)}help ${this.help.name}\`), also, unsecured HTTP links aren't supported`);
+            return message.channel.createMessage(`:x: I could not find any song :c, please make sure to:\n- Follow the syntax (check \`${client.commands.get('help').getPrefix(client, guildEntry)}help ${this.help.name}\`)\n- Use HTTPS links, unsecured HTTP links aren't supported\n- If a YouTube video, i can't play it if it is age-restricted\n - If a YouTube video, it might be blocked in the country my servers are`);
         }
         if (tracks.length > 1) {
             track = await this.selectTrack(client, message, tracks).then(t => t ? t : tracks[0]);
