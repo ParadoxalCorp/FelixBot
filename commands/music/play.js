@@ -59,9 +59,12 @@ class Play extends Command {
         }
         await player.play(track.track);
         connection.nowPlaying = {
-            startedAt: Date.now(),
-            requestedBy: message.author.id,
-            ...track.info
+            info: { 
+                ...track.info,
+                startedAt: Date.now(),
+                requestedBy: message.author.id
+              }
+            track: track.track
         }
         return message.channel.createMessage({embed: {
             title: ':musical_note: Now playing',

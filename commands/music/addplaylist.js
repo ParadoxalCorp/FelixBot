@@ -53,9 +53,12 @@ class AddPlaylist extends Command {
         if (!player.playing) {
             await player.play(tracks[0].track);
             connection.nowPlaying = {
-                startedAt: Date.now(),
-                requestedBy: message.author.id,
-                ...tracks[0].info
+                info: { 
+                    ...tracks[0].info,
+                    startedAt: Date.now(),
+                    requestedBy: message.author.id
+                  }
+                track: tracks[0].track
             }
             tracks.shift();
         } 

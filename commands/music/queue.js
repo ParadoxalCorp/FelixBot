@@ -69,9 +69,12 @@ class Queue extends Command {
         if (!player.playing) {
             await player.play(track.track);
             connection.nowPlaying = {
-                startedAt: Date.now(),
-                requestedBy: message.author.id,
-                ...track.info
+                info: { 
+                    ...track.info,
+                    startedAt: Date.now(),
+                    requestedBy: message.author.id
+                  }
+                track: track.track
             }
         } else {
             track.info.requestedBy = message.author.id;
@@ -118,7 +121,7 @@ class Queue extends Command {
     }
 
     formatQueue(client, connection) {
-        let queue = `:musical_note: Now playing: **${connection.nowPlaying.title}** (${client.musicManager.parseDuration(Date.now() - connection.nowPlaying.startedAt)}/${client.musicManager.parseDuration({info: {...connection.nowPlaying}})})\n\n`;
+        let queue = `:musical_note: Now playing: **${connection.nowPlaying.info.title}** (${client.musicManager.parseDuration(Date.now() - connection.nowPlaying.info.startedAt)}/${client.musicManager.parseDuration(connection.nowPlaying)})\n\n`;
         let i = 1;
         for (const track of connection.queue) {
             if (queue.length >= 1900) {

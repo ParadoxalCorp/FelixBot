@@ -76,7 +76,8 @@ class MusicManager {
                     callback: null,
                     timeout: null,
                     voted: []
-                }
+                },
+                repeat: 'none'
             });
         }
         if (!player.listenerCount('disconnect')) {
@@ -123,16 +124,25 @@ class MusicManager {
                 return;
             }
             const connection = this.connections.get(player.guildId);
-            connection.nowPlaying = null;
-            if (connection.voteSkip.count) {
-                clearTimeout(connection.voteSkip.timeout);
-                connection.voteSkip.callback('songEnded');
+            if (connection.repeat !== 'song') {
+                connection.nowPlaying = null;
+                if (connection.voteSkip.count) {
+                    clearTimeout(connection.voteSkip.timeout);
+                    connection.voteSkip.callback('songEnded');
+                }
+            } else {
+                connection.nowPlaying.startedAt = Date.now();
+                await player.play(connection.nowPlaying.track);
             }
-            if (connection.queue.length >= 1) {
+            if (connection.queue.length >= 1 && connection.repeat !== 'song') {
                 await player.play(connection.queue[0].track);
                 connection.nowPlaying = {
-                    startedAt: Date.now(),
-                    ...connection.queue[0].info
+                    info: { 
+                        ...connection.queue[0].info,
+                        startedAt: Date.now(),
+                        requestedBy: message.author.id
+                      }
+                    track: connection.queue[0].track
                 }
                 connection.queue.shift();
             }
@@ -208,8 +218,12 @@ class MusicManager {
         if (connection.queue[0]) {
             await player.play(connection.queue[0].track);
             connection.nowPlaying = {
-                startedAt: Date.now(),
-                ...connection.queue[0].info
+                info: { 
+                    ...connection.queue[0].info,
+                    startedAt: Date.now(),
+                    requestedBy: message.author.id
+                  }
+                track: connection.queue[0].track
             }
             connection.queue.shift();
         } else {
