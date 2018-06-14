@@ -24,15 +24,11 @@ class AddPlaylist extends Command {
 
     // eslint-disable-next-line no-unused-vars 
     async run(client, message, args, guildEntry, userEntry) {
+        if (!guildEntry.hasPremiumStatus()) {
+            return message.channel.createMessage(':x: Sorry but as they are resources-whores, music commands are only available to our patreon donators. Check the `bot` command for more info');
+        }
         const member = message.channel.guild.members.get(message.author.id);
         const clientMember = message.channel.guild.members.get(client.bot.user.id);
-        const supportGuild = await client.IPCHandler.fetchGuild('328842643746324481');
-        if (supportGuild) {
-           const supportMember = supportGuild.members.find(m => m.id === message.author.id);
-           if (!supportMember || !supportMember.roles.includes(client.config.options.music.donatorRole)) {
-               return message.channel.createMessage(':x: Sorry but as they are ressources-whores, music commands are only available to our patreon donators. Check the `bot` command for more info');
-           }
-        }
         if (!args[0]) {
             return message.channel.createMessage(':x: You didn\'t specified a playlist link')
         }
@@ -57,7 +53,7 @@ class AddPlaylist extends Command {
                     ...tracks[0].info,
                     startedAt: Date.now(),
                     requestedBy: message.author.id
-                  }
+                },
                 track: tracks[0].track
             }
             tracks.shift();

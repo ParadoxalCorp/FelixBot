@@ -1,3 +1,5 @@
+'use strict';
+
 //Not sure why i would make that a class but ok
 
 /** 
@@ -27,6 +29,7 @@ class References {
             id: id,
             prefix: "",
             spacedPrefix: true,
+            premium: '',
             selfAssignableRoles: [],
             permissions: {
                 users: [],

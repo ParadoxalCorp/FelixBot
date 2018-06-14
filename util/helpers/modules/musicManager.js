@@ -141,12 +141,13 @@ class MusicManager {
                         ...connection.queue[0].info,
                         startedAt: Date.now(),
                         requestedBy: message.author.id
-                      }
+                    },
                     track: connection.queue[0].track
                 }
                 connection.queue.shift();
             }
             player.inactivityTimeout = setTimeout(() => {
+                console.log(`Voice channel disconnection due to inactivity`);
                 this.client.bot.leaveVoiceChannel(player.channelId);
             }, this.client.config.options.music.inactivityTimeout);
     }
@@ -161,8 +162,8 @@ class MusicManager {
         if (!ms && track.info.isStream) {
             return 'Unknown (Live stream)';
         }
-        let minutes = `${Math.floor(((ms || track.info.length) / 1000) / 60)}`;
         let hours = `${Math.floor((ms || track.info.length) / 1000 / 60 / 60)}`;
+        let minutes = `${Math.floor(((ms || track.info.length) / 1000) / 60 - (60 * hours))}`;
         let seconds = `${Math.floor((ms || track.info.length) / 1000) - (60 * minutes)}`;
         if (hours === '0') {
             hours = '';
@@ -222,7 +223,7 @@ class MusicManager {
                     ...connection.queue[0].info,
                     startedAt: Date.now(),
                     requestedBy: message.author.id
-                  }
+                },
                 track: connection.queue[0].track
             }
             connection.queue.shift();

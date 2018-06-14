@@ -143,6 +143,14 @@ class ExtendedGuildEntry {
     }
 
     /**
+     * Check if the guild has the premium status
+     * @returns {boolean} Whether the guild has the premium status or not 
+     */
+    hasPremiumStatus() {
+        return this.premium > Date.now();
+    }
+
+    /**
      * Return this without the additional methods, essentially returns a proper database entry, ready to be saved into the database
      * Note that this shouldn't be called before saving it into the database, as the database wrapper already does it
      * @returns {*} - This, as a proper database entry object (without the additional methods)

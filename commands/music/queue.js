@@ -12,7 +12,7 @@ class Queue extends Command {
             usage: '{prefix}queue <song_url|search_term>'
         };
         this.conf = {
-            requireDB: false,
+            requireDB: true,
             disabled: false,
             aliases: [],
             requirePerms: ['voiceConnect', 'voiceSpeak'],
@@ -24,6 +24,9 @@ class Queue extends Command {
 
     // eslint-disable-next-line no-unused-vars 
     async run(client, message, args, guildEntry, userEntry) {
+        if (!guildEntry.hasPremiumStatus()) {
+            return message.channel.createMessage(':x: Sorry but as they are resources-whores, music commands are only available to our patreon donators. Check the `bot` command for more info');
+        }
         const member = message.channel.guild.members.get(message.author.id);
         const clientMember = message.channel.guild.members.get(client.bot.user.id);
         let connection = client.musicManager.connections.get(message.channel.guild.id);
@@ -33,15 +36,6 @@ class Queue extends Command {
             }
             return message.channel.createMessage(this.formatQueue(client, connection));
         }
-
-        const supportGuild = await client.IPCHandler.fetchGuild('328842643746324481');
-        if (supportGuild) {
-           const supportMember = supportGuild.members.find(m => m.id === message.author.id);
-           if (!supportMember || !supportMember.roles.includes(client.config.options.music.donatorRole)) {
-               return message.channel.createMessage(':x: Sorry but as they are ressources-whores, music commands are only available to our patreon donators. Check the `bot` command for more info');
-           }
-        }
-        
         if (!member.voiceState.channelID) {
             return message.channel.createMessage(':x: You are not connected to any voice channel');
         }
@@ -73,7 +67,7 @@ class Queue extends Command {
                     ...track.info,
                     startedAt: Date.now(),
                     requestedBy: message.author.id
-                  }
+                },
                 track: track.track
             }
         } else {
