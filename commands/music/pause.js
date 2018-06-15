@@ -2,19 +2,19 @@
 
 const Command = require('../../util/helpers/modules/Command');
 
-class ForceSkip extends Command {
+class Pause extends Command {
     constructor() {
         super();
         this.help = {
-            name: 'forceskip',
+            name: 'pause',
             category: 'music',
-            description: 'Force skip the currently playing song',
-            usage: '{prefix}forceskip'
+            description: 'Pause or resume the playback',
+            usage: '{prefix}pause'
         };
         this.conf = {
             requireDB: true,
             disabled: false,
-            aliases: ['fskip'],
+            aliases: [],
             requirePerms: ['voiceConnect', 'voiceSpeak'],
             guildOnly: true,
             ownerOnly: false,
@@ -34,9 +34,9 @@ class ForceSkip extends Command {
         }
         const voiceChannel = message.channel.guild.channels.get(clientMember.voiceState.channelID);
         const player = await client.musicManager.getPlayer(voiceChannel);
-        const skippedSong = await client.musicManager.skipTrack(player, connection);
-        return message.channel.createMessage(`:white_check_mark: Skipped **${skippedSong.title}**`);       
+        await player.setPause(player.paused ? false : true);
+        return message.channel.createMessage(`:white_check_mark: Successfully ${player.paused ? 'paused' : 'resumed'} the playback`);       
     }
 }
 
-module.exports = new ForceSkip();
+module.exports = new Pause();

@@ -29,9 +29,6 @@ class Play extends Command {
         }
         const member = message.channel.guild.members.get(message.author.id);
         const clientMember = message.channel.guild.members.get(client.bot.user.id);
-        if (!args[0]) {
-            return message.channel.createMessage(':x: You didn\'t specified any songs to play');
-        }
         if (!member.voiceState.channelID) {
             return message.channel.createMessage(':x: You are not connected to any voice channel');
         }
@@ -42,8 +39,16 @@ class Play extends Command {
         }
         const player = await client.musicManager.getPlayer(message.channel.guild.channels.get(member.voiceState.channelID));
         const connection = client.musicManager.connections.get(message.channel.guild.id);
-        let tracks = await client.musicManager.resolveTracks(player.node, args.join(' '));
-        let track = tracks[0];
+        let track;
+        if (!args[0]) {
+            if (connection.queue[0]) {
+                track = connection.queue[0];
+            } else {
+                return message.channel.createMessage(':x: You didn\'t specified any songs to play and there is nothing in the queue');
+            }
+        }
+        let tracks = track ? [] : await client.musicManager.resolveTracks(player.node, args.join(' '));
+        track = track ? track : tracks[0];
         if (!track) {
             return message.channel.createMessage(`:x: I could not find any song :c, please make sure to:\n- Follow the syntax (check \`${client.commands.get('help').getPrefix(client, guildEntry)}help ${this.help.name}\`)\n- Use HTTPS links, unsecured HTTP links aren't supported\n- If a YouTube video, i can't play it if it is age-restricted\n - If a YouTube video, it might be blocked in the country my servers are`);
         }

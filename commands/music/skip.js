@@ -28,11 +28,8 @@ class Skip extends Command {
             return message.channel.createMessage(':x: Sorry but as they are resources-whores, music commands are only available to our patreon donators. Check the `bot` command for more info');
         }
         const clientMember = message.channel.guild.members.get(client.bot.user.id);
-        if (!clientMember.voiceState.channelID) {
-            return message.channel.createMessage(':x: I am not playing anything');
-        }
         const connection = client.musicManager.connections.get(message.channel.guild.id);
-        if (!connection || !connection.nowPlaying) {
+        if (!clientMember.voiceState.channelID || !connection || !connection.nowPlaying) {
             return message.channel.createMessage(':x: I am not playing anything');
         }
         if (!connection.voteSkip.count) {

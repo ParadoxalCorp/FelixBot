@@ -13,7 +13,7 @@ class MusicManager {
     constructor(client) {
         this.client = client;
         this.nodes = [
-            { host: 'localhost', port: client.config.options.music.WSPort, region: 'eu', password: client.config.options.music.password }
+            { host: client.config.options.music.host, port: client.config.options.music.WSPort, region: 'eu', password: client.config.options.music.password }
         ];
         this.regions = {
             eu: ['eu', 'amsterdam', 'frankfurt', 'russia', 'hongkong', 'singapore', 'sydney'],
@@ -106,12 +106,10 @@ class MusicManager {
     }
 
     _handleError(player, err) {
-        if (err.error === 'This video is unavailable.') {
+        if (err.type === 'TrackExceptionEvent') {
             return this.skipTrack(player, this.connections.get(player.guildId));
         }
-        if (err) {
-            this.client.bot.emit('error', err);
-        }
+        this.client.bot.emit('error', err);
         this.client.bot.leaveVoiceChannel(player.channelId);
     }
 
@@ -120,35 +118,35 @@ class MusicManager {
     }
 
     async _handleEnd(player, data) {
-            if (data.reason && data.reason === 'REPLACED') {
-                return;
+        if (data.reason && data.reason === 'REPLACED') {
+            return;
             }
-            const connection = this.connections.get(player.guildId);
-            if (connection.repeat !== 'song') {
-                connection.nowPlaying = null;
-                if (connection.voteSkip.count) {
-                    clearTimeout(connection.voteSkip.timeout);
-                    connection.voteSkip.callback('songEnded');
+        const connection = this.connections.get(player.guildId);
+        if (connection.repeat !== 'song') {
+            connection.nowPlaying = null;
+            if (connection.voteSkip.count) {
+                clearTimeout(connection.voteSkip.timeout);
+                connection.voteSkip.callback('songEnded');
+            }
+        } else {
+            connection.nowPlaying.startedAt = Date.now();
+            return await player.play(connection.nowPlaying.track);
+        }
+        if (connection.queue.length >= 1 && connection.repeat !== 'song') {
+            await player.play(connection.queue[0].track);
+            connection.nowPlaying = {
+                info: { 
+                    ...connection.queue[0].info,
+                    startedAt: Date.now()
+                },
+                track: connection.queue[0].track
                 }
-            } else {
-                connection.nowPlaying.startedAt = Date.now();
-                return await player.play(connection.nowPlaying.track);
-            }
-            if (connection.queue.length >= 1 && connection.repeat !== 'song') {
-                await player.play(connection.queue[0].track);
-                connection.nowPlaying = {
-                    info: { 
-                        ...connection.queue[0].info,
-                        startedAt: Date.now()
-                    },
-                    track: connection.queue[0].track
-                }
-                return connection.queue.shift();
-            }
-            player.inactivityTimeout = setTimeout(() => {
-                console.log(`Voice channel disconnection due to inactivity`);
-                this.client.bot.leaveVoiceChannel(player.channelId);
-            }, this.client.config.options.music.inactivityTimeout);
+            return connection.queue.shift();
+        }
+        player.inactivityTimeout = setTimeout(() => {
+            console.log(`Voice channel disconnection due to inactivity`);
+            this.client.bot.leaveVoiceChannel(player.channelId);
+        }, this.client.config.options.music.inactivityTimeout);
     }
     
     /**
@@ -163,7 +161,7 @@ class MusicManager {
         }
         let hours = `${Math.floor((ms || track.info.length) / 1000 / 60 / 60)}`;
         let minutes = `${Math.floor(((ms || track.info.length) / 1000) / 60 - (60 * hours))}`;
-        let seconds = `${Math.floor((ms || track.info.length) / 1000) - (60 * minutes)}`;
+        let seconds = `${Math.floor((ms || track.info.length) / 1000) - (60 * (Math.floor(((ms || track.info.length) / 1000) / 60)))}`;
         if (hours === '0') {
             hours = '';
         }

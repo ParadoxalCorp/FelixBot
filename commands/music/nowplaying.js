@@ -35,6 +35,7 @@ class NowPlaying extends Command {
         if (!connection || !connection.nowPlaying) {
             return message.channel.createMessage(':x: I am not playing anything');
         }
+        const player = await client.musicManager.getPlayer(message.channel.guild.channels.get(clientMember.voiceState.channelID));
         let track = connection.nowPlaying;
         const requestedBy = message.channel.guild.members.has(track.info.requestedBy) ? client.extendedUser(message.channel.guild.members.get(track.info.requestedBy).user) : await client.fetchUser(track.info.requestedBy).then(u => client.extendedUser(u));
         return message.channel.createMessage({embed: {
@@ -42,11 +43,11 @@ class NowPlaying extends Command {
             description: `[${track.info.title}](${track.info.uri})`,
             fields: [{
                 name: 'Author',
-                value: track.author,
+                value: track.info.author,
                 inline: true
             }, {
                 name: 'Duration',
-                value: track.isStream ? 'Unknown (Live stream)' : `${client.musicManager.parseDuration(Date.now() - track.info.startedAt)}/${client.musicManager.parseDuration(track)}`,
+                value: track.info.isStream ? 'Unknown (Live stream)' : `${client.musicManager.parseDuration(player.state.position)}/${client.musicManager.parseDuration(track)}`,
                 inline: true
             }, {
                 name: 'Requested by',

@@ -34,7 +34,8 @@ class Queue extends Command {
             if (!connection) {
                 return message.channel.createMessage(`:x: I am not playing anything`);
             }
-            return message.channel.createMessage(this.formatQueue(client, connection));
+            let queue = await this.formatQueue(client, connection, message, clientMember);
+            return message.channel.createMessage(queue);
         }
         if (!member.voiceState.channelID) {
             return message.channel.createMessage(':x: You are not connected to any voice channel');
@@ -60,7 +61,7 @@ class Queue extends Command {
                 return;
             }
         }
-        if (!player.playing) {
+        if (!player.playing && !player.paused) {
             await player.play(track.track);
             connection.nowPlaying = {
                 info: { 
@@ -116,8 +117,9 @@ class Queue extends Command {
         }
     }
 
-    formatQueue(client, connection) {
-        let queue = `:musical_note: Now playing: **${connection.nowPlaying.info.title}** (${client.musicManager.parseDuration(Date.now() - connection.nowPlaying.info.startedAt)}/${client.musicManager.parseDuration(connection.nowPlaying)})\n\n`;
+    async formatQueue(client, connection, message, clientMember) {
+        const player = await client.musicManager.getPlayer(message.channel.guild.channels.get(clientMember.voiceState.channelID));
+        let queue = `:musical_note: Now playing: **${connection.nowPlaying.info.title}** (${client.musicManager.parseDuration(player.state.position)}/${client.musicManager.parseDuration(connection.nowPlaying)})\n\n`;
         let i = 1;
         for (const track of connection.queue) {
             if (queue.length >= 1900) {
