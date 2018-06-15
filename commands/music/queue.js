@@ -31,7 +31,7 @@ class Queue extends Command {
         const clientMember = message.channel.guild.members.get(client.bot.user.id);
         let connection = client.musicManager.connections.get(message.channel.guild.id);
         if (!args[0]) {
-            if (!connection) {
+            if (!connection || !clientMember.voiceState.channelID) {
                 return message.channel.createMessage(`:x: I am not playing anything`);
             }
             let queue = await this.formatQueue(client, connection, message, clientMember);
@@ -119,15 +119,21 @@ class Queue extends Command {
 
     async formatQueue(client, connection, message, clientMember) {
         const player = await client.musicManager.getPlayer(message.channel.guild.channels.get(clientMember.voiceState.channelID));
-        let queue = `:musical_note: Now playing: **${connection.nowPlaying.info.title}** (${client.musicManager.parseDuration(player.state.position)}/${client.musicManager.parseDuration(connection.nowPlaying)})\n\n`;
+        let formattedQueue = `:musical_note: Now playing: **${connection.nowPlaying.info.title}** (${client.musicManager.parseDuration(player.state.position)}/${client.musicManager.parseDuration(connection.nowPlaying)})\nRepeat: ${client.commands.get('repeat').extra[connection.repeat].emote}\n\n`;
         let i = 1;
-        for (const track of connection.queue) {
-            if (queue.length >= 1900) {
-                return queue += `\n\nAnd **${connection.queue.length - i}** more...`;
+        let queue = [...connection.queue];
+        if (connection.repeat === 'queue') {
+            if (queue.length > 1) {
+                queue = queue.splice(connection.queuePosition);
             }
-            queue += `\`${i++}\` - **${track.info.title}** (\`${client.musicManager.parseDuration(track)}\`)\n`;
         }
-        return queue;
+        for (const track of queue) {
+            if (formattedQueue.length >= 1900) {
+                return formattedQueue += `\n\nAnd **${queue.length - i}** more...`;
+            }
+            formattedQueue += `\`${i++}\` - **${track.info.title}** (\`${client.musicManager.parseDuration(track)}\`)\n`;
+        }
+        return formattedQueue;
     }
 }
 

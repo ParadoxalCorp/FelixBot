@@ -53,7 +53,7 @@ class Skip extends Command {
             const player = await client.musicManager.getPlayer(voiceChannel);
             const skippedSong = await client.musicManager.skipTrack(player, connection);
             connection.voteSkip.count = 0;
-            return message.channel.createMessage(`:white_check_mark: Skipped **${skippedSong.title}**`);
+            return message.channel.createMessage(`:white_check_mark: Skipped **${skippedSong.info.title}**`);
         }
         return message.channel.createMessage(`:white_check_mark: Successfully registered the vote to skip the song, as there is \`${userCount}\` users listening and already \`${connection.voteSkip.count}\` voted, \`${userCount === 2 ? 1 : Math.ceil(userCount / 2) - connection.voteSkip.count}\` more vote(s) are needed`);
     }

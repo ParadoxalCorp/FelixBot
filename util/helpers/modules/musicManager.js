@@ -77,7 +77,8 @@ class MusicManager {
                     timeout: null,
                     voted: []
                 },
-                repeat: 'none'
+                repeat: 'off',
+                queuePosition: 0
             });
         }
         if (!player.listenerCount('disconnect')) {
@@ -122,26 +123,45 @@ class MusicManager {
             return;
             }
         const connection = this.connections.get(player.guildId);
-        if (connection.repeat !== 'song') {
-            connection.nowPlaying = null;
-            if (connection.voteSkip.count) {
-                clearTimeout(connection.voteSkip.timeout);
-                connection.voteSkip.callback('songEnded');
-            }
-        } else {
-            connection.nowPlaying.startedAt = Date.now();
-            return await player.play(connection.nowPlaying.track);
-        }
-        if (connection.queue.length >= 1 && connection.repeat !== 'song') {
-            await player.play(connection.queue[0].track);
+        const play = async(queuePosition) => {
+            await player.play(connection.queue[queuePosition].track);
             connection.nowPlaying = {
                 info: { 
-                    ...connection.queue[0].info,
+                    ...connection.queue[queuePosition].info,
                     startedAt: Date.now()
                 },
-                track: connection.queue[0].track
+                track: connection.queue[queuePosition].track
+            }
+            return;
+        }
+        switch(connection.repeat) {
+            case 'song':
+                connection.nowPlaying.startedAt = Date.now();
+                return await player.play(connection.nowPlaying.track);
+                break;
+            case 'queue':
+                if (connection.voteSkip.count) {
+                    clearTimeout(connection.voteSkip.timeout);
+                    connection.voteSkip.callback('songEnded');
                 }
-            return connection.queue.shift();
+                if (!connection.queue[0]) {
+                    connection.nowPlaying = null;
+                } else {
+                    await this._play(player, connection, connection.queuePosition);
+                    return connection.queuePosition = connection.queuePosition +1 === connection.queue.length ? 0 : connection.queuePosition +1;
+                }
+                break;
+            case 'off':
+                connection.nowPlaying = null;
+                if (connection.voteSkip.count) {
+                    clearTimeout(connection.voteSkip.timeout);
+                    connection.voteSkip.callback('songEnded');
+                }
+                if (connection.queue.length >= 1)  {
+                    await this._play(player, connection, 0);
+                    return connection.queue.shift();
+                }
+                break;
         }
         player.inactivityTimeout = setTimeout(() => {
             console.log(`Voice channel disconnection due to inactivity`);
@@ -156,12 +176,12 @@ class MusicManager {
      */
     parseDuration(track) {
         const ms = track.info ? false : track;
-        if (!ms && track.info.isStream) {
+        if ((!ms && ms !== 0) && track.info.isStream) {
             return 'Unknown (Live stream)';
         }
-        let hours = `${Math.floor((ms || track.info.length) / 1000 / 60 / 60)}`;
-        let minutes = `${Math.floor(((ms || track.info.length) / 1000) / 60 - (60 * hours))}`;
-        let seconds = `${Math.floor((ms || track.info.length) / 1000) - (60 * (Math.floor(((ms || track.info.length) / 1000) / 60)))}`;
+        let hours = `${Math.floor(((ms === 0 ? 0 : ms || track.info.length)) / 1000 / 60 / 60)}`;
+        let minutes = `${Math.floor(((ms === 0 ? 0 : ms || track.info.length) / 1000) / 60 - (60 * hours))}`;
+        let seconds = `${Math.floor(((ms === 0 ? 0 : ms || track.info.length)) / 1000) - (60 * (Math.floor(((ms === 0 ? 0 : ms || track.info.length) / 1000) / 60)))}`;
         if (hours === '0') {
             hours = '';
         }
@@ -214,20 +234,30 @@ class MusicManager {
     async skipTrack(player, connection) {
         const skippedSong = { ...connection.nowPlaying };
         if (connection.queue[0]) {
-            await player.play(connection.queue[0].track);
-            connection.nowPlaying = {
-                info: { 
-                    ...connection.queue[0].info,
-                    startedAt: Date.now()
-                },
-                track: connection.queue[0].track
+            if (connection.repeat === 'queue') {
+                await this._play(player, connection, connection.queuePosition);
+                connection.queuePosition = connection.queuePosition +1 === connection.queue.length ? 0 : connection.queuePosition +1;
+            } else {
+                await this._play(player, connection, 0);
+                connection.queue.shift();
             }
-            connection.queue.shift();
         } else {
             await player.stop();
             connection.nowPlaying = null;
         }
         return skippedSong;
+    }
+
+    async _play(player, connection, queuePosition) {
+        await player.play(connection.queue[queuePosition].track);
+        connection.nowPlaying = {
+            info: { 
+                ...connection.queue[queuePosition].info,
+                startedAt: Date.now()
+            },
+            track: connection.queue[queuePosition].track
+        }
+        return;
     }
 }
 

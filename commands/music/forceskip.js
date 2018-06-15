@@ -35,7 +35,7 @@ class ForceSkip extends Command {
         const voiceChannel = message.channel.guild.channels.get(clientMember.voiceState.channelID);
         const player = await client.musicManager.getPlayer(voiceChannel);
         const skippedSong = await client.musicManager.skipTrack(player, connection);
-        return message.channel.createMessage(`:white_check_mark: Skipped **${skippedSong.title}**`);       
+        return message.channel.createMessage(`:white_check_mark: Skipped **${skippedSong.info.title}**`);       
     }
 }
 
