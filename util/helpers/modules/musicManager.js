@@ -132,7 +132,7 @@ class MusicManager {
                 }
             } else {
                 connection.nowPlaying.startedAt = Date.now();
-                await player.play(connection.nowPlaying.track);
+                return await player.play(connection.nowPlaying.track);
             }
             if (connection.queue.length >= 1 && connection.repeat !== 'song') {
                 await player.play(connection.queue[0].track);
@@ -143,7 +143,7 @@ class MusicManager {
                     },
                     track: connection.queue[0].track
                 }
-                connection.queue.shift();
+                return connection.queue.shift();
             }
             player.inactivityTimeout = setTimeout(() => {
                 console.log(`Voice channel disconnection due to inactivity`);
