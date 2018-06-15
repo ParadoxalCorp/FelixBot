@@ -139,8 +139,7 @@ class MusicManager {
                 connection.nowPlaying = {
                     info: { 
                         ...connection.queue[0].info,
-                        startedAt: Date.now(),
-                        requestedBy: message.author.id
+                        startedAt: Date.now()
                     },
                     track: connection.queue[0].track
                 }
@@ -221,8 +220,7 @@ class MusicManager {
             connection.nowPlaying = {
                 info: { 
                     ...connection.queue[0].info,
-                    startedAt: Date.now(),
-                    requestedBy: message.author.id
+                    startedAt: Date.now()
                 },
                 track: connection.queue[0].track
             }

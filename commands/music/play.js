@@ -88,9 +88,11 @@ class Play extends Command {
         await message.channel.createMessage(searchResults);
         const reply = await client.messageCollector.awaitMessage(message.channel.id, message.author.id);
         if (!reply) {
-            return message.channel.createMessage(':x: Timeout, command aborted');
+            message.channel.createMessage(':x: Timeout, command aborted').catch(() => {});
+            return false;
         } else if (!client.isWholeNumber(reply.content)) {
-            return message.channel.createMessage(':x: You must reply with a whole number');
+            message.channel.createMessage(':x: You must reply with a whole number').catch(() => {});
+            return false;
         }
         if (reply.content >= tracks.length) {
             return tracks[tracks.length - 1];
