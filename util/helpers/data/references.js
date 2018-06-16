@@ -31,6 +31,7 @@ class References {
             spacedPrefix: true,
             premium: '',
             selfAssignableRoles: [],
+            onJoinRoles: [],
             permissions: {
                 users: [],
                 roles: [],
@@ -46,6 +47,16 @@ class References {
                     message: '',
                     enabled: true
                 }
+            },
+            greetings: {
+                enabled: false,
+                message: '',
+                channel: ''
+            },
+            farewells: {
+                enabled: false,
+                message: '',
+                channel: ''
             }
         };
     }
