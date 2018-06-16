@@ -116,7 +116,7 @@ class SetFarewells extends Command {
         if (!args[1]) {
             return message.channel.createMessage(':x: You must specify the new farewells message to use');
         }
-        guildEntry.farewells.message = args[2] ? args.join(' ') : args[1];
+        guildEntry.farewells.message = args[2] ? args.splice(1).join(' ') : args[1];
         await client.database.set(guildEntry, 'guild');
         return message.channel.createMessage(':white_check_mark: Alright, the farewells message has been updated');
     }

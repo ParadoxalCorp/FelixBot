@@ -124,7 +124,7 @@ class SetGreetings extends Command {
         if (!args[1]) {
             return message.channel.createMessage(':x: You must specify the new greetings message to use');
         }
-        guildEntry.greetings.message = args[2] ? args.join(' ') : args[1];
+        guildEntry.greetings.message = args[2] ? args.splice(1).join(' ') : args[1];
         await client.database.set(guildEntry, 'guild');
         return message.channel.createMessage(':white_check_mark: Alright, the greetings message has been updated');
     }
