@@ -2,7 +2,7 @@
 
 ## Tags
 
-When setting up your greetings message, you can use a few tags which will be replaced according to the context, here's the list of the tags you can use:
+When setting up your greetings and farewells message, you can use a few tags which will be replaced according to the context, here's the list of the tags you can use:
 
 * `%USER%` => Will be replaced by the mention of the user who just joined, like `@Baguette`. This tag isn't available for the farewell message
 * `%USERNAME%` => Will be replaced by the username of the user who just joined, like `Baguette`
