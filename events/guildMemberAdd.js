@@ -12,7 +12,7 @@ class GuildMemberAddHandler {
         const user = client.extendedUser(member.user);
         //On join role
         if (guildEntry.onJoinRoles[0] && clientMember.permission.has('manageRoles')) {
-            this.addRoles(guild, member).catch(() => {});
+            this.addRoles(guild, member, guildEntry).catch(() => {})
         }
         //Greetings
         if (!guildEntry.greetings.channel || !guildEntry.greetings.enabled || !guildEntry.greetings.message) {
@@ -30,7 +30,7 @@ class GuildMemberAddHandler {
         }
     }
 
-    async addRoles(guild, member) {
+    async addRoles(guild, member, guildEntry) {
         const existingRoles = guildEntry.onJoinRoles.filter(r => guild.roles.has(r)); //Filter roles that are no more
         if (existingRoles[0]) {
             await Promise.all(existingRoles.map(r => member.addRole(r, `The role is set to be given to new members`))).catch(() => {});

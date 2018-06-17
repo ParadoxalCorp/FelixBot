@@ -64,6 +64,7 @@ class Repeat extends Command {
         const voiceChannel = message.channel.guild.channels.get(clientMember.voiceState.channelID);
         const player = await client.musicManager.getPlayer(voiceChannel);
         connection.repeat = args[0].toLowerCase();
+        let queue = [...connection.queue];
         switch(connection.repeat) {
             case 'queue':
                 if (connection.nowPlaying) {
@@ -72,11 +73,19 @@ class Repeat extends Command {
                 break;
             case 'off':
                 if (connection.queuePosition) {
+                    if (queue.length > 1) {
+                        const toPlay = queue.splice(connection.queuePosition);
+                        connection.queue = toPlay.concat(queue);
+                    }
                     connection.queuePosition = 0;
                 }
                 break;
             case 'song':
                 if (connection.queuePosition) {
+                    if (queue.length > 1) {
+                        const toPlay = queue.splice(connection.queuePosition);
+                        connection.queue = toPlay.concat(queue);
+                    }
                     connection.queuePosition = 0;
                 }
                 break;

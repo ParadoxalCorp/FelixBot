@@ -2,14 +2,14 @@
 
 const Command = require('../../util/helpers/modules/Command');
 
-class Queue extends Command {
+class PlayAfter extends Command {
     constructor() {
         super();
         this.help = {
-            name: 'queue',
+            name: 'playafter',
             category: 'music',
-            description: 'Queue a song or check the queue, to check the queue, just run `{prefix}queue`. You can input: A `YouTube` URL (including livestreams), a `Soundcloud` URL, a `Twitch` channel URL (the channel must be live);\n\nOr a search term to search through `YouTube` or `Soundcloud`, by default the search is done on `YouTube`, to search through `Soundcloud`, you must specify it like `{prefix}queue soundcloud <search_term>`',
-            usage: '{prefix}queue <song_url|search_term>'
+            description: 'Push to the first position in the queue a song. You can input: A `YouTube` URL (including livestreams), a `Soundcloud` URL, a `Twitch` channel URL (the channel must be live);\n\nOr a search term to search through `YouTube` or `Soundcloud`, by default the search is done on `YouTube`, to search through `Soundcloud`, you must specify it like `{prefix}queue soundcloud <search_term>`',
+            usage: '{prefix}playafter <song_url|search_term>'
         };
         this.conf = {
             requireDB: true,
@@ -73,11 +73,18 @@ class Queue extends Command {
             }
         } else {
             track.info.requestedBy = message.author.id;
-            connection.queue.push(track);
+            if (connection.queuePosition) {
+                let queue = [...connection.queue];
+                let toPlay = queue.splice(connection.queuePosition);
+                toPlay.unshift(track);
+                connection.queue = queue.concat(toPlay);
+            } else {
+                connection.queue.unshift(track);
+            }
             queued = true;
         }
         return message.channel.createMessage({embed: {
-            title: `:musical_note: ${queued ? 'Successfully enqueued' : 'Now playing'}`,
+            title: `:musical_note: ${queued ? 'Successfully enqueued to first position' : 'Now playing'}`,
             description: `[${track.info.title}](${track.info.uri})`,
             fields: [{
                 name: 'Author',
@@ -116,26 +123,6 @@ class Queue extends Command {
             return tracks[reply.content - 1];
         }
     }
-
-    async formatQueue(client, connection, message, clientMember) {
-        const player = await client.musicManager.getPlayer(message.channel.guild.channels.get(clientMember.voiceState.channelID));
-        let formattedQueue = `:musical_note: Now playing: **${connection.nowPlaying.info.title}** (${client.musicManager.parseDuration(player.state.position)}/${client.musicManager.parseDuration(connection.nowPlaying)})\nRepeat: ${client.commands.get('repeat').extra[connection.repeat].emote}\n\n`;
-        let i = 1;
-        let queue = [...connection.queue];
-        if (connection.repeat === 'queue') {
-            if (queue.length > 1) {
-                const toPlay = queue.splice(connection.queuePosition);
-                queue = toPlay.concat(queue);
-            }
-        }
-        for (const track of queue) {
-            if (formattedQueue.length >= 1900) {
-                return formattedQueue += `\n\nAnd **${queue.length - i}** more...`;
-            }
-            formattedQueue += `\`${i++}\` - **${track.info.title}** (\`${client.musicManager.parseDuration(track)}\`)\n`;
-        }
-        return formattedQueue;
-    }
 }
 
-module.exports = new Queue();
+module.exports = new PlayAfter();

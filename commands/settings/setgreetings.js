@@ -20,7 +20,7 @@ class SetGreetings extends Command {
                 name: 'set_message',
                 func: this.setMessage.bind(this),
                 interpretAs: '{value}',
-                expectedArgs: 0
+                expectedArgs: 1
             }, {
                 name: 'set_message_target',
                 func: this.setMessageTarget.bind(this),

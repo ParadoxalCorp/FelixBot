@@ -53,6 +53,8 @@ module.exports = {
         defaultCooldownWeight: 5,
         //Duration in milliseconds the command cooldown may last, setting it to something like 1000 would effectively disable it
         commandCooldownDuration: 20000,
+        //Define how many roles can be set to be given to new members
+        maxDefaultRoles: 3,
         experience: {
             exponent: 1.5,
             baseXP: 100,
