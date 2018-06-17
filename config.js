@@ -88,7 +88,7 @@ module.exports = {
             port: 2033,
             WSPort: 80,
             //Define how long in milliseconds to wait for a song to be added when the last one ended before leaving to not waste bandwidth. Defaults to 30e4 ms (5 minutes)
-            inactivityTimeout: 30e4,,
+            inactivityTimeout: 30e4,
             //Define how long in milliseconds before a vote to skip a song should end
             voteSkipDuration: 60000,  
             //The host of the Lavalink server, if the Lavalink server is hosted on another server, you should change to that server IP
