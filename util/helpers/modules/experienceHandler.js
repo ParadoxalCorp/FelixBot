@@ -5,6 +5,7 @@ class ExperienceHandler {
         this.client = client;
         this.cooldowns = new(require('../../modules/collection'))();
         this._sweepInterval = setInterval(this._sweep.bind(this), client.config.options.experience.sweepInterval);
+        this.levelledUp = new(require('../../modules/collection'))();
     }
 
     async handle(message, guildEntry, userEntry) {
@@ -24,7 +25,9 @@ class ExperienceHandler {
         userEntry.addExperience(expGain);
         this._addCooldown(this.client.config.options.experience.cooldown).to(message.author.id);
         await Promise.all([this.client.database.set(guildEntry, 'guild'), this.client.database.set(userEntry, 'user')]);
-        if (totalExperience > levelDetails.expTillNextLevel) {
+        if ((totalExperience >= levelDetails.nextLevelExp) && (this.levelledUp.get(message.author.id) !== levelDetails.nextLevel)) {
+            this.levelledUp.set(message.author.id, levelDetails.nextLevel);
+            this._removeHigherRoles(message, guildEntry, levelDetails);
             const wonRoles = guildEntry.experience.roles.find(r => r.at === levelDetails.nextLevel) ? await this._addWonRoles(message, guildEntry, levelDetails) : false;
             if (guildEntry.experience.notifications.enabled) {
                 this._notifyUser(message, guildEntry, levelDetails, wonRoles);
@@ -60,10 +63,21 @@ class ExperienceHandler {
             wonRoles = wonRoles.filter(r => r.id !== id);
         };
         for (let i = 0; i < wonRoles.length; i++) {
-            await member.addRole(wonRoles[i].id)
+            await member.addRole(wonRoles[i].id, `This role is set to be given at the level ${wonRoles[i].at}`)
                 .catch(handleError.bind(wonRoles[i].id));
         }
         return wonRoles[0] ? wonRoles.map(r => '`' + message.channel.guild.roles.get(r.id).name + '`') : false;
+    }
+
+    async _removeHigherRoles(message, guildEntry, levelDetails) {
+        const member = message.channel.guild.members.get(message.author.id);
+        const higherRoles = guildEntry.experience.roles.filter(r => member.roles.includes(r.id) && levelDetails.nextLevel < r.at);
+        if (higherRoles[0]) {
+            for (const role of higherRoles) {
+                await member.removeRole(role.id, `This role is set to be given at the level ${role.at} but this member is only level ${levelDetails.nextLevel}`)
+                .catch(() => {})
+            }
+        }
     }
 
     _notifyUser(message, guildEntry, levelDetails, wonRoles) {
@@ -93,7 +107,7 @@ class ExperienceHandler {
         if (lowerRemovableRoles[0]) {
             for (let i = 0; i < lowerRemovableRoles.length; i++) {
                 await this.client.sleep(1000);
-                member.removeRole(lowerRemovableRoles[i].id).catch(console.error);
+                member.removeRole(lowerRemovableRoles[i].id).catch(() => {});
             }
         }
     }

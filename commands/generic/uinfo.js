@@ -107,7 +107,8 @@ class Uinfo extends Command {
                 timestamp: new Date(),
                 image: {
                     url: target.avatarURL
-                }
+                },
+                color: client.config.options.embedColor
             }
         });
     }
