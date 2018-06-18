@@ -50,3 +50,14 @@ if you want to setup roles showing how active a user is and prevent too active m
 will stay where they are, so you can set a role that gives access to a special channel as static to ensure that the member will always keep their access 
 to this channel for example. 
 
+### Automatic roles synchronization 
+
+If you change the requirements for some roles and there are members who already won these roles/already passed the requirement, their roles will eventually be 
+synchronized with how they should be. When a member level up, Felix check and remove the roles from a member if they aren't supposed to have it (as in: If the member
+level is lower than the role requirement) and give them the roles they should have (as in: The roles set to be given at this level and lower)
+
+## Audit log tracking
+
+If you are unsure about the changes in the roles of a member, you can always check the audit logs to see why the changes happened; As Felix always leave a reason 
+in the audit logs to each role change
+

@@ -28,7 +28,7 @@ class ExperienceHandler {
         if ((totalExperience >= levelDetails.nextLevelExp) && (this.levelledUp.get(message.author.id) !== levelDetails.nextLevel)) {
             this.levelledUp.set(message.author.id, levelDetails.nextLevel);
             this._removeHigherRoles(message, guildEntry, levelDetails);
-            const wonRoles = guildEntry.experience.roles.find(r => r.at === levelDetails.nextLevel) ? await this._addWonRoles(message, guildEntry, levelDetails) : false;
+            const wonRoles = guildEntry.experience.roles.find(r => r.at <= levelDetails.nextLevel) ? await this._addWonRoles(message, guildEntry, levelDetails) : false;
             if (guildEntry.experience.notifications.enabled) {
                 this._notifyUser(message, guildEntry, levelDetails, wonRoles);
             }
@@ -58,13 +58,17 @@ class ExperienceHandler {
     async _addWonRoles(message, guildEntry, levelDetails) {
         guildEntry.experience.roles = guildEntry.experience.roles.filter(r => message.channel.guild.roles.has(r.id));
         const member = message.channel.guild.members.get(message.author.id);
-        let wonRoles = guildEntry.experience.roles.filter(r => r.at === levelDetails.nextLevel && !member.roles.includes(r.id));
+        let wonRoles = guildEntry.experience.roles.filter(r => r.at <= levelDetails.nextLevel && !member.roles.includes(r.id))
+        .map(r => {
+            r.reason = r.at === levelDetails.nextLevel ? `This role is set to be given at the level ${r.at}` : `This role is set to be given at the level ${r.at} and the member is level ${levelDetails.nextLevel}`;
+            return r;
+        });
         const handleError = (id) => {
             wonRoles = wonRoles.filter(r => r.id !== id);
         };
-        for (let i = 0; i < wonRoles.length; i++) {
-            await member.addRole(wonRoles[i].id, `This role is set to be given at the level ${wonRoles[i].at}`)
-                .catch(handleError.bind(wonRoles[i].id));
+        for (const role of wonRoles) {
+            await member.addRole(role.id, role.reason)
+                .catch(handleError.bind(role.id));
         }
         return wonRoles[0] ? wonRoles.map(r => '`' + message.channel.guild.roles.get(r.id).name + '`') : false;
     }
