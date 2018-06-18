@@ -33,7 +33,7 @@ class ExperienceHandler {
                 this._notifyUser(message, guildEntry, levelDetails, wonRoles);
             }
             if (wonRoles) {
-                this._removeOlderRoles(message, guildEntry, levelDetails);
+                this._removeOlderRoles(message, guildEntry, levelDetails, wonRoles);
             }
         }
         return true;
@@ -105,13 +105,13 @@ class ExperienceHandler {
         }
     }
 
-    async _removeOlderRoles(message, guildEntry, levelDetails) {
+    async _removeOlderRoles(message, guildEntry, levelDetails, wonRoles) {
         const member = message.channel.guild.members.get(message.author.id);
-        const lowerRemovableRoles = guildEntry.experience.roles.filter(r => r.at < levelDetails.nextLevel && !r.static && member.roles.includes(r.id));
+        const lowerRemovableRoles = guildEntry.experience.roles.filter(r => r.at < levelDetails.nextLevel && !r.static && member.roles.includes(r.id) && !wonRoles.includes(r.id));
         if (lowerRemovableRoles[0]) {
-            for (let i = 0; i < lowerRemovableRoles.length; i++) {
+            for (const role of lowerRemovableRoles) {
                 await this.client.sleep(1000);
-                member.removeRole(lowerRemovableRoles[i].id).catch(() => {});
+                member.removeRole(role.id, `This role isn't set as static and the member won a higher role`).catch(() => {});
             }
         }
     }
