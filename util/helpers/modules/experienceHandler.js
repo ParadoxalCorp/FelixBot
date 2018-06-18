@@ -30,10 +30,10 @@ class ExperienceHandler {
             this._removeHigherRoles(message, guildEntry, levelDetails);
             const wonRoles = guildEntry.experience.roles.find(r => r.at <= levelDetails.nextLevel) ? await this._addWonRoles(message, guildEntry, levelDetails) : false;
             if (guildEntry.experience.notifications.enabled) {
-                this._notifyUser(message, guildEntry, levelDetails, wonRoles);
+                this._notifyUser(message, guildEntry, levelDetails, wonRoles.text);
             }
             if (wonRoles) {
-                this._removeOlderRoles(message, guildEntry, levelDetails, wonRoles);
+                this._removeOlderRoles(message, guildEntry, levelDetails, wonRoles.roles);
             }
         }
         return true;
@@ -70,7 +70,7 @@ class ExperienceHandler {
             await member.addRole(role.id, role.reason)
                 .catch(handleError.bind(role.id));
         }
-        return wonRoles[0] ? wonRoles.map(r => '`' + message.channel.guild.roles.get(r.id).name + '`') : false;
+        return wonRoles[0] ? {text: wonRoles.map(r => '`' + message.channel.guild.roles.get(r.id).name + '`'), roles: wonRoles} : false;
     }
 
     async _removeHigherRoles(message, guildEntry, levelDetails) {
