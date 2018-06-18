@@ -312,7 +312,7 @@ class Command {
                 queryMsg.delete().catch(() => {});
                 return false;
             }
-            if ((arg.possibleValues && !arg.possibleValues.filter(value => value.name === "*" || value.name.toLowerCase() === response.content.toLowerCase())[0]) || (arg.validate && !arg.validate(client, message, response.content))) {
+            if ((arg.possibleValues && !arg.possibleValues.find(value => value.name === "*" || value.name.toLowerCase() === response.content.toLowerCase())) || (arg.validate && !arg.validate(client, message, response.content))) {
                 message.channel.createMessage(':x: This is not a valid answer, please reply again with a valid answer')
                     .then(m => {
                         setTimeout(() => {

@@ -59,10 +59,15 @@ class ExperienceHandler {
         guildEntry.experience.roles = guildEntry.experience.roles.filter(r => message.channel.guild.roles.has(r.id));
         const member = message.channel.guild.members.get(message.author.id);
         let wonRoles = guildEntry.experience.roles.filter(r => r.at <= levelDetails.nextLevel && !member.roles.includes(r.id))
-        .map(r => {
-            r.reason = r.at === levelDetails.nextLevel ? `This role is set to be given at the level ${r.at}` : `This role is set to be given at the level ${r.at} and the member is level ${levelDetails.nextLevel}`;
-            return r;
-        });
+            .map(r => {
+                r.reason = r.at === levelDetails.nextLevel ? `This role is set to be given at the level ${r.at}` : `This role is set to be given at the level ${r.at} and the member is level ${levelDetails.nextLevel}`;
+                return r;
+            });
+        let highestRoles = wonRoles.sort((a, b) => b.at - a.at);
+        let highestRequirement = highestRoles[0] ? highestRoles[0].at : false;
+        if (highestRequirement) {
+            wonRoles = wonRoles.filter(r => r.at === highestRequirement || r.static);
+        }
         const handleError = (id) => {
             wonRoles = wonRoles.filter(r => r.id !== id);
         };

@@ -5,7 +5,7 @@
 /** 
  * This class provides all the default data model the process may use, for example, the default data models for guild and user entries in the database
  * @prop {object} defaultPermissions The default permissions object
- * @prop {object} permissionsSet The default permissions object, but with empty arrays
+ * @prop {object} globalPermissionsSet The default permissions object, but with empty arrays
  */
 class References {
     constructor() {
@@ -13,7 +13,7 @@ class References {
             allowedCommands: ['generic*', 'fun*', 'economy*', 'misc*', 'utility*', 'image*', 'music*'],
             restrictedCommands: ['settings*', 'forceskip']
         };
-        this.permissionsSet = {
+        this.globalPermissionsSet = {
             allowedCommands: [],
             restrictedCommands: []
         };
@@ -36,7 +36,7 @@ class References {
                 users: [],
                 roles: [],
                 channels: [],
-                global: this.permissionsSet
+                global: this.globalPermissionsSet
             },
             experience: {
                 members: [],
@@ -71,6 +71,19 @@ class References {
         return {
             id: id,
             experience: 0
+        };
+    }
+
+    /**
+     * Permission set for a channel/role/user
+     * @param {string} id - The ID of the target
+     * @returns {object} The permission set for this target
+     */
+    permissionsSet(id) {
+        return {
+            allowedCommands: [],
+            restrictedCommands: [],
+            id: id
         };
     }
 
