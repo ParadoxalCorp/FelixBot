@@ -107,7 +107,10 @@ class ExperienceHandler {
 
     async _removeOlderRoles(message, guildEntry, levelDetails, wonRoles) {
         const member = message.channel.guild.members.get(message.author.id);
-        const lowerRemovableRoles = guildEntry.experience.roles.filter(r => r.at < levelDetails.nextLevel && !r.static && member.roles.includes(r.id) && !wonRoles.includes(r.id));
+        let highestRoles = guildEntry.experience.roles.filter(r => member.roles.includes(r.id)).sort((a, b) => b.at - a.at);
+        let highestRequirement = highestRoles[0] ? highestRoles[0].at : false;
+        highestRoles = highestRoles.filter(r => r.at === highestRequirement);
+        const lowerRemovableRoles = guildEntry.experience.roles.filter(r => r.at < levelDetails.nextLevel && !r.static && member.roles.includes(r.id) && !highestRoles.find(role => r.id !== role.id));
         if (lowerRemovableRoles[0]) {
             for (const role of lowerRemovableRoles) {
                 await this.client.sleep(1000);
