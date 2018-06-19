@@ -122,7 +122,7 @@ class ExperienceHandler {
         console.log(highestRequirement);
         highestRoles = highestRoles.filter(r => r.at === highestRequirement);
         console.log(inspect(highestRoles));
-        const lowerRemovableRoles = guildEntry.experience.roles.filter(r => r.at < levelDetails.nextLevel && !r.static && member.roles.includes(r.id) && !highestRoles.find(role => r.id !== role.id));
+        const lowerRemovableRoles = guildEntry.experience.roles.filter(r => r.at < levelDetails.nextLevel && !r.static && member.roles.includes(r.id) && !highestRoles.find(role => r.id === role.id));
         console.log(inspect(lowerRemovableRoles));
         if (lowerRemovableRoles[0]) {
             for (const role of lowerRemovableRoles) {
