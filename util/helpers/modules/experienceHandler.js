@@ -73,7 +73,10 @@ class ExperienceHandler {
         };
         for (const role of wonRoles) {
             await member.addRole(role.id, role.reason)
-                .catch(handleError.bind(role.id));
+                .catch(handleError.bind(role.id))
+                .then(() => {
+                    message.channel.guild.members.get(message.author.id).roles.push(role.id);
+                });
         }
         return wonRoles[0] ? {text: wonRoles.map(r => '`' + message.channel.guild.roles.get(r.id).name + '`'), roles: wonRoles} : false;
     }
