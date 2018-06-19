@@ -53,7 +53,7 @@ class SetPermission extends Command {
         }
         let target = args[2].toLowerCase() === 'global' ? 'global' : null;
         if (args[2].toLowerCase() === 'channel') {
-            target = await this.getChannelFromText({client, message, text: args.slice(3).join(' ')});
+            target = await this.getChannelFromText({client, message, text: args.slice(3).join(' '), textual: true});
         } else if (args[2].toLowerCase() === 'role') {
             target = await this.getRoleFromText({client, message, text: args.slice(3).join(' ')});
         } else if (args[2].toLowerCase() === 'user') {

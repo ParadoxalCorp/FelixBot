@@ -133,6 +133,20 @@ class Help extends Command {
                 inline: true
             });
         }
+        if (command.conf.guildOwnerOnly) {
+            embedFields.push({
+                name: 'Owner only',
+                value: 'This command can only be used by the owner of the server',
+                inline: true
+            });
+        }
+        if (command.conf.guildOnly) {
+            embedFields.push({
+                name: 'Server only',
+                value: 'This command cannot be used in DMs',
+                inline: true
+            });
+        }
         if (command.help.externalDoc) {
             embedFields.push({
                 name: 'External documentation',
@@ -162,6 +176,12 @@ class Help extends Command {
         }
         if (command.conf.requirePerms) {
             normalHelp += `**Require permissions**: ${command.conf.requirePerms.map(p => '\`' + p + '\`').join(', ')}\n`;
+        }
+        if (command.conf.guildOwnerOnly) {
+            normalHelp += '**Owner only:** This command can only be used by the owner of the server';
+        }
+        if (command.conf.guildOnly) {
+            normalHelp += '**Server only:** This command cannot be used in DMs'
         }
         if (command.help.params) {
             for (const key in command.help.params) {

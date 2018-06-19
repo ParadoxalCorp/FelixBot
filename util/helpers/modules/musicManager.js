@@ -259,6 +259,10 @@ class MusicManager {
         }
         return;
     }
+
+    disconnect() {
+        this.client.bot.voiceConnections.nodes.get(this.client.config.options.music.host).destroy();
+    }
 }
 
 module.exports = MusicManager;

@@ -147,7 +147,12 @@ class ExtendedGuildEntry {
      * @returns {boolean} Whether the guild has the premium status or not 
      */
     hasPremiumStatus() {
-        return this.premium > Date.now();
+        if (typeof this.premium === 'number') {
+            return this.premium > Date.now();
+        } else {
+            return this.premium ? true : false;
+        }
+        
     }
 
     /**
