@@ -63,7 +63,7 @@ class ExperienceHandler {
                 r.reason = r.at === levelDetails.nextLevel ? `This role is set to be given at the level ${r.at}` : `This role is set to be given at the level ${r.at} and the member is level ${levelDetails.nextLevel}`;
                 return r;
             });
-        let highestRoles = wonRoles.sort((a, b) => b.at - a.at);
+        let highestRoles = guildEntry.experience.roles.filter(r => member.roles.includes(r.id)).concat(wonRoles).sort((a, b) => b.at - a.at);
         let highestRequirement = highestRoles[0] ? highestRoles[0].at : false;
         if (highestRequirement) {
             wonRoles = wonRoles.filter(r => r.at === highestRequirement || r.static);
@@ -116,17 +116,10 @@ class ExperienceHandler {
 
     async _removeOlderRoles(message, guildEntry, levelDetails, wonRoles) {
         const member = message.channel.guild.members.get(message.author.id);
-        console.log(`${message.author.username} just levelled up`);
-        const { inspect } = require('util');
-        console.log(member.roles.map(r => message.channel.guild.roles.get(r).name).join(', '));
         let highestRoles = guildEntry.experience.roles.filter(r => member.roles.includes(r.id)).sort((a, b) => b.at - a.at);
-        console.log(inspect(highestRoles));
         let highestRequirement = highestRoles[0] ? highestRoles[0].at : false;
-        console.log(highestRequirement);
         highestRoles = highestRoles.filter(r => r.at === highestRequirement);
-        console.log(inspect(highestRoles));
         const lowerRemovableRoles = guildEntry.experience.roles.filter(r => r.at < levelDetails.nextLevel && !r.static && member.roles.includes(r.id) && !highestRoles.find(role => r.id === role.id));
-        console.log(inspect(lowerRemovableRoles));
         if (lowerRemovableRoles[0]) {
             for (const role of lowerRemovableRoles) {
                 await this.client.sleep(1000);
