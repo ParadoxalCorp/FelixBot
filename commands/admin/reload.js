@@ -102,9 +102,9 @@ class Reload extends Command {
             const reloadedEvent = await client.IPCHandler.broadcastReload('event', args[0] === 'all' ? args[0] : path)
                 .then(() => {
                     if (args[0] === 'all') {
-                        return message.channel.createMessage(':white_check_mark: Successfully reloaded all events listeners');
+                        return message.channel.createMessage(`:white_check_mark: Successfully reloaded all events listeners\n\n:warning: Don't forget to reload all modules now, to add back their listeners`);
                     }
-                    return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the \`${fileName}\` event listener`);
+                    return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the \`${fileName}\` event listener\n\n:warning: Don't forget to reload all modules now, to add back their listeners`);
                 })
                 .catch(err => {
                     return message.channel.createMessage({
