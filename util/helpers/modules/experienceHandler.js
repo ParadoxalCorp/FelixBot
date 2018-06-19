@@ -27,11 +27,11 @@ class ExperienceHandler {
         await Promise.all([this.client.database.set(guildEntry, 'guild'), this.client.database.set(userEntry, 'user')]);
         if ((totalExperience >= levelDetails.nextLevelExp) && (this.levelledUp.get(message.author.id) !== levelDetails.nextLevel)) {
             this.levelledUp.set(message.author.id, levelDetails.nextLevel);
-            this._removeHigherRoles(message, guildEntry, levelDetails);
             const wonRoles = guildEntry.experience.roles.find(r => r.at <= levelDetails.nextLevel) ? await this._addWonRoles(message, guildEntry, levelDetails) : false;
             if (guildEntry.experience.notifications.enabled) {
                 this._notifyUser(message, guildEntry, levelDetails, wonRoles.text);
             }
+            await this._removeHigherRoles(message, guildEntry, levelDetails);
             if (wonRoles) {
                 this._removeOlderRoles(message, guildEntry, levelDetails, wonRoles.roles);
             }
@@ -87,6 +87,7 @@ class ExperienceHandler {
                 .catch(() => {})
             }
         }
+        return higherRoles;
     }
 
     _notifyUser(message, guildEntry, levelDetails, wonRoles) {
