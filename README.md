@@ -49,13 +49,13 @@ and receive a long-term support
 
 #### Implications
 
-As of it's official release, the `4.0.0` release will benefit from:
+Until the 21/06/2018, the `4.0.0` release will benefit from:
 
-* Minor enhancements if needed
+* Minor enhancements if needed/minor new features
 * Deprecations notices for potentially breaking changes before complete implementation  
 * Bug-fixes
 
-During 6 months. Additionally, bug-fixes only support will be effective **until new notice**, this means there is no defined date for the end of bug-fixes.
+Additionally, bug-fixes only support will be effective **until new notice**, this means there is no defined date for the end of bug-fixes.
 This roughly means V4 can be considered to work until a notice of dropped support is issued
 
 ## Contributing
