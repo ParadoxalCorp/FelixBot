@@ -9,7 +9,7 @@ class Leaderboard extends Command {
             name: 'leaderboard',
             category: 'misc',
             description: 'Get the leaderboard of the most loved, richest and active users. Here\'s an example of how to use the command: `{prefix}leaderboard love global`, this will show the global love points leaderboard',
-            usage: '{prefix}leaderboard <love|coins|experience> <global|local>'
+            usage: '{prefix}leaderboard <love|coins|experience> | <global|local>'
         };
         this.conf = {
             requireDB: true,

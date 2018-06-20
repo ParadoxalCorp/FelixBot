@@ -31,7 +31,7 @@
 ## Commands arguments syntax
 
 For consistency purposes, as well as to make it easy to learn, all commands that takes multiple mandatory arguments can be called without specifying any arguments, you will 
-then be prompted each argument.
+then be prompted for each argument.
 
 To explore all the ways of calling "complicated" commands, we'll take the `sar` (Self Assignable Roles) command, which allows you to either add a self-assignable role, remove one or list the self-assignable roles set.
 
@@ -82,15 +82,15 @@ When setting up your own level up messages, you can use a few tags which will be
 * `%USERNAME%` => Will be replaced by the username of the user who just levelled up, like `Baguette`
 * `%USERTAG%` => Will be replaced by the username#discriminator of the user who just levelled up, like `Baguette#0001`
 * `%LEVEL%` => Will be replaced by the level the user just reached
-* `%WONROLES%` => This is a bit more complicated, the `%WONROLES%` tag will be replaced by `and won the role(s) <role list>`, unless no roles has been won, then it is replaced by nothing. Let's take an example:
+* `%WONROLES%` => This is a bit more complicated, the `%WONROLES%` tag will be replaced by `and won the role(s) <role list>`, unless no roles have been won, then it is replaced by nothing. Let's take an example:
 
 Let's say our custom level up message is set to: `Hey %USER% you just levelled up to level %LEVEL% %WONROLES% !`
 
-Now, let's say we set the roles `baguette` and `croissant` to be given at level 2, when the user reach the level 2, it will look like this:
+Now, let's say we set the roles `baguette` and `croissant` to be given at level 2, when the user reaches level 2, it will look like this:
 
 > Hey @Baguette you just levelled up to level 2 and won the role(s) `baguette`, `croissant` !
 
-And when the user reach the level 3, at which we didn't set any roles to be given, it will look like this:
+And when the user reaches level 3, at which we didn't set any roles to be given, it will look like this:
 
 > Hey @Baguette you just levelled up to level 3 !
 
@@ -148,7 +148,7 @@ When setting up your greetings and farewells message, you can use a few tags whi
 ### Greetings and farewell target 
 
 You have a full control of where the greetings messages are sent, you can set it so they will be sent to a specific channel, or directly to the member who just joined.
-However, when a member leave, the farewell message can't be sent to their DMs
+However, when a member leaves, the farewell message can't be sent to their DMs
 
 ### Greetings and farewell settings
 
@@ -156,7 +156,7 @@ Like the experience system settings, if you disable the greetings, the settings 
 
 ## Permissions system
 
-Felix's permissions system goes deep, it might be a bit long to fully understand, but gives you huge control over who can use what commands
+Felix's permissions system goes deep, it might take some time to fully understand, but gives you huge control over who can use what commands
 
 ### Consistency with Discord 
 
@@ -193,7 +193,7 @@ are another important concept directly related to the inheritance)
 Pardon the ugly schema, but figured it would be boring to only read text. This image though, regardless of being ugly or not, accurately represent the inheritance 
 and priority pyramid. 
 
-The `effective permissions` group is the result of the inheritance and priority rules applied on the lower permissions groups, it decide what commands can a user use and what commands they cannot. The `default permissions` is the permissions group set by default globally on the bot.
+The `effective permissions` group is the result of the inheritance and priority rules applied on the lower permissions groups, it decides what commands a user can use and what commands they cannot use. The `default permissions` is the permissions group set by default globally on the bot.
 
 Each permissions group will inherit the permissions of the lower groups, then apply their permissions over it (the priority rule). To illustrate that, we will take the following example:
 

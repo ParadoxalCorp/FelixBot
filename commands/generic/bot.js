@@ -55,64 +55,64 @@ class Bot extends Command {
     buildEmbedFields(client, message) {
         let embedFields = [];
         embedFields.push({
-            name: ":desktop: Servers/Guilds",
+            name: "Servers/Guilds",
             value: client.bot.guilds.size,
             inline: true
         });
         embedFields.push({
-            name: ":battery: RAM usage",
+            name: "RAM usage",
             value: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`,
             inline: true
         });
         embedFields.push({
-            name: ":tools: OS",
+            name: "OS",
             value: `${process.platform}-${process.arch}`,
             inline: true
         });
         embedFields.push({
-            name: ":hammer_pick: Node.js",
-            value: `${process.release.name} ${process.version}`,
+            name: "Node.js",
+            value: `${process.release.lts ? process.release.lts : ''} ${process.version}`,
             inline: true
         });
         embedFields.push({
-            name: ":gear: Version",
+            name: "Version",
             value: require('../../package.json').version,
             inline: true
         });
         embedFields.push({
-            name: ":busts_in_silhouette: Users",
+            name: "Cached users",
             value: client.bot.users.size,
             inline: true
         });
         let uptime = TimeConverter.toElapsedTime(client.bot.uptime);
         embedFields.push({
-            name: ":timer: Uptime",
+            name: "Uptime",
             value: `${uptime.days}d ${uptime.hours}h ${uptime.minutes}m ${uptime.seconds}s`,
             inline: true
         });
         embedFields.push({
-            name: ":wrench: Developer",
+            name: "Developer",
             value: "ParadoxOrigins#5451",
             inline: true
         });
         embedFields.push({
-            name: ":calendar: Created",
+            name: "Created the",
             value: `${TimeConverter.toHumanDate(client.bot.user.createdAt)} (${moment().to(client.bot.user.createdAt)})`,
             inline: true
         });
         embedFields.push({
-            name: ":calendar: Joined",
+            name: "Joined this server the",
             value: `${TimeConverter.toHumanDate(message.channel.guild.joinedAt)} (${moment().to(message.channel.guild.joinedAt)})`,
             inline: true
         });
         embedFields.push({
-            name: ":incoming_envelope: Support server",
-            value: "[Felix support](https://discord.gg/Ud49hQJ)",
-            inline: true
+            name: "Join the support server !",
+            value: "[Felix support server invite link](https://discord.gg/Ud49hQJ)",
+            inline: false
         });
         embedFields.push({
-            name: ":incoming_envelope: Invite link",
-            value: `[Felix invite link](https://discordapp.com/oauth2/authorize?&client_id=${client.bot.user.id}&scope=bot&permissions=2146950271)`,
+            name: "Invite Felix to your server",
+            value: `[Felix's invite link](https://discordapp.com/oauth2/authorize?&client_id=${client.bot.user.id}&scope=bot&permissions=2146950271)`,
             inline: true
         });
         embedFields.push({
@@ -121,12 +121,12 @@ class Bot extends Command {
             inline: true
         });
         embedFields.push({
-            name: 'Support us !',
+            name: 'Support us and become a donator !',
             value: '[Patreon](https://www.patreon.com/paradoxorigins)',
             inline: true
         });
         embedFields.push({
-            name: `:gear: Shard`,
+            name: `Shard`,
             value: (() => {
                 let shardCount = 0;
                 for (const cluster of client.stats.clusters) {
