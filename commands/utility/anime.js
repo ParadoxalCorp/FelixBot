@@ -18,7 +18,8 @@ class Anime extends Command {
             guildOnly: false,
             ownerOnly: false,
             guildOwnerOnly: false,
-            expectedArgs: []
+            expectedArgs: [],
+            require: ['mal-scraper']
         };
     }
 
