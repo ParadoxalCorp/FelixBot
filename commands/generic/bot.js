@@ -113,17 +113,17 @@ class Bot extends Command {
         embedFields.push({
             name: "Invite Felix to your server",
             value: `[Felix's invite link](https://discordapp.com/oauth2/authorize?&client_id=${client.bot.user.id}&scope=bot&permissions=2146950271)`,
-            inline: true
+            inline: false
         });
         embedFields.push({
             name: 'Source',
             value: `[GitHub repository](https://github.com/ParadoxalCorp/FelixBot)`,
-            inline: true
+            inline: false
         });
         embedFields.push({
             name: 'Support us and become a donator !',
             value: '[Patreon](https://www.patreon.com/paradoxorigins)',
-            inline: true
+            inline: false
         });
         embedFields.push({
             name: `Shard`,
@@ -134,6 +134,11 @@ class Bot extends Command {
                 }
                 return `${message.channel.guild.shard.id}/${shardCount}`;
             })(),
+            inline: true
+        });
+        embedFields.push({
+            name: 'Database status',
+            value: client.database && client.database.healthy ? ':white_check_mark: Online' : ':x: Offline',
             inline: true
         });
         return embedFields;
