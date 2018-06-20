@@ -1,0 +1,5648 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1">
+<title>felix 4.0.0 &#8212; Felix v4</title>
+<meta name="description" content="Felix v4">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+<style>
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: searchfield-cancel-button;
+}
+
+.jumbotron {
+    margin-bottom: 0;
+    border-radius: 0;
+    background-color: #2B303E;
+    -webkit-font-smoothing: antialiased;
+}
+
+.jumbotron h1 {
+    font-size: 3.5rem;
+    line-height: 1;
+}
+
+.jumbotron h1,
+.jumbotron h1 a {
+    color: #eee;
+}
+
+.jumbotron small {
+    font-weight: 200;
+    color: #777;
+}
+
+.jumbotron p {
+    font-size: 1.5rem;
+    font-weight: 200;
+    line-height: 1.2;
+    color: #ccc;
+}
+
+.wrap {
+    padding: 2rem 1rem;
+}
+
+.search {
+    margin: 0 0 1rem 0;
+    width: 90%;
+}
+
+.menu {
+    padding: 0;
+}
+
+.menu li {
+    list-style: none;
+}
+
+.menu li ul {
+    padding: 0;
+}
+
+.menu li a {
+    display: block;
+    padding: .25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.menu .file {
+    color: #E54D89;
+}
+
+.menu .file + ul {
+    margin: 0 0 1rem 0;
+}
+
+.menu .scope-private a {
+    color: #8BAAC6;
+}
+
+.method {
+    margin: 0 0 4rem 0;
+}
+
+.method .method-name {
+    display: inline-block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.method .method-name + .scope-private {
+    color: #AAAAAA;
+}
+
+.method section {
+    margin: 2rem 0;
+}
+
+.method h3 {
+    margin: 0 0 1rem 0;
+}
+
+.method .table,
+.method .table p,
+.method .table ol,
+.method .table ul {
+    margin: 0;
+}
+
+.permalink {
+    position: absolute;
+    margin-left: -1em;
+    font-weight: normal;
+    color: #eee;
+    text-decoration: none;
+}
+
+.permalink:hover {
+    color: #E54D89;
+}
+
+.back-to-top {
+    display: none;
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    padding: .5rem .6rem;
+    line-height: 1;
+    background: #fff;
+    z-index: 999;
+}
+
+.back-to-top.visible {
+    display: block;
+}
+
+.back-to-top svg {
+    vertical-align: middle;
+}
+
+.bs-footer {
+    margin: 3rem auto;
+    color: #777;
+    text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+
+<a href="#" class="back-to-top"><svg xmlns="http://www.w3.org/2000/svg" width="13px" height="14px" viewBox="0 0 13 14"><path d="M7.18761156,13 L7.18761156,5.49249703 L10.4587853,5.49249703 L5.09931763,0.113558129 L-0.26015,5.49249703 L3.01102371,5.49249703 L3.01102371,13 L7.18761156,13 Z" fill="#428bca"></path></svg> Back to Top</a>
+
+<div class="jumbotron">
+
+    <div class="container">
+
+        <h1>
+                felix
+            <small>4.0.0</small>
+        </h1>
+
+        <p>Felix v4</p>
+
+    </div>
+
+</div>
+
+<div class="wrap">
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-3 hidden-sm hidden-xs">
+
+                <input type="search" class="form-control search" id="search-methods" placeholder="Search..." autocomplete="off">
+
+                <ul class="menu">
+
+
+                    <li>
+                        <a href="#util/helpers/modules/Command.js" class="file"><b>util/helpers/modules/Command.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-command.js-new-command" title="new Command">new Command</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-command.js-command.prototype.parsecommand" title="Command.parseCommand">Command.parseCommand</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-command.js-command.prototype.clienthaspermissions" title="Command.clientHasPermissions">Command.clientHasPermissions</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-command.js-command.prototype.haschanneloverwrite" title="Command.hasChannelOverwrite">Command.hasChannelOverwrite</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-command.js-resolveuser" title="resolveUser">resolveUser</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-command.js-gethighestrole" title="getHighestRole">getHighestRole</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-command.js-gethexcolor" title="getHexColor">getHexColor</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/databaseWrapper.js" class="file"><b>util/helpers/modules/databaseWrapper.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-databasewrapper.js-new-databasewrapper" title="new DatabaseWrapper">new DatabaseWrapper</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.constructor" title="DatabaseWrapper.constructor">DatabaseWrapper.constructor</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.init" title="DatabaseWrapper.init">DatabaseWrapper.init</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.getguild" title="DatabaseWrapper.getGuild">DatabaseWrapper.getGuild</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.getuser" title="DatabaseWrapper.getUser">DatabaseWrapper.getUser</a>
+                        </li>
+
+
+                        <li class="method-link scope-private">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype._updatedatamodel" title="DatabaseWrapper._updateDataModel">DatabaseWrapper._updateDataModel</a>
+                        </li>
+
+
+                        <li class="method-link scope-private">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype._traverseandupdate" title="DatabaseWrapper._traverseAndUpdate">DatabaseWrapper._traverseAndUpdate</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.set" title="DatabaseWrapper.set">DatabaseWrapper.set</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.createdatabase" title="DatabaseWrapper.createDatabase">DatabaseWrapper.createDatabase</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.createtable" title="DatabaseWrapper.createTable">DatabaseWrapper.createTable</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/economyManager.js" class="file"><b>util/helpers/modules/economyManager.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-economymanager.js-new-economymanager" title="new EconomyManager">new EconomyManager</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-economymanager.js-economymanager.prototype.constructor" title="EconomyManager.constructor">EconomyManager.constructor</a>
+                        </li>
+
+
+                        <li class="method-link scope-private">
+                            <a href="#util-helpers-modules-economymanager.js-_registertransaction" title="_registerTransaction">_registerTransaction</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-economymanager.js-getitem" title="getItem">getItem</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/extendedGuildEntry.js" class="file"><b>util/helpers/modules/extendedGuildEntry.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendedguildentry.js-constructor" title="constructor">constructor</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendedguildentry.js-memberhaspermission" title="memberHasPermission">memberHasPermission</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendedguildentry.js-getprioritarypermission" title="getPrioritaryPermission">getPrioritaryPermission</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendedguildentry.js-getlevelof" title="getLevelOf">getLevelOf</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendedguildentry.js-getmember" title="getMember">getMember</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendedguildentry.js-addexperience" title="addExperience">addExperience</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendedguildentry.js-removeactivityrole" title="removeActivityRole">removeActivityRole</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendedguildentry.js-haspremiumstatus" title="hasPremiumStatus">hasPremiumStatus</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendedguildentry.js-todatabaseentry" title="toDatabaseEntry">toDatabaseEntry</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/extendedUser.js" class="file"><b>util/helpers/modules/extendedUser.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendeduser.js-extenduser" title="extendUser">extendUser</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/extendedUserEntry.js" class="file"><b>util/helpers/modules/extendedUserEntry.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendeduserentry.js-hasitem" title="hasItem">hasItem</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendeduserentry.js-additem" title="addItem">addItem</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendeduserentry.js-subtractcoins" title="subtractCoins">subtractCoins</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendeduserentry.js-addcoins" title="addCoins">addCoins</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendeduserentry.js-isincooldown" title="isInCooldown">isInCooldown</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendeduserentry.js-addcooldown" title="addCooldown">addCooldown</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendeduserentry.js-getnearestcooldown" title="getNearestCooldown">getNearestCooldown</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendeduserentry.js-addexperience" title="addExperience">addExperience</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-extendeduserentry.js-todatabaseentry" title="toDatabaseEntry">toDatabaseEntry</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/fetchUser.js" class="file"><b>util/helpers/modules/fetchUser.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-fetchuser.js-fetchuser" title="fetchUser">fetchUser</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/getLevelDetails.js" class="file"><b>util/helpers/modules/getLevelDetails.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-getleveldetails.js-getleveldetails" title="getLevelDetails">getLevelDetails</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/imageHandler.js" class="file"><b>util/helpers/modules/imageHandler.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-imagehandler.js-new-imagehandler" title="new ImageHandler">new ImageHandler</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-imagehandler.js-imagehandler.prototype.constructor" title="ImageHandler.constructor">ImageHandler.constructor</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/interactiveList.js" class="file"><b>util/helpers/modules/interactiveList.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-interactivelist.js-new-interactivelist" title="new InteractiveList">new InteractiveList</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-interactivelist.js-interactivelist.prototype.constructor" title="InteractiveList.constructor">InteractiveList.constructor</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-interactivelist.js-_replacepagetags" title="_replacePageTags">_replacePageTags</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/IPCHandler.js" class="file"><b>util/helpers/modules/IPCHandler.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-ipchandler.js-new-ipchandler" title="new IPCHandler">new IPCHandler</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-ipchandler.js-ipchandler.prototype.getsomestats" title="IPCHandler.getSomeStats">IPCHandler.getSomeStats</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-ipchandler.js-ipchandler.prototype.broadcastreload" title="IPCHandler.broadcastReload">IPCHandler.broadcastReload</a>
+                        </li>
+
+
+                        <li class="method-link scope-private">
+                            <a href="#util-helpers-modules-ipchandler.js-ipchandler.prototype._handleincomingmessage" title="IPCHandler._handleIncomingMessage">IPCHandler._handleIncomingMessage</a>
+                        </li>
+
+
+                        <li class="method-link scope-private">
+                            <a href="#util-helpers-modules-ipchandler.js-ipchandler.prototype._allclustersanswered" title="IPCHandler._allClustersAnswered">IPCHandler._allClustersAnswered</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/messageCollector.js" class="file"><b>util/helpers/modules/messageCollector.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-messagecollector.js-new-messagecollector" title="new MessageCollector">new MessageCollector</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-messagecollector.js-messagecollector.prototype.constructor" title="MessageCollector.constructor">MessageCollector.constructor</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-messagecollector.js-awaitmessage" title="awaitMessage">awaitMessage</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/musicManager.js" class="file"><b>util/helpers/modules/musicManager.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-musicmanager.js-new-musicmanager" title="new MusicManager">new MusicManager</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-musicmanager.js-musicmanager.prototype.constructor" title="MusicManager.constructor">MusicManager.constructor</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-musicmanager.js-parseduration" title="parseDuration">parseDuration</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/reactionCollector.js" class="file"><b>util/helpers/modules/reactionCollector.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-reactioncollector.js-new-reactioncollector" title="new reactionCollector">new reactionCollector</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-reactioncollector.js-reactioncollector.prototype.constructor" title="reactionCollector.constructor">reactionCollector.constructor</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-reactioncollector.js-awaitreaction" title="awaitReaction">awaitReaction</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/redact.js" class="file"><b>util/helpers/modules/redact.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-redact.js-redact" title="redact">redact</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/helpers/modules/reloader.js" class="file"><b>util/helpers/modules/reloader.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-reloader.js-new-reloader" title="new Reloader">new Reloader</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-reloader.js-reloader.prototype.constructor" title="Reloader.constructor">Reloader.constructor</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-reloader.js-reloader.prototype.reloadcommand" title="Reloader.reloadCommand">Reloader.reloadCommand</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-reloader.js-reloader.prototype.reloadeventlistener" title="Reloader.reloadEventListener">Reloader.reloadEventListener</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-helpers-modules-reloader.js-reloader.prototype.reloadmodule" title="Reloader.reloadModule">Reloader.reloadModule</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                </ul>
+
+            </div>
+
+            <div class="col-md-9">
+
+
+                <a id="util/helpers/modules/Command.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-command.js-new-command">
+                            <a href="#util-helpers-modules-command.js-new-command" class="permalink">#</a>
+                            <span class="method-name" title="new Command()">new Command()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Provide some utility methods to parse the args of a message, check the required permissions...</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-command.js-command.prototype.parsecommand">
+                            <a href="#util-helpers-modules-command.js-command.prototype.parsecommand" class="permalink">#</a>
+                            <span class="method-name" title="Command.parseCommand(message, client)">Command.parseCommand(message, client)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Check if a message calls for a command
+As it calls the database to check for a custom prefix, the method is asynchronous and may be awaited</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The message object to parse the command from</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;object&gt;</code>
+                                    </p>
+
+                                    <ul>
+<li>The command object, or undefined if the message is not prefixed or the command does not exist</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-command.js-command.prototype.clienthaspermissions">
+                            <a href="#util-helpers-modules-command.js-command.prototype.clienthaspermissions" class="permalink">#</a>
+                            <span class="method-name" title="Command.clientHasPermissions(message, client, permissions)">Command.clientHasPermissions(message, client, permissions)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Check if the bot has the given permissions to work properly
+This is a deep check and the channels wide permissions will be checked too</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The message that triggered the command</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>permissions</td>
+                                        <td>
+                                            <code>array</code>
+                                        </td>
+                                        <td><ul>
+<li>An array of permissions to check for</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>channel&#x3D;message.channel</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>Optional, a specific channel to check perms for (to check if the bot can connect to a VC for example)</li>
+</ul>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                            <code>array</code>
+                                    </p>
+
+                                    <ul>
+<li>An array of permissions the bot miss, or true if the bot has all the permissions needed, sendMessages permission is also returned if missing</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-command.js-command.prototype.haschanneloverwrite">
+                            <a href="#util-helpers-modules-command.js-command.prototype.haschanneloverwrite" class="permalink">#</a>
+                            <span class="method-name" title="Command.hasChannelOverwrite(channel, member, permission)">Command.hasChannelOverwrite(channel, member, permission)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>This method return the effective permission overwrite for a specific permission of a user
+It takes into account the roles of the member, their position and the member itself to return the overwrite which actually is effective</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>channel</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The channel to check permissions overwrites in</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>member</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The member object to check permissions overwrites for</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>permission</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The permission to search channel overwrites for</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                            <code>PermissionOverwrite</code>
+                                    </p>
+
+                                    <ul>
+<li>The permission overwrite overwriting the specified permission, or false if none exist</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-command.js-resolveuser">
+                            <a href="#util-helpers-modules-command.js-resolveuser" class="permalink">#</a>
+                            <span class="method-name" title="resolveUser(client, userResolvable)">resolveUser(client, userResolvable)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Resolve a user from a user resolvable and returns an extended user
+Note that if the user is not found, only username, discriminator and tag are guaranteed (set to unknown)</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>userResolvable</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>A user resolvable, can be an ID, a username#discriminator pattern or a user object</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>extendedUser</code>
+                                    </p>
+
+                                    <p>returns an extended user object</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-command.js-gethighestrole">
+                            <a href="#util-helpers-modules-command.js-gethighestrole" class="permalink">#</a>
+                            <span class="method-name" title="getHighestRole(member, guild)">getHighestRole(member, guild)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Get the highest role of the specified member and returns it</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>member</td>
+                                        <td>
+                                            <code>object</code>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The member object or their ID</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>guild</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The guild object</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                    </p>
+
+                                    <p>The highest role of the user</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-command.js-gethexcolor">
+                            <a href="#util-helpers-modules-command.js-gethexcolor" class="permalink">#</a>
+                            <span class="method-name" title="getHexColor(decimal)">getHexColor(decimal)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Get a HEX code from decimals</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>decimal</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The decimal(s) to convert to a HEX representation</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>string</code>
+                                    </p>
+
+                                    <p>The HEX code, without the leading hashtag</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/databaseWrapper.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-databasewrapper.js-new-databasewrapper">
+                            <a href="#util-helpers-modules-databasewrapper.js-new-databasewrapper" class="permalink">#</a>
+                            <span class="method-name" title="new DatabaseWrapper()">new DatabaseWrapper()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Wraps the most important methods of RethinkDB and does smart things in the background</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-databasewrapper.js-databasewrapper.prototype.constructor">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.constructor" class="permalink">#</a>
+                            <span class="method-name" title="DatabaseWrapper.constructor(client, updateFunc)">DatabaseWrapper.constructor(client, updateFunc)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The client (or bot) instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>updateFunc</td>
+                                        <td>
+                                            <code>function</code>
+                                        </td>
+                                        <td><ul>
+<li>Optional, the function that should be called to update the retrieved entries from the database before returning them. This update function will be called instead of the default update strategy, with the &quot;data&quot; and &quot;type&quot; arguments, which are respectively the database entry and the type of the database entry (either &quot;guild&quot; or &quot;user&quot;). The update function must return an object, this is the object that the DatabaseWrapper.getGuild() and DatabaseWrapper.getUser() methods will return.</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="examples">
+
+                            <h3>Examples</h3>
+
+
+                                <pre><code class="hljs javascript"><span class="hljs-comment">//Context: In this example, the old user data model used to have its "boolean" property containing either 1 or 0, and we want to update it to either true or false</span>
+<span class="hljs-keyword">new</span> DatabaseWrapper(client, (data, type) =&gt; {
+  <span class="hljs-keyword">if</span> (type === <span class="hljs-string">"guild"</span>) {
+    <span class="hljs-keyword">return</span> data; 
+  } <span class="hljs-keyword">else</span> {
+    data.boolean = data.boolean === <span class="hljs-number">1</span> ? <span class="hljs-literal">true</span> : <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">return</span> data;   
+  }
+});</code></pre>
+
+
+                        </section>
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-databasewrapper.js-databasewrapper.prototype.init">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.init" class="permalink">#</a>
+                            <span class="method-name" title="DatabaseWrapper.init()">DatabaseWrapper.init()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Initialize the database wrapper, this will start the automatic progressive caching of the database and dynamically handle disconnections</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;undefined&gt;</code>
+                                    </p>
+
+                                    <ul>
+<li>An error will be rejected if something fail when establishing the changes stream</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-databasewrapper.js-databasewrapper.prototype.getguild">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.getguild" class="permalink">#</a>
+                            <span class="method-name" title="DatabaseWrapper.getGuild(id)">DatabaseWrapper.getGuild(id)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Get a guild database entry</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>id</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The unique identifier of the guild to get</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;object&gt;</code>
+                                    </p>
+
+                                    <ul>
+<li>The guild entry object, or null if not in the database</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-databasewrapper.js-databasewrapper.prototype.getuser">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.getuser" class="permalink">#</a>
+                            <span class="method-name" title="DatabaseWrapper.getUser(id)">DatabaseWrapper.getUser(id)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Get a user database entry</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>id</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The unique identifier of the user to get</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;object&gt;</code>
+                                    </p>
+
+                                    <ul>
+<li>The user entry object, or null if not in the database</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-private">
+
+                        <h2 id="util-helpers-modules-databasewrapper.js-databasewrapper.prototype._updatedatamodel">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype._updatedatamodel" class="permalink">#</a>
+                            <span class="method-name" title="DatabaseWrapper._updateDataModel(data, type)">DatabaseWrapper._updateDataModel(data, type)</span>
+                            <small class="scope-private">private method</small>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>The default update strategy, the custom update function, if any, is called from here as well</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>data</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The data object to update</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>type</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The type of this object (either &quot;guild&quot; or &quot;user&quot;)</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>object</code>
+                                    </p>
+
+                                    <ul>
+<li>The updated data object</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-private">
+
+                        <h2 id="util-helpers-modules-databasewrapper.js-databasewrapper.prototype._traverseandupdate">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype._traverseandupdate" class="permalink">#</a>
+                            <span class="method-name" title="DatabaseWrapper._traverseAndUpdate(targetObj, sourceObj)">DatabaseWrapper._traverseAndUpdate(targetObj, sourceObj)</span>
+                            <small class="scope-private">private method</small>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Depth-less update function, the values of the properties that the source object has in common with the target object will be assigned to the target object
+and this regardless of the depth, if the property is an object, all the properties of this object will be checked as well.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>targetObj</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The object that will receive the source object values</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>sourceObj</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The object that will transmit it's values to the target object</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>object</code>
+                                    </p>
+
+                                    <ul>
+<li>The target object, filled with the values of the properties that the source object had in common with it</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-databasewrapper.js-databasewrapper.prototype.set">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.set" class="permalink">#</a>
+                            <span class="method-name" title="DatabaseWrapper.set(data, type)">DatabaseWrapper.set(data, type)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Insert or update a user/guild in the database</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>data</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The data object to update/insert in the database</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>type</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>Can be &quot;guild&quot; or &quot;user&quot;, whether the data object to be set is a guild or a user</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;object&gt;</code>
+                                    </p>
+
+                                    <ul>
+<li>The inserted/updated object, or reject the error if any</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-databasewrapper.js-databasewrapper.prototype.createdatabase">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.createdatabase" class="permalink">#</a>
+                            <span class="method-name" title="DatabaseWrapper.createDatabase(name)">DatabaseWrapper.createDatabase(name)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Create a new database</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>name</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The name of the database to create, if there is already a database with this name, the promise will be resolved and nothing will change</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;boolean&gt;</code>
+                                    </p>
+
+                                    <ul>
+<li>true if success, otherwise, the error is rejected</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-databasewrapper.js-databasewrapper.prototype.createtable">
+                            <a href="#util-helpers-modules-databasewrapper.js-databasewrapper.prototype.createtable" class="permalink">#</a>
+                            <span class="method-name" title="DatabaseWrapper.createTable(name, databaseName)">DatabaseWrapper.createTable(name, databaseName)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Create a new table in the specified database</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>name</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The name of the table to create, if there is already a table with this name, the promise will be resolved and nothing will change</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>databaseName</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The name of the database to create the table in</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;boolean&gt;</code>
+                                    </p>
+
+                                    <ul>
+<li>true if success, otherwise, the error is rejected</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/economyManager.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-economymanager.js-new-economymanager">
+                            <a href="#util-helpers-modules-economymanager.js-new-economymanager" class="permalink">#</a>
+                            <span class="method-name" title="new EconomyManager()">new EconomyManager()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Provides methods related to the economy, such as crediting, debiting or transferring coins</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-economymanager.js-economymanager.prototype.constructor">
+                            <a href="#util-helpers-modules-economymanager.js-economymanager.prototype.constructor" class="permalink">#</a>
+                            <span class="method-name" title="EconomyManager.constructor(client)">EconomyManager.constructor(client)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-private">
+
+                        <h2 id="util-helpers-modules-economymanager.js-_registertransaction">
+                            <a href="#util-helpers-modules-economymanager.js-_registertransaction" class="permalink">#</a>
+                            <span class="method-name" title="_registerTransaction(transactionSummary, donor, receiver)">_registerTransaction(transactionSummary, donor, receiver)</span>
+                            <small class="scope-private">private method</small>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>transactionSummary</td>
+                                        <td>
+                                        </td>
+                                        <td><p>The summary of the transaction</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>donor</td>
+                                        <td>
+                                        </td>
+                                        <td><p>The donor</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>receiver</td>
+                                        <td>
+                                        </td>
+                                        <td><p>The receiver</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>[object Object]</code>
+                                    </p>
+
+                                    <p>Returns the donor and the receiver entries with the transaction registered</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-economymanager.js-getitem">
+                            <a href="#util-helpers-modules-economymanager.js-getitem" class="permalink">#</a>
+                            <span class="method-name" title="getItem(itemID)">getItem(itemID)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Get a market item by its ID</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>itemID</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the item</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>object</code>
+                                    </p>
+
+                                    <p>The item</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/extendedGuildEntry.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendedguildentry.js-constructor">
+                            <a href="#util-helpers-modules-extendedguildentry.js-constructor" class="permalink">#</a>
+                            <span class="method-name" title="constructor(guildEntry, client)">constructor(guildEntry, client)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>guildEntry</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The guild entry</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendedguildentry.js-memberhaspermission">
+                            <a href="#util-helpers-modules-extendedguildentry.js-memberhaspermission" class="permalink">#</a>
+                            <span class="method-name" title="memberHasPermission(memberID, command, channel)">memberHasPermission(memberID, command, channel)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Check if the specified member has the permission to run the given command</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>memberID</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The member ID to check if they have the permission to run the specified command</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>command</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The command</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>channel</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The channel in which the command is attempted to be used</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    <p>Whether or not the specified member is allowed to use the given command</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendedguildentry.js-getprioritarypermission">
+                            <a href="#util-helpers-modules-extendedguildentry.js-getprioritarypermission" class="permalink">#</a>
+                            <span class="method-name" title="getPrioritaryPermission(target, command[, targetID])">getPrioritaryPermission(target, command[, targetID])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Get the prioritary permission of a target and check if they are allowed to use the given command</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>target</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The name of the permissions to check (&quot;channels&quot;, &quot;roles&quot;, &quot;users&quot;..) OR an array/object following the exact same structure than the rest</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>command</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The command</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>targetID</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>Optional, the ID of the target to get the prioritary permission for</li>
+</ul>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    <p>Whether or not the target is allowed to use the command</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendedguildentry.js-getlevelof">
+                            <a href="#util-helpers-modules-extendedguildentry.js-getlevelof" class="permalink">#</a>
+                            <span class="method-name" title="getLevelOf(id)">getLevelOf(id)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Get the activity level of a member</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>id</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><p>The ID of the member to get the level from</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="examples">
+
+                            <h3>Examples</h3>
+
+
+                                <pre><code class="hljs javascript">Guild.getLevelOf(<span class="hljs-string">"123456789"</span>);</code></pre>
+
+
+                        </section>
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>number</code>
+                                    </p>
+
+                                    <p>The level</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendedguildentry.js-getmember">
+                            <a href="#util-helpers-modules-extendedguildentry.js-getmember" class="permalink">#</a>
+                            <span class="method-name" title="getMember(id)">getMember(id)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Get the activity-related member object of a member of the guild</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>id</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the member</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="examples">
+
+                            <h3>Examples</h3>
+
+
+                                <pre><code class="hljs javascript">Guild.getMember(<span class="hljs-string">"123456789"</span>);</code></pre>
+
+
+                        </section>
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>object</code>
+                                    </p>
+
+                                    <p>The member object</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendedguildentry.js-addexperience">
+                            <a href="#util-helpers-modules-extendedguildentry.js-addexperience" class="permalink">#</a>
+                            <span class="method-name" title="addExperience(amount)">addExperience(amount)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>amount</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The amount of experience to add</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="examples">
+
+                            <h3>Examples</h3>
+
+
+                                <pre><code class="hljs javascript">Guild.addExperience(<span class="hljs-number">15</span>).to(<span class="hljs-string">"123456798"</span>);</code></pre>
+
+
+                        </section>
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>[object Object]</code>
+                                    </p>
+
+                                    <p>An object, with a .to(id) callback function to call with the ID of the member to add the experience to.</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendedguildentry.js-removeactivityrole">
+                            <a href="#util-helpers-modules-extendedguildentry.js-removeactivityrole" class="permalink">#</a>
+                            <span class="method-name" title="removeActivityRole(id)">removeActivityRole(id)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Remove a role set to be given at a certain level</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>id</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the role to remove</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="examples">
+
+                            <h3>Examples</h3>
+
+
+                                <pre><code class="hljs javascript">Guild.removeActivityRole(<span class="hljs-string">"123456789"</span>);</code></pre>
+
+
+                        </section>
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>number</code>
+                                    </p>
+
+                                    <p>The new count of roles set to be given at a certain level</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendedguildentry.js-haspremiumstatus">
+                            <a href="#util-helpers-modules-extendedguildentry.js-haspremiumstatus" class="permalink">#</a>
+                            <span class="method-name" title="hasPremiumStatus()">hasPremiumStatus()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Check if the guild has the premium status</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    <p>Whether the guild has the premium status or not</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendedguildentry.js-todatabaseentry">
+                            <a href="#util-helpers-modules-extendedguildentry.js-todatabaseentry" class="permalink">#</a>
+                            <span class="method-name" title="toDatabaseEntry()">toDatabaseEntry()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Return this without the additional methods, essentially returns a proper database entry, ready to be saved into the database
+Note that this shouldn't be called before saving it into the database, as the database wrapper already does it</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                    </p>
+
+                                    <ul>
+<li>This, as a proper database entry object (without the additional methods)</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/extendedUser.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendeduser.js-extenduser">
+                            <a href="#util-helpers-modules-extendeduser.js-extenduser" class="permalink">#</a>
+                            <span class="method-name" title="extendUser(user)">extendUser(user)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Add some properties and methods to the user object</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>user</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The user to extend</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>user</code>
+                                    </p>
+
+                                    <p>The given user with additional properties</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/extendedUserEntry.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendeduserentry.js-hasitem">
+                            <a href="#util-helpers-modules-extendeduserentry.js-hasitem" class="permalink">#</a>
+                            <span class="method-name" title="hasItem(itemID)">hasItem(itemID)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Check if a user has the specified item</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>itemID</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the item</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    <p>Whether or not the user has the specified item</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendeduserentry.js-additem">
+                            <a href="#util-helpers-modules-extendeduserentry.js-additem" class="permalink">#</a>
+                            <span class="method-name" title="addItem(itemID)">addItem(itemID)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Add an item to the user entry, handle already owned items cases (increment the count). This modifies the object</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>itemID</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the item to add</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendeduserentry.js-subtractcoins">
+                            <a href="#util-helpers-modules-extendeduserentry.js-subtractcoins" class="permalink">#</a>
+                            <span class="method-name" title="subtractCoins(amount)">subtractCoins(amount)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Subtract coins from the user</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>amount</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The amount of coins to subtract</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>number</code>
+                                    </p>
+
+                                    <p>The coins of the user after subtraction</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendeduserentry.js-addcoins">
+                            <a href="#util-helpers-modules-extendeduserentry.js-addcoins" class="permalink">#</a>
+                            <span class="method-name" title="addCoins(amount)">addCoins(amount)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Add coins to the user</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>amount</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The amount of coins to add</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>number</code>
+                                    </p>
+
+                                    <p>The coins of the user after the coins were added</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendeduserentry.js-isincooldown">
+                            <a href="#util-helpers-modules-extendeduserentry.js-isincooldown" class="permalink">#</a>
+                            <span class="method-name" title="isInCooldown(cooldown)">isInCooldown(cooldown)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Quickly compare the current timestamp with the cooldown to see if the user is in cooldown</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>cooldown</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The name of the cooldown</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    <p>Whether or not the user is in cooldown</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendeduserentry.js-addcooldown">
+                            <a href="#util-helpers-modules-extendeduserentry.js-addcooldown" class="permalink">#</a>
+                            <span class="method-name" title="addCooldown(cooldown, duration)">addCooldown(cooldown, duration)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Add a cooldown to the user</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>cooldown</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The name of the cooldown</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>duration</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The duration in milliseconds of the cooldown</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>number</code>
+                                    </p>
+
+                                    <p>The timestamp at which the cooldown will expire</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendeduserentry.js-getnearestcooldown">
+                            <a href="#util-helpers-modules-extendeduserentry.js-getnearestcooldown" class="permalink">#</a>
+                            <span class="method-name" title="getNearestCooldown(cooldown)">getNearestCooldown(cooldown)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>To use on a cooldown that can have multiple cooldowns, get the first cooldown that will expire</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>cooldown</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The name of the cooldown</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>number</code>
+                                    </p>
+
+                                    <p>The timestamp of the nearest cooldown, or undefined if all of them are expired</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendeduserentry.js-addexperience">
+                            <a href="#util-helpers-modules-extendeduserentry.js-addexperience" class="permalink">#</a>
+                            <span class="method-name" title="addExperience(amount)">addExperience(amount)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Add experience to the user</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>amount</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><p>The amount of experience to add to the user</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>number</code>
+                                    </p>
+
+                                    <p>The total experience of the user</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-extendeduserentry.js-todatabaseentry">
+                            <a href="#util-helpers-modules-extendeduserentry.js-todatabaseentry" class="permalink">#</a>
+                            <span class="method-name" title="toDatabaseEntry()">toDatabaseEntry()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Return this without the additional methods, essentially returns a proper database entry, ready to be saved into the database
+Note that this shouldn't be called before saving it into the database, as the database wrapper already does it</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                    </p>
+
+                                    <ul>
+<li>This, as a proper database entry object (without the additional methods)</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/fetchUser.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-fetchuser.js-fetchuser">
+                            <a href="#util-helpers-modules-fetchuser.js-fetchuser" class="permalink">#</a>
+                            <span class="method-name" title="fetchUser(id)">fetchUser(id)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>id</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the user to fetch</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>object</code>
+                                    </p>
+
+                                    <p>The user object</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/getLevelDetails.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-getleveldetails.js-getleveldetails">
+                            <a href="#util-helpers-modules-getleveldetails.js-getleveldetails" class="permalink">#</a>
+                            <span class="method-name" title="getLevelDetails(client, level)">getLevelDetails(client, level)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>level</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The level to get the details from</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>LevelDetails</code>
+                                    </p>
+
+                                    <p>An object containing data about the experience required for this level and the next level</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/imageHandler.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-imagehandler.js-new-imagehandler">
+                            <a href="#util-helpers-modules-imagehandler.js-new-imagehandler" class="permalink">#</a>
+                            <span class="method-name" title="new ImageHandler()">new ImageHandler()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Generate the image sub-commands and such</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-imagehandler.js-imagehandler.prototype.constructor">
+                            <a href="#util-helpers-modules-imagehandler.js-imagehandler.prototype.constructor" class="permalink">#</a>
+                            <span class="method-name" title="ImageHandler.constructor(client)">ImageHandler.constructor(client)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/interactiveList.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-interactivelist.js-new-interactivelist">
+                            <a href="#util-helpers-modules-interactivelist.js-new-interactivelist" class="permalink">#</a>
+                            <span class="method-name" title="new InteractiveList()">new InteractiveList()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Provides methods to create an &quot;interactive list&quot; message, basically a message with &quot;pages&quot;</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-interactivelist.js-interactivelist.prototype.constructor">
+                            <a href="#util-helpers-modules-interactivelist.js-interactivelist.prototype.constructor" class="permalink">#</a>
+                            <span class="method-name" title="InteractiveList.constructor(client)">InteractiveList.constructor(client)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-interactivelist.js-_replacepagetags">
+                            <a href="#util-helpers-modules-interactivelist.js-_replacepagetags" class="permalink">#</a>
+                            <span class="method-name" title="_replacePageTags(messages)">_replacePageTags(messages)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>messages</td>
+                                        <td>
+                                            <code>array</code>
+                                        </td>
+                                        <td><ul>
+<li>An array of messages to replace the page tags from</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>array</code>
+                                    </p>
+
+                                    <ul>
+<li>The messages with their page tags replaced</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/IPCHandler.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-ipchandler.js-new-ipchandler">
+                            <a href="#util-helpers-modules-ipchandler.js-new-ipchandler" class="permalink">#</a>
+                            <span class="method-name" title="new IPCHandler()">new IPCHandler()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-ipchandler.js-ipchandler.prototype.getsomestats">
+                            <a href="#util-helpers-modules-ipchandler.js-ipchandler.prototype.getsomestats" class="permalink">#</a>
+                            <span class="method-name" title="IPCHandler.getSomeStats()">IPCHandler.getSomeStats()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Dummy method to test the concept</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;array&gt;</code>
+                                    </p>
+
+                                    <p>An array of clusters with their stats</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-ipchandler.js-ipchandler.prototype.broadcastreload">
+                            <a href="#util-helpers-modules-ipchandler.js-ipchandler.prototype.broadcastreload" class="permalink">#</a>
+                            <span class="method-name" title="IPCHandler.broadcastReload(type, path[, name, options])">IPCHandler.broadcastReload(type, path[, name, options])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>type</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The type of the file that should be reloaded, either &quot;command&quot;, &quot;event&quot; or &quot;module&quot;</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>path</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The absolute path of the file that should be reloaded</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>name</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>If a module, the name of the module</li>
+</ul>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>options</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>If a module, the options that Reloader.reloadModule() expect</li>
+</ul>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;array&gt;</code>
+                                    </p>
+
+                                    <p>An array containing the responses of each clusters, if the reload failed in at least one cluster, the promise is rejected</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-private">
+
+                        <h2 id="util-helpers-modules-ipchandler.js-ipchandler.prototype._handleincomingmessage">
+                            <a href="#util-helpers-modules-ipchandler.js-ipchandler.prototype._handleincomingmessage" class="permalink">#</a>
+                            <span class="method-name" title="IPCHandler._handleIncomingMessage(message)">IPCHandler._handleIncomingMessage(message)</span>
+                            <small class="scope-private">private method</small>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Called every time the message event is fired on the process</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The message</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-private">
+
+                        <h2 id="util-helpers-modules-ipchandler.js-ipchandler.prototype._allclustersanswered">
+                            <a href="#util-helpers-modules-ipchandler.js-ipchandler.prototype._allclustersanswered" class="permalink">#</a>
+                            <span class="method-name" title="IPCHandler._allClustersAnswered(id)">IPCHandler._allClustersAnswered(id)</span>
+                            <small class="scope-private">private method</small>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Check if all the active clusters responded to a request</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>id</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the request to check if all the clusters answered to</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    <p>Whether all the active clusters responded to the request</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/messageCollector.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-messagecollector.js-new-messagecollector">
+                            <a href="#util-helpers-modules-messagecollector.js-new-messagecollector" class="permalink">#</a>
+                            <span class="method-name" title="new MessageCollector()">new MessageCollector()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>A message collector which does not create a new event listener each collectors, but rather only use one added when its instantiated</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-messagecollector.js-messagecollector.prototype.constructor">
+                            <a href="#util-helpers-modules-messagecollector.js-messagecollector.prototype.constructor" class="permalink">#</a>
+                            <span class="method-name" title="MessageCollector.constructor(bot)">MessageCollector.constructor(bot)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Instantiating this class create a new messageCreate listener, which will be used for all calls to awaitMessage</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>bot</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The eris bot instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-messagecollector.js-awaitmessage">
+                            <a href="#util-helpers-modules-messagecollector.js-awaitmessage" class="permalink">#</a>
+                            <span class="method-name" title="awaitMessage(channelID, userID[, timeout&#x3D;60000, filter])">awaitMessage(channelID, userID[, timeout&#x3D;60000, filter])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Await a message from the specified user in the specified channel</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>channelID</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the channel to await a message in</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>userID</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the user to await a message from</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>timeout&#x3D;60000</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>Time in milliseconds before the collect should be aborted</li>
+</ul>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>filter</td>
+                                        <td>
+                                            <code>function</code>
+                                        </td>
+                                        <td><ul>
+<li>A function that will be tested against the messages of the user, by default always resolve to true</li>
+</ul>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;Message&gt;</code>
+                                    </p>
+
+                                    <p>The message, or false if the timeout has elapsed</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/musicManager.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-musicmanager.js-new-musicmanager">
+                            <a href="#util-helpers-modules-musicmanager.js-new-musicmanager" class="permalink">#</a>
+                            <span class="method-name" title="new MusicManager()">new MusicManager()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-musicmanager.js-musicmanager.prototype.constructor">
+                            <a href="#util-helpers-modules-musicmanager.js-musicmanager.prototype.constructor" class="permalink">#</a>
+                            <span class="method-name" title="MusicManager.constructor(client)">MusicManager.constructor(client)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Create a new MusicManager instance; This does not trigger the connection to the Lavalink server, MusicManager.init() serve that purpose</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-musicmanager.js-parseduration">
+                            <a href="#util-helpers-modules-musicmanager.js-parseduration" class="permalink">#</a>
+                            <span class="method-name" title="parseDuration(track)">parseDuration(track)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Parse a song duration and make it human-readable</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>track</td>
+                                        <td>
+                                            <code>object</code>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The track object or the duration of the song in milliseconds</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>string</code>
+                                    </p>
+
+                                    <p>The human-readable duration of the video</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/reactionCollector.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-reactioncollector.js-new-reactioncollector">
+                            <a href="#util-helpers-modules-reactioncollector.js-new-reactioncollector" class="permalink">#</a>
+                            <span class="method-name" title="new reactionCollector()">new reactionCollector()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>A reaction collector which does not create a new event listener each collectors, but rather only use one added when its instantiated</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-reactioncollector.js-reactioncollector.prototype.constructor">
+                            <a href="#util-helpers-modules-reactioncollector.js-reactioncollector.prototype.constructor" class="permalink">#</a>
+                            <span class="method-name" title="reactionCollector.constructor(bot)">reactionCollector.constructor(bot)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Instantiating this class create a new messageReactionAdd listener, which will be used for all calls to awaitReaction</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>bot</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The eris bot instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-reactioncollector.js-awaitreaction">
+                            <a href="#util-helpers-modules-reactioncollector.js-awaitreaction" class="permalink">#</a>
+                            <span class="method-name" title="awaitReaction(channelID, messageID, userID[, timeout&#x3D;60000, filter])">awaitReaction(channelID, messageID, userID[, timeout&#x3D;60000, filter])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Await a reaction from the specified user in the specified channel</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>channelID</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the channel to await a reaction in</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>messageID</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the message to await a reaction on</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>userID</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The ID of the user to await a reaction from</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>timeout&#x3D;60000</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>Time in milliseconds before the collect should be aborted</li>
+</ul>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>filter</td>
+                                        <td>
+                                            <code>function</code>
+                                        </td>
+                                        <td><ul>
+<li>A function that will be tested against the reactions of the user, by default always resolve to true</li>
+</ul>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;{ message: message, emoji: { name: string, id: string, animated: boolean }, userID: string }&gt;</code>
+                                    </p>
+
+                                    <p>An object with the message, emoji and userID properties, or false if the timeout has elapsed</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/redact.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-redact.js-redact">
+                            <a href="#util-helpers-modules-redact.js-redact" class="permalink">#</a>
+                            <span class="method-name" title="redact(client, string)">redact(client, string)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>A function that replace all critical credentials from a string (e.g: token, api keys, database host...). Useful to filter out eval and repl outputs</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>string</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The string to replace credentials for</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>string</code>
+                                    </p>
+
+                                    <p>The given strings with credentials replaced</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/helpers/modules/reloader.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-reloader.js-new-reloader">
+                            <a href="#util-helpers-modules-reloader.js-new-reloader" class="permalink">#</a>
+                            <span class="method-name" title="new Reloader()">new Reloader()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Provides methods to reload events listeners, modules and commands</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-reloader.js-reloader.prototype.constructor">
+                            <a href="#util-helpers-modules-reloader.js-reloader.prototype.constructor" class="permalink">#</a>
+                            <span class="method-name" title="Reloader.constructor(client)">Reloader.constructor(client)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>client</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-reloader.js-reloader.prototype.reloadcommand">
+                            <a href="#util-helpers-modules-reloader.js-reloader.prototype.reloadcommand" class="permalink">#</a>
+                            <span class="method-name" title="Reloader.reloadCommand(path)">Reloader.reloadCommand(path)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Reload the command at the given path, or add it if it wasn't already here</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>path</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The absolute path to the command</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Command</code>
+                                    </p>
+
+                                    <p>The reloaded command so calls can be chained</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-reloader.js-reloader.prototype.reloadeventlistener">
+                            <a href="#util-helpers-modules-reloader.js-reloader.prototype.reloadeventlistener" class="permalink">#</a>
+                            <span class="method-name" title="Reloader.reloadEventListener(path)">Reloader.reloadEventListener(path)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Reload the event listener at the given path, or add it if it wasn't already here</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>path</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The absolute path to the event listener</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>string</code>
+                                    </p>
+
+                                    <p>The name of the event, parsed from the path</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-helpers-modules-reloader.js-reloader.prototype.reloadmodule">
+                            <a href="#util-helpers-modules-reloader.js-reloader.prototype.reloadmodule" class="permalink">#</a>
+                            <span class="method-name" title="Reloader.reloadModule(path, name, options)">Reloader.reloadModule(path, name, options)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Reload the module at the given path, or add it if it wasn't already here</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>path</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The absolute path to the module</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>name</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The name of the module (file name)</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>options</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>An object of options</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>options.bindtoclient</td>
+                                        <td>
+                                            <code>boolean</code>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>Whether the module should be added as a property of the client class, can be true or a string which should be the name under which the module will go</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>options.instantiate</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>Whether a non-instantiated class should be expected, &quot;bot&quot; will instantiate it with the eris bot class, &quot;client&quot; with the client instance</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                    </p>
+
+                                    <p>The reloaded module (and instantiated if needed), so calls can be chained</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<footer class="bs-footer">
+
+    <div class="container">
+
+        <p>Documentation generated with <a href="https://github.com/neogeek/doxdox">doxdox</a>.</p>
+
+    </div>
+
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+
+(function () {
+
+    'use strict';
+
+    var headerHeight = $('.jumbotron').outerHeight(true),
+        $backToTop = $('.back-to-top');
+
+    function handleScrollEvent() {
+
+        if (window.scrollY > headerHeight && $backToTop.not('.visible')) {
+
+            $backToTop.addClass('visible');
+
+        } else if (window.scrollY < headerHeight && $backToTop.is('.visible')) {
+
+            $backToTop.removeClass('visible');
+
+        }
+
+    }
+
+    $('pre code:not(.hljs)').each(function () {
+        hljs.highlightBlock(this);
+    });
+
+    var $searchInput = $('#search-methods');
+    var $methodLinks = $('.method-link');
+    var $methodNames = $('.method .method-name');
+
+    var urlQuery = window.location.search.match(/q=([^&]+)/);
+
+    $searchInput.on('keyup', function (e) {
+
+        var query = new RegExp(e.target.value.replace(' ', '|'), 'ig');
+
+        $methodLinks.each(function () {
+
+            var $this = $(this);
+
+            if (!$this.text().match(query)) {
+
+                $this.hide();
+
+            } else {
+
+                $this.show();
+
+            }
+
+        });
+
+        $methodNames.each(function () {
+
+            var $this = $(this);
+
+            if (!$this.text().match(query)) {
+
+                $this.closest('.method').hide();
+
+            } else {
+
+                $this.closest('.method').show();
+
+            }
+
+        });
+
+        window.history.replaceState({}, '', window.location.pathname + '?q=' + e.target.value);
+
+    });
+
+    $searchInput.on('search', function () {
+
+        $searchInput.trigger('keyup');
+
+    });
+
+    if (urlQuery && urlQuery.length > 1) {
+
+        $searchInput.val(urlQuery[1]).trigger('keyup');
+
+    }
+
+    $(window).on('scroll', handleScrollEvent);
+
+    handleScrollEvent();
+
+})();
+
+</script>
+
+</body>
+</html>

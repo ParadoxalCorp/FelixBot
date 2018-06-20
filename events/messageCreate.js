@@ -79,7 +79,7 @@ class MessageHandler {
         } else {
             allowed = databaseEntries.guild.memberHasPermission(message.author.id, command, message.channel);
         }
-        if (message.channel.guild && command.conf.guildOwnerOnly && (command.conf.guildOwnerOnly !== message.channel.guild.ownerID)) {
+        if (message.channel.guild && command.conf.guildOwnerOnly && (message.author.id !== message.channel.guild.ownerID)) {
             allowed = false;
         }
         return allowed;

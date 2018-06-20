@@ -3,6 +3,9 @@
 Commands should be in strict mode, or at least, should extend the Command helper module (`root/util/helpers/Command.js`).
 While technically it shouldn't be needed, the command could even be a simple object, it is more for consistency across all the commands
 
+The `helpers.html` and `modules.html` document all the helpers and modules files that you can use within the command, note that pretty much all of these 
+can be accessed via the `client`, as they are added as property of the `client`. To see which ones are added as property and in what state, check `../util/index.js`
+
 For a better view of how a command should look like, check the [example](#example)
 
 ## Tables of content
@@ -65,6 +68,7 @@ This define most of the command characteristics and will directly impact how the
 | expectedArgs | <code>array<[expected arg](#expected-arg)></code> | An array of arguments the command expect, if you set it, whenever a user trigger the command without arguments, the command handler will query the user for each expected argument |
 | cooldownWeight | <code>number</code> | The "weight" of the command, if not specified, this will use the default weight set in the config |
 | require | <code>array</code> | An array of API keys key set in the config or/and packages names the command needs |
+| guildOwnerOnly | <code>boolean</code> | Whether or not only the owner of the guild can use this command | 
 
 Note that the `expectedArgs` property is extremely powerful and will affect the arguments with which the run function is called 
 
@@ -75,6 +79,7 @@ Note that the `expectedArgs` property is extremely powerful and will affect the 
 | description | <code>string</code> | Description that will be used when querying the user. This is the only mandatory property |
 | condition | <code>function</code> | A function that will be called with the three `client`, `message` and `args` parameters, where `client` is the client, `message` the message and `args` an array of arguments that have already been prompted to the user. If the function resolve to `false`, this argument won't be prompted to the user. This function can be async and return a promise, it will in that case be awaited |
 | possibleValues | <code>array<[possible arg value](#possible-arg-value)></code> | An array of [possible arg value](#possible-arg-value) objects, which represent the values the command handler should expect |
+| validate | <code>function<code> | A custom manual validation function, which will be called with `client`, `message` and `arg`. `arg` being the argument the user just gave, and `message` the message that triggered the command in the first place |
 
 #### possible arg value
 

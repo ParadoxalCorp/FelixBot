@@ -58,7 +58,7 @@ class Play extends Command {
                 return;
             }
         }
-        await player.play(track.track);
+        player.paused ? await player.setPause(false) : await player.play(track.track);
         connection.nowPlaying = {
             info: { 
                 ...track.info,

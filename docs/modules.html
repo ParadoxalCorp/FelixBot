@@ -1,0 +1,3236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1">
+<title>felix 4.0.0 &#8212; Felix v4</title>
+<meta name="description" content="Felix v4">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+<style>
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: searchfield-cancel-button;
+}
+
+.jumbotron {
+    margin-bottom: 0;
+    border-radius: 0;
+    background-color: #2B303E;
+    -webkit-font-smoothing: antialiased;
+}
+
+.jumbotron h1 {
+    font-size: 3.5rem;
+    line-height: 1;
+}
+
+.jumbotron h1,
+.jumbotron h1 a {
+    color: #eee;
+}
+
+.jumbotron small {
+    font-weight: 200;
+    color: #777;
+}
+
+.jumbotron p {
+    font-size: 1.5rem;
+    font-weight: 200;
+    line-height: 1.2;
+    color: #ccc;
+}
+
+.wrap {
+    padding: 2rem 1rem;
+}
+
+.search {
+    margin: 0 0 1rem 0;
+    width: 90%;
+}
+
+.menu {
+    padding: 0;
+}
+
+.menu li {
+    list-style: none;
+}
+
+.menu li ul {
+    padding: 0;
+}
+
+.menu li a {
+    display: block;
+    padding: .25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.menu .file {
+    color: #E54D89;
+}
+
+.menu .file + ul {
+    margin: 0 0 1rem 0;
+}
+
+.menu .scope-private a {
+    color: #8BAAC6;
+}
+
+.method {
+    margin: 0 0 4rem 0;
+}
+
+.method .method-name {
+    display: inline-block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.method .method-name + .scope-private {
+    color: #AAAAAA;
+}
+
+.method section {
+    margin: 2rem 0;
+}
+
+.method h3 {
+    margin: 0 0 1rem 0;
+}
+
+.method .table,
+.method .table p,
+.method .table ol,
+.method .table ul {
+    margin: 0;
+}
+
+.permalink {
+    position: absolute;
+    margin-left: -1em;
+    font-weight: normal;
+    color: #eee;
+    text-decoration: none;
+}
+
+.permalink:hover {
+    color: #E54D89;
+}
+
+.back-to-top {
+    display: none;
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    padding: .5rem .6rem;
+    line-height: 1;
+    background: #fff;
+    z-index: 999;
+}
+
+.back-to-top.visible {
+    display: block;
+}
+
+.back-to-top svg {
+    vertical-align: middle;
+}
+
+.bs-footer {
+    margin: 3rem auto;
+    color: #777;
+    text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+
+<a href="#" class="back-to-top"><svg xmlns="http://www.w3.org/2000/svg" width="13px" height="14px" viewBox="0 0 13 14"><path d="M7.18761156,13 L7.18761156,5.49249703 L10.4587853,5.49249703 L5.09931763,0.113558129 L-0.26015,5.49249703 L3.01102371,5.49249703 L3.01102371,13 L7.18761156,13 Z" fill="#428bca"></path></svg> Back to Top</a>
+
+<div class="jumbotron">
+
+    <div class="container">
+
+        <h1>
+                felix
+            <small>4.0.0</small>
+        </h1>
+
+        <p>Felix v4</p>
+
+    </div>
+
+</div>
+
+<div class="wrap">
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-3 hidden-sm hidden-xs">
+
+                <input type="search" class="form-control search" id="search-methods" placeholder="Search..." autocomplete="off">
+
+                <ul class="menu">
+
+
+                    <li>
+                        <a href="#util/modules/collection.js" class="file"><b>util/modules/collection.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-new-collection" title="new Collection">new Collection</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-array" title="array">array</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-keyarray" title="keyArray">keyArray</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-first" title="first">first</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-firstkey" title="firstKey">firstKey</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-last" title="last">last</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-lastkey" title="lastKey">lastKey</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-random" title="random">random</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-randomkey" title="randomKey">randomKey</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-findall" title="findAll">findAll</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-find" title="find">find</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-exists" title="exists">exists</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-filter" title="filter">filter</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-filterarray" title="filterArray">filterArray</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-map" title="map">map</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-some" title="some">some</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-every" title="every">every</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-reduce" title="reduce">reduce</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-clone" title="clone">clone</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-concat" title="concat">concat</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-deleteall" title="deleteAll">deleteAll</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-equals" title="equals">equals</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-collection.js-sort" title="sort">sort</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/modules/getRandomNumber.js" class="file"><b>util/modules/getRandomNumber.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-getrandomnumber.js-getrandomnumber" title="getRandomNumber">getRandomNumber</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/modules/isWholeNumber.js" class="file"><b>util/modules/isWholeNumber.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-iswholenumber.js-iswholenumber" title="isWholeNumber">isWholeNumber</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/modules/log.js" class="file"><b>util/modules/log.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-log.js-new-log" title="new Log">new Log</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-log.js-log.prototype.error" title="Log.error">Log.error</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-log.js-log.prototype.warn" title="Log.warn">Log.warn</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-log.js-log.prototype.info" title="Log.info">Log.info</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/modules/moduleIsInstalled.js" class="file"><b>util/modules/moduleIsInstalled.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-moduleisinstalled.js-moduleisinstalled" title="moduleIsInstalled">moduleIsInstalled</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/modules/paginate.js" class="file"><b>util/modules/paginate.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-paginate.js-paginate" title="paginate">paginate</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/modules/prompt.js" class="file"><b>util/modules/prompt.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-prompt.js-prompt" title="prompt">prompt</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/modules/timeConverter.js" class="file"><b>util/modules/timeConverter.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-timeconverter.js-new-timeconverter" title="new timeConverter">new timeConverter</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-timeconverter.js-timeconverter.prototype.toelapsedtime" title="timeConverter.toElapsedTime">timeConverter.toElapsedTime</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-timeconverter.js-timeconverter.prototype.tohumandate" title="timeConverter.toHumanDate">timeConverter.toHumanDate</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <li>
+                        <a href="#util/modules/traverse.js" class="file"><b>util/modules/traverse.js</b></a>
+                        <ul>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#util-modules-traverse.js-traverse" title="traverse">traverse</a>
+                        </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                </ul>
+
+            </div>
+
+            <div class="col-md-9">
+
+
+                <a id="util/modules/collection.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-new-collection">
+                            <a href="#util-modules-collection.js-new-collection" class="permalink">#</a>
+                            <span class="method-name" title="new Collection()">new Collection()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
+an ID, for significantly improved performance and ease-of-use.</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-array">
+                            <a href="#util-modules-collection.js-array" class="permalink">#</a>
+                            <span class="method-name" title="array()">array()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Creates an ordered array of the values of this collection, and caches it internally. The array will only be
+reconstructed if an item is added to or removed from the collection, or if you change the length of the array
+itself. If you don't want this caching behaviour, use <code>[...collection.values()]</code> or
+<code>Array.from(collection.values())</code> instead.</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-keyarray">
+                            <a href="#util-modules-collection.js-keyarray" class="permalink">#</a>
+                            <span class="method-name" title="keyArray()">keyArray()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Creates an ordered array of the keys of this collection, and caches it internally. The array will only be
+reconstructed if an item is added to or removed from the collection, or if you change the length of the array
+itself. If you don't want this caching behaviour, use <code>[...collection.keys()]</code> or
+<code>Array.from(collection.keys())</code> instead.</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-first">
+                            <a href="#util-modules-collection.js-first" class="permalink">#</a>
+                            <span class="method-name" title="first([amount])">first([amount])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Obtains the first value(s) in this collection.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>amount</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><p>Amount of values to obtain from the beginning</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array.&lt;*&gt;</code>
+                                    </p>
+
+                                    <p>A single value if no amount is provided or an array of values, starting from the end if amount is negative</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-firstkey">
+                            <a href="#util-modules-collection.js-firstkey" class="permalink">#</a>
+                            <span class="method-name" title="firstKey([amount])">firstKey([amount])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Obtains the first key(s) in this collection.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>amount</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><p>Amount of keys to obtain from the beginning</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array.&lt;*&gt;</code>
+                                    </p>
+
+                                    <p>A single key if no amount is provided or an array of keys, starting from the end if amount is negative</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-last">
+                            <a href="#util-modules-collection.js-last" class="permalink">#</a>
+                            <span class="method-name" title="last([amount])">last([amount])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Obtains the last value(s) in this collection. This relies on {@link Collection#array}, and thus the caching
+mechanism applies here as well.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>amount</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><p>Amount of values to obtain from the end</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array.&lt;*&gt;</code>
+                                    </p>
+
+                                    <p>A single value if no amount is provided or an array of values, starting from the end if amount is negative</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-lastkey">
+                            <a href="#util-modules-collection.js-lastkey" class="permalink">#</a>
+                            <span class="method-name" title="lastKey([amount])">lastKey([amount])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Obtains the last key(s) in this collection. This relies on {@link Collection#keyArray}, and thus the caching
+mechanism applies here as well.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>amount</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><p>Amount of keys to obtain from the end</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array.&lt;*&gt;</code>
+                                    </p>
+
+                                    <p>A single key if no amount is provided or an array of keys, starting from the end if amount is negative</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-random">
+                            <a href="#util-modules-collection.js-random" class="permalink">#</a>
+                            <span class="method-name" title="random([amount])">random([amount])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Obtains random value(s) from this collection. This relies on {@link Collection#array}, and thus the caching
+mechanism applies here as well.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>amount</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><p>Amount of values to obtain randomly</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array.&lt;*&gt;</code>
+                                    </p>
+
+                                    <p>A single value if no amount is provided or an array of values</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-randomkey">
+                            <a href="#util-modules-collection.js-randomkey" class="permalink">#</a>
+                            <span class="method-name" title="randomKey([amount])">randomKey([amount])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Obtains random key(s) from this collection. This relies on {@link Collection#keyArray}, and thus the caching
+mechanism applies here as well.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>amount</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><p>Amount of keys to obtain randomly</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array.&lt;*&gt;</code>
+                                    </p>
+
+                                    <p>A single key if no amount is provided or an array</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-findall">
+                            <a href="#util-modules-collection.js-findall" class="permalink">#</a>
+                            <span class="method-name" title="findAll(prop, value)">findAll(prop, value)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Searches for all items where their specified property's value is identical to the given value
+(<code>item[prop] === value</code>).</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>prop</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><p>The property to test against</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>value</td>
+                                        <td>
+                                        </td>
+                                        <td><p>The expected value</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="examples">
+
+                            <h3>Examples</h3>
+
+
+                                <pre><code class="hljs javascript">collection.findAll(<span class="hljs-string">'username'</span>, <span class="hljs-string">'Bob'</span>);</code></pre>
+
+
+                        </section>
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-find">
+                            <a href="#util-modules-collection.js-find" class="permalink">#</a>
+                            <span class="method-name" title="find(propOrFn[, value])">find(propOrFn[, value])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Searches for a single item where its specified property's value is identical to the given value
+(<code>item[prop] === value</code>), or the given function returns a truthy value. In the latter case, this is identical to
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find">Array.find()</a>.
+<warn>All collections used in Discord.js are mapped using their <code>id</code> property, and if you want to find by id you
+should use the <code>get</code> method. See
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get">MDN</a> for details.</warn></p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>propOrFn</td>
+                                        <td>
+                                            <code>string</code>
+                                            <code>Function</code>
+                                        </td>
+                                        <td><p>The property to test against, or the function to test with</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>value</td>
+                                        <td>
+                                        </td>
+                                        <td><p>The expected value - only applicable and required if using a property for the first argument</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="examples">
+
+                            <h3>Examples</h3>
+
+
+                                <pre><code class="hljs javascript">collection.find(<span class="hljs-string">'username'</span>, <span class="hljs-string">'Bob'</span>);</code></pre>
+
+
+                                <pre><code class="hljs javascript">collection.find(<span class="hljs-function"><span class="hljs-params">val</span> =&gt;</span> val.username === <span class="hljs-string">'Bob'</span>);</code></pre>
+
+
+                        </section>
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-exists">
+                            <a href="#util-modules-collection.js-exists" class="permalink">#</a>
+                            <span class="method-name" title="exists(propOrFn[, value])">exists(propOrFn[, value])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Searches for the existence of a single item where its specified property's value is identical to the given value
+(<code>item[prop] === value</code>), or the given function returns a truthy value.
+<warn>Do not use this to check for an item by its ID. Instead, use <code>collection.has(id)</code>. See
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has">MDN</a> for details.</warn></p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>propOrFn</td>
+                                        <td>
+                                            <code>string</code>
+                                            <code>Function</code>
+                                        </td>
+                                        <td><p>The property to test against, or the function to test with</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>value</td>
+                                        <td>
+                                        </td>
+                                        <td><p>The expected value - only applicable and required if using a property for the first argument</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="examples">
+
+                            <h3>Examples</h3>
+
+
+                                <pre><code class="hljs javascript"><span class="hljs-keyword">if</span> (collection.exists(<span class="hljs-string">'username'</span>, <span class="hljs-string">'Bob'</span>)) {
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'user here!'</span>);
+}</code></pre>
+
+
+                                <pre><code class="hljs javascript"><span class="hljs-keyword">if</span> (collection.exists(<span class="hljs-function"><span class="hljs-params">user</span> =&gt;</span> user.username === <span class="hljs-string">'Bob'</span>)) {
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'user here!'</span>);
+}</code></pre>
+
+
+                        </section>
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-filter">
+                            <a href="#util-modules-collection.js-filter" class="permalink">#</a>
+                            <span class="method-name" title="filter(fn[, thisArg])">filter(fn[, thisArg])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Identical to
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter">Array.filter()</a>,
+but returns a Collection instead of an Array.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>fn</td>
+                                        <td>
+                                            <code>Function</code>
+                                        </td>
+                                        <td><p>Function used to test (should return a boolean)</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>thisArg</td>
+                                        <td>
+                                            <code>Object</code>
+                                        </td>
+                                        <td><p>Value to use as <code>this</code> when executing function</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Collection</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-filterarray">
+                            <a href="#util-modules-collection.js-filterarray" class="permalink">#</a>
+                            <span class="method-name" title="filterArray(fn[, thisArg])">filterArray(fn[, thisArg])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Identical to
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter">Array.filter()</a>.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>fn</td>
+                                        <td>
+                                            <code>Function</code>
+                                        </td>
+                                        <td><p>Function used to test (should return a boolean)</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>thisArg</td>
+                                        <td>
+                                            <code>Object</code>
+                                        </td>
+                                        <td><p>Value to use as <code>this</code> when executing function</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-map">
+                            <a href="#util-modules-collection.js-map" class="permalink">#</a>
+                            <span class="method-name" title="map(fn[, thisArg])">map(fn[, thisArg])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Identical to
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">Array.map()</a>.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>fn</td>
+                                        <td>
+                                            <code>Function</code>
+                                        </td>
+                                        <td><p>Function that produces an element of the new array, taking three arguments</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>thisArg</td>
+                                        <td>
+                                        </td>
+                                        <td><p>Value to use as <code>this</code> when executing function</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-some">
+                            <a href="#util-modules-collection.js-some" class="permalink">#</a>
+                            <span class="method-name" title="some(fn[, thisArg])">some(fn[, thisArg])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Identical to
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some">Array.some()</a>.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>fn</td>
+                                        <td>
+                                            <code>Function</code>
+                                        </td>
+                                        <td><p>Function used to test (should return a boolean)</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>thisArg</td>
+                                        <td>
+                                            <code>Object</code>
+                                        </td>
+                                        <td><p>Value to use as <code>this</code> when executing function</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-every">
+                            <a href="#util-modules-collection.js-every" class="permalink">#</a>
+                            <span class="method-name" title="every(fn[, thisArg])">every(fn[, thisArg])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Identical to
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every">Array.every()</a>.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>fn</td>
+                                        <td>
+                                            <code>Function</code>
+                                        </td>
+                                        <td><p>Function used to test (should return a boolean)</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>thisArg</td>
+                                        <td>
+                                            <code>Object</code>
+                                        </td>
+                                        <td><p>Value to use as <code>this</code> when executing function</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-reduce">
+                            <a href="#util-modules-collection.js-reduce" class="permalink">#</a>
+                            <span class="method-name" title="reduce(fn[, initialValue])">reduce(fn[, initialValue])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Identical to
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce">Array.reduce()</a>.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>fn</td>
+                                        <td>
+                                            <code>Function</code>
+                                        </td>
+                                        <td><p>Function used to reduce, taking four arguments; <code>accumulator</code>, <code>currentValue</code>, <code>currentKey</code>, and <code>collection</code></p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>initialValue</td>
+                                        <td>
+                                        </td>
+                                        <td><p>Starting value for the accumulator</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-clone">
+                            <a href="#util-modules-collection.js-clone" class="permalink">#</a>
+                            <span class="method-name" title="clone()">clone()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Creates an identical shallow copy of this collection.</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="examples">
+
+                            <h3>Examples</h3>
+
+
+                                <pre><code class="hljs javascript"><span class="hljs-keyword">const</span> newColl = someColl.clone();</code></pre>
+
+
+                        </section>
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Collection</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-concat">
+                            <a href="#util-modules-collection.js-concat" class="permalink">#</a>
+                            <span class="method-name" title="concat(collections)">concat(collections)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Combines this collection with others into a new collection. None of the source collections are modified.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>collections</td>
+                                        <td>
+                                            <code>Collection</code>
+                                        </td>
+                                        <td><p>Collections to merge</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="examples">
+
+                            <h3>Examples</h3>
+
+
+                                <pre><code class="hljs javascript"><span class="hljs-keyword">const</span> newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);</code></pre>
+
+
+                        </section>
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Collection</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-deleteall">
+                            <a href="#util-modules-collection.js-deleteall" class="permalink">#</a>
+                            <span class="method-name" title="deleteAll()">deleteAll()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Calls the <code>delete()</code> method on all items that have it.</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array.&lt;Promise&gt;</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-equals">
+                            <a href="#util-modules-collection.js-equals" class="permalink">#</a>
+                            <span class="method-name" title="equals(collection)">equals(collection)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Checks if this collection shares identical key-value pairings with another.
+This is different to checking for equality using equal-signs, because
+the collections may be different objects, but contain the same data.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>collection</td>
+                                        <td>
+                                            <code>Collection</code>
+                                        </td>
+                                        <td><p>Collection to compare with</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    <p>Whether the collections have identical contents</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-collection.js-sort">
+                            <a href="#util-modules-collection.js-sort" class="permalink">#</a>
+                            <span class="method-name" title="sort([compareFunction])">sort([compareFunction])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>The sort() method sorts the elements of a collection and returns it.
+The sort is not necessarily stable. The default sort order is according to string Unicode code points.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>compareFunction</td>
+                                        <td>
+                                            <code>Function</code>
+                                        </td>
+                                        <td><p>Specifies a function that defines the sort order. If omitted, the collection is sorted according to each character's Unicode code point value,
+according to the string conversion of each element.</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Collection</code>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/modules/getRandomNumber.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-getrandomnumber.js-getrandomnumber">
+                            <a href="#util-modules-getrandomnumber.js-getrandomnumber" class="permalink">#</a>
+                            <span class="method-name" title="getRandomNumber(min, max)">getRandomNumber(min, max)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Get a random in the specified interval</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>min</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The minimum</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>max</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><ul>
+<li>The maximum</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>number</code>
+                                    </p>
+
+                                    <p>A random number between min (inclusive) and max (exclusive)</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/modules/isWholeNumber.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-iswholenumber.js-iswholenumber">
+                            <a href="#util-modules-iswholenumber.js-iswholenumber" class="permalink">#</a>
+                            <span class="method-name" title="isWholeNumber(number)">isWholeNumber(number)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Check if the given number is a whole number</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>number</td>
+                                        <td>
+                                            <code>number</code>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The number to check if its a whole number or not</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    <p>A boolean representing whether it is a whole number or not</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/modules/log.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-log.js-new-log">
+                            <a href="#util-modules-log.js-new-log" class="permalink">#</a>
+                            <span class="method-name" title="new Log()">new Log()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Provides some fancy colored logs for errors, warns and info, but also animated logs</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-log.js-log.prototype.error">
+                            <a href="#util-modules-log.js-log.prototype.error" class="permalink">#</a>
+                            <span class="method-name" title="Log.error(err, returnString)">Log.error(err, returnString)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Log to the console a fancy red error message</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>err</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The error to log</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>returnString</td>
+                                        <td>
+                                            <code>Boolean</code>
+                                        </td>
+                                        <td><ul>
+<li>Optional, default is false: Whether the string should be returned instead of being logged</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-log.js-log.prototype.warn">
+                            <a href="#util-modules-log.js-log.prototype.warn" class="permalink">#</a>
+                            <span class="method-name" title="Log.warn(warning, returnString)">Log.warn(warning, returnString)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Log to the console a fancy yellow warning message</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>warning</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The warning to log</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>returnString</td>
+                                        <td>
+                                            <code>Boolean</code>
+                                        </td>
+                                        <td><ul>
+<li>Optional, default is false: Whether the string should be returned instead of being logged</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-log.js-log.prototype.info">
+                            <a href="#util-modules-log.js-log.prototype.info" class="permalink">#</a>
+                            <span class="method-name" title="Log.info(info, returnString)">Log.info(info, returnString)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Log to the console a fancy yellow warning message</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>info</td>
+                                        <td>
+                                        </td>
+                                        <td><ul>
+<li>The warning to log</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>returnString</td>
+                                        <td>
+                                            <code>Boolean</code>
+                                        </td>
+                                        <td><ul>
+<li>Optional, default is false: Whether the string should be returned instead of being logged</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                    </p>
+
+                                    
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/modules/moduleIsInstalled.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-moduleisinstalled.js-moduleisinstalled">
+                            <a href="#util-modules-moduleisinstalled.js-moduleisinstalled" class="permalink">#</a>
+                            <span class="method-name" title="moduleIsInstalled(name)">moduleIsInstalled(name)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Check if a NPM module is installed</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>name</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The module name</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>boolean</code>
+                                    </p>
+
+                                    <p>Whether the module is installed or not</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/modules/paginate.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-paginate.js-paginate">
+                            <a href="#util-modules-paginate.js-paginate" class="permalink">#</a>
+                            <span class="method-name" title="paginate(array, size)">paginate(array, size)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Split the provided array into multiple arrays of the specified size</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>array</td>
+                                        <td>
+                                            <code>Array</code>
+                                        </td>
+                                        <td><p>The array to split</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>size</td>
+                                        <td>
+                                            <code>Number</code>
+                                        </td>
+                                        <td><p>The required size for a new array to be created</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Array.&lt;array&gt;</code>
+                                    </p>
+
+                                    <p>An array of arrays, where each arrays represent a &quot;page&quot;</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/modules/prompt.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-prompt.js-prompt">
+                            <a href="#util-modules-prompt.js-prompt" class="permalink">#</a>
+                            <span class="method-name" title="prompt(question)">prompt(question)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Prompt the user through the terminal</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>question</td>
+                                        <td>
+                                            <code>string</code>
+                                        </td>
+                                        <td><ul>
+<li>The question to prompt</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Promise.&lt;string&gt;</code>
+                                    </p>
+
+                                    <p>The answer</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/modules/timeConverter.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-timeconverter.js-new-timeconverter">
+                            <a href="#util-modules-timeconverter.js-new-timeconverter" class="permalink">#</a>
+                            <span class="method-name" title="new timeConverter()">new timeConverter()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Provides some utility methods to parse time</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-timeconverter.js-timeconverter.prototype.toelapsedtime">
+                            <a href="#util-modules-timeconverter.js-timeconverter.prototype.toelapsedtime" class="permalink">#</a>
+                            <span class="method-name" title="timeConverter.toElapsedTime(ms[, formatted&#x3D;false])">timeConverter.toElapsedTime(ms[, formatted&#x3D;false])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Calculate and return how many elapsed seconds, minutes, hours and days the given milliseconds represent</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>ms</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><p>The milliseconds to calculate</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>formatted&#x3D;false</td>
+                                        <td>
+                                            <code>boolean</code>
+                                        </td>
+                                        <td><p>Whether or not the elapsed time should be returned already in a readable string format</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>ElapsedTime</code>
+                                    </p>
+
+                                    <p>An object or a string depending on if formatted is true or false</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-timeconverter.js-timeconverter.prototype.tohumandate">
+                            <a href="#util-modules-timeconverter.js-timeconverter.prototype.tohumandate" class="permalink">#</a>
+                            <span class="method-name" title="timeConverter.toHumanDate(timestamp[, formatted&#x3D;true])">timeConverter.toHumanDate(timestamp[, formatted&#x3D;true])</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Convert a UNIX timestamp(in ms) to human date</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>timestamp</td>
+                                        <td>
+                                            <code>number</code>
+                                        </td>
+                                        <td><p>The UNIX timestamp in ms to convert</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>formatted&#x3D;true</td>
+                                        <td>
+                                            <code>boolean</code>
+                                        </td>
+                                        <td><p>Whether or not the date should be returned already in a readable string format</p>
+</td>
+                                        <td>
+                                                <span class="tag tag-default">Optional</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>HumanDate</code>
+                                    </p>
+
+                                    <p>An object or a string depending on if formatted is true or false</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+                <a id="util/modules/traverse.js"></a>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="util-modules-traverse.js-traverse">
+                            <a href="#util-modules-traverse.js-traverse" class="permalink">#</a>
+                            <span class="method-name" title="traverse(object, callback, ignore)">traverse(object, callback, ignore)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Traverse through a given object, calling the callback function with each key that is not an object</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>object</td>
+                                        <td>
+                                            <code>object</code>
+                                        </td>
+                                        <td><ul>
+<li>The object to traverse in</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>callback</td>
+                                        <td>
+                                            <code>function</code>
+                                        </td>
+                                        <td><ul>
+<li>A function that will be called for each key of the object that is not an object</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>ignore</td>
+                                        <td>
+                                            <code>array</code>
+                                        </td>
+                                        <td><ul>
+<li>Optional, an array of strings, being the names of the objects to not traverse through</li>
+</ul>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>object</code>
+                                    </p>
+
+                                    <ul>
+<li>The given object</li>
+</ul>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<footer class="bs-footer">
+
+    <div class="container">
+
+        <p>Documentation generated with <a href="https://github.com/neogeek/doxdox">doxdox</a>.</p>
+
+    </div>
+
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+
+(function () {
+
+    'use strict';
+
+    var headerHeight = $('.jumbotron').outerHeight(true),
+        $backToTop = $('.back-to-top');
+
+    function handleScrollEvent() {
+
+        if (window.scrollY > headerHeight && $backToTop.not('.visible')) {
+
+            $backToTop.addClass('visible');
+
+        } else if (window.scrollY < headerHeight && $backToTop.is('.visible')) {
+
+            $backToTop.removeClass('visible');
+
+        }
+
+    }
+
+    $('pre code:not(.hljs)').each(function () {
+        hljs.highlightBlock(this);
+    });
+
+    var $searchInput = $('#search-methods');
+    var $methodLinks = $('.method-link');
+    var $methodNames = $('.method .method-name');
+
+    var urlQuery = window.location.search.match(/q=([^&]+)/);
+
+    $searchInput.on('keyup', function (e) {
+
+        var query = new RegExp(e.target.value.replace(' ', '|'), 'ig');
+
+        $methodLinks.each(function () {
+
+            var $this = $(this);
+
+            if (!$this.text().match(query)) {
+
+                $this.hide();
+
+            } else {
+
+                $this.show();
+
+            }
+
+        });
+
+        $methodNames.each(function () {
+
+            var $this = $(this);
+
+            if (!$this.text().match(query)) {
+
+                $this.closest('.method').hide();
+
+            } else {
+
+                $this.closest('.method').show();
+
+            }
+
+        });
+
+        window.history.replaceState({}, '', window.location.pathname + '?q=' + e.target.value);
+
+    });
+
+    $searchInput.on('search', function () {
+
+        $searchInput.trigger('keyup');
+
+    });
+
+    if (urlQuery && urlQuery.length > 1) {
+
+        $searchInput.val(urlQuery[1]).trigger('keyup');
+
+    }
+
+    $(window).on('scroll', handleScrollEvent);
+
+    handleScrollEvent();
+
+})();
+
+</script>
+
+</body>
+</html>
