@@ -10,7 +10,7 @@ class RemovePermission extends Command {
             category: 'moderation',
             description: '**Remove** (not restrict) a set command/category permission from the server, or from a channel/role/user. As always, you can run the command like `{prefix}removepermission` to be guided through the process',
             usage: '{prefix}removepermission <command_name|category_name*> | <global|channel|role|user> | <channel_name|role_name|username>',
-            externalDoc: 'https://github.com/ParadoxalCorp/FelixBot/blob/frosty-release/permissions%20system.md'
+            externalDoc: 'https://github.com/ParadoxalCorp/FelixBot/blob/master/usage.md#permissions-system'
         };
         this.conf = {
             requireDB: true,

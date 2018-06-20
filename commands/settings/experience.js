@@ -63,7 +63,7 @@ class Experience extends Command {
             category: 'settings',
             description: 'This command allows you to change the settings of the activity system (enable it, add roles to be given at a specific level and such), the full syntax is like `{prefix}experience add_role <role> <level> <static|no>`',
             usage: '{prefix}experience',
-            externalDoc: 'https://github.com/ParadoxalCorp/FelixBot/blob/frosty-release/activity%20system.md'
+            externalDoc: 'https://github.com/ParadoxalCorp/FelixBot/blob/master/usage.md#activity-system'
         };
         this.conf = {
             requireDB: true,

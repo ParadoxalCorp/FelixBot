@@ -10,7 +10,7 @@ class ClearPermissions extends Command {
             category: 'moderation',
             description: 'Clear all the permissions set until now, global, channels, roles and users permissions included',
             usage: '{prefix}clearpermissions',
-            externalDoc: 'https://github.com/ParadoxalCorp/FelixBot/blob/frosty-release/permissions%20system.md'
+            externalDoc: 'https://github.com/ParadoxalCorp/FelixBot/blob/master/usage.md#permissions-system'
         };
         this.conf = {
             requireDB: true,

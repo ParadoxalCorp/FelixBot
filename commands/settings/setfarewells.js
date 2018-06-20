@@ -38,7 +38,7 @@ class SetFarewells extends Command {
             category: 'settings',
             description: 'This command allows you to change the settings of the farewells system',
             usage: '{prefix}setfarewells',
-            externalDoc: 'https://github.com/ParadoxalCorp/FelixBot/blob/frosty-release/greetings-farewells.md'
+            externalDoc: 'https://github.com/ParadoxalCorp/FelixBot/blob/master/usage.md#greetings-and-farewell-system'
         };
         this.conf = {
             requireDB: true,
