@@ -1,43 +1,65 @@
-class Eval {
+'use strict';
+
+const Command = require('../../util/helpers/modules/Command');
+const { inspect } = require('util');
+
+class Eval extends Command {
     constructor() {
+        super();
         this.help = {
             name: 'eval',
-            usage: 'eval some js here',
-            description: 'Quickly eval some js so paradox can catch errors since he is a baka',
-            parameters: '--await(note: must always be after the js to eval)'
+            category: 'admin',
+            description: 'eval, i think it\'s fairly obvious at this point',
+            usage: '{prefix}eval'
         };
         this.conf = {
+            requireDB: false,
             disabled: false,
+            aliases: [],
+            requirePerms: [],
             guildOnly: false,
+            ownerOnly: false,
+            expectedArgs: []
+        };
+    }
+
+    async run(client, message, args, guildEntry, userEntry) {
+        if (!args[0]) {
+            return message.channel.createMessage('baguette tbh');
+        }
+        let toEval = args.join(' ').replace(/;\s+/g, ';\n').trim();
+        const parsedArgs = client.commands.get('reload').parseArguments(args);
+        for (const arg in parsedArgs) {
+            toEval = toEval.replace(`--${arg + (typeof parsedArgs[arg] !== 'boolean' ? '=' + parsedArgs[arg] : '')}`, '');
+        }
+        try {
+            let evaluated = parsedArgs['await'] ? await eval(toEval) : eval(toEval);
+            throw evaluated;
+        } catch (err) {
+            //+!(inspect(err, { depth: parsedArgs['depth'] ? parseInt(parsedArgs['depth']) : 1 }).length > 1990)
+            if (typeof err !== 'string') {
+                err = inspect(err, {
+                    depth: parsedArgs['depth'] ? parseInt(parsedArgs['depth']) : this.getMaxDepth(err, toEval),
+                    showHidden: true
+                });
+            }
+            return message.channel.createMessage({
+                embed: {
+                    title: ":gear: Eval results",
+                    description: "**Input:**\n```js\n" + toEval + "```\n**Output:**\n```js\n" + client.redact(err) + "```"
+                }
+            });
         }
     }
 
-    run(client, message, args) {
-        return new Promise(async(resolve, reject) => {
-            try {
-                //Missing arguments handling
-                if (!args[0]) return resolve(await message.channel.createMessage({
-                    embed: {
-                        title: ":gear: Eval results",
-                        description: "**Input:**\n```js\nvoid\n```\n**Output:**\n```js\nbaguette```" //Quality error message tbh
-                    }
-                }));
-                //Actual eval
-                try {
-                    let evaluated = new RegExp(/--await/gim).test(message.content) ? await eval(args.join(" ").split("--await")[0]) : eval(args.join(" "));
-                    throw evaluated;
-                } catch (err) {
-                    resolve(await message.channel.createMessage({
-                        embed: {
-                            title: ":gear: Eval results",
-                            description: "**Input:**\n```js\n" + args.join(" ") + "```\n**Output:**\n```js\n" + err + "```"
-                        }
-                    }));
-                }
-            } catch (err) {
-                reject(err, message);
+    getMaxDepth(toInspect, toEval) {
+        let maxDepth;
+        for (let i = 0; i < 10; i++) {
+            if (inspect(toInspect, { depth: i }).length > (1980 - toEval.length)) {
+                return maxDepth = i - 1;
             }
-        });
+        }
+        return 10;
     }
 }
 

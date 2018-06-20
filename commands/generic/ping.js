@@ -1,25 +1,32 @@
-class Ping {
+'use strict';
+
+const Command = require('../../util/helpers/modules/Command');
+
+class Ping extends Command {
     constructor() {
+        super();
         this.help = {
             name: 'ping',
-            usage: 'ping',
-            description: `Pong ! Display Felix's ping (do people even use this ?)`,
-        }
+            category: 'generic',
+            description: 'pong',
+            usage: '{prefix}ping'
+        };
         this.conf = {
-            aliases: ["pong"],
-            cooldownWeight: 4
-        }
+            requireDB: false,
+            disabled: false,
+            aliases: [],
+            requirePerms: [],
+            guildOnly: false,
+            ownerOnly: false,
+            expectedArgs: []
+        };
     }
 
-    run(client, message) {
-        return new Promise(async(resolve, reject) => {
-            try {
-                let startTime = Date.now();
-                resolve(message.channel.createMessage(`Pinging so fast that you won't even notice...`).then(m => m.edit(`Pong ! \`${Date.now() - startTime}\`ms`)));
-            } catch (err) {
-                reject(err, message);
-            }
-        });
+    // eslint-disable-next-line no-unused-vars 
+    async run(client, message, args, guildEntry, userEntry) {
+        const startTime = Date.now();
+        const messageSent = await message.channel.createMessage(`Baguetting the hell outta Diskurd...`);
+        return messageSent.edit(`~~Baguette~~ Pong | \`${Date.now() - startTime}\`ms`);
     }
 }
 

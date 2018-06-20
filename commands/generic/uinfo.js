@@ -1,122 +1,114 @@
-const getLevelDetails = require('../../util/helpers/getLevelDetails')
-const moment = require("moment");
-const TimeConverter = require(`../../util/modules/timeConverter.js`);
+'use strict';
+//@ts-check
 
-class Uinfo {
+const Command = require('../../util/helpers/modules/Command');
+
+class Uinfo extends Command {
     constructor() {
+        super();
         this.help = {
             name: 'uinfo',
-            description: 'Display some infos about a user or yourself',
-            usage: 'uinfo user resolvable'
-        }
+            category: 'generic',
+            description: 'Display some ~~useless~~ info about the user',
+            usage: '{prefix}uinfo'
+        };
         this.conf = {
+            requireDB: true,
+            disabled: false,
+            aliases: ['userinfo', 'profile'],
+            requirePerms: [],
             guildOnly: true,
-            aliases: ["profile"]
-        }
+            ownerOnly: false,
+            expectedArgs: []
+        };
     }
 
-    run(client, message, args) {
-        return new Promise(async(resolve, reject) => {
-            try {
-                const users = await message.getUserResolvable();
-                let target = users.size > 0 ? users.first() : message.author;
-                const userEntry = client.userData.get(target.id) || client.defaultUserData(target.id);
-                const guildEntry = client.guildData.get(message.guild.id);
-                if (target.id !== message.author.id && !userEntry.dataPrivacy.publicProfile) return resolve(await message.channel.createMessage(":x: Sorry but the profile of this user is private :v"));
-                let embedFields = [];
-                //----------------------------------------------------------------------------------
-                if (message.guild.members.get(target.id).nickname) {
-                    embedFields.push({
-                        name: ":busts_in_silhouette: Nickname",
-                        value: message.guild.members.get(target.id).nickname,
-                        inline: true
-                    });
-                }
-                if (userEntry.dataPrivacy.publicLevel || userEntry.id === message.author.id) {
-                    const levelDetails = getLevelDetails(userEntry.experience.level, userEntry.experience.expCount);
-                    embedFields.push({
-                        name: ":star: Global experience",
-                        value: "Level " + userEntry.experience.level + "\nExp: " + Math.round(userEntry.experience.expCount) + `\nLevel progress: ${(levelDetails.levelProgress)} (${levelDetails.percentage}%)`,
-                        inline: true
-                    });
-                }
-                if (guildEntry.levelSystem.enabled && guildEntry.levelSystem.users.filter(u => u.id === target.id).length !== 0) {
-                    const userPos = guildEntry.levelSystem.users.findIndex(function(element) {
-                        return element.id === target.id;
-                    });
-                    const levelDetails = getLevelDetails(guildEntry.levelSystem.users[userPos].level, guildEntry.levelSystem.users[userPos].expCount);
-                    embedFields.push({
-                        name: ":star: Local experience",
-                        value: "Level " + guildEntry.levelSystem.users[userPos].level + "\nExp: " + Math.round(guildEntry.levelSystem.users[userPos].expCount) + `\nLevel progress: ${(levelDetails.levelProgress)} (${levelDetails.percentage}%)`,
-                        inline: true
-                    });
-                }
-                if (message.guild.members.get(target.id).hoistRole) {
-                    embedFields.push({
-                        name: ":mag: Hoist role",
-                        value: message.guild.members.get(target.id).hoistRole.name,
-                        inline: true
-                    });
-                }
-                if (message.guild.members.get(target.id).highestRole) {
-                    embedFields.push({
-                        name: ":arrow_up_small: Highest Role",
-                        value: message.guild.roles.get(message.guild.members.get(target.id).highestRole).name,
-                        inline: true
-                    });
-                }
-                embedFields.push({
-                    name: ":date: Created",
-                    value: TimeConverter.toHumanDate(target.createdAt),
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":date: Joined",
-                    value: TimeConverter.toHumanDate(message.guild.members.get(target.id).joinedAt),
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":notepad_spiral: Roles",
-                    value: message.guild.members.get(target.id).roles.length, //Dont count the everyone role
-                    inline: true
-                });
-                if (message.guild.members.get(target.id).displayHexColor) {
-                    embedFields.push({
-                        name: ":large_blue_diamond: HEX color",
-                        value: message.guild.members.get(target.id).displayHexColor,
-                        inline: true
-                    });
-                }
-                if (userEntry.dataPrivacy.publicPoints || userEntry.id === message.author.id) {
-                    embedFields.push({
-                        name: ":ribbon: Points",
-                        value: new String(Math.round(userEntry.generalSettings.points)),
-                        inline: true
-                    });
-                }
-                if (userEntry.dataPrivacy.publicLove || userEntry.id === message.author.id) {
-                    embedFields.push({
-                        name: ":heart: Love points",
-                        value: userEntry.generalSettings.lovePoints,
-                        inline: true
-                    });
-                }
-                resolve(await message.channel.createMessage({
-                    embed: {
-                        title: ':bust_in_silhouette: User info',
-                        author: {
-                            name: `${message.guild.members.get(target.id).tag}`,
-                            icon_url: target.avatarURL
-                        },
-                        fields: embedFields,
-                        timestamp: new Date(),
-                        image: {
-                            url: target.avatarURL.replace(/size=128/gim, 'size=1024')
-                        }
-                    }
-                }));
-            } catch (err) {
-                reject(err);
+    async run(client, message, args, guildEntry, userEntry) {
+        const user = await this.getUserFromText({ message, client, text: args[0] });
+        const target = user ? client.extendedUser(user) : client.extendedUser(message.author);
+        const targetEntry = target.id !== message.author.id ? await client.database.getUser(target.id) : userEntry;
+        const localLevelDetails = client.getLevelDetails(guildEntry.getLevelOf(target.id));
+        const globalLevelDetails = client.getLevelDetails(targetEntry.getLevel());
+        const userExp = guildEntry.experience.members.find(u => u.id === target.id) ? guildEntry.experience.members.find(u => u.id === target.id).experience : 0;
+        const member = message.channel.guild.members.get(target.id);
+
+        let embedFields = [];
+
+        if (member.nick) {
+            embedFields.push({
+                name: ":busts_in_silhouette: Nickname",
+                value: member.nick,
+                inline: true
+            });
+        }
+
+        const highestRole = this.getHighestRole(target.id, message.channel.guild);
+
+        embedFields.push({
+            name: ":arrow_up_small: Highest Role",
+            value: highestRole ? `<@&${highestRole.id}>` : `<@&${message.channel.guild.id}>`,
+            inline: true
+        });
+
+        embedFields.push({
+            name: ":notepad_spiral: Roles",
+            value: member.roles.map(r => `<@&${message.channel.guild.roles.get(r).id}>`).join(', ') + ` (${member.roles.length})`,
+        });
+
+        embedFields.push({
+            name: ":date: Created",
+            value: client.timeConverter.toHumanDate(member.createdAt),
+            inline: true
+        });
+
+        embedFields.push({
+            name: ":date: Joined",
+            value: client.timeConverter.toHumanDate(member.joinedAt),
+            inline: true
+        });
+
+        embedFields.push({
+            name: ":star: Local experience",
+            value: "Level: " + localLevelDetails.level + "\n" +
+                "Exp: " + userExp + "\n" +
+                "Level progress: " + (userExp - localLevelDetails.thisLevelExp) + " / " + (localLevelDetails.nextLevelExp - localLevelDetails.thisLevelExp) + ` (${(((userExp - localLevelDetails.thisLevelExp)/(localLevelDetails.nextLevelExp - localLevelDetails.thisLevelExp))*100).toFixed(2)}%)`,
+        });
+
+        embedFields.push({
+            name: ':star: Global experience',
+            value: "Level: " + globalLevelDetails.level + "\n" +
+                "Exp: " + targetEntry.experience.amount + "\n" +
+                "Level progress: " + (targetEntry.experience.amount - globalLevelDetails.thisLevelExp) + " / " + (globalLevelDetails.nextLevelExp - globalLevelDetails.thisLevelExp) + ` (${(((targetEntry.experience.amount - globalLevelDetails.thisLevelExp)/(globalLevelDetails.nextLevelExp - globalLevelDetails.thisLevelExp))*100).toFixed(2)}%)`
+        });
+
+        embedFields.push({
+            name: ":moneybag: Coins",
+            value: `${targetEntry.economy.coins}`,
+            inline: true
+        });
+
+        embedFields.push({
+            name: ':heart: Love points',
+            value: `${targetEntry.love.amount}`,
+            inline: true
+        });
+
+        return message.channel.createMessage({
+            embed: {
+                title: `:bust_in_silhouette: User info`,
+                author: {
+                    name: target.tag,
+                    icon_url: target.avatarURL
+                },
+                fields: embedFields,
+                image: {
+                    url: target.avatarURL
+                },
+                timestamp: new Date(),
+                image: {
+                    url: target.avatarURL
+                },
+                color: client.config.options.embedColor
             }
         });
     }

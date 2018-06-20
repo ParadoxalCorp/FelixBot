@@ -1,61 +1,81 @@
-class Clear {
+'use strict';
+//@ts-check
+
+const Command = require('../../util/helpers/modules/Command');
+
+class Clear extends Command {
     constructor() {
+        super();
         this.help = {
-                name: 'clear',
-                description: 'Clear some messages from the current channel',
-                usage: 'clear 50',
-                detailedUsage: '`{prefix}clear 50` Will clear 50 messages from the current channel\n`{prefix}clear 50 -b` Will clear all bots messages from the 50 last messages\n`{prefix}clear 50 -u [user resolvable]` Will clear all the messages of the specified users from the 50 last messages\n`{prefix}clear 50 -c` Will clear all Felix\'s commands\n`{prefix}clear 50 -bcu [user resolvable]` You can combine filters, this will do the same thing that the two above examples combined\n**Notes:** Felix cannot delete messages older than 2 weeks nor more than 100 messages, also, you can specify multiple users'
-            },
-            this.conf = {
-                guildOnly: true,
-                aliases: ['nuke', 'purge', 'clean'],
-                requirePerms: ['manageMessages']
-            }
+            name: 'clear',
+            category: 'moderation',
+            description: 'Prune messages, the available filters are `-b`, (deletes only bot messages) `-c` (delete commands and their outputs) and `-u` (delete the specified user messages)\n\nSo for example `{prefix}clear 50 -bcu @Baguette` will clear all the bots messages, the commands and the messages from the user `Baguette` in the last 50 messages',
+            usage: '{prefix}clear <count> <filters>'
+        };
+        this.conf = {
+            requireDB: false,
+            disabled: false,
+            aliases: ["clean", "prune"],
+            requirePerms: ["manageMessages"],
+            guildOnly: true,
+            ownerOnly: false,
+            expectedArgs: []
+        };
     }
 
-    run(client, message, args) {
-        return new Promise(async(resolve, reject) => {
-            const Eris = require("eris");
-            try {
-                if (!message.guild.members.get(client.user.id).hasPermission('manageMessages')) return resolve(await message.channel.createMessage(':x: I don\'t have the permissions to do that'));
-                let limit = args.filter(a => !isNaN(a)).length > 0 ? (args.filter(a => !isNaN(a))[0] > 100 ? 100 : args.filter(a => !isNaN(a))[0]) : 2;
-                let filtered = new Array();
-                let fetchedMessages = await message.channel.getMessages(parseInt(limit));
-                fetchedMessages = fetchedMessages.filter(m => m.timestamp > (Date.now() - 1209600000)); //Filter messages older than 2 weeks
-                let filters = false;
-                for (let i = 0; i < args.length; i++) {
-                    if (args[i].startsWith('-')) {
-                        filters = true;
-                        //Filter bots messages
-                        if (args[i].toLowerCase().includes('b')) filtered = filtered.concat(fetchedMessages.filter(m => m.author.bot));
-                        //Filter specified users messages
-                        if (args[i].toLowerCase().includes('u')) {
-                            const users = await message.getUserResolvable();
-                            filtered = users.size < 1 ? filtered.concat(fetchedMessages.filter(m => m.author.id === message.author.id)) :
-                                filtered.concat(fetchedMessages.filter(m => users.has(m.author.id))); //If no users found then filter author messages
-                        }
-                        //Filter Felix's commands
-                        if (args[i].toLowerCase().includes('c')) {
-                            filtered = filtered.concat(fetchedMessages.filter(m => m.content.startsWith(client.guildData.get(message.guild.id).generalSettings.prefix) || m.content.startsWith(`<@${client.user.id}>`) || m.content.startsWith(`<@!${client.user.id}>`)));
-                        }
-                    }
-                }
-                if (!filters) filtered = fetchedMessages;
-                let uniqueMessages = [];
-                filtered.forEach(m => {
-                    if (!uniqueMessages.find(uniqueMessage => uniqueMessage === m)) uniqueMessages.push(m);
-                });
-                if (uniqueMessages.length < 2) return resolve(await message.channel.createMessage(':x: Not enough messages have been matched with the filter'));
-                const deletedMessages = await message.channel.deleteMessages(uniqueMessages.map(m => m.id));
-                message.channel.createMessage(`:white_check_mark: Deleted **${uniqueMessages.length}** messages`).then(m => {
-                    setTimeout(() => {
-                        resolve(m.delete());
-                    }, 3000)
-                });
-            } catch (err) {
-                reject(err);
+    // eslint-disable-next-line no-unused-vars
+    async run(client, message, args, guildEntry, userEntry) {
+        const limit = args[0]; 
+        if (!limit || !client.isWholeNumber(limit)) {
+            return message.channel.createMessage(`:x: You didn't specified how many messages to delete`);
+        }
+        let filtered = [];
+        const slice = (collection, count) => {
+            const newColl = new client.collection();
+            const colEntries = new client.collection(collection).sort((a, b) => b.timestamp - a.timestamp).entries();
+            for (let i = 0; i < count; i++) {
+                const value = colEntries.next().value;
+                newColl.set(value[0], value[1]);
             }
+            return newColl;
+        }
+        //Don't fetch the messages if they're already cached, use the cached messages and take only the specified amount
+        let fetchedMessages = message.channel.messages.size >= limit ? slice(message.channel.messages, limit) : await message.channel.getMessages(parseInt(limit));
+        //Filter messages older than 2 weeks
+        fetchedMessages = Array.isArray(fetchedMessages) ? fetchedMessages.filter(m => m.timestamp > (Date.now() - 1209600000)) : fetchedMessages.filterArray(m => m.timestamp > (Date.now() - 1209600000));
+        for (const arg of args) {
+            if (arg.startsWith('-')) {
+                if (arg.toLowerCase().includes('b')) {
+                    filtered = filtered.concat(fetchedMessages.filter(m => m.author.bot));
+                }
+                if (arg.toLowerCase().includes('u')) {
+                    const user = await this.getUserFromText({ message: message, client: client, text: args.splice(2).join(' ') });
+                    filtered = filtered.concat(fetchedMessages.filter(m => m.author.id === (user ? user.id : message.author.id)));
+                }
+                if (arg.toLowerCase().includes('c')) {
+                    filtered = filtered.concat(fetchedMessages.filter(m => m.author.id === client.bot.user.id));
+                    filtered = filtered.concat(fetchedMessages.filter(m => m.content.startsWith(guildEntry ? guildEntry.getPrefix : client.config.prefix) ||
+                        m.content.startsWith(`<@${client.bot.user.id}>`) || m.content.startsWith(`<@!${client.bot.user.id}`)));
+                }
+            }
+        }
+        let uniqueMessages = filtered[0] ? [] : fetchedMessages.map(m => m.id);
+
+        for (const m of filtered) {
+            if (!uniqueMessages.find(msg => msg === m.id)) {
+                uniqueMessages.push(m.id);
+            }
+        }
+        if (uniqueMessages.length < 2) { 
+            message.channel.createMessage(':x: Not enough messages have been matched with the filter'); 
+        }
+        await message.channel.deleteMessages(uniqueMessages);
+        message.channel.createMessage(`:white_check_mark: Deleted **${uniqueMessages.length}** messages`).then(m => {
+            setTimeout(() => {
+                m.delete();
+            }, 4000);
         });
+
     }
 }
 

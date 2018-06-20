@@ -1,20 +1,29 @@
-class Dummy {
+'use strict';
+
+const Command = require('../../util/helpers/modules/Command');
+
+class Dummy extends Command {
     constructor() {
+        super();
         this.help = {
             name: 'dummy',
-            description: 'i said dummy',
-            usage: 'dummy'
-        }
+            category: 'admin',
+            description: 'dummy',
+            usage: '{prefix}dummy'
+        };
+        this.conf = {
+            requireDB: false,
+            disabled: false,
+            aliases: [],
+            requirePerms: [],
+            guildOnly: false,
+            ownerOnly: true,
+            expectedArgs: []
+        };
     }
 
-    run(client, message, args) {
-        return new Promise(async(resolve, reject) => {
-            try {
-                message.delete().catch(err => reject(err));
-            } catch (err) {
-                reject(err);
-            }
-        })
+    async run(client, message) {
+        return message.channel.createMessage('wew');
     }
 }
 

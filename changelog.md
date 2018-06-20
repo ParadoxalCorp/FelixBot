@@ -1,3 +1,88 @@
+# Update 4.0.0 Changelog
+
+Hoi, Felix didn't received any updates during the last 3 months, for the simple reason that the 4.0.0 was being worked on. So how about we just make official
+that Felix won't receive any update besides a major update every 6 months :^)
+
+Jokes aside, this update change pretty much everything, so get ready.
+
+### Back-end changes
+* Multi-threaded Felix, the `eris-sharder` module handles most of it
+* Rewrote everything, added better support for self-hosting, and ensured scalability
+* Switched from leveldb to RethinkDB
+* Better API keys and modules checks
+* Dynamic database unavailability handling 
+* Actual Discord permissions checks introduced and better arguments parsing
+* Implemented more weeb.sh features (image-gen) and added the `Taihou` wrapper, which covers all weeb.sh services, to be able to implement new services faster
+* Added support for Lavalink
+* Implemented rewards for donators 
+* Decreased the matching possibilities of the roles, users and channels search to allow for far greater accuracy (planned to be improved)
+* Discontinued support for the API
+
+### Commands and features changes
+* Removed most of the moderation features: kick, ban, softban, mute, automatic invite filtering and such (see [migrating from v3](#migrating-from-v3))
+* Added music commands, only available to servers on which premium status is enabled
+* Reworked entirely the economy:
+- * Economy commands now have their own categories
+- * The `slots` has been improved, random events have been added, chances of getting a draw have been drastically reduced
+- * Added random events to `daily`
+- * Added the `inventory` command which display the items you own
+- * Removed the `rps` command
+- * Added more items to the `market` command
+- * Added the `navalbase` command which is related to a specific set of items in the market
+- * Added the `transactions` command to see your latest transactions
+- * Renamed the `transfer` command to `give`
+- * Overall changes: Added random events which can be prevented by buying specific items 
+* Changes within the `fun` category:
+- * Moved all economy commands from the `fun` category to the `economy` category
+- * The choose command no longer takes `|` as a valid separating character, as this character is now used to separate args in all commands
+- * The `udefine` command has been improved to be slightly faster
+* Changes within the `generic` category:
+- * The `help` command now outputs by default an embed
+- * Enhanced the `uinfo` command for it to look cleaner
+- * Added the `redeem` command to redeem keys given to donators
+- * Improved a bit the speed of all other commands
+* Changes within the `image` category:
+- * The `image` category is now split into three sub-categories: `images`, `image-generation` and `interactions`. Though it doesn't change how you use them
+- * Added the `loveship` and `shitwaifu` commands as `image-generation` commands
+- * Made the `cuddle`, `hug`, `kiss`, `lick`, `pat`, `poke`, `slap` and `tickle` commands `interactions` commands (more can become interactions later)
+- * Highly improved the back-end for `images` commands to even the load on the weeb.sh servers
+* Changes within the `misc` category:
+- * Enhanced `iam` and `iamnot` to display the listed roles color on the embed borders
+- * The `leaderboard` command doesn't use reactions anymore to address a bug of Discord which would corrupt the embed output
+* Changes within the `moderation` category:
+- * Removed the `assign`, `ban`, `hackban`, `kick`, `modconfig`, `modlog`, `module`, `mute`, `reason`, `revoke`, `seewarns`, `softban`, `unban`, `unmute` and `warn` commands (see [migrating from v3](#migrating-from-v3))
+- * Improved the `clear` command to use the cache if possible, resulting in faster execution
+- * The `getpermissions` command now shows a cleaner embed and send permissions in a text file if the discord 1024 characters limit is reached
+- * Apart from that, the permissions system has been greatly improved but how it works didn't changed much, except that roles are handled better now
+* Changes within the `music` category
+- * Brand new `music` category available to servers on which donators redeemed a key
+- * Added the `play` command which play the song at the given URL (youtube, soundcloud, twitch channel or even direct URLs to a file), or perform a search if a search term is given instead of an URL
+- * Added the `queue` command which works exactly like the `play` command, but instead of playing the song directly, it pushes it to the queue. It also display the current queue if no arguments are given
+- * Added the `playafter` command, works exactly like `play` but push the song in the queue at the first position, while `queue` pushes it at the last position
+- * Added the `nowplaying` command which output information about the currently playing song
+- * Added the `pause` command which pause or resume the playback according to whether it is already paused or not
+- * Added the `repeat` command which allows you to toggle the repeat for the current song, the queue or just turn off the repeat
+- * Added the `shuffle` command which shuffles the queue
+- * Added the `skip` command which starts a vote to skip the currently playing song
+- * Added the `forceskip` command which skip the currently playing song without vote (restricted by default)
+- * Added the `clearqueue` command which clears the queue
+- * Added the `addplaylist` command which adds the YouTube playlist at the given URL to the queue
+- * Added the `leave` command which is quite self-explanatory
+* Changes within the `settings` category
+- * Added the `simulatefarewells` command
+- * Added an option to the `setprefix` command to set the prefix with a space or not 
+- * The `experience`, `onjoinroles`, `sar`, `setfarewells` and `setgreetings` commands now checks the permissions Felix have and warn the user if Felix lacks permissions
+
+### Migrating from v3
+
+If you used the moderation feature of Felix, im sad to announce that all support for it has been discontinued.
+The moderation feature was the most time-consuming for me, and the Discord API for the moderation is simply horrible, causing bugs to happen frequently.
+Working on it was a pain to me, and for all these reasons, i decided to simply discontinue it and focus elsewhere.
+
+The least i can do is to at least give you alternatives, that i personally ensured are better than Felix's dead moderation feature:
+* [Blargbot](https://blargbot.xyz/)
+* [Safety Jim](https://discordbots.org/bot/safetyjim)
+
 # Update 3.0.0 Changelog
 ## Overall changes
 * Ported Felix to Eris, is now auto-sharded

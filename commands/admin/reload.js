@@ -1,106 +1,178 @@
-const fs = require('fs-extra');
+'use strict';
 
-class Reload {
+const Command = require('../../util/helpers/modules/Command');
+const { inspect } = require('util');
+
+class Reload extends Command {
     constructor() {
+        super();
         this.help = {
             name: 'reload',
-            usage: 'reload [file_path]',
-            description: 'Reload (aka delete the cache and require) the file at the specified path. Note: If a command, dont forget that the path will be something like ../category/command_name'
+            category: 'admin',
+            description: 'Reload a module - This command use a command-line like syntax for its parameters, as in, parameters looks like `--<parameter_name>`. Parameters can have a value, the syntax for specifying a value for a parameter is `--<parameter_name>=<value>`\n\nExample: `reload ./module.js --module --bindToClient=moduleBaguette --instantiate`\nThe above example reload the file `module.js` at the root of this command\'s folder, instantiate it without additional parameters and add it as a propriety of the client class under the name `moduleBaguette`',
+            usage: '{prefix}reload <file_path> <params>',
+            params: {
+                '--event': 'Specify that the file you want to reload is an event listener',
+                '--command': 'Specify that the file you want to reload is a command, unless the command isn\'t added yet, a path is usually not needed and the command name can be provided instead',
+                '--module': 'Specify that the file you want to reload is a module, permit the use of the `--bindToClient` and `--instantiate` parameters',
+                '--bindToClient': {
+                    description: 'Specify that the file should be added as a property of the client class',
+                    mandatoryValue: false,
+                    values: [{
+                        name: '<name>',
+                        description: 'Specify the name under which the file should be added as a property of the client class'
+                    }]
+                },
+                '--instantiate': {
+                    description: 'This specify that the command should expect a non-instantiated class that should be instantiated',
+                    mandatoryValue: true,
+                    values: [{
+                        name: 'client',
+                        description: 'Specify that the class should be instantiated with the client'
+                    }, {
+                        name: 'bot',
+                        description: 'Specify that the class should be instantiated with the bot instance'
+                    }]
+                }
+            }
+        };
+        this.conf = {
+            requireDB: false,
+            disabled: false,
+            aliases: [],
+            requirePerms: [],
+            guildOnly: false,
+            ownerOnly: false,
+            expectedArgs: [{
+                description: 'Please specify the path of the file you want to reload/add, or, if a command that is already loaded, the name of the command. Input `all` if you want to reload all commands/modules/events listeners',
+            }, {
+                description: 'Please specify the type of the file you want to reload, can be either `event`, `command` or `module`',
+                possibleValues: [{
+                    name: 'command',
+                    interpretAs: '--command'
+                }, {
+                    name: 'event',
+                    interpretAs: '--event'
+                }, {
+                    name: 'module',
+                    interpretAs: '--module'
+                }]
+            }, {
+                //Conditional branch
+                description: 'Please specify if a non-instantiated class should be expected from this module, and with what it should be instantiated. Can be either `bot`, `client` or `no` to not instantiate it',
+                condition: (client, message, args) => args.includes('--module') && !args.includes('all'),
+                possibleValues: [{
+                    name: 'bot',
+                    interpretAs: '--instantiate=bot',
+                }, {
+                    name: 'client',
+                    interpretAs: '--instantiate=client'
+                }, {
+                    name: 'no',
+                    interpretAs: false
+                }]
+            }, {
+                //Conditional branch
+                description: 'Please specify whether the module should be added as a property of the client class, can be either `yes`, `<name>` or `no`. Where `<name>` is the name under which the property should be added, if `yes`, the file name will be used',
+                condition: (client, message, args) => args.includes('--module') && !args.includes('all'),
+                possibleValues: [{
+                    name: 'yes',
+                    interpretAs: '--bindtoclient',
+                }, {
+                    name: '*',
+                    interpretAs: '--bindtoclient={value}'
+                }, {
+                    name: 'no',
+                    interpretAs: false
+                }]
+            }]
         };
     }
 
-    run(client, message, args) {
-        return new Promise(async(resolve, reject) => {
-            try {
-                if (!args[0]) return resolve(await message.channel.createMessage(`:x: Welp if you don't tell me what to reload i can't reload anything`));
-                let commandsStats = client.clientData.get("commandsStats");
-                let path = args[0];
-                let command = client.commands.get(args[0]) || client.commands.get(client.aliases.get(args[0]));
-                //Tbh fuck fs
-                function exists(path) {
-                    try {
-                        require.resolve(path);
-                        return true;
-                    } catch (err) {
-                        return false;
-                    }
-                }
+    async run(client, message, args) {
+        const isPath = new RegExp(/\/|\\/gim).test(args[0]);
+        const command = client.commands.get(args[0]) || client.commands.get(client.aliases.get(args[0]));
+        const path = args[0] === 'all' || this.verifyPath(args.includes('--command') && !isPath ? `../${command.help.category}/${command.help.name}` : args[0]);
+        if (!path) {
+            return message.channel.createMessage(':x: Look, i don\'t want to be mean, but this is NOT a valid path, try again');
+        }
+        const fileName = typeof path === 'string' ? path.split(/\/|\\/gm)[path.split(/\/|\\/gm).length - 1].split('.')[0] : false;
 
-                if (command || (exists(path) && require(path).help)) {
-                    if (command && command.subcommand) return resolve(await message.channel.createMessage(`:x: \`${command.help.name}\` is a subcommand and therefore cannot be reloaded`));
-                    if (command) path = `../${command.help.category}/${command.help.name}`;
-                    let thisUses = command ? command.uses : 0;
-                    try {
-                        await delete require.cache[require.resolve(path)];
-                        let newCommand = require(path);
-                        if (command) {
-                            client.commands.delete(command.help.name);
-                            client.aliases.forEach((cmd, alias) => {
-                                if (cmd === command.help.name) client.aliases.delete(alias);
-                            });
-                        }
-                        newCommand.uses = thisUses;
-                        if (!commandsStats[newCommand.help.name]) commandsStats[newCommand.help.name] = 0;
-                        client.clientData.set("commandsStats", commandsStats);
-                        //Set default conf if no conf provided
-                        if (!newCommand.conf) newCommand.conf = { guildOnly: false, disabled: false, aliases: false, cooldownWeight: 5 };
-                        newCommand.conf.guildOnly = newCommand.conf.guildOnly ? newCommand.conf.guildOnly : false;
-                        newCommand.conf.aliases = newCommand.conf.aliases ? newCommand.conf.aliases : false;
-                        newCommand.conf.disabled = newCommand.conf.disabled ? newCommand.conf.disabled : false;
-                        if (!newCommand.conf.cooldownWeight && command.conf.cooldownWeight !== 0) newCommand.conf.cooldownWeight = 5;
-                        if (!newCommand.help.category) newCommand.help.category = path.split(/\\|\//gim)[1];
-                        //Add the command to the collection
-                        client.commands.set(newCommand.help.name, newCommand);
-                        if (newCommand.conf && newCommand.conf.aliases) newCommand.conf.aliases.forEach(alias => {
-                            client.aliases.set(alias, newCommand.help.name);
-                        });
-                        let shortcutsReloaded = "";
-                        if (newCommand.shortcut) {
-                            let i = 0;
-                            const readdir = require("fs-extra").readdir;
-                            let cmdShortcuts = await fs.readdir(`./util/shortcuts/${newCommand.help.name}`);
-                            cmdShortcuts.forEach(async(s) => {
-                                delete require.cache[require.resolve(`../../util/shortcuts/${newCommand.help.name}/${s}`)];
-                                let shortcut = require(`../../util/shortcuts/${newCommand.help.name}/${s}`);
-                                i++;
-                            });
-                            shortcutsReloaded = `and ${i} shortcuts have been reloaded out of ${cmdShortcuts.length}`;
-                        }
-                        resolve(await message.channel.createMessage(`:white_check_mark: The command \`${newCommand.help.name}\` has successfully been ${command ? "reloaded" : "added"} ${shortcutsReloaded}`));
-                    } catch (err) {
-                        resolve(message.channel.createMessage({
-                            embed: {
-                                description: `:x: Something went wrong: \`\`\`js\n${err.stack}\`\`\``
-                            }
-                        }));
+        if (args.includes('--event')) {
+            const reloadedEvent = await client.IPCHandler.broadcastReload('event', args[0] === 'all' ? args[0] : path)
+                .then(() => {
+                    if (args[0] === 'all') {
+                        return message.channel.createMessage(`:white_check_mark: Successfully reloaded all events listeners\n\n:warning: Don't forget to reload all modules now, to add back their listeners`);
                     }
-                } else {
-                    try {
-                        //Specific reload for events since it needs to be bind and the listener has to be removed
-                        await delete require.cache[require.resolve(path)];
-                        if (path.includes("events")) {
-                            let newEvent = require(path);
-                            let event = path.split(`/`);
-                            event = event[event.length - 1].split(".")[0];
-                            client.removeAllListeners(event);
-                            client.on(event, newEvent.bind(null, client));
-                            resolve(await message.channel.createMessage(`:white_check_mark: The event \`${event}\` has successfully been reloaded/added`));
-                        } else {
-                            require(path);
-                            resolve(await message.channel.createMessage(`:white_check_mark: The file \`${path}\` has successfully been reloaded/added`));
+                    return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the \`${fileName}\` event listener\n\n:warning: Don't forget to reload all modules now, to add back their listeners`);
+                })
+                .catch(err => {
+                    return message.channel.createMessage({
+                        embed: {
+                            description: 'So, at least one cluster reported that the reload failed, here\'s the list scrub ```js\n' + inspect(err, { depth: 2 }) + '```'
                         }
-                    } catch (err) {
-                        resolve(message.channel.createMessage({
-                            embed: {
-                                description: `:x: Something went wrong: \`\`\`js\n${err}\`\`\``
-                            }
-                        }));
-                    }
-                }
-            } catch (err) {
-                reject(err, message);
+                    });
+                });
+            return reloadedEvent;
+        } else if (args.includes('--command')) {
+            if (args[0] !== 'all' && require(path).conf.subCommand) {
+                return message.channel.createMessage(`:x: Sorry cutie, but this is a sub-command, so the only way to reload it is to re-generate it`);
             }
+            const reloadedCommand = await client.IPCHandler.broadcastReload('command', args[0] === 'all' ? args[0] : path)
+                .then(() => {
+                    if (args[0] === 'all') {
+                        return message.channel.createMessage(':white_check_mark: Successfully reloaded all commands');
+                    }
+                    return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the command \`${fileName}\``);
+                })
+                .catch(err => {
+                    return message.channel.createMessage({
+                        embed: {
+                            description: 'So, at least one clusters reported that the reload failed, here\'s the list scrub ```js\n' + inspect(err, { depth: 2 }) + '```'
+                        }
+                    });
+                });
+            return reloadedCommand;
+        } else if (args.includes('--module')) {
+            const reloadedModule = await client.IPCHandler.broadcastReload('module', args[0] === 'all' ? args[0] : path, fileName, this.parseArguments(args))
+                .then(() => {
+                    if (args[0] === 'all') {
+                        return message.channel.createMessage(':white_check_mark: Successfully reloaded all modules');
+                    }
+                    return message.channel.createMessage(`:white_check_mark: Successfully reloaded/added the module \`${fileName}\``);
+                })
+                .catch(err => {
+                    return message.channel.createMessage({
+                        embed: {
+                            description: 'So, at least one clusters reported that the reload failed, here\'s the list scrub ```js\n' + inspect(err, { depth: 2 }) + '```'
+                        }
+                    });
+                });
+            return reloadedModule;
+        }
+        return message.channel.createMessage(`Hoi, this is not valid syntax, try again kthx`);
+    }
+
+    parseArguments(args) {
+        const parsedArgs = {};
+        args.forEach(arg => {
+            if (!arg.includes('--')) {
+                return;
+            }
+            parsedArgs[arg.split('--')[1].split('=')[0].toLowerCase()] = arg.includes('=') ? arg.split('=')[1] : true;
         });
+        return parsedArgs;
+    }
+
+    verifyPath(path) {
+        let resolvedPath;
+        try {
+            resolvedPath = require.resolve(path);
+        }
+        // eslint-disable-next-line no-empty
+        catch (err) {}
+
+        return resolvedPath;
     }
 }
 

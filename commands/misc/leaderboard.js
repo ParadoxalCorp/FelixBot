@@ -1,209 +1,176 @@
-const sleep = require(`../../util/modules/sleep.js`);
+'use strict';
 
-class Leaderboard {
+const Command = require('../../util/helpers/modules/Command');
+
+class Leaderboard extends Command {
     constructor() {
+        super();
         this.help = {
             name: 'leaderboard',
-            description: 'Get the experience leaderboard of this server or all the servers',
-            usage: 'leaderboard'
-        }
+            category: 'misc',
+            description: 'Get the leaderboard of the most loved, richest and active users. Here\'s an example of how to use the command: `{prefix}leaderboard love global`, this will show the global love points leaderboard',
+            usage: '{prefix}leaderboard <love|coins|experience> | <global|local>'
+        };
         this.conf = {
+            requireDB: true,
+            disabled: false,
+            aliases: ['lb'],
+            requirePerms: [],
             guildOnly: true,
-            aliases: ["lb"]
-        }
-
+            ownerOnly: false,
+            expectedArgs: [{
+                description: 'Please choose what leaderboard to show, can be either `love`, `coins` or `experience`',
+                possibleValues: [{
+                    name: 'love',
+                    interpretAs: '{value}'
+                }, {
+                    name: 'coins',
+                    interpretAs: '{value}'
+                }, {
+                    name: 'experience',
+                    interpretAs: '{value}'
+                }]
+            }, {
+                description: 'Please specify whether the leaderboard to show is the global or the local (this server) one, can be either `global` or `local`',
+                possibleValues: [{
+                    name: 'global',
+                    interpretAs: '{value}'
+                }, {
+                    name: 'local',
+                    interpretAs: '{value}'
+                }]
+            }]
+        };
     }
-    run(client, message, args) {
-        return new Promise(async(resolve, reject) => {
-            try {
-                var args = message.content.split(/\s+/gim);
-                args.shift();
-                const guildEntry = client.guildData.get(message.guild.id);
-                let leaderboard = guildEntry.levelSystem.users.filter(m => message.guild.members.has(m.id)).sort((a, b) => b.expCount - a.expCount);
-                let loveLeaderboard = client.userData.filterArray(u => message.guild.members.has(u.id)).sort((a, b) => b.generalSettings.lovePoints - a.generalSettings.lovePoints);
-                let pointsLeaderboard = client.userData.filterArray(u => message.guild.members.has(u.id) && !message.guild.members.get(u.id).bot).sort((a, b) => b.generalSettings.points - a.generalSettings.points)
-                let glbLeaderboard = client.userData.filterArray(u => u.dataPrivacy.publicLevel && client.users.has(u.id)).sort((a, b) => b.experience.expCount - a.experience.expCount);
-                let glbLoveLeaderboard = client.userData.filterArray(u => u.dataPrivacy.publicLove && client.users.has(u.id)).sort((a, b) => b.generalSettings.lovePoints - a.generalSettings.lovePoints);
-                let messageLeaderboard = guildEntry.levelSystem.users.filter(m => message.guild.members.has(m.id)).sort((a, b) => b.messages - a.messages);
-                let glbPointsLeaderboard = client.userData.filterArray(u => u.dataPrivacy.publicPoints && client.users.has(u.id)).sort((a, b) => b.generalSettings.points - a.generalSettings.points);
-                const position = function(id, target) {
-                    let userPosition = target.findIndex(e => e.id === id);
-                    if (userPosition === 0) return ":trophy:";
-                    else if (userPosition === 1) return ":second_place:";
-                    else if (userPosition === 2) return ":third_place:"
-                    else return userPosition + 1;
+
+    // eslint-disable-next-line no-unused-vars 
+    async run(client, message, args, guildEntry, userEntry) {
+        if (!['love', 'coins', 'experience'].includes(args[0].toLowerCase())) {
+            return message.channel.createMessage(':x: You didn\'t specified what leaderboard i had to show, please specify either `love`, `coins` or `experience`');
+        }
+        const leaderboard = args[0].toLowerCase();
+        if (leaderboard === 'love') {
+            return this.getLoveLeaderboard(client, message, args);
+        } else if (leaderboard === 'coins') {
+            return this.getCoinsLeaderboard(client, message, args);
+        } else if (leaderboard === 'experience') {
+            return this.getExperienceLeaderboard(client, message, args, guildEntry);
+        }
+    }
+
+    async getLoveLeaderboard(client, message, args) {
+        const global = args[1] && args[1].toLowerCase() === 'local' ? false : true;
+        let leaderboard = Array.from((!global ? client.database.users.filter(u => message.channel.guild.members.has(u.id)) 
+        : client.database.users).values()).map(e => client.database._updateDataModel(e, 'user')).sort((a, b) => b.love.amount - a.love.amount);
+        if (!leaderboard.length) {
+            return message.channel.createMessage(':x: Seems like there is nobody to show on the leaderboard yet');
+        }
+        const users = await this.fetchUsers(client, leaderboard);
+        return message.channel.createMessage({
+            embed: {
+                title: `${global ? 'Global' : 'Local'} love leaderboard`,
+                color: client.config.options.embedColor,
+                description: leaderboard.slice(0, 10).map(u => `#${this.getPosition(u.id, leaderboard)} - **${users.get(u.id).tag}**\nLove points: ${u.love.amount}`).join("\n\n"),
+                footer: {
+                    text: `Your position: #${leaderboard.findIndex(element => element.id === message.author.id) + 1}/${leaderboard.length}`
+                },
+                thumbnail: {
+                    url: global ? client.bot.user.avatarURL : message.channel.guild.iconURL
                 }
-                let localExpLeaderboard = {
-                    embed: {
-                        title: `${message.guild.name}'s experience leaderboard`,
-                        color: 3447003,
-                        description: leaderboard.slice(0, 10).map(u => `#${position(u.id, leaderboard)} - **${message.guild.members.get(u.id).user.tag}**\nLevel: ${u.level} | Exp: ${Math.round(u.expCount)}`).join("\n\n"),
-                        footer: {
-                            text: `Your position: #${leaderboard.findIndex(element => element.id === message.author.id) + 1}/${leaderboard.length}`
-                        },
-                        thumbnail: {
-                            url: message.guild.iconURL
-                        }
-                    }
-                }
-                let localMessageLeaderboard = {
-                    embed: {
-                        title: `${message.guild.name}'s messages leaderboard`,
-                        color: 3447003,
-                        description: messageLeaderboard.slice(0, 10).map(u => `#${position(u.id, leaderboard)} - **${message.guild.members.get(u.id).user.tag}**\nMessages: ${u.messages}`).join("\n\n"),
-                        footer: {
-                            text: `Your position: #${messageLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${leaderboard.length}`
-                        },
-                        thumbnail: {
-                            url: message.guild.iconURL
-                        }
-                    }
-                }
-                let localLoveLeaderboard = {
-                    embed: {
-                        title: `${message.guild.name}'s love leaderboard`,
-                        color: 3447003,
-                        description: loveLeaderboard.slice(0, 10).map(u => `#${position(u.id, loveLeaderboard)} - **${message.guild.members.get(u.id).user.tag}**\nLove points: ${u.generalSettings.lovePoints}`).join("\n\n"),
-                        footer: {
-                            text: `Your position: #${loveLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${loveLeaderboard.length}`
-                        },
-                        thumbnail: {
-                            url: message.guild.iconURL
-                        }
-                    }
-                }
-                let localPointsLeaderboard = {
-                    embed: {
-                        title: `${message.guild.name}'s points leaderboard`,
-                        color: 3447003,
-                        description: pointsLeaderboard.slice(0, 10).map(u => `#${position(u.id, pointsLeaderboard)} - **${message.guild.members.get(u.id).user.tag}**\nPoints: ${Math.round(u.generalSettings.points)}`).join("\n\n"),
-                        footer: {
-                            text: `Your position: #${pointsLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${pointsLeaderboard.length}`
-                        },
-                        thumbnail: {
-                            url: message.guild.iconURL
-                        }
-                    }
-                }
-                let globalExpLeaderboard = {
-                    embed: {
-                        title: `Global experience leaderboard`,
-                        color: 3447003,
-                        description: glbLeaderboard.slice(0, 10).map(u => `#${position(u.id, glbLeaderboard)} - **${client.users.get(u.id).tag}**\nLevel: ${u.experience.level} | Exp: ${Math.round(u.experience.expCount)}`).join("\n\n"),
-                        footer: {
-                            text: `Your position: #${glbLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${glbLeaderboard.length}`
-                        },
-                        thumbnail: {
-                            url: client.user.avatarURL
-                        }
-                    }
-                }
-                let globalLoveLeaderboard = {
-                    embed: {
-                        title: `Global love leaderboard`,
-                        color: 3447003,
-                        description: glbLoveLeaderboard.slice(0, 10).map(u => `#${position(u.id, glbLoveLeaderboard)} - **${client.users.get(u.id).tag}**\nLove points: ${u.generalSettings.lovePoints}`).join("\n\n"),
-                        footer: {
-                            text: `Your position: #${glbLoveLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${glbLoveLeaderboard.length}`
-                        },
-                        thumbnail: {
-                            url: client.user.avatarURL
-                        }
-                    }
-                }
-                let globalPointsLeaderboard = {
-                    embed: {
-                        title: `Global points leaderboard`,
-                        color: 3447003,
-                        description: glbPointsLeaderboard.slice(0, 10).map(u => `#${position(u.id, glbPointsLeaderboard)} - **${client.users.get(u.id).tag}**\nPoints: ${Math.round(u.generalSettings.points)}`).join("\n\n"),
-                        footer: {
-                            text: `Your position: #${glbPointsLeaderboard.findIndex(element => element.id === message.author.id) + 1}/${glbPointsLeaderboard.length}`
-                        },
-                        thumbnail: {
-                            url: client.user.avatarURL
-                        }
-                    }
-                }
-                const interactiveMessage = await message.channel.createMessage(guildEntry.levelSystem.enabled ? localExpLeaderboard : globalExpLeaderboard);
-                const collector = interactiveMessage.createReactionCollector(reaction => reaction.user.id === message.author.id);
-                let pageReactions = ["⭐", "❤", "🎀", "✉", "🌐", "❌"];
-                if (localExpLeaderboard.length > 0 && guildEntry.levelSystem.enabled) pageReactions.unshift();
-                for (let i = 0; i < pageReactions.length; i++) await interactiveMessage.addReaction(pageReactions[i]);
-                let timeout = setTimeout(function() {
-                    collector.stop("timeout");
-                }, 120000);
-                let page = 'exp';
-                let global = guildEntry.levelSystem.enabled ? false : true;
-                let lastClicked;
-                collector.on('collect', async(r) => {
-                    clearTimeout(timeout); //reset the timeout
-                    if (lastClicked && lastClicked !== r.emoji.name) {
-                        await interactiveMessage.edit({
-                            embed: {
-                                description: ''
-                            }
-                        });
-                    }
-                    lastClicked = r.emoji.name;
-                    if (r.emoji.name === "⭐") { //Get exp leaderboard
-                        if (page !== 'exp') await interactiveMessage.edit(global ? globalExpLeaderboard : localExpLeaderboard);
-                        page = 'exp';
-                    } else if (r.emoji.name === "❤") { //Get love leaderboard
-                        if (page !== 'love') { //Dont edit for nothing
-                            if (!global) await interactiveMessage.edit(localLoveLeaderboard);
-                            else await interactiveMessage.edit(globalLoveLeaderboard);
-                            page = 'love';
-                        }
-                    } else if (r.emoji.name === "🎀") { //Get points leaderboard
-                        if (page !== 'points') { //Dont edit for nothing
-                            if (!global) await interactiveMessage.edit(localPointsLeaderboard);
-                            else await interactiveMessage.edit(globalPointsLeaderboard);
-                            page = 'points';
-                        }
-                    } else if (r.emoji.name === "✉") {
-                        if (page !== "messages") {
-                            if (!messageLeaderboard[0]) await interactiveMessage.edit({
-                                embed: {
-                                    description: ':x: There is nobody in the leaderboard yet'
-                                }
-                            });
-                            else await interactiveMessage.edit(localMessageLeaderboard);
-                            page = "messages";
-                        }
-                    } else if (r.emoji.name === "🌐") { //Change global
-                        if (global) {
-                            global = false;
-                            if (page === 'exp' && guildEntry.levelSystem.enabled) await interactiveMessage.edit(localExpLeaderboard);
-                            else await interactiveMessage.edit({
-                                embed: {
-                                    description: ':x: There is nobody in the leaderboard yet or the experience system is disabled on this server'
-                                }
-                            });
-                            if (page === 'love') await interactiveMessage.edit(localLoveLeaderboard);
-                            else if (page === 'points') await interactiveMessage.edit(localPointsLeaderboard);
-                        } else {
-                            global = true;
-                            if (page === 'exp') await interactiveMessage.edit(globalExpLeaderboard);
-                            else if (page === 'love') await interactiveMessage.edit(globalLoveLeaderboard);
-                            else if (page === 'points') await interactiveMessage.edit(globalPointsLeaderboard);
-                        }
-                    } else if (r.emoji.name === "❌") { //Abort the command
-                        clearTimeout(timeout); //Dont let the timeout continue any further, after all the command ended
-                        collector.stop("aborted"); //End the collector
-                    }
-                    //Delete user reaction
-                    await interactiveMessage.removeReaction(r.emoji.name, r.user.id);
-                    timeout = setTimeout(function() {
-                        collector.stop("timeout");
-                    }, 120000); //Restart the timeout
-                });
-                collector.on('end', async(collected, reason) => { //On collector end
-                    resolve(interactiveMessage.delete());
-                });
-            } catch (err) {
-                reject(err);
             }
         });
+    }
+
+    async getCoinsLeaderboard(client, message, args) {
+        const global = args[1] && args[1].toLowerCase() === 'local' ? false : true;
+        let leaderboard = Array.from((!global ? client.database.users.filter(u => message.channel.guild.members.has(u.id)) 
+        : client.database.users).values()).map(e => client.database._updateDataModel(e, 'user')).sort((a, b) => b.economy.coins - a.economy.coins);
+        if (!leaderboard.length) {
+            return message.channel.createMessage(':x: Seems like there is nobody to show on the leaderboard yet');
+        }
+        const users = await this.fetchUsers(client, leaderboard);
+        return message.channel.createMessage({
+            embed: {
+                title: `${global ? 'Global' : 'Local'} coins leaderboard`,
+                color: client.config.options.embedColor,
+                description: leaderboard.slice(0, 10).map(u => `#${this.getPosition(u.id, leaderboard)} - **${users.get(u.id).tag}**\nCoins: ${u.economy.coins}`).join("\n\n"),
+                footer: {
+                    text: `Your position: #${leaderboard.findIndex(element => element.id === message.author.id) + 1}/${leaderboard.length}`
+                },
+                thumbnail: {
+                    url: global ? client.bot.user.avatarURL : message.channel.guild.iconURL
+                }
+            }
+        });
+    }
+
+    async getExperienceLeaderboard(client, message, args, guildEntry) {
+        const global = args[1] && args[1].toLowerCase() === 'local' ? false : true;
+        let leaderboard = global ? client.database.users.map(u => u) : guildEntry.experience.members;
+        if (global) {
+            leaderboard = leaderboard.map(e => client.database._updateDataModel(e, 'user')).sort((a, b) => b.experience.amount - a.experience.amount).map(u => {
+                u.levelDetails = client.getLevelDetails(new client.extendedUserEntry(u).getLevel());
+                return u;
+            });
+        } else {
+            leaderboard = leaderboard.map(e => client.database._updateDataModel(e, 'guild')).sort((a, b) => b.experience - a.experience).map(m => {
+                m.levelDetails = client.getLevelDetails(guildEntry.getLevelOf(m.id));
+                return m;
+            });
+        }
+        if (!leaderboard.length) {
+            return message.channel.createMessage(':x: Seems like there is nobody to show on the leaderboard yet');
+        }
+        const users = await this.fetchUsers(client, leaderboard);
+        return message.channel.createMessage({
+            embed: {
+                title: `${global ? 'Global' : 'Local'} experience leaderboard`,
+                color: client.config.options.embedColor,
+                description: leaderboard.slice(0, 10).map(u => `#${this.getPosition(u.id, leaderboard)} - **${users.get(u.id).tag}**\nLevel: ${u.levelDetails.level} | ${global ? 'Global' : 'Local'} experience: ${global ? u.experience.amount : u.experience}`).join("\n\n"),
+                footer: leaderboard.find(u => u.id === message.author.id) ? {
+                    text: `Your position: #${leaderboard.findIndex(element => element.id === message.author.id) + 1}/${leaderboard.length}`
+                } : undefined,
+                thumbnail: {
+                    url: global ? client.bot.user.avatarURL : message.channel.guild.iconURL
+                }
+            }
+        });
+    }
+
+    async fetchUsers(client, leaderboard) {
+        let resolvedUsers = new client.collection();
+        await Promise.all(leaderboard.slice(0, 10).map(u => client.fetchUser(u.id)))
+            .then(fetchedUsers => {
+                let i = 0;
+                for (let user of fetchedUsers) {
+                    if (!user) {
+                        user = {
+                            tag: 'Unknown User'
+                        };
+                    }
+                    if (!user.tag) {
+                        user.tag = `${user.username}#${user.discriminator}`;
+                    }
+                    resolvedUsers.set(leaderboard[i].id, user);
+                    i++;
+                }
+            });
+        return resolvedUsers;
+    }
+
+    getPosition(id, target) {
+        let userPosition = target.findIndex(u => u.id === id);
+        if (userPosition === 0) {
+            return ":trophy:";
+        }
+        else if (userPosition === 1) {
+            return ":second_place:";
+        }
+        else if (userPosition === 2) {
+            return ":third_place:";
+        } else {
+            return userPosition + 1;
+        }
     }
 }
 

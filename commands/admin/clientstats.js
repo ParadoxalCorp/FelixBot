@@ -1,51 +1,52 @@
-class ClientStats {
+'use strict';
+
+const Command = require('../../util/helpers/modules/Command');
+
+class ClientStats extends Command {
     constructor() {
+        super();
         this.help = {
             name: 'clientstats',
-            usage: 'clientstats',
-            description: 'how detailed stats, much wow'
-        }
+            category: 'admin',
+            description: 'Get detailed statistics about the bot',
+            usage: '{prefix}stats'
+        };
+        this.conf = {
+            requireDB: false,
+            disabled: false,
+            aliases: ["cs", "botstats"],
+            requirePerms: [],
+            guildOnly: false,
+            ownerOnly: false,
+            expectedArgs: []
+        };
     }
 
-    run(client, message, args) {
-        return new Promise(async(resolve, reject) => {
-            try {
-                let messageNotice = await message.channel.createMessage(`Fetching data...`);
-                let users = client.users.filter(u => !u.bot);
-                let averageMembers = 0;
-                client.guilds.forEach(g => { averageMembers = averageMembers + g.members.size });
-                let averageBots = 0;
-                client.guilds.forEach(g => { averageBots = averageBots + g.members.filter(m => m.user.bot).size });
-                await messageNotice.edit({
-                    embed: {
-                        fields: [{
-                            name: 'Users (cached)',
-                            value: `Users: ${users.size}\nBots: ${client.users.size - users.size}\nBots percentage: ${((client.users.size - users.size) / users.size * 100).toFixed(0)}%`,
-                            inline: true
-                        }, {
-                            name: 'Average members/guilds',
-                            value: `${Math.round(averageMembers / client.guilds.size)}`,
-                            inline: true
-                        }, {
-                            name: 'Average bots/guilds',
-                            value: `${Math.round(averageBots / client.guilds.size)}`,
-                            inline: true
-                        }, {
-                            name: 'Felix users',
-                            value: `${client.userData.size} out of ${client.users.size} users (${(client.userData.size / client.users.size * 100).toFixed(0)}%)`,
-                            inline: true
-                        }]
+    async run(client, message) {
+        message.channel.createMessage({
+            embed: {
+                title: ':gear: Client stats',
+                fields: [{
+                        name: 'Clusters',
+                        value: `Total: ${client.stats.clusters.length}\nActive: ${client.stats.clusters.length - client.stats.clusters.filter(c => c.guilds < 1).length}`,
+                        inline: true
                     },
-                    content: ''
-                });
-                resolve(await message.channel.createMessage({
-                    embed: {
-                        description: "```\n" + client.shards.map(s => `Shard ${s.id} | ${s.status} | ${s.latency}ms | ${client.guilds.filter(g => g.shard.id === s.id).size} guilds`).join("\n") + "```"
+                    {
+                        name: 'RAM usage',
+                        value: `${client.stats.totalRam.toFixed(2)}MB`,
+                        inline: true
+                    },
+                    {
+                        name: 'General stats',
+                        value: `Guilds: ${client.stats.guilds} | Cached users: ${client.stats.users} | Large guilds: ${client.stats.largeGuilds}`
+                    },
+                    {
+                        name: 'Clusters stats',
+                        value: '```' + client.stats.clusters.map(c => `Cluster ${c.cluster}: ${c.shards} shard(s) | ${c.guilds} guild(s) | ${c.ram.toFixed(2)}MB RAM used | Up for ${client.timeConverter.toElapsedTime(c.uptime, true)}`).join('\n--\n') + '```'
                     }
-                }));
-            } catch (err) {
-                reject(err, message);
-            }
+                ]
+            },
+            color: client.config.options.embedColor
         });
     }
 }

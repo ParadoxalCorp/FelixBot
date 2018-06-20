@@ -1,121 +1,142 @@
-const TimeConverter = require(`../../util/modules/timeConverter.js`);
+'use strict';
 
-class Bot {
+const Command = require('../../util/helpers/modules/Command');
+const TimeConverter = require(`../../util/modules/timeConverter.js`);
+const moment = require("moment");
+
+class Bot extends Command {
     constructor() {
+        super();
         this.help = {
             name: 'bot',
+            category: 'generic',
             description: 'Display some ~~useless~~ info about Felix',
-            usage: 'bot'
-        }
+            usage: '{prefix}bot'
+        };
         this.conf = {
+            requireDB: false,
+            disabled: false,
+            aliases: ["sys", "info", "stats"],
+            requirePerms: [],
             guildOnly: true,
-            aliases: ["sys", "info", "stats"]
-        }
+            ownerOnly: false,
+            expectedArgs: []
+        };
     }
 
-    run(client, message, args) {
-        const moment = require("moment");
-        return new Promise(async(resolve, reject) => {
-            try {
-                let embedFields = [];
-                embedFields.push({
-                    name: ":desktop: Servers/Guilds",
-                    value: client.guilds.size,
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":battery: RAM usage",
-                    value: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`,
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":tools: OS",
-                    value: `${process.platform}-${process.arch}`,
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":hammer_pick: Node.js",
-                    value: `${process.release.name} ${process.version}`,
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":gear: Version",
-                    value: client.coreData.version,
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":busts_in_silhouette: Users",
-                    value: client.users.size,
-                    inline: true
-                });
-                let uptime = TimeConverter.toElapsedTime(client.uptime);
-                embedFields.push({
-                    name: ":timer: Uptime",
-                    value: `${uptime.days}d ${uptime.hours}h ${uptime.minutes}m ${uptime.seconds}s`,
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":wrench: Developer",
-                    value: "ParadoxOrigins#5451",
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":calendar: Created",
-                    value: `${TimeConverter.toHumanDate(client.user.createdAt)} (${moment().to(client.user.createdAt)})`,
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":calendar: Joined",
-                    value: `${TimeConverter.toHumanDate(message.guild.joinedAt)} (${moment().to(message.guild.joinedAt)})`,
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":incoming_envelope: Support server",
-                    value: "[Felix support](https://discord.gg/Ud49hQJ)",
-                    inline: true
-                });
-                embedFields.push({
-                    name: ":incoming_envelope: Invite link",
-                    value: `[Felix invite link](https://discordapp.com/oauth2/authorize?&client_id=${client.user.id}&scope=bot&permissions=2146950271)`,
-                    inline: true
-                });
-                embedFields.push({
-                    name: 'Source',
-                    value: `[GitHub repository](https://github.com/ParadoxalCorp/FelixBot)`,
-                    inline: true
-                });
-                embedFields.push({
-                    name: 'Support us !',
-                    value: '[Patreon](https://www.patreon.com/paradoxorigins)',
-                    inline: true
-                });
-                embedFields.push({
-                    name: `:gear: Shard`,
-                    value: `${message.guild.shard.id}/${client.shards.size}`,
-                    inline: true
-                });
-                return resolve(await message.channel.createMessage({
-                    embed: {
-                        thumbnail: {
-                            url: client.user.avatarURL
-                        },
-                        color: 3447003,
-                        author: {
-                            name: "Requested by: " + message.author.username + "#" + message.author.discriminator,
-                            icon_url: message.author.avatarURL
-                        },
-                        fields: embedFields,
-                        timestamp: new Date(),
-                        footer: {
-                            icon_url: client.user.avatarURL,
-                            text: message.guild.name
-                        }
-                    }
-                }));
-            } catch (err) {
-                reject(err);
+    async run(client, message) {
+        if (client.bot.uptime < 60000) {
+            return message.channel.createMessage(':x: I am still booting up ! Please try again in a minute');
+        }
+        return this.sendStats(client, message);
+    }
+
+    sendStats(client, message) {
+        return message.channel.createMessage({
+            embed: {
+                thumbnail: {
+                    url: client.bot.user.avatarURL
+                },
+                color: client.config.options.embedColor,
+                author: {
+                    name: "Requested by: " + message.author.username + "#" + message.author.discriminator,
+                    icon_url: message.author.avatarURL
+                },
+                fields: this.buildEmbedFields(client, message),
+                timestamp: new Date(),
+                footer: {
+                    icon_url: client.bot.user.avatarURL,
+                    text: message.channel.guild.name
+                }
             }
         });
+    }
+
+    buildEmbedFields(client, message) {
+        let embedFields = [];
+        embedFields.push({
+            name: "Servers/Guilds",
+            value: client.bot.guilds.size,
+            inline: true
+        });
+        embedFields.push({
+            name: "RAM usage",
+            value: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`,
+            inline: true
+        });
+        embedFields.push({
+            name: "OS",
+            value: `${process.platform}-${process.arch}`,
+            inline: true
+        });
+        embedFields.push({
+            name: "Node.js",
+            value: `${process.release.lts ? process.release.lts : ''} ${process.version}`,
+            inline: true
+        });
+        embedFields.push({
+            name: "Version",
+            value: require('../../package.json').version,
+            inline: true
+        });
+        embedFields.push({
+            name: "Cached users",
+            value: client.bot.users.size,
+            inline: true
+        });
+        let uptime = TimeConverter.toElapsedTime(client.bot.uptime);
+        embedFields.push({
+            name: "Uptime",
+            value: `${uptime.days}d ${uptime.hours}h ${uptime.minutes}m ${uptime.seconds}s`,
+            inline: true
+        });
+        embedFields.push({
+            name: "Developer",
+            value: "ParadoxOrigins#5451",
+            inline: true
+        });
+        embedFields.push({
+            name: "Created the",
+            value: `${TimeConverter.toHumanDate(client.bot.user.createdAt)} (${moment().to(client.bot.user.createdAt)})`,
+            inline: true
+        });
+        embedFields.push({
+            name: "Joined this server the",
+            value: `${TimeConverter.toHumanDate(message.channel.guild.joinedAt)} (${moment().to(message.channel.guild.joinedAt)})`,
+            inline: true
+        });
+        embedFields.push({
+            name: "Join the support server !",
+            value: "[Felix support server invite link](https://discord.gg/Ud49hQJ)",
+            inline: false
+        });
+        embedFields.push({
+            name: "Invite Felix to your server",
+            value: `[Felix's invite link](https://discordapp.com/oauth2/authorize?&client_id=${client.bot.user.id}&scope=bot&permissions=2146950271)`,
+            inline: true
+        });
+        embedFields.push({
+            name: 'Source',
+            value: `[GitHub repository](https://github.com/ParadoxalCorp/FelixBot)`,
+            inline: true
+        });
+        embedFields.push({
+            name: 'Support us and become a donator !',
+            value: '[Patreon](https://www.patreon.com/paradoxorigins)',
+            inline: true
+        });
+        embedFields.push({
+            name: `Shard`,
+            value: (() => {
+                let shardCount = 0;
+                for (const cluster of client.stats.clusters) {
+                    shardCount = shardCount + cluster.shards;
+                }
+                return `${message.channel.guild.shard.id}/${shardCount}`;
+            })(),
+            inline: true
+        });
+        return embedFields;
     }
 }
 
