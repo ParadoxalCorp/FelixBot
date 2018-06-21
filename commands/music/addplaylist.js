@@ -30,7 +30,7 @@ class AddPlaylist extends Command {
         const member = message.channel.guild.members.get(message.author.id);
         const clientMember = message.channel.guild.members.get(client.bot.user.id);
         if (!args[0]) {
-            return message.channel.createMessage(':x: You didn\'t specified a playlist link')
+            return message.channel.createMessage(':x: You didn\'t specified a playlist link');
         }
         if (!member.voiceState.channelID) {
             return message.channel.createMessage(':x: You are not connected to any voice channel');
@@ -55,7 +55,7 @@ class AddPlaylist extends Command {
                     requestedBy: message.author.id
                 },
                 track: tracks[0].track
-            }
+            };
             tracks.shift();
         } 
         tracks = tracks.map(track => {

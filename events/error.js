@@ -81,7 +81,8 @@ class ErrorHandler {
             return this.sentry = false;
         }
         this.sentry = raven.config(client.config.apiKeys.sentryDSN, {
-            environment: client.config.process.environment
+            environment: client.config.process.environment,
+            release: client.package.version
         }).install();
     }
 }

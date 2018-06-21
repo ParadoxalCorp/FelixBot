@@ -13,7 +13,7 @@ class Repl extends Command {
             usage: '{prefix}repl',
             description: 'Owner only, use `.exit` to exit, `.clear` to clear variables, `//` to ignore a message and `_` to get the last statement',
             category: 'admin'
-        }
+        };
         this.conf = {
             ownerOnly: false,
             requireDB: false,
@@ -22,10 +22,10 @@ class Repl extends Command {
             guildOnly: false,
             disabled: false,
             expectedArgs: []
-        }
+        };
     }
 
-    async run(client, message, args) {
+    async run(client, message) {
         const builtinLibs = (() => {
             const libs = {};
             const { _builtinLibs } = require('repl');
@@ -99,8 +99,12 @@ class Repl extends Command {
                     return runCommand();
                 }
             } else if (content.endsWith('{') || statementQueue[0]) {
-                if (content.endsWith('{')) openingBrackets++;
-                if (content.endsWith('}') || content.startsWith('}')) closingBrackets++;
+                if (content.endsWith('{')) {
+                    openingBrackets++;
+                }
+                if (content.endsWith('}') || content.startsWith('}')) {
+                    closingBrackets++;
+                }
                 // Opening bracket - we either open the statement queue or append to it
                 statementQueue.push(content.endsWith('{') ?
                     content :

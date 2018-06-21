@@ -22,7 +22,7 @@ class MusicManager {
         this.baseURL = (node) => `http://${node.host}:${client.config.options.music.port}`;
         this.axios = require('axios').create({});
         this.axios.defaults.headers.common['Accept'] = 'application/json';
-        this.connections = new(require('../../modules/collection'))()
+        this.connections = new(require('../../modules/collection'))();
     }
 
     init() {
@@ -123,17 +123,6 @@ class MusicManager {
             return;
             }
         const connection = this.connections.get(player.guildId);
-        const play = async(queuePosition) => {
-            await player.play(connection.queue[queuePosition].track);
-            connection.nowPlaying = {
-                info: { 
-                    ...connection.queue[queuePosition].info,
-                    startedAt: Date.now()
-                },
-                track: connection.queue[queuePosition].track
-            }
-            return;
-        }
         switch(connection.repeat) {
             case 'song':
                 connection.nowPlaying.startedAt = Date.now();
@@ -164,7 +153,6 @@ class MusicManager {
                 break;
         }
         player.inactivityTimeout = setTimeout(() => {
-            console.log(`Voice channel disconnection due to inactivity`);
             this.client.bot.leaveVoiceChannel(player.channelId);
         }, this.client.config.options.music.inactivityTimeout);
     }
@@ -256,7 +244,7 @@ class MusicManager {
                 startedAt: Date.now()
             },
             track: connection.queue[queuePosition].track
-        }
+        };
         return;
     }
 

@@ -35,7 +35,7 @@ class GenerateKeys extends Command {
             entry = {
                 id: args[1],
                 keys: []
-            }
+            };
         }
         let generatedKeys = [];
         for (let i = 0; i < args[0]; i++) {

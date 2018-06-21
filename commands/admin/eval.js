@@ -23,6 +23,7 @@ class Eval extends Command {
         };
     }
 
+    //eslint-disable-next-line no-unused-vars
     async run(client, message, args, guildEntry, userEntry) {
         if (!args[0]) {
             return message.channel.createMessage('baguette tbh');
@@ -53,13 +54,14 @@ class Eval extends Command {
     }
 
     getMaxDepth(toInspect, toEval) {
-        let maxDepth;
+        let maxDepth = 10;
         for (let i = 0; i < 10; i++) {
             if (inspect(toInspect, { depth: i }).length > (1980 - toEval.length)) {
-                return maxDepth = i - 1;
+                maxDepth = i - 1;
+                return ;
             }
         }
-        return 10;
+        return maxDepth;
     }
 }
 

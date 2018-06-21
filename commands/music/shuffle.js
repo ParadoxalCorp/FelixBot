@@ -27,13 +27,11 @@ class Shuffle extends Command {
         if (!guildEntry.hasPremiumStatus()) {
             return message.channel.createMessage(':x: Sorry but as they are resources-whores, music commands are only available to our patreon donators. Check the `bot` command for more info');
         }
-        const member = message.channel.guild.members.get(message.author.id);
-        const clientMember = message.channel.guild.members.get(client.bot.user.id);
         let connection = client.musicManager.connections.get(message.channel.guild.id);
         if (!connection || !connection.queue[0]) {
             return message.channel.createMessage(`:x: There is nothing in the queue to shuffle`);
         }
-        connection.queue = connection.queue.sort((a, b) => Math.random() - Math.random());
+        connection.queue = connection.queue.sort(() => Math.random() - Math.random());
         return message.channel.createMessage(`:musical_note: Successfully shuffled the queue`);
     }
 }

@@ -122,7 +122,7 @@ class ExtendedGuildEntry {
             to: (id) => {
                 let member = this.experience.members[this.experience.members.findIndex(m => m.id === id)];
                 if (!member) {
-                    const newLength = this.experience.members.push(this.client.refs.guildMember(id));
+                    this.experience.members.push(this.client.refs.guildMember(id));
                     member = this.experience.members[this.experience.members.findIndex(m => m.id === id)];
                 }
                 member.experience = member.experience + amount;

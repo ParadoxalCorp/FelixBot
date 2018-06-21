@@ -26,21 +26,20 @@ class Inventory extends Command {
         if (!userEntry.economy.items[0]) {
             return message.channel.createMessage(`:x: Sorry, but it seems like you don't own any item yet :c`);
         }
-        return message.channel.createMessage(this.mapItems(client, userEntry, guildEntry));
+        return message.channel.createMessage(this.mapItems(client, userEntry));
     }
 
-    mapItems(client, userEntry, guildEntry) {
+    mapItems(client, userEntry) {
         let ownedItemsWorth = 0;
         for (const item of client.economyManager.marketItems) {
             if (userEntry.hasItem(item.id)) {
                 ownedItemsWorth = ownedItemsWorth + item.price;
             }
         }
-        const prefix = guildEntry ? guildEntry.prefix || client.config.prefix : client.config.prefix;
         return {
             embed: {
                 title: ':package: Inventory',
-                description: `Your owned items are worth a total of \`${ownedItemsWorth}\` holy coins (including ships).\n\nIf you are looking for your ships, you should check your naval base with \`$navalbase\` instead`,
+                description: `Your owned items are worth a total of \`${ownedItemsWorth}\` holy coins (including ships).\n\nIf you are looking for your ships, you should check your naval base with the \`navalbase\` command instead`,
                 fields: (() => {
                     let familiesOwned = [];
                     for (const item of userEntry.economy.items) {

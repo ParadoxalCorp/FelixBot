@@ -87,7 +87,7 @@ class ExperienceHandler {
         if (higherRoles[0]) {
             for (const role of higherRoles) {
                 await member.removeRole(role.id, `This role is set to be given at the level ${role.at} but this member is only level ${levelDetails.nextLevel}`)
-                .catch(() => {})
+                .catch(() => {});
             }
         }
         return higherRoles;
@@ -114,7 +114,7 @@ class ExperienceHandler {
         }
     }
 
-    async _removeOlderRoles(message, guildEntry, levelDetails, wonRoles) {
+    async _removeOlderRoles(message, guildEntry, levelDetails) {
         const member = message.channel.guild.members.get(message.author.id);
         let highestRoles = guildEntry.experience.roles.filter(r => member.roles.includes(r.id)).sort((a, b) => b.at - a.at);
         let highestRequirement = highestRoles[0] ? highestRoles[0].at : false;

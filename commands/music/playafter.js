@@ -70,7 +70,7 @@ class PlayAfter extends Command {
                     requestedBy: message.author.id
                 },
                 track: track.track
-            }
+            };
         } else {
             track.info.requestedBy = message.author.id;
             if (connection.queuePosition) {

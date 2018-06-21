@@ -82,18 +82,18 @@ class GetPermissions extends Command {
                     value: targetPerms.restrictedCommands[0] ? '```diff\n' + targetPerms.restrictedCommands.map(perm => `- ${perm}`).join('\n') + '```' : ':x: None set'
                 }];
             })()
-        }
+        };
     }
 
     formatToFile(client, message, embed, args) {
-        let content = 'Allowed permissions:\n'
+        let content = 'Allowed permissions:\n';
         content += embed.fields[0].value.replace(/\`\`\`diff/g, '').replace(/\+/g, '').replace(/\`\`\`/g, '');
-        content += '\nRestricted permissions:\n'
+        content += '\nRestricted permissions:\n';
         content += embed.fields[1].value.replace(/\`\`\`diff/g, '').replace(/\-/g, '').replace(/\`\`\`/g, '');
         return { 
             file: Buffer.from(content),
             name: `${args.targetType === 'global' ? 'Global' : ''} Permissions ${args.targetType !== 'global' ? ('for the ' + args.targetType + ' ' + (args.target.name || args.target.username)) : ''}.txt`
-        }
+        };
     }
 }
 
