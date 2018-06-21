@@ -1,5 +1,7 @@
 # Felix V4
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ce170404006c47b280d3f5d41e23d92c)](https://app.codacy.com/app/paradoxalcorp/FelixBot?utm_source=github.com&utm_medium=referral&utm_content=ParadoxalCorp/FelixBot&utm_campaign=badger)
+
 Felix is powerful Discord bot that aims to provide advanced features (and some memes) will staying relatively easy to use. 
 
 You can get the live bot with this [invite link](https://discordapp.com/oauth2/authorize?&client_id=327144735359762432&scope=bot&permissions=2146950271) and join the 
