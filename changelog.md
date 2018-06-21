@@ -72,6 +72,9 @@ Jokes aside, this update change pretty much everything, so get ready.
 - * Added the `simulatefarewells` command
 - * Added an option to the `setprefix` command to set the prefix with a space or not 
 - * The `experience`, `onjoinroles`, `sar`, `setfarewells` and `setgreetings` commands now checks the permissions Felix have and warn the user if Felix lacks permissions
+* Changes within the `utility` category
+- * Removed the `manga` command, as it can't work without MAL's API, which is down for 3 weeks already, work to rewrite and rely on another service will begin as soon 
+as pobbile
 
 ### Migrating from v3
 
