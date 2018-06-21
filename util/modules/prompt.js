@@ -12,7 +12,7 @@ const prompt = (question) => {
         output: process.stdout,
         terminal: false
     });
-    return new Promise((resolve, error) => {
+    return new Promise((resolve) => {
         r.question(question, answer => {
             r.close();
             resolve(answer);

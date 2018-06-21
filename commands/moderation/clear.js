@@ -38,7 +38,7 @@ class Clear extends Command {
                 newColl.set(value[0], value[1]);
             }
             return newColl;
-        }
+        };
         //Don't fetch the messages if they're already cached, use the cached messages and take only the specified amount
         let fetchedMessages = message.channel.messages.size >= limit ? slice(message.channel.messages, limit) : await message.channel.getMessages(parseInt(limit));
         //Filter messages older than 2 weeks

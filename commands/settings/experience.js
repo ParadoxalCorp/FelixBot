@@ -175,7 +175,7 @@ class Experience extends Command {
         } else if (guildEntry.experience.roles.filter(r => r.at === parseInt(args[2])).length >= client.config.options.experience.maxRolesPerLevel) {
             return message.channel.createMessage(`:x: There is already \`${guildEntry.experience.roles.length}\` roles set to be given at the level \`${args[2]}\`, you can't add any more than that`);
         } else if (parseInt(args[2]) > client.config.options.experience.maxRolesLevel) {
-            return message.channel.createMessage(`:x: \`${client.config.options.experience.maxRolesLevel}\` is the maximum level at which you can assign roles, as it isn't realistically possible to reach it`)
+            return message.channel.createMessage(`:x: \`${client.config.options.experience.maxRolesLevel}\` is the maximum level at which you can assign roles, as it isn't realistically possible to reach it`);
         }
         guildEntry.experience.roles.push(client.refs.activityGuildRole(role.id, parseInt(args[2]), args.includes('static')));
         await client.database.set(guildEntry, 'guild');

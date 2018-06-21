@@ -70,7 +70,7 @@ class Queue extends Command {
                     requestedBy: message.author.id
                 },
                 track: track.track
-            }
+            };
         } else {
             track.info.requestedBy = message.author.id;
             connection.queue.push(track);

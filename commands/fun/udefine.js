@@ -33,8 +33,8 @@ class Udefine extends Command {
             return message.channel.createMessage(":x: an error occurred");
         }
         if (!result.data.list[0]) {
-            return message.channel.createMessage(":x: I couldn't find any results :c")
-        };
+            return message.channel.createMessage(":x: I couldn't find any results :c");
+        }
         const firstResult = result.data.list[0];
         return message.channel.createMessage({
             embed: {

@@ -1,5 +1,5 @@
 const malScraper = require('mal-scraper');
-const Command = require('../../util/helpers/modules/Command')
+const Command = require('../../util/helpers/modules/Command');
 
 class Anime extends Command {
     constructor() {
@@ -23,7 +23,7 @@ class Anime extends Command {
         };
     }
 
-    //eslit-disable-next-line no-unused-vars
+    //eslint-disable-next-line no-unused-vars
     async run(client, message, args, guildEntry, userEntry) {
         if (!args[0]) {
             return message.channel.createMessage(":x: You did not enter an anime to search for");

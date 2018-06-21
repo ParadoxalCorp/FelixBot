@@ -57,7 +57,7 @@ class Help extends Command {
                 embedMessage: {
                     embed: {
                         title: ":book: Available commands",
-                        description: `Here is the list of all available commands and their categories, you can use commands like \`${this.getPrefix(client, guildEntry)}<command>\`\n\nHey ! Update 4.0.0 is out ! Check out the [changelog](https://github.com/ParadoxalCorp/FelixBot/blob/master/changelog.md)`,
+                        description: `Here is the list of all available commands and their categories, you can use commands like \`${this.getPrefix(client, guildEntry)}<command>`,
                         fields: categories.map(c => {
                             const subCategories = this.getSubCategories(client, c);
                             const value = subCategories[0] 
@@ -181,7 +181,7 @@ class Help extends Command {
             normalHelp += '**Owner only:** This command can only be used by the owner of the server';
         }
         if (command.conf.guildOnly) {
-            normalHelp += '**Server only:** This command cannot be used in DMs'
+            normalHelp += '**Server only:** This command cannot be used in DMs';
         }
         if (command.help.params) {
             for (const key in command.help.params) {

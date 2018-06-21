@@ -66,7 +66,7 @@ class Play extends Command {
                 requestedBy: message.author.id
             },
             track: track.track
-        }
+        };
         return message.channel.createMessage({embed: {
             title: ':musical_note: Now playing',
             description: `[${track.info.title}](${track.info.uri})`,

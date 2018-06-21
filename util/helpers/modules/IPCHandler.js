@@ -167,7 +167,7 @@ class IPCHandler {
             case 'fetchGuild':
                 let guild = this.client.bot.guilds.get(message.data);
                 if (guild) {
-                    guild = { ...guilds }; //Shallow clone
+                    guild = { ...guild }; //Shallow clone
                     guild.members = Array.from(guild.members.values());
                     guild.roles = Array.from(guild.roles.values());
                     guild.channels = Array.from(guild.channels.values());

@@ -12,7 +12,7 @@ class GuildMemberAddHandler {
         const user = client.extendedUser(member.user);
         //On join role
         if (guildEntry.onJoinRoles[0] && clientMember.permission.has('manageRoles')) {
-            this.addRoles(guild, member, guildEntry).catch(() => {})
+            this.addRoles(guild, member, guildEntry).catch(() => {});
         }
         //Greetings
         if (!guildEntry.greetings.channel || !guildEntry.greetings.enabled || !guildEntry.greetings.message) {

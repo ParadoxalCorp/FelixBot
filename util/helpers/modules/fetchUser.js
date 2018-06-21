@@ -3,7 +3,7 @@
 'use strict';
 
 const Endpoints = require('../../../node_modules/eris/lib/rest/Endpoints');
-const User = require('../../../node_modules/eris/lib/structures/User')
+const User = require('../../../node_modules/eris/lib/structures/User');
 
 /**
  * 

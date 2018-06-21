@@ -69,6 +69,7 @@ class SetPermission extends Command {
     validatePermission(client, arg) {
         let categories = [];
         arg = arg ? arg.toLowerCase() : '';
+        //eslint-disable-next-line no-unused-vars
         for (const [key, command] of client.commands) {
             if (!categories.includes(command.help.category) && command.help.category !== 'admin') {
                 categories.push(`${command.help.category}*`);

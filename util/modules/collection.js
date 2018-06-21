@@ -43,10 +43,12 @@ class Collection extends Map {
      * reconstructed if an item is added to or removed from the collection, or if you change the length of the array
      * itself. If you don't want this caching behaviour, use `[...collection.values()]` or
      * `Array.from(collection.values())` instead.
-     * @returns {Array}
+     * @returns {Array} An ordered array of the values of this collection
      */
     array() {
-        if (!this._array || this._array.length !== this.size) this._array = [...this.values()];
+        if (!this._array || this._array.length !== this.size) {
+            this._array = [...this.values()];
+        }
         return this._array;
     }
 
@@ -55,10 +57,12 @@ class Collection extends Map {
      * reconstructed if an item is added to or removed from the collection, or if you change the length of the array
      * itself. If you don't want this caching behaviour, use `[...collection.keys()]` or
      * `Array.from(collection.keys())` instead.
-     * @returns {Array}
+     * @returns {Array} An ordered array of the keys of this collection
      */
     keyArray() {
-        if (!this._keyArray || this._keyArray.length !== this.size) this._keyArray = [...this.keys()];
+        if (!this._keyArray || this._keyArray.length !== this.size) {
+            this._keyArray = [...this.keys()];
+        }
         return this._keyArray;
     }
 
@@ -69,12 +73,18 @@ class Collection extends Map {
      * amount is negative
      */
     first(amount) {
-        if (typeof amount === 'undefined') return this.values().next().value;
-        if (amount < 0) return this.last(amount * -1);
+        if (typeof amount === 'undefined') {
+            return this.values().next().value;
+        }
+        if (amount < 0) {
+            return this.last(amount * -1);
+        }
         amount = Math.min(this.size, amount);
         const arr = new Array(amount);
         const iter = this.values();
-        for (let i = 0; i < amount; i++) arr[i] = iter.next().value;
+        for (let i = 0; i < amount; i++) {
+            arr[i] = iter.next().value;
+        }
         return arr;
     }
 
@@ -85,12 +95,18 @@ class Collection extends Map {
      * amount is negative
      */
     firstKey(amount) {
-        if (typeof amount === 'undefined') return this.keys().next().value;
-        if (amount < 0) return this.lastKey(amount * -1);
+        if (typeof amount === 'undefined') {
+            return this.keys().next().value;
+        }
+        if (amount < 0) {
+            return this.lastKey(amount * -1);
+        }
         amount = Math.min(this.size, amount);
         const arr = new Array(amount);
         const iter = this.keys();
-        for (let i = 0; i < amount; i++) arr[i] = iter.next().value;
+        for (let i = 0; i < amount; i++) {
+            arr[i] = iter.next().value;
+        }
         return arr;
     }
 
@@ -103,9 +119,15 @@ class Collection extends Map {
      */
     last(amount) {
         const arr = this.array();
-        if (typeof amount === 'undefined') return arr[arr.length - 1];
-        if (amount < 0) return this.first(amount * -1);
-        if (!amount) return [];
+        if (typeof amount === 'undefined') {
+            return arr[arr.length - 1];
+        }
+        if (amount < 0) {
+            return this.first(amount * -1);
+        }
+        if (!amount) {
+            return [];
+        }
         return arr.slice(-amount);
     }
 
@@ -118,9 +140,15 @@ class Collection extends Map {
      */
     lastKey(amount) {
         const arr = this.keyArray();
-        if (typeof amount === 'undefined') return arr[arr.length - 1];
-        if (amount < 0) return this.firstKey(amount * -1);
-        if (!amount) return [];
+        if (typeof amount === 'undefined') {
+            return arr[arr.length - 1];
+        }
+        if (amount < 0) {
+            return this.firstKey(amount * -1);
+        }
+        if (!amount) {
+            return [];
+        }
         return arr.slice(-amount);
     }
 
@@ -132,11 +160,17 @@ class Collection extends Map {
      */
     random(amount) {
         let arr = this.array();
-        if (typeof amount === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
-        if (arr.length === 0 || !amount) return [];
+        if (typeof amount === 'undefined') {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+        if (arr.length === 0 || !amount) {
+            return [];
+        }
         const rand = new Array(amount);
         arr = arr.slice();
-        for (let i = 0; i < amount; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+        for (let i = 0; i < amount; i++) {
+            rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+        }
         return rand;
     }
 
@@ -148,11 +182,17 @@ class Collection extends Map {
      */
     randomKey(amount) {
         let arr = this.keyArray();
-        if (typeof amount === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
-        if (arr.length === 0 || !amount) return [];
+        if (typeof amount === 'undefined') {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+        if (arr.length === 0 || !amount) {
+            return [];
+        }
         const rand = new Array(amount);
         arr = arr.slice();
-        for (let i = 0; i < amount; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+        for (let i = 0; i < amount; i++) {
+            rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+        }
         return rand;
     }
 
@@ -161,16 +201,22 @@ class Collection extends Map {
      * (`item[prop] === value`).
      * @param {string} prop The property to test against
      * @param {*} value The expected value
-     * @returns {Array}
+     * @returns {Array} Return an array of all the matched elements
      * @example
      * collection.findAll('username', 'Bob');
      */
     findAll(prop, value) {
-        if (typeof prop !== 'string') throw new TypeError('Key must be a string.');
-        if (typeof value === 'undefined') throw new Error('Value must be specified.');
+        if (typeof prop !== 'string') {
+            throw new TypeError('Key must be a string.');
+        }
+        if (typeof value === 'undefined') {
+            throw new Error('Value must be specified.');
+        }
         const results = [];
         for (const item of this.values()) {
-            if (item[prop] === value) results.push(item);
+            if (item[prop] === value) {
+                results.push(item);
+            }
         }
         return results;
     }
@@ -184,7 +230,7 @@ class Collection extends Map {
      * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
      * @param {string|Function} propOrFn The property to test against, or the function to test with
      * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
-     * @returns {*}
+     * @returns {*} Return the matched item if match
      * @example
      * collection.find('username', 'Bob');
      * @example
@@ -192,14 +238,20 @@ class Collection extends Map {
      */
     find(propOrFn, value) {
         if (typeof propOrFn === 'string') {
-            if (typeof value === 'undefined') throw new Error('Value must be specified.');
+            if (typeof value === 'undefined') {
+                throw new Error('Value must be specified.');
+            }
             for (const item of this.values()) {
-                if (item[propOrFn] === value) return item;
+                if (item[propOrFn] === value) {
+                    return item;
+                }
             }
             return undefined;
         } else if (typeof propOrFn === 'function') {
             for (const [key, val] of this) {
-                if (propOrFn(val, key, this)) return val;
+                if (propOrFn(val, key, this)) {
+                    return val;
+                }
             }
             return undefined;
         } else {
@@ -223,14 +275,20 @@ class Collection extends Map {
     /* eslint-enable max-len */
     findKey(propOrFn, value) {
         if (typeof propOrFn === 'string') {
-            if (typeof value === 'undefined') throw new Error('Value must be specified.');
+            if (typeof value === 'undefined') {
+                throw new Error('Value must be specified.');
+            }
             for (const [key, val] of this) {
-                if (val[propOrFn] === value) return key;
+                if (val[propOrFn] === value) {
+                    return key;
+                }
             }
             return undefined;
         } else if (typeof propOrFn === 'function') {
             for (const [key, val] of this) {
-                if (propOrFn(val, key, this)) return key;
+                if (propOrFn(val, key, this)) {
+                    return key;
+                }
             }
             return undefined;
         } else {
@@ -245,7 +303,7 @@ class Collection extends Map {
      * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
      * @param {string|Function} propOrFn The property to test against, or the function to test with
      * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
-     * @returns {boolean}
+     * @returns {boolean} Whether an element matching the given value/function exists or not
      * @example
      * if (collection.exists('username', 'Bob')) {
      *  console.log('user here!');
@@ -265,13 +323,17 @@ class Collection extends Map {
      * but returns a Collection instead of an Array.
      * @param {Function} fn Function used to test (should return a boolean)
      * @param {Object} [thisArg] Value to use as `this` when executing function
-     * @returns {Collection}
+     * @returns {Collection} The filtered collection
      */
     filter(fn, thisArg) {
-        if (thisArg) fn = fn.bind(thisArg);
+        if (thisArg) {
+            fn = fn.bind(thisArg);
+        }
         const results = new Collection();
         for (const [key, val] of this) {
-            if (fn(val, key, this)) results.set(key, val);
+            if (fn(val, key, this)) {
+                results.set(key, val);
+            }
         }
         return results;
     }
@@ -281,13 +343,17 @@ class Collection extends Map {
      * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter).
      * @param {Function} fn Function used to test (should return a boolean)
      * @param {Object} [thisArg] Value to use as `this` when executing function
-     * @returns {Array}
+     * @returns {Array} The filtered collection as an array
      */
     filterArray(fn, thisArg) {
-        if (thisArg) fn = fn.bind(thisArg);
+        if (thisArg) {
+            fn = fn.bind(thisArg);
+        }
         const results = [];
         for (const [key, val] of this) {
-            if (fn(val, key, this)) results.push(val);
+            if (fn(val, key, this)) {
+                results.push(val);
+            }
         }
         return results;
     }
@@ -297,13 +363,17 @@ class Collection extends Map {
      * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
      * @param {Function} fn Function that produces an element of the new array, taking three arguments
      * @param {*} [thisArg] Value to use as `this` when executing function
-     * @returns {Array}
+     * @returns {Array} The modified collections as an array
      */
     map(fn, thisArg) {
-        if (thisArg) fn = fn.bind(thisArg);
+        if (thisArg) {
+            fn = fn.bind(thisArg);
+        }
         const arr = new Array(this.size);
         let i = 0;
-        for (const [key, val] of this) arr[i++] = fn(val, key, this);
+        for (const [key, val] of this) {
+            arr[i++] = fn(val, key, this);
+        }
         return arr;
     }
 
@@ -312,12 +382,16 @@ class Collection extends Map {
      * [Array.some()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
      * @param {Function} fn Function used to test (should return a boolean)
      * @param {Object} [thisArg] Value to use as `this` when executing function
-     * @returns {boolean}
+     * @returns {boolean} The array
      */
     some(fn, thisArg) {
-        if (thisArg) fn = fn.bind(thisArg);
+        if (thisArg) {
+            fn = fn.bind(thisArg);
+        }
         for (const [key, val] of this) {
-            if (fn(val, key, this)) return true;
+            if (fn(val, key, this)) {
+                return true;
+            }
         }
         return false;
     }
@@ -327,12 +401,16 @@ class Collection extends Map {
      * [Array.every()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every).
      * @param {Function} fn Function used to test (should return a boolean)
      * @param {Object} [thisArg] Value to use as `this` when executing function
-     * @returns {boolean}
+     * @returns {boolean} The array
      */
     every(fn, thisArg) {
-        if (thisArg) fn = fn.bind(thisArg);
+        if (thisArg) { 
+            fn = fn.bind(thisArg);
+        }
         for (const [key, val] of this) {
-            if (!fn(val, key, this)) return false;
+            if (!fn(val, key, this)) {
+                return false;
+            }
         }
         return true;
     }
@@ -343,13 +421,15 @@ class Collection extends Map {
      * @param {Function} fn Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
      * and `collection`
      * @param {*} [initialValue] Starting value for the accumulator
-     * @returns {*}
+     * @returns {*} The array
      */
     reduce(fn, initialValue) {
         let accumulator;
         if (typeof initialValue !== 'undefined') {
             accumulator = initialValue;
-            for (const [key, val] of this) accumulator = fn(accumulator, val, key, this);
+            for (const [key, val] of this) {
+                accumulator = fn(accumulator, val, key, this);
+            }
         } else {
             let first = true;
             for (const [key, val] of this) {
@@ -366,7 +446,7 @@ class Collection extends Map {
 
     /**
      * Creates an identical shallow copy of this collection.
-     * @returns {Collection}
+     * @returns {Collection} The shallow copy
      * @example const newColl = someColl.clone();
      */
     clone() {
@@ -376,25 +456,29 @@ class Collection extends Map {
     /**
      * Combines this collection with others into a new collection. None of the source collections are modified.
      * @param {...Collection} collections Collections to merge
-     * @returns {Collection}
+     * @returns {Collection} The combined collection
      * @example const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
      */
     concat(...collections) {
         const newColl = this.clone();
         for (const coll of collections) {
-            for (const [key, val] of coll) newColl.set(key, val);
+            for (const [key, val] of coll) {
+                newColl.set(key, val);
+            }
         }
         return newColl;
     }
 
     /**
      * Calls the `delete()` method on all items that have it.
-     * @returns {Promise[]}
+     * @returns {Promise[]} An array filled with the return values of the delete methods of each items
      */
     deleteAll() {
         const returns = [];
         for (const item of this.values()) {
-            if (item.delete) returns.push(item.delete());
+            if (item.delete) {
+                returns.push(item.delete());
+            }
         }
         return returns;
     }
@@ -407,9 +491,15 @@ class Collection extends Map {
      * @returns {boolean} Whether the collections have identical contents
      */
     equals(collection) {
-        if (!collection) return false;
-        if (this === collection) return true;
-        if (this.size !== collection.size) return false;
+        if (!collection) {
+            return false;
+        }
+        if (this === collection) {
+            return true;
+        }
+        if (this.size !== collection.size) {
+            return false;
+        }
         return !this.find((value, key) => {
             const testVal = collection.get(key);
             return testVal !== value || (testVal === undefined && !collection.has(key));
@@ -422,7 +512,7 @@ class Collection extends Map {
      * @param {Function} [compareFunction] Specifies a function that defines the sort order.
      * If omitted, the collection is sorted according to each character's Unicode code point value,
      * according to the string conversion of each element.
-     * @returns {Collection}
+     * @returns {Collection} The sorted collection
      */
     sort(compareFunction = (x, y) => +(x > y) || +(x === y) - 1) {
         return new Collection([...this.entries()].sort((a, b) => compareFunction(a[1], b[1], a[0], b[0])));

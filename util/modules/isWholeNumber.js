@@ -10,6 +10,6 @@ const isWholeNumber = (number) => {
         number = new String(number);
     }
     return new RegExp(/[^0-9]/gi).test(number) ? false : true;
-}
+};
 
 module.exports = isWholeNumber;

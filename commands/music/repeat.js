@@ -45,7 +45,7 @@ class Repeat extends Command {
                 sentence: 'set to repeat the queue',
                 emote: ':repeat:'
             }
-        }
+        };
     }
 
     // eslint-disable-next-line no-unused-vars 
@@ -59,10 +59,8 @@ class Repeat extends Command {
             return message.channel.createMessage(':x: I am not playing anything');
         }
         if (!['off', 'queue', 'song'].includes(args[0].toLowerCase())) {
-            return message.channel.createMessage(':x: Please specify the repeat mode to toggle, can be either `queue` to repeat the queue, `song` to repeat the current song or `off` to disable the repeat')
+            return message.channel.createMessage(':x: Please specify the repeat mode to toggle, can be either `queue` to repeat the queue, `song` to repeat the current song or `off` to disable the repeat');
         }
-        const voiceChannel = message.channel.guild.channels.get(clientMember.voiceState.channelID);
-        const player = await client.musicManager.getPlayer(voiceChannel);
         connection.repeat = args[0].toLowerCase();
         let queue = [...connection.queue];
         switch(connection.repeat) {
