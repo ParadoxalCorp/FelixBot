@@ -1,9 +1,13 @@
 # Felix V4
 
+Felix is powerful Discord bot that aims to provide advanced features (and some memes) will staying relatively easy to use. 
+
+You can get the live bot with this [invite link](https://discordapp.com/oauth2/authorize?&client_id=327144735359762432&scope=bot&permissions=2146950271) and join the 
+support server [here](https://discord.gg/Ud49hQJ)
+
 ## Tables of content
 
 * [Tables of content](#tables-of-content)
-* [Introduction](#introduction)
 * [V4 LTS release](#v4-lts-release)
 - * [Goals](#goals)
 - * [Long Term Support implications](#long-term-support-implications)
@@ -17,10 +21,6 @@
 - - * [Running Felix without database](#running-felix-without-database)
 - * [With music support](#with-music-support)
 - * [Updating](#updating)
-
-## Introduction
-
-Felix is a powerful Discord bot that aims to provide advanced features (and some memes) will staying relatively easy to use
 
 ## V4 LTS Release 
 
