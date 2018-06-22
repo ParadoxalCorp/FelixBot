@@ -43,8 +43,11 @@ class Translate extends Command {
             from: sourceLang,
             to: targetLang
         }).catch(() => {
-            return message.channel.createMessage(`:x: One of the specified language is not supported or the syntax is incorrect, it must be the following syntax: \`${message.guild ? client.guildData.get(message.guild.id).generalSettings.prefix : client.config.prefix}translate "text to translate" SOURCE_LANGUAGE_ISO:TARGET_LANGUAGE_ISO\` (see the help for examples)`);
+            return false;
         });
+        if (!translated) {
+            return message.channel.createMessage(`:x: One of the specified language is not supported or the syntax is incorrect, it must be the following syntax: \`${message.guild ? client.guildData.get(message.guild.id).generalSettings.prefix : client.config.prefix}translate "text to translate" SOURCE_LANGUAGE_ISO:TARGET_LANGUAGE_ISO\` (see the help for examples)`);
+        }
         return message.channel.createMessage({
             embed: {
                 title: `:white_check_mark: Text translated from ${translated.from.language.iso.toUpperCase()} to ${targetLang.toUpperCase()}\n`,
