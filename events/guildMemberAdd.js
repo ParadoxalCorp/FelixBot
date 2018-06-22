@@ -18,7 +18,7 @@ class GuildMemberAddHandler {
         if (!guildEntry.greetings.channel || !guildEntry.greetings.enabled || !guildEntry.greetings.message) {
             return;
         }
-        let message = guildEntry.greetings.message = this.replaceGreetingsTags(guild, member, guildEntry.greetings.message);
+        let message = guildEntry.greetings.message = this.replaceGreetingsTags(guild, user, guildEntry.greetings.message);
         let channel = guildEntry.greetings.channel === "dm" ? undefined : guild.channels.get(guildEntry.greetings.channel);
         if (guildEntry.greetings.channel !== 'dm' && !channel) {
             return;
@@ -37,10 +37,10 @@ class GuildMemberAddHandler {
         }
     }
 
-    replaceGreetingsTags(guild, member, message) {
-        return message.replace(/\%USER\%/gim, `<@!${member.user.id}>`)
-        .replace(/\%USERNAME\%/gim, `${member.user.username}`)
-        .replace(/\%USERTAG%/gim, `${member.user.tag}`)
+    replaceGreetingsTags(guild, user, message) {
+        return message.replace(/\%USER\%/gim, `<@!${user.id}>`)
+        .replace(/\%USERNAME\%/gim, `${user.username}`)
+        .replace(/\%USERTAG%/gim, `${user.tag}`)
         .replace(/\%GUILD\%/gim, `${guild.name}`)
         .replace(/\%MEMBERCOUNT%/gim, guild.memberCount);
     }

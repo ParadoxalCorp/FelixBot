@@ -76,7 +76,7 @@ class Bot extends Command {
         });
         embedFields.push({
             name: "Version",
-            value: require('../../package.json').version,
+            value: client.package.version,
             inline: true
         });
         embedFields.push({
