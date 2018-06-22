@@ -1,3 +1,15 @@
+# Update 4.0.2 Changelog 
+
+* Fixed a bug where providing an invalid language ISO wouldn't abort the command and cause an error
+
+# Update 4.0.1 Changelog 
+
+### Bugs fixes
+
+* Fixed a bug where the `%USERTAG%` tag would be `undefined` in greetings and farewells
+* Fixed a bug where having too much roles would break the `uinfo` command
+* Fixed an internal command parsing bug
+
 # Update 4.0.0 Changelog
 
 Hoi, Felix didn't received any updates during the last 3 months, for the simple reason that the 4.0.0 was being worked on. So how about we just make official
