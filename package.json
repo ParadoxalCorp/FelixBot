@@ -1,6 +1,6 @@
 {
     "name": "felix",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "description": "Felix v4",
     "main": "index.js",
     "author": "ParadoxOrigins",
@@ -20,10 +20,10 @@
         "rethinkdbdash": "^2.3.31"
     },
     "optionalDependencies": {
+        "eris-lavalink": "^1.0.2",
         "google-translate-api": "^2.3.0",
-        "raven": "^2.6.0",
-        "taihou": "^1.0.1",
         "mal-scraper": "^2.4.2",
-        "eris-lavalink": "^1.0.2"
+        "raven": "^2.6.0",
+        "taihou": "^1.0.1"
     }
 }
