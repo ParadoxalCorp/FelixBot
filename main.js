@@ -75,7 +75,7 @@ class Felix extends Base {
 
     loadEventsListeners() {
         //Don't load events if there is already two ready listeners, meaning the bot has already started once, to prevent double instances
-        if (this.bot.listenerCount('ready') >= 1) {
+        if (this.bot.listenerCount('ready') >= 2) {
             return false;
         }
         const events = fs.readdirSync(join(__dirname, 'events'));
