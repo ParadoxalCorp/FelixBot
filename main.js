@@ -25,9 +25,12 @@ class Felix extends Base {
         //This will be filled with mentions prefix once ready
         this.commands = new this.collection();
         this.aliases = new this.collection();
-        this.bot.on('ready', this.ready.bind(this));
         this.loadCommands();
-        this.loadEventsListeners();
+        const loadedEvents = this.loadEventsListeners();
+        if (loadedEvents === false) {
+            return;
+        }
+        this.bot.on('ready', this.ready.bind(this));
         this.verifyPackages();
         if (this.config.apiKeys['weebSH'] && this.packages.taihou) {
             this.weebSH = new(require('taihou'))(this.config.apiKeys['weebSH'], false, {
@@ -71,7 +74,10 @@ class Felix extends Base {
     }
 
     loadEventsListeners() {
-        //Load events
+        //Don't load events if there is already two ready listeners, meaning the bot has already started once, to prevent double instances
+        if (this.bot.listenerCount('ready') >= 1) {
+            return false;
+        }
         const events = fs.readdirSync(join(__dirname, 'events'));
         let loadedEvents = 0;
         events.forEach(e => {
