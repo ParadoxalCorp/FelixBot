@@ -63,7 +63,7 @@ class ExperienceHandler {
                 r.reason = r.at === levelDetails.nextLevel ? `This role is set to be given at the level ${r.at}` : `This role is set to be given at the level ${r.at} and the member is level ${levelDetails.nextLevel}`;
                 return r;
             });
-        let highestRoles = guildEntry.experience.roles.filter(r => member.roles.includes(r.id)).concat(wonRoles).sort((a, b) => b.at - a.at);
+        let highestRoles = guildEntry.experience.roles.filter(r => member.roles.includes(r.id) && levelDetails.nextLevel >= r.at).concat(wonRoles).sort((a, b) => b.at - a.at);
         let highestRequirement = highestRoles[0] ? highestRoles[0].at : false;
         if (highestRequirement) {
             wonRoles = wonRoles.filter(r => r.at === highestRequirement || r.static);
