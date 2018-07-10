@@ -31,8 +31,8 @@ class Daily extends Command {
             randomEvent = this.runRandomDailyEvent(client, message, userEntry);
         } else {
             userEntry.addCoins(client.config.options.dailyCoins);
-            userEntry.addCooldown('dailyCooldown', client.config.options.dailyCooldown);
         }
+        userEntry.addCooldown('dailyCooldown', client.config.options.dailyCooldown);
         await client.database.set(randomEvent ? randomEvent.user : userEntry, "user");
         return message.channel.createMessage(randomEvent ? randomEvent.text : `Hai ! You received \`${client.config.options.dailyCoins}\` holy coins, you now have \`${userEntry.economy.coins}\` holy coins`);
     }
