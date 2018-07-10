@@ -57,7 +57,7 @@ class Help extends Command {
                 embedMessage: {
                     embed: {
                         title: ":book: Available commands",
-                        description: `Here is the list of all available commands and their categories, you can use commands like \`${this.getPrefix(client, guildEntry)}<command>`,
+                        description: `Here is the list of all available commands and their categories, you can use commands like \`${this.getPrefix(client, guildEntry)}<command>\``,
                         fields: categories.map(c => {
                             const subCategories = this.getSubCategories(client, c);
                             const value = subCategories[0] 

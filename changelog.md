@@ -1,3 +1,7 @@
+# Update 4.0.3 Changelog
+
+* Fixed a bug where the cooldown wouldn't be added if a random event occurred when using the `daily` command
+
 # Update 4.0.2 Changelog 
 
 * Fixed a bug where providing an invalid language ISO wouldn't abort the command and cause an error
