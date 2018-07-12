@@ -26,10 +26,7 @@ class Felix extends Base {
         this.commands = new this.collection();
         this.aliases = new this.collection();
         this.loadCommands();
-        const loadedEvents = this.loadEventsListeners();
-        if (loadedEvents === false) {
-            return;
-        }
+        this.loadEventsListeners();
         this.bot.on('ready', this.ready.bind(this));
         this.verifyPackages();
         if (this.config.apiKeys['weebSH'] && this.packages.taihou) {
@@ -74,10 +71,6 @@ class Felix extends Base {
     }
 
     loadEventsListeners() {
-        //Don't load events if there is already two ready listeners, meaning the bot has already started once, to prevent double instances
-        if (this.bot.listenerCount('ready') >= 2) {
-            return false;
-        }
         const events = fs.readdirSync(join(__dirname, 'events'));
         let loadedEvents = 0;
         events.forEach(e => {
