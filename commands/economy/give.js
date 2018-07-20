@@ -32,7 +32,7 @@ class Give extends Command {
             return message.channel.createMessage(`:x: Invalid syntax or missing parameters, the correct syntax should be \`${this.help.usage.replace(/{prefix}/gim, guildEntry.prefix || client.config.prefix)}\``);
         }
         const receiver = await this.getUserFromText({ message: message, client: client, text: userInput.join(" ") });
-        const coins = Number.isInteger(Number(args[args.length - 1])) ? Number(args[args.length - 1]) : false;
+        const coins = client.isWholeNumber(args[args.length - 1]) ? Number(args[args.length - 1]) : false;
         if (!receiver || !coins) {
             return message.channel.createMessage(!receiver ? ':x: I couldn\'t find the user you specified' : ':x: Please specify a whole number !');
         } else if (coins > userEntry.economy.coins) {

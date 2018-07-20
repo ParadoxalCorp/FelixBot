@@ -1,3 +1,7 @@
+# Update 4.0.4 Changelog
+
+* Fixed a bug that allowed the use of negative values within the `give` command, effectively stealing coins from other users
+
 # Update 4.0.3 Changelog
 
 * Fixed a bug where the cooldown wouldn't be added if a random event occurred when using the `daily` command
