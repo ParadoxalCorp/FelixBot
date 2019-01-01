@@ -1,3 +1,7 @@
+# 01/01/2019 Notice: Dropped support
+
+As of the 01/01/2019, support for this repository is officially dropped, and the repository will enter in archived state 
+
 # Felix V4
 
 Felix is a powerful Discord bot that aims to provide advanced features (and some memes) while staying relatively easy to use. 
